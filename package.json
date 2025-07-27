@@ -1,0 +1,39 @@
+{
+  "name": "denokv-gui-client",
+  "description": "An open source GUI client to browse the data inside a Deno KV database and perform CRUD operations",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "homepage": "https://github.com/AbdulrhmanGoni/denokv-gui-client",
+  "author": {
+    "email": "abdulrhmangoni@gmail.com",
+    "name": "Abdulrhman Goni",
+    "url": "https://github.com/AbdulrhmanGoni"
+  },
+  "main": "packages/entry-point.mjs",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=23.0.0"
+  },
+  "scripts": {
+    "build": "npm run build -ws --if-present",
+    "compile": "npm run build && electron-builder build --config electron-builder.mjs",
+    "test": "npx playwright test ./tests/e2e.spec.ts",
+    "start": "node packages/dev-mode.js",
+    "typecheck": "npm run typecheck -ws --if-present"
+  },
+  "devDependencies": {
+    "@npmcli/map-workspaces": "4.0.2",
+    "@playwright/test": "1.53.1",
+    "@types/node": "24.0.3",
+    "electron": "36.5.0",
+    "electron-builder": "26.0.12",
+    "glob": "11.0.3",
+    "playwright": "^1.53.1"
+  },
+  "dependencies": {
+    "@app/main": "*"
+  }
+}
