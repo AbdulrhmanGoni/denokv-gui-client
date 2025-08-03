@@ -1,0 +1,25 @@
+import { DatabaseSync } from 'node:sqlite';
+
+export const database = new DatabaseSync('./database.sqlite');
+
+export const insertQuery = database.prepare(`
+    INSERT INTO kvStores(id, name, url, type, accessToken, createdAt, updatedAt) 
+    VALUES(?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+`);
+
+export const updateQuery = database.prepare(`
+    UPDATE kvStores SET 
+        name = COALESCE($name, name), 
+        url = COALESCE($url, url), 
+        accessToken = COALESCE($accessToken, accessToken), 
+        updatedAt = datetime('now') 
+    WHERE id = $id
+`);
+
+export const deleteOneQuery = database.prepare(
+    'DELETE FROM kvStores WHERE id = ?'
+);
+
+export const getAllQuery = database.prepare(
+    'SELECT * FROM kvStores ORDER BY updatedAt DESC'
+);
