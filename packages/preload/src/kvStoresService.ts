@@ -3,6 +3,8 @@ import { existsSync, statSync } from 'node:fs';
 import { exec } from 'node:child_process';
 import { deleteOneQuery, getAllQuery, insertQuery, updateQuery } from './db/kvStoresQueries.js';
 import path from 'node:path';
+import { openKv } from '@deno/kv';
+import { deadline } from '@std/async';
 
 export async function create(input: CreateKvStoreInput): Promise<boolean> {
     if (input.type == "local") {
@@ -75,4 +77,18 @@ async function getDefaultLocalKvStores() {
             }
         })
     })
+}
+
+export async function testKvStoreConnection(kvStore: TestKvStoreParams): Promise<boolean> {
+    if (kvStore.type == "bridge") {
+        return await fetch(`${kvStore.url}/check`)
+            .then((res) => res.ok)
+            .catch(() => false)
+    } else {
+        const kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken });
+        // Trying to get a random entry to make sure the KV Store exists
+        return await deadline(kv.get([crypto.randomUUID()]), 6000) // Reject after 6s because remote KVs might hang forever
+            .then(() => true)
+            .catch(() => false)
+    }
 }
