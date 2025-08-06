@@ -1,4 +1,6 @@
-import { writeFile, unlink } from 'node:fs/promises';
+import { readdir, writeFile, unlink } from 'node:fs/promises';
+import { existsSync, statSync } from 'node:fs';
+import { exec } from 'node:child_process';
 import { deleteOneQuery, getAllQuery, insertQuery, updateQuery } from './db/kvStoresQueries.js';
 import path from 'node:path';
 
@@ -30,7 +32,7 @@ export function update(id: number, input: EditKvStoreInput): boolean {
 }
 
 export async function getAll() {
-    return getAllQuery.all() as KvStore[]
+    return [...getAllQuery.all(), ...(await getDefaultLocalKvStores())] as KvStore[]
 }
 
 export async function deleteOne(kvStore: KvStore) {
@@ -41,4 +43,36 @@ export async function deleteOne(kvStore: KvStore) {
 
     const result = deleteOneQuery.run(kvStore.id)
     return !!result.changes
+}
+
+async function getDefaultLocalKvStores() {
+    return new Promise<KvStore[]>((resolve) => {
+        exec('deno info --json', async (err, infoResult) => {
+            if (err) resolve([])
+            const localDenoKvsLocaltion = JSON.parse(infoResult).originStorage
+            if (localDenoKvsLocaltion) {
+                const dataDirs: KvStore[] = [];
+                const dir = await readdir(localDenoKvsLocaltion, { withFileTypes: true })
+                for (const entry of dir) {
+                    if (entry.isDirectory()) {
+                        const kvFile = `${entry.parentPath}/${entry.name}/kv.sqlite3`;
+                        if (existsSync(kvFile)) {
+                            const fileStat = statSync(kvFile)
+                            dataDirs.push({
+                                id: entry.name,
+                                name: entry.name.slice(0, 15),
+                                url: kvFile,
+                                type: "default",
+                                createdAt: fileStat.ctime.toISOString(),
+                                updatedAt: fileStat.birthtime.toISOString(),
+                            })
+                        }
+                    }
+                }
+                resolve(dataDirs)
+            } else {
+                resolve([])
+            }
+        })
+    })
 }
