@@ -23,7 +23,7 @@ export async function create(input: CreateKvStoreInput): Promise<boolean> {
     return result.changes === 1
 }
 
-export function update(id: number, input: EditKvStoreInput): boolean {
+export function update(id: string, input: EditKvStoreInput): boolean {
     updateQuery.run({
         $id: id,
         $name: input.name ?? null,
