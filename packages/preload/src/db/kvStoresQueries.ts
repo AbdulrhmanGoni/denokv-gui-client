@@ -11,7 +11,7 @@ export const updateQuery = database.prepare(`
     UPDATE kvStores SET 
         name = COALESCE($name, name), 
         url = COALESCE($url, url), 
-        accessToken = COALESCE($accessToken, accessToken), 
+        accessToken = $accessToken,
         updatedAt = datetime('now') 
     WHERE id = $id
 `);

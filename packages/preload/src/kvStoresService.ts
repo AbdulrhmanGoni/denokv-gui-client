@@ -17,7 +17,7 @@ export async function create(input: CreateKvStoreInput): Promise<boolean> {
         input.name,
         input.url,
         input.type,
-        input.accessToken ?? null
+        input.accessToken
     );
 
     return result.changes === 1
@@ -28,6 +28,7 @@ export function update(id: string, input: EditKvStoreInput): boolean {
         $id: id,
         $name: input.name ?? null,
         $url: input.url ?? null,
+        $accessToken: input.accessToken,
     });
 
     return true
@@ -67,6 +68,7 @@ async function getDefaultLocalKvStores() {
                                 type: "default",
                                 createdAt: fileStat.ctime.toISOString(),
                                 updatedAt: fileStat.birthtime.toISOString(),
+                                accessToken: null,
                             })
                         }
                     }

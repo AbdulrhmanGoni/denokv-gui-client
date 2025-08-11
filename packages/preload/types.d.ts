@@ -1,6 +1,6 @@
 type CreateKvStoreInput = Pick<KvStore, "name" | "url" | "type" | "accessToken">
 
-type EditKvStoreInput = Partial<Pick<KvStore, "name" | "url" | "type">>
+type EditKvStoreInput = Partial<Pick<KvStore, "name" | "url" | "type">> & { accessToken: KvStore["accessToken"] }
 
 type TestKvStoreParams = Pick<KvStore, "url" | "type" | "accessToken">
 

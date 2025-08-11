@@ -3,7 +3,7 @@ type KvStore = {
     name: string,
     url: string,
     type: "local" | "remote" | "bridge" | "default",
-    accessToken?: string,
+    accessToken: string | null,
     createdAt: string,
     updatedAt: string,
 }
