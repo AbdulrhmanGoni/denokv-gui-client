@@ -28,6 +28,7 @@ export function update(id: string, input: EditKvStoreInput): boolean {
         $id: id,
         $name: input.name ?? null,
         $url: input.url ?? null,
+        $type: input.type ?? null,
         $accessToken: input.accessToken,
     });
 

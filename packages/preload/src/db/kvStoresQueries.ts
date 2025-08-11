@@ -12,6 +12,7 @@ export const updateQuery = database.prepare(`
         name = COALESCE($name, name), 
         url = COALESCE($url, url), 
         accessToken = $accessToken,
+        type = COALESCE($type, type), 
         updatedAt = datetime('now') 
     WHERE id = $id
 `);
