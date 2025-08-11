@@ -43,8 +43,8 @@ export async function deleteOne(kvStore: KvStore) {
     if (kvStore.type == "default" || kvStore.type == "local") {
         await rm(kvStore.url)
         try {
-            await rm(kvStore.url.replace("/kv.sqlite3", "/kv.sqlite3-shm"))
-            await rm(kvStore.url.replace("/kv.sqlite3", "/kv.sqlite3-wal"))
+            await rm(kvStore.url.replace(/kv.sqlite3$/gi, "kv.sqlite3-shm"))
+            await rm(kvStore.url.replace(/kv.sqlite3$/gi, "kv.sqlite3-wal"))
         } catch { }
         if (kvStore.type == "default") return true;
     }
