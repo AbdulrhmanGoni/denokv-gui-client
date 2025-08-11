@@ -1,4 +1,4 @@
-import { readdir, writeFile, unlink } from 'node:fs/promises';
+import { readdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync, statSync } from 'node:fs';
 import { exec } from 'node:child_process';
 import { deleteOneQuery, getAllQuery, insertQuery, updateQuery } from './db/kvStoresQueries.js';
@@ -41,7 +41,11 @@ export async function getAll() {
 
 export async function deleteOne(kvStore: KvStore) {
     if (kvStore.type == "default" || kvStore.type == "local") {
-        await unlink(kvStore.url)
+        await rm(kvStore.url)
+        try {
+            await rm(kvStore.url.replace("/kv.sqlite3", "/kv.sqlite3-shm"))
+            await rm(kvStore.url.replace("/kv.sqlite3", "/kv.sqlite3-wal"))
+        } catch { }
         if (kvStore.type == "default") return true;
     }
 
