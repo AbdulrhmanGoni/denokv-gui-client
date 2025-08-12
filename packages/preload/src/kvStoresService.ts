@@ -92,10 +92,14 @@ export async function testKvStoreConnection(kvStore: TestKvStoreParams): Promise
             .then((res) => res.ok)
             .catch(() => false)
     } else {
-        const kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken });
-        // Trying to get a random entry to make sure the KV Store exists
-        return await deadline(kv.get([crypto.randomUUID()]), 6000) // Reject after 6s because remote KVs might hang forever
-            .then(() => true)
-            .catch(() => false)
+        try {
+            const kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken });
+            // Trying to get a random entry to make sure the KV Store exists
+            return await deadline(kv.get([crypto.randomUUID()]), 6000) // Reject after 6s because remote KVs might hang forever
+                .then(() => true)
+                .catch(() => false)
+        } catch {
+            return false
+        }
     }
 }
