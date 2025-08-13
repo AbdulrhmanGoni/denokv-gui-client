@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ModeWatcher } from "mode-watcher";
   import { Toaster } from "$lib/components/shadcn/sonner";
+  import LoadingOverlay from "$lib/components/custom/LoadingOverlay.svelte";
 </script>
 
 <main
@@ -8,4 +9,5 @@
 >
   <Toaster richColors />
   <ModeWatcher />
+  <LoadingOverlay />
 </main>
