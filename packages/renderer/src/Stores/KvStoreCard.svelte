@@ -9,6 +9,7 @@
   import LinkIcon from "@lucide/svelte/icons/link";
   import FileLinkIcon from "@lucide/svelte/icons/file-symlink";
   import SquarePenIcon from "@lucide/svelte/icons/square-pen";
+  import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
   import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
 
   const { kvStore }: { kvStore: KvStore } = $props();
@@ -46,6 +47,7 @@
           <SquarePenIcon />
         </ButtonWithTooltip>
       {/if}
+      <DeleteKvStoreButton {kvStore} />
     </div>
   </div>
   <p class="flex items-center gap-2 text-sm">
