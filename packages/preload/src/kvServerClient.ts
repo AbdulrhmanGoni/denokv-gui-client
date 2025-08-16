@@ -10,31 +10,15 @@ export async function set(kvKey: string | SerializedKvKey, value: SerializedKvVa
     const serverClient = getServerClient();
 
     if (typeof kvKey == "string") {
-        const key = eval(`(${kvKey})`)
-
-        if (!(key instanceof Array)) {
-            return {
-                result: null,
-                error:
-                    "Invalid Key. It should be an array of string, number, bigint, boolean or Uint8Array",
-            };
+        const result = kvKeyStringToSerializedForm(kvKey)
+        if (result.key) {
+            return serverClient.set(result.key, value, options)
         }
 
-        const allKeyPartsAreValid = key.every(
-            (part) =>
-                ["string", "number", "bigint", "boolean"].includes(typeof part) ||
-                part instanceof Uint8Array
-        );
-
-        if (!allKeyPartsAreValid) {
-            return {
-                result: null,
-                error:
-                    "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array",
-            };
+        return {
+            error: result.error,
+            result: null
         }
-
-        return serverClient.set(serializeKvKey(key), value, options)
     }
 
     return serverClient.set(kvKey, value, options)
@@ -48,4 +32,35 @@ export function deleteKey(key: SerializedKvKey) {
 export function get(key: SerializedKvKey) {
     const serverClient = getServerClient()
     return serverClient.get(key)
+}
+
+function kvKeyStringToSerializedForm(stringKvKey: string): { key: SerializedKvKey | null, error: string | null } {
+    const key = eval(`(${stringKvKey})`)
+
+    if (!(key instanceof Array)) {
+        return {
+            key: null,
+            error:
+                "Invalid Key. It should be an array of string, number, bigint, boolean or Uint8Array",
+        };
+    }
+
+    const allKeyPartsAreValid = key.every(
+        (part) =>
+            ["string", "number", "bigint", "boolean"].includes(typeof part) ||
+            part instanceof Uint8Array
+    );
+
+    if (!allKeyPartsAreValid) {
+        return {
+            key: null,
+            error:
+                "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array",
+        };
+    }
+
+    return {
+        key: serializeKvKey(key),
+        error: null
+    };
 }
