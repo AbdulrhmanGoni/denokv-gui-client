@@ -20,7 +20,7 @@ export async function create(input: CreateKvStoreInput): Promise<boolean> {
         input.accessToken
     );
 
-    return !result.changes
+    return !!result.changes
 }
 
 export async function update(kvStore: KvStore, changes: EditKvStoreInput): Promise<boolean> {
