@@ -47,7 +47,7 @@ class WindowManager implements AppModule {
         properties: ['openDirectory'],
       });
 
-      if (result.canceled) return null;
+      if (result.canceled) return "";
       return result.filePaths[0];
     });
 

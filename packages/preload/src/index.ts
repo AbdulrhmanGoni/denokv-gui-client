@@ -8,8 +8,8 @@ function send(channel: string, message: string) {
   return ipcRenderer.invoke(channel, message);
 }
 
-async function selectDirectory() {
-  return (await ipcRenderer.invoke('select-directory')) as string
+function selectDirectory() {
+  return ipcRenderer.invoke('select-directory') as Promise<string>
 }
 
 export {
