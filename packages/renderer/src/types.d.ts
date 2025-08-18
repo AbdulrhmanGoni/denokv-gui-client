@@ -1,0 +1,1 @@
+type KvKeyCodeEditor = import("codejar").CodeJar
