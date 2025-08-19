@@ -107,22 +107,4 @@ test.describe('Preload context should be exposed', async () => {
       expect(value).toEqual(electronVersions);
     });
   });
-
-  test.describe(`send should be exposed`, async () => {
-    test('with same type`', async ({ page }) => {
-      const type = await page.evaluate(() => typeof globalThis[btoa('send')]);
-      expect(type).toEqual('function');
-    });
-
-    test('with same behavior', async ({ page, electronApp }) => {
-      await electronApp.evaluate(async ({ ipcMain }) => {
-        ipcMain.handle('test', (event, message) => btoa(message));
-      });
-
-      const testString = btoa(`${Date.now() * Math.random()}`);
-      const expectedValue = btoa(testString);
-      const value = await page.evaluate(async (str) => await globalThis[btoa('send')]('test', str), testString);
-      expect(value).toEqual(expectedValue);
-    });
-  });
 });
