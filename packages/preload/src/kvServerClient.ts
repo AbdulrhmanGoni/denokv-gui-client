@@ -1,9 +1,25 @@
 import { getServerClient } from "./server.js"
 import { serializeKvKey } from '@denokv-gui-client/bridge-server';
 
-export function browse(params: BrowsingOptions) {
+export function browse(params: BrowsingParams) {
     const serverClient = getServerClient()
-    return serverClient.browse(params)
+
+    const options: BrowseRouteOptions = {
+        limit: params.limit,
+    }
+
+    if (params.cursors[params.nextCursorIndex]) {
+        options.cursor = params.cursors[params.nextCursorIndex]
+    }
+
+    for (const param of ["prefix", "start", "end"] as const) {
+        const result = kvKeyStringToSerializedForm(params[param])
+        if (result.key && result.key.length) {
+            Object.assign(options, { [param]: result.key })
+        }
+    }
+
+    return serverClient.browse(options)
 }
 
 export async function set(kvKey: string | SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions) {
