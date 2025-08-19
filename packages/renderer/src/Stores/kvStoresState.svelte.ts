@@ -1,5 +1,6 @@
 import { globalState } from "$lib/globalState.svelte";
-import { kvStoresService } from "@app/preload";
+import { bridgeServer, kvStoresService } from "@app/preload";
+import { fetchEntries, resetEntriesState } from "../Browser/kvEntriesState.svelte";
 import { toast } from "svelte-sonner";
 
 type StoresState = {
@@ -31,19 +32,51 @@ export async function loadKvStores() {
     }
 }
 
-export async function openKvStore(kvStore: KvStore | null) {
-    if (kvStore) {
-        globalState.openLoadingOverlay = true
-        const testSucceed = await kvStoresService.testKvStoreConnection($state.snapshot(kvStore));
-        globalState.openLoadingOverlay = false
-        if (!testSucceed) {
-            toast.error("Connection Failed", {
-                description: testKvStoreConnectionErrorMessages[kvStore.type],
-            })
-            return
-        }
+export async function openKvStore(kvStore: KvStore) {
+    globalState.loadingOverlay.open = true
+    globalState.loadingOverlay.text = "Testing Kv Database Connection..."
+    const testSucceed = await kvStoresService.testKvStoreConnection($state.snapshot(kvStore));
+    globalState.loadingOverlay.open = false
+    globalState.loadingOverlay.text = ""
+
+    if (testSucceed) {
+        kvStoresState.openedStore = kvStore;
+        await startKvStoreServer(kvStore)
+        return true
     }
-    kvStoresState.openedStore = kvStore;
+
+    toast.error("Connection Failed", {
+        description: testKvStoreConnectionErrorMessages[kvStore.type],
+    })
+    return false
+}
+
+export async function closeKvStore() {
+    kvStoresState.openedStore = null;
+    resetEntriesState();
+    bridgeServer.closeServer();
+}
+
+async function startKvStoreServer(kvStore: KvStore) {
+    try {
+        globalState.loadingOverlay.open = true
+        globalState.loadingOverlay.text = "Starting the Kv bridge server..."
+        const isOpened = await bridgeServer.openServer($state.snapshot(kvStore));
+        globalState.loadingOverlay.open = false
+        globalState.loadingOverlay.text = ""
+        if (isOpened) {
+            resetEntriesState();
+            await fetchEntries();
+        } else {
+            toast.error("Failed to open the server", {
+                description: "We could not open the server which communicates with the Deno KV database.",
+            });
+        }
+    } catch (error) {
+        toast.error("Failed to open the server", {
+            description: String(error),
+        });
+    }
 }
 
 const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
