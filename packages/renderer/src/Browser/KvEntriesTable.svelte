@@ -6,7 +6,6 @@
   import Separator from "$lib/components/shadcn/separator/separator.svelte";
   import * as Table from "$lib/components/shadcn/table/index.js";
   import {
-    type ColumnDef,
     type RowSelectionState,
     getCoreRowModel,
   } from "@tanstack/table-core";
@@ -14,19 +13,13 @@
   import Button from "$lib/components/shadcn/button/button.svelte";
   import RefreshIcon from "@lucide/svelte/icons/refresh-cw";
   import Loader from "@lucide/svelte/icons/loader";
-
-  type DataTableProps<KvEntry> = {
-    columns: ColumnDef<KvEntry>[];
-    data: KvEntry[];
-  };
-
-  let { data, columns }: DataTableProps<KvEntry> = $props();
+  import { columns } from "./columns";
 
   let rowSelection = $state<RowSelectionState>({});
 
   const table = createSvelteTable({
     get data() {
-      return data;
+      return kvEntriesState.entries;
     },
     columns,
     getCoreRowModel: getCoreRowModel(),
