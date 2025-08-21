@@ -1,4 +1,4 @@
-import { versions } from './versions.js';
+import * as versions from './versions.js';
 import { ipcRenderer } from 'electron';
 import * as kvStoresService from './kvStoresService.js';
 import * as kvClient from './kvServerClient.js';
