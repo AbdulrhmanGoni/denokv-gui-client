@@ -15,6 +15,7 @@
   import Loader from "@lucide/svelte/icons/loader";
   import { openKvEntryDialog } from "./kvEntryDialogState.svelte";
   import { columns } from "./columns";
+  import KvEntriesNavigation from "./KvEntriesNavigation.svelte";
 
   let rowSelection = $state<RowSelectionState>({});
 
@@ -117,5 +118,6 @@
   <div class="flex gap-2 p-2 items-center text-foreground text-sm bg-muted">
     {table.getFilteredSelectedRowModel().rows.length} of {" "}
     {table.getFilteredRowModel().rows.length} row(s) selected.
+    <KvEntriesNavigation />
   </div>
 </div>
