@@ -13,6 +13,7 @@
   import Button from "$lib/components/shadcn/button/button.svelte";
   import RefreshIcon from "@lucide/svelte/icons/refresh-cw";
   import Loader from "@lucide/svelte/icons/loader";
+  import { openKvEntryDialog } from "./kvEntryDialogState.svelte";
   import { columns } from "./columns";
 
   let rowSelection = $state<RowSelectionState>({});
@@ -81,7 +82,10 @@
           </tr>
         {:else if kvEntriesState.fetched}
           {#each table.getRowModel().rows as row (row.id)}
-            <Table.Row data-state={row.getIsSelected() && "selected"}>
+            <Table.Row
+              data-state={row.getIsSelected() && "selected"}
+              ondblclick={() => openKvEntryDialog(row.original)}
+            >
               {#each row.getVisibleCells() as cell (cell.id)}
                 <Table.Cell>
                   <FlexRender
