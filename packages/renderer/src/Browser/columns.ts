@@ -4,6 +4,7 @@ import { createRawSnippet } from "svelte";
 import { Checkbox } from "$lib/components/shadcn/checkbox";
 import KvKeyRenderer from "./KvKeyRenderer.svelte";
 import KvValueRenderer from "./KvValueRenderer.svelte";
+import KvEntriesTableActions from "./KvEntriesTableActions.svelte";
 
 export const columns: ColumnDef<KvEntry>[] = [
     {
@@ -62,5 +63,19 @@ export const columns: ColumnDef<KvEntry>[] = [
                 ""
             )
         ),
+    },
+    {
+        accessorKey: "action",
+        header: () => (
+            renderSnippet(
+                createRawSnippet(() => ({
+                    render: () => `<div class="text-right">Action</div>`
+                })),
+                ""
+            )
+        ),
+        cell: ({ row }) => {
+            return renderComponent(KvEntriesTableActions, { entry: row.original });
+        },
     },
 ];
