@@ -7,6 +7,7 @@
   import TagsIcon from "@lucide/svelte/icons/tags";
   import { Button } from "$lib/components/shadcn/button/index.js";
   import * as DropdownMenu from "$lib/components/shadcn/dropdown-menu/index.js";
+  import DeleteKvEntryButton from "./DeleteKvEntryButton.svelte";
   import { openKvEntryDialog } from "./kvEntryDialogState.svelte";
 
   const { entry }: { entry: KvEntry } = $props();
@@ -57,6 +58,10 @@
     </DropdownMenu.Item>
     <DropdownMenu.Item onclick={() => openKvEntryDialog(entry, true)}>
       <EditIcon /> Edit
+    </DropdownMenu.Item>
+    <DropdownMenu.Separator />
+    <DropdownMenu.Item>
+      <DeleteKvEntryButton {entry} onDeleteSuccess={() => setOpenMenu(false)} />
     </DropdownMenu.Item>
   </DropdownMenu.Content>
 </DropdownMenu.Root>
