@@ -7,6 +7,7 @@
   import KvKeyEditor from "./KvKeyEditor.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import PlusIcon from "@lucide/svelte/icons/plus";
+  import FileIcon from "@lucide/svelte/icons/file-plus";
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import XIcon from "@lucide/svelte/icons/x";
   import { closeAddKvEntryDialog, globalState } from "$lib/globalState.svelte";
@@ -43,6 +44,11 @@
 
 <AlertDialog.Root bind:open={getOpen, setOpen}>
   <AlertDialog.Content class="!max-w-3xl w-full p-3 gap-0">
+    <h1 class="flex items-center gap-2 text-2xl font-bold">
+      <FileIcon class="size-7" />
+      Add Deno KV Entry
+    </h1>
+    <Separator class="my-3" />
     <KvKeyEditor bind:jar={kvKeyCodeEditor} />
     <Separator class="my-3" />
     <KvValueEditor
