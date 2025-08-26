@@ -25,7 +25,7 @@ class WindowManager implements AppModule {
     const browserWindow = new BrowserWindow({
       show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
       height: 800,
-      width: 1200,
+      width: 1400,
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
