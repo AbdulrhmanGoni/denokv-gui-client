@@ -70,7 +70,7 @@
     </div>
   </div>
   <CodeEditor
-    className="h-[350px]"
+    className="h-[300px]"
     editorId="value-editor"
     bind:jar
     bind:editorValue
