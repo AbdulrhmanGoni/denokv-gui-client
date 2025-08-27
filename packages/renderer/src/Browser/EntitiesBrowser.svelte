@@ -9,6 +9,7 @@
   import ArrowLeftFromLineIcon from "@lucide/svelte/icons/arrow-left-from-line";
   import AddKvEntryDialog from "./AddKvEntryDialog.svelte";
   import KvStorePicker from "../Stores/KvStorePicker.svelte";
+  import BrowseParams from "./BrowseParams.svelte";
 
   onDestroy(closeKvStore);
 </script>
@@ -21,6 +22,7 @@
     <KvStorePicker />
   </div>
   <div class="flex gap-2 items-center justify-end">
+    <BrowseParams />
     <Button onclick={openAddKvEntryDialog} size="sm">
       Add Kv Entry
       <PlusIcon />
