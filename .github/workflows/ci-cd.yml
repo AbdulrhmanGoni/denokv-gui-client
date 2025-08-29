@@ -1,0 +1,44 @@
+name: CI/CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "**.d.ts"
+      - "LICENSE"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    paths-ignore:
+      - "**.md"
+      - "**.d.ts"
+      - "LICENSE"
+
+concurrency:
+  group: ${{github.workflow}}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  compile-and-test:
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/compile-and-test.yml
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    needs:
+      - compile-and-test
+    uses: ./.github/workflows/release.yml

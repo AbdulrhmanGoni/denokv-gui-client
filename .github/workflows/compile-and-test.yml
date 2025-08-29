@@ -1,0 +1,54 @@
+name: Compile and test the app
+
+on:
+  workflow_call:
+
+defaults:
+  run:
+    shell: "bash"
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+env:
+  NODE_NO_WARNINGS: 1
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+  npm_config_audit: false
+  npm_config_fund: false
+
+jobs:
+  compile:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ">=23.0.0"
+
+      - run: npm install
+      - run: npm run compile -- -p never
+
+      - run: npm run test --if-present
+        if: matrix.os != 'ubuntu-latest'
+
+      - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test --if-present
+        if: matrix.os == 'ubuntu-latest'
+
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: "dist/denokv-gui-client*, dist/latest*.yml"
+
+      - name: Upload compiled app
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}
+          path: dist
