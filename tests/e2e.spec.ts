@@ -10,7 +10,6 @@ process.env.PLAYWRIGHT_TEST = 'true';
 // Declare the types of your fixtures.
 type TestFixtures = {
   electronApp: ElectronApplication;
-  electronVersions: NodeJS.ProcessVersions;
 };
 
 const test = base.extend<TestFixtures>({
@@ -60,10 +59,6 @@ const test = base.extend<TestFixtures>({
     await page.waitForLoadState('load');
     await use(page);
   },
-
-  electronVersions: async ({ electronApp }, use) => {
-    await use(await electronApp.evaluate(() => process.versions));
-  },
 });
 
 test('Main window state', async ({ electronApp, page }) => {
@@ -102,9 +97,15 @@ test.describe('Preload context should be exposed', async () => {
       expect(type).toEqual('object');
     });
 
-    test('with same value', async ({ page, electronVersions }) => {
+    test('with same value', async ({ page }) => {
       const value = await page.evaluate(() => globalThis[btoa('versions')]);
-      expect(value).toEqual(electronVersions);
+      const versionMatching = /\d+.\d+.\d+/
+      expect(value).toEqual({
+        appGithubRepo: expect.stringMatching(/https:\/\/github.com\/\w/),
+        appVersion: expect.stringMatching(versionMatching),
+        electronVersion: expect.stringMatching(versionMatching),
+        nodeVersion: expect.stringMatching(versionMatching),
+      });
     });
   });
 });
