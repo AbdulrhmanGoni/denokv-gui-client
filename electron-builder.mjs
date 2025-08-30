@@ -20,6 +20,26 @@ export default /** @type import('electron-builder').Configuration */
       pkg.main,
       '!node_modules/@app/**',
       ...await getListOfFilesFromEachWorkspace(),
+      {
+        from: "node_modules/@deno",
+        to: "node_modules/@deno",
+      },
+      {
+        from: "node_modules/hono",
+        to: "node_modules/hono",
+      },
+      {
+        from: "node_modules/@hono/node-server",
+        to: "node_modules/@hono/node-server",
+      },
+      {
+        from: "node_modules/serialize-javascript",
+        to: "node_modules/serialize-javascript",
+      },
+      {
+        from: "node_modules/randombytes",
+        to: "node_modules/randombytes",
+      },
     ],
   });
 
