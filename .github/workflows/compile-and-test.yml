@@ -17,6 +17,7 @@ env:
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
   npm_config_audit: false
   npm_config_fund: false
+  USE_HARD_LINKS: false
 
 jobs:
   compile:
