@@ -75,7 +75,7 @@ async function getDefaultLocalKvStores() {
         exec('deno info --json', async (err, infoResult) => {
             if (err) resolve([])
             const localDenoKvsLocaltion = JSON.parse(infoResult).originStorage
-            if (localDenoKvsLocaltion) {
+            if (localDenoKvsLocaltion && existsSync(localDenoKvsLocaltion)) {
                 const dataDirs: KvStore[] = [];
                 const dir = await readdir(localDenoKvsLocaltion, { withFileTypes: true })
                 for (const entry of dir) {
