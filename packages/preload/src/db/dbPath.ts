@@ -25,7 +25,7 @@ export function getDatabasePath() {
     const dbPath = path.join(dbDir, 'kv-stores-database.sqlite');
 
     if (!fs.existsSync(dbDir)) {
-        fs.mkdirSync(dbDir)
+        fs.mkdirSync(dbDir, { recursive: true })
     }
 
     return dbPath
