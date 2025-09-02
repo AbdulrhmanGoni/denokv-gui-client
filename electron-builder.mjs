@@ -9,6 +9,10 @@ export default /** @type import('electron-builder').Configuration */
       output: 'dist',
       buildResources: 'buildResources',
     },
+    asarUnpack: [
+      "node_modules/@dbmate/**",
+      "node_modules/@app/preload/dist/migrations/**",
+    ],
     generateUpdatesFilesForAllChannels: true,
     linux: {
       target: ['deb', 'AppImage'],
@@ -39,6 +43,14 @@ export default /** @type import('electron-builder').Configuration */
       {
         from: "node_modules/randombytes",
         to: "node_modules/randombytes",
+      },
+      {
+        from: "node_modules/dbmate",
+        to: "node_modules/dbmate",
+      },
+      {
+        from: "node_modules/@dbmate",
+        to: "node_modules/@dbmate",
       },
     ],
   });

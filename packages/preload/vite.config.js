@@ -1,5 +1,7 @@
 import { resolveModuleExportNames } from 'mlly';
 import { getChromeMajorVersion } from '@app/electron-versions';
+import { cpSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 export default /**
  * @type {import('vite').UserConfig}
@@ -27,7 +29,7 @@ export default /**
       emptyOutDir: true,
       reportCompressedSize: false,
     },
-    plugins: [mockExposed(), handleHotReload()],
+    plugins: [mockExposed(), handleHotReload(), copyMigrations()],
   });
 
 
@@ -118,4 +120,14 @@ function handleHotReload() {
       });
     },
   };
+}
+
+function copyMigrations() {
+  return {
+    name: 'copy-migrations',
+    closeBundle() {
+      const distPath = resolve(__dirname, 'dist')
+      cpSync(resolve(__dirname, 'src/db/migrations'), `${distPath}/migrations`, { recursive: true })
+    }
+  }
 }
