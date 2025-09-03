@@ -9,7 +9,7 @@
 </script>
 
 <main
-  class="max-w-7xl w-full mx-auto px-3 flex flex-col h-screen justify-center"
+  class="max-w-7xl w-full mx-auto px-3 flex flex-col min-h-screen justify-center"
 >
   <Header />
   <div class="h-[600px]">
