@@ -36,7 +36,7 @@
           />
         </button>
         <Separator orientation="vertical" />
-        <p class="font-bold text-lg text-foreground">{versions.appVersion}v</p>
+        <p class="font-bold text-lg text-foreground">v{versions.appVersion}</p>
       </div>
     </Tooltip.Content>
   </Tooltip.Root>
