@@ -8,15 +8,10 @@ function selectDirectory() {
   return ipcRenderer.invoke('select-directory') as Promise<string>
 }
 
-function openExternalLink(link: string) {
-  return ipcRenderer.invoke('open-external-link', link)
-}
-
 export {
   versions,
   selectDirectory,
   kvStoresService,
   kvClient,
   bridgeServer,
-  openExternalLink,
 };

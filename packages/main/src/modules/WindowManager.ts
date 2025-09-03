@@ -1,6 +1,6 @@
 import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
-import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { BrowserWindow, dialog, ipcMain } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
 
 class WindowManager implements AppModule {
@@ -49,10 +49,6 @@ class WindowManager implements AppModule {
 
       if (result.canceled) return "";
       return result.filePaths[0];
-    });
-
-    ipcMain.handle('open-external-link', async (_event, link) => {
-      await shell.openExternal(link)
     });
 
     return browserWindow;

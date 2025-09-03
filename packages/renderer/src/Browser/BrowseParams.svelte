@@ -15,7 +15,6 @@
   import FunnelIcon from "@lucide/svelte/icons/funnel";
   import XIcon from "@lucide/svelte/icons/x";
   import CodeRenderer from "./CodeRenderer.svelte";
-  import { openExternalLink } from "@app/preload";
 
   let prefixKeyEditorValue = $state("[]");
   let startKeyEditorValue = $state("[]");
@@ -105,15 +104,14 @@
     </h1>
     <p class="flex gap-1.5 items-center text-foreground font-medium">
       See the
-      <button
+      <a
         class="hover:underline text-secondary"
-        onclick={() =>
-          openExternalLink(
-            "https://docs.deno.com/deploy/kv/manual/operations/#list"
-          )}
+        href="https://docs.deno.com/deploy/kv/manual/operations/#list"
+        target="_blank"
+        rel="noopener noreferrer"
       >
         official docs
-      </button>
+      </a>
       for more information about how filtering works.
     </p>
     <div class="grid w-full items-start gap-2 mt-2">

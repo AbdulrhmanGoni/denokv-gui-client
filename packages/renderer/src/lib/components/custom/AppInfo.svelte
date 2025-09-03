@@ -1,6 +1,5 @@
 <script lang="ts">
   import * as Tooltip from "$lib/components/shadcn/tooltip/index.js";
-  import { openExternalLink } from "@app/preload";
   import Separator from "../shadcn/separator/separator.svelte";
   import { versions } from "@app/preload";
   import AppLogo from "./AppLogo.svelte";
@@ -18,11 +17,11 @@
       class="bg-transparent"
     >
       <div class="flex gap-2 items-center h-8">
-        <button
+        <a
           class="cursor-pointer"
-          onclick={() => {
-            openExternalLink(versions.appGithubRepo);
-          }}
+          href={versions.appGithubRepo}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <img
             class="size-6 dark:size-0"
@@ -34,7 +33,7 @@
             src="GitHub_Invertocat_Light.svg"
             alt="Logo"
           />
-        </button>
+        </a>
         <Separator orientation="vertical" />
         <p class="font-bold text-lg text-foreground">v{versions.appVersion}</p>
       </div>

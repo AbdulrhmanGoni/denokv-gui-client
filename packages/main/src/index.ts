@@ -25,19 +25,8 @@ export async function initApp(initConfig: AppInitConfig) {
     ))
     .init(allowExternalUrls(
       new Set(
-        initConfig.renderer instanceof URL
-          ? [
-            'https://vite.dev',
-            'https://developer.mozilla.org',
-            'https://solidjs.com',
-            'https://qwik.dev',
-            'https://lit.dev',
-            'https://react.dev',
-            'https://preactjs.com',
-            'https://www.typescriptlang.org',
-            'https://vuejs.org',
-          ]
-          : [],
+        initConfig.renderer instanceof URL ?
+          ['https://github.com', 'https://docs.deno.com'] : [],
       )),
     );
 
