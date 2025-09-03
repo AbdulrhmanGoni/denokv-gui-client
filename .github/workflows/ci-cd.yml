@@ -9,6 +9,7 @@ on:
       - "**.md"
       - "**.d.ts"
       - "LICENSE"
+      - "landing"
   pull_request:
     types:
       - opened
@@ -17,6 +18,7 @@ on:
       - "**.md"
       - "**.d.ts"
       - "LICENSE"
+      - "landing"
 
 concurrency:
   group: ${{github.workflow}}-${{ github.ref }}
