@@ -1,0 +1,24 @@
+---
+import logo from "../assets/logo.png";
+import GitHubIconDark from "../assets/GitHubIconDark.svg";
+---
+
+<header class="shadow sticky top-0 z-50 bg-surface">
+  <div class="container flex items-center justify-between gap-4 w-full py-3">
+    <div class="flex gap-2 items-center">
+      <img src={logo.src} alt="Logo" class="size-11" />
+      <p class="font-bold text-xl">Deno KV GUI Client</p>
+    </div>
+    <div class="flex gap-3">
+      <a
+        id="releases"
+        class="flex gap-2 items-end cursor-pointer font-semibold hover:underline"
+        href="https://github.com/AbdulrhmanGoni/denokv-gui-client"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <GitHubIconDark class="size-6" />
+      </a>
+    </div>
+  </div>
+</header>

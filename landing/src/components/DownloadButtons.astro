@@ -1,0 +1,95 @@
+---
+import LinuxLogo from "../assets/linuxLogo.svg";
+import WindowsLogo from "../assets/windowsLogo.svg";
+import AppleLogo from "../assets/appleLogo.svg";
+
+const repositoryUrl = import.meta.env.PUBLIC_REPOSITORY_URL;
+const appVersion = import.meta.env.PUBLIC_APP_VERSION;
+const latestReleaseLink = `${repositoryUrl}/releases/tag/v${appVersion}`;
+
+function downloadApp(target: { os: string; arch: string; type: string }) {
+  const file = `denokv-gui-client-${appVersion}-${target.os}-${target.arch}.${target.type}`;
+  return `${repositoryUrl}/releases/download/v${appVersion}/${file}`;
+}
+
+const linuxDownloadLink = downloadApp({
+  os: "linux",
+  arch: "x86_64",
+  type: "AppImage",
+});
+
+const windowsDownloadLink = downloadApp({
+  os: "win",
+  arch: "x64",
+  type: "exe",
+});
+
+const macDownloadLink = downloadApp({
+  os: "mac",
+  arch: "arm64",
+  type: "dmg",
+});
+---
+
+<div>
+  <p class="font-semibold text-xl mb-3">
+    Download the latest version: 🔖
+    <a
+      href={latestReleaseLink}
+      class="hover:underline"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      v{import.meta.env.PUBLIC_APP_VERSION}
+    </a>
+  </p>
+  <div class="flex gap-3">
+    <a
+      download-link
+      href={linuxDownloadLink}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <LinuxLogo />
+      Linux
+    </a>
+    <a
+      download-link
+      href={windowsDownloadLink}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <WindowsLogo />
+      Windows
+    </a>
+    <a
+      download-link
+      href={macDownloadLink}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <AppleLogo />
+      MacOS
+    </a>
+  </div>
+</div>
+
+<style>
+  [download-link] {
+    display: flex;
+    align-items: flex-end;
+    background-color: var(--color-primary);
+    gap: 6px;
+    color: white;
+    font-weight: 600;
+    padding: 10px 14px;
+    border: 0px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+
+    svg {
+      fill: white;
+    }
+  }
+</style>

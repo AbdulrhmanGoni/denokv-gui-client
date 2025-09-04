@@ -5,7 +5,39 @@
     --color-surface: oklch(100% 0.0 255.000);
     --color-background: oklch(0.82 0.1 245.62);
     --color-soft: oklch(0.94 0.03 243.75 / 0.82);
-    --color-foreground: oklch(0.29 0.01 0);
-    --color-muted-foreground: oklch(0.37 0.01 0);
+    --color-foreground: oklch(0 0 0);
+    --color-muted-foreground: oklch(0 0 0 / 0.8);
     --box-shadow: 0px 0px 10px rgb(0 0 0 / 20%);
+}
+
+body {
+    color: var(--color-foreground);
+}
+
+.background-gradient-ltr {
+    background: -webkit-linear-gradient(to left, var(--color-soft), var(--color-background));
+    background: linear-gradient(to left, var(--color-soft), var(--color-background));
+}
+
+.background-gradient-rtl {
+    background: -webkit-linear-gradient(to right, var(--color-soft), var(--color-background));
+    background: linear-gradient(to right, var(--color-soft), var(--color-background));
+}
+
+.container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0px auto;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.shadow {
+    box-shadow: 0px 0px 10px rgb(0 0 0 / 20%);
 }

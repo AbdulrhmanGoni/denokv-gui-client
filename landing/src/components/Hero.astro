@@ -1,0 +1,50 @@
+---
+import Wave from "../assets/wave.svg";
+import appLogo from "../assets/logo.png";
+import DownloadButton from "./DownloadButtons.astro";
+---
+
+<section class="background-gradient-rtl">
+  <div class="container flex items-center justify-evenly flex-1 gap-5">
+    <div class="flex gap-5 flex-col max-w-[600px]">
+      <h1 class="font-bold text-4xl">
+        Browse your Deno KV Databases with your eyes 👀!
+      </h1>
+      <p class="text-xl text-muted-foreground font-medium">
+        An open source <strong>GUI client</strong> for browsing and performing
+        <strong>CRUD</strong> operations on <strong>Deno KV Databases</strong> in
+        a modern and nice looking user interface
+      </p>
+      <DownloadButton />
+    </div>
+    <img
+      class="w-full max-w-[370px]"
+      src={appLogo.src}
+      id="logo"
+      alt="App Logo"
+    />
+  </div>
+  <Wave class="w-full fill-surface translate-y-0.5" />
+</section>
+
+<style>
+  #logo {
+    animation-duration: 3s;
+    animation-name: bound-logo;
+    animation-direction: alternate-reverse;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes bound-logo {
+    from {
+      transform: translateY(-25px);
+      rotate: 0deg;
+    }
+
+    to {
+      transform: translateY(25px);
+      rotate: 7deg;
+    }
+  }
+</style>
