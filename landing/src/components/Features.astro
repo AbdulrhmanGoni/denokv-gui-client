@@ -1,0 +1,103 @@
+---
+import kvEntriesScreenshotLight from "../assets/kv-entries-table-screenshot-light.png";
+import kvStoresScreenshotLight from "../assets/kv-stores-screenshot-light.png";
+import entriesCrudScreenshotLight from "../assets/entries-crud-screenshot-light.png";
+import Wave from "../assets/wave.svg";
+---
+
+<section id="features-1" class="bg-surface">
+  <div class="container">
+    <div class="features-text">
+      <h1>Create Deno KV DB Connections</h1>
+      <p>
+        Create connections to your <strong>Deno Key-Value</strong> databases which
+        can be <strong>local</strong> or <strong>remote</strong> connection, and
+        switch between them easily
+      </p>
+    </div>
+    <img src={kvStoresScreenshotLight.src} alt="KV Stores list screenshot" />
+  </div>
+  <div class="background-gradient-ltr flex items-start">
+    <Wave style="transform: translateY(-1px) rotate(180deg);" />
+  </div>
+</section>
+
+<section id="features-2" class="background-gradient-ltr">
+  <div class="container">
+    <img
+      src={kvEntriesScreenshotLight.src}
+      alt="KV Entries screenshot"
+      loading="lazy"
+    />
+    <div class="features-text">
+      <h1>Open and browse a Deno KV DB</h1>
+      <p>
+        Pick one of your connections to your Deno KV databases and open it, so
+        you can <strong>browse</strong> the entries inside the database and perform
+        <strong>filters</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="features-3" class="bg-surface">
+  <div
+    class="background-gradient-ltr"
+    style="display: flex; align-items: flex-end;"
+  >
+    <Wave style="transform: translateY(1px)" />
+  </div>
+  <div class="container">
+    <div class="features-text">
+      <h1>Add, Edit or Delete Kv Entries</h1>
+      <p>
+        Perform the <strong>CRUD</strong> operations on any of your Deno KV databases
+        you open
+      </p>
+    </div>
+    <img
+      src={entriesCrudScreenshotLight.src}
+      alt="A CRUD operation screenshot"
+      loading="lazy"
+    />
+  </div>
+  <div class="background-gradient-rtl">
+    <Wave style="transform: translateY(-1px) rotate(180deg);" />
+  </div>
+</section>
+
+<style>
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex: 1;
+    gap: 20px;
+  }
+
+  .features-text {
+    max-width: 550px;
+    h1 {
+      font-size: 35px;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+
+    p {
+      font-size: 19px;
+      color: var(--color-muted-foreground);
+    }
+  }
+
+  img {
+    max-width: 700px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+  }
+
+  svg {
+    width: 100%;
+    fill: var(--color-surface);
+  }
+</style>
