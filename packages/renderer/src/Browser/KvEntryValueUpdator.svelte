@@ -6,6 +6,7 @@
   import KvValueEditor from "./KvValueEditor.svelte";
   import SaveIcon from "@lucide/svelte/icons/save";
   import XIcon from "@lucide/svelte/icons/x";
+  import EditFileIcon from "@lucide/svelte/icons/file-pen";
 
   const { entry }: { entry: KvEntry } = $props();
 
@@ -30,7 +31,7 @@
 </script>
 
 <div class="space-y-3 overflow-auto">
-  <KvValueEditor bind:jar defaultValue={entry.value} />
+  <KvValueEditor bind:jar defaultValue={entry.value} titleIcon={editFileIcon} />
   <div class="flex flex-row-reverse gap-2">
     <Button variant="secondary" size="sm" onclick={saveChanges}>
       <SaveIcon />
@@ -48,3 +49,7 @@
     </Button>
   </div>
 </div>
+
+{#snippet editFileIcon()}
+  <EditFileIcon />
+{/snippet}

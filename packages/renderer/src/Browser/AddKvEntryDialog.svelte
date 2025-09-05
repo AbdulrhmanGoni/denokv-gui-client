@@ -10,6 +10,7 @@
   import FileIcon from "@lucide/svelte/icons/file-plus";
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import XIcon from "@lucide/svelte/icons/x";
+  import ValueFileIcon from "@lucide/svelte/icons/file-json";
   import { closeAddKvEntryDialog, globalState } from "$lib/globalState.svelte";
 
   let addingEntry = $state(false);
@@ -54,6 +55,7 @@
     <KvValueEditor
       bind:jar={kvValueCodeEditor}
       defaultValue={{ type: "Undefined", data: "undefined" }}
+      titleIcon={valueFileIcon}
     />
     <Separator class="my-3" />
     <div class="flex flex-row-reverse gap-2">
@@ -82,3 +84,7 @@
     </div>
   </AlertDialog.Content>
 </AlertDialog.Root>
+
+{#snippet valueFileIcon()}
+  <ValueFileIcon />
+{/snippet}

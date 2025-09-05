@@ -7,14 +7,19 @@
   import type { KvDataType } from "./dataTypes";
   import CodeEditor from "./CodeEditor.svelte";
   import codeFormatter from "./codeFormatter";
-  import { onMount } from "svelte";
+  import { onMount, type Snippet } from "svelte";
 
   type ValueEditorProps = {
     defaultValue?: KvEntry["value"];
     jar?: KvValueCodeEditor;
+    titleIcon: Snippet;
   };
 
-  let { defaultValue, jar = $bindable() }: ValueEditorProps = $props();
+  let {
+    defaultValue,
+    jar = $bindable(),
+    titleIcon,
+  }: ValueEditorProps = $props();
 
   let editorValue = $state(kvValueToEditorValue(defaultValue));
   let dataType: KvDataType | undefined = $state();
@@ -51,7 +56,7 @@
 
 <div class="space-y-3">
   <div class="flex gap-2 items-center">
-    <EditFileIcon />
+    {@render titleIcon()}
     <p class="font-bold text-lg">Value</p>
     <div class="flex gap-2 items-center ml-auto">
       <KvValueDataTypeSelect
