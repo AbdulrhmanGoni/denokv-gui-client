@@ -1,0 +1,56 @@
+name: Deploy Landing Page
+
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+  push:
+    branches:
+      - main
+    paths:
+      - "landing/src/**"
+      - "landing/public/**"
+
+concurrency:
+  group: "landing-page-deployment"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract App's version
+        run: echo "APP_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Install dependencies and build the landing page
+        run: |
+          npm install -g pnpm@latest-10
+          pnpm install
+          pnpm build
+        working-directory: landing
+        env:
+          PUBLIC_APP_VERSION: ${{ env.APP_VERSION }}
+          PUBLIC_REPOSITORY_URL: https://github.com/${{ github.repository }}
+
+      - name: Upload landing page files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: landing/dist/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy landing page to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
