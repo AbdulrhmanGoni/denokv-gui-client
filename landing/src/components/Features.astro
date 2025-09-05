@@ -70,21 +70,24 @@ import Wave from "../assets/wave.svg";
   .container {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
     flex: 1;
+    flex-direction: column;
+    text-align: center;
     gap: 20px;
   }
 
   .features-text {
     max-width: 550px;
+    order: 1;
     h1 {
-      font-size: 35px;
+      font-size: 30px;
       margin-bottom: 8px;
       font-weight: 800;
     }
 
     p {
-      font-size: 19px;
+      font-size: 17px;
       color: var(--color-muted-foreground);
     }
   }
@@ -94,10 +97,36 @@ import Wave from "../assets/wave.svg";
     width: 100%;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
+    order: 2;
   }
 
   svg {
     width: 100%;
     fill: var(--color-surface);
+  }
+
+  @media (width >= 80rem) {
+    .container {
+      flex-direction: row;
+      justify-content: space-evenly;
+      text-align: start;
+
+      img,
+      .features-text {
+        order: initial;
+      }
+    }
+  }
+
+  @media (width >= 40rem) {
+    .features-text {
+      h1 {
+        font-size: 36px;
+      }
+
+      p {
+        font-size: 19px;
+      }
+    }
   }
 </style>
