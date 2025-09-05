@@ -15,10 +15,12 @@
   import FunnelIcon from "@lucide/svelte/icons/funnel";
   import XIcon from "@lucide/svelte/icons/x";
   import CodeRenderer from "./CodeRenderer.svelte";
+  import Input from "$lib/components/shadcn/input/input.svelte";
 
   let prefixKeyEditorValue = $state("[]");
   let startKeyEditorValue = $state("[]");
   let endKeyEditorValue = $state("[]");
+  let limitValue = $state(kvEntriesState.params.limit);
 
   let openBrowseParamsForm = $state(false);
 
@@ -28,6 +30,7 @@
       prefix: prefixKeyEditorValue,
       start: startKeyEditorValue,
       end: endKeyEditorValue,
+      limit: limitValue,
     };
     fetchEntries();
     closeDialog();
@@ -68,6 +71,13 @@
     <CodeRenderer code={kvEntriesState.params.end} />
   </div>
 
+  <div
+    class="flex gap-1 items-center font-bold bg-card px-2 rounded-sm text-sm"
+  >
+    <p>Limit:</p>
+    <CodeRenderer code={String(kvEntriesState.params.limit)} />
+  </div>
+
   <Button
     size="sm"
     class="h-9"
@@ -102,7 +112,7 @@
     <h1 class="flex gap-2 items-center text-2xl font-bold mb-">
       <FunnelIcon /> Filter
     </h1>
-    <p class="flex gap-1.5 items-center text-foreground font-medium">
+    <p class="gap-1.5 text-foreground">
       See the
       <a
         class="hover:underline text-secondary"
@@ -110,13 +120,24 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        official docs
+        official manual
       </a>
-      for more information about how filtering works.
+      of <strong>Deno Kv database</strong> for more information about how filtering
+      works.
     </p>
     <div class="grid w-full items-start gap-2 mt-2">
+      <div class="flex gap-3 justify-between items-end">
+        <p class="font-bold text-lg">Limit</p>
+        <Input
+          type="number"
+          bind:value={limitValue}
+          class="w-18"
+          placeholder="Limit"
+        />
+      </div>
+      <Separator />
       <div>
-        <p class="flex gap-2 items-center font-bold text-lg">Prefix</p>
+        <p class="font-bold text-lg">Prefix</p>
         <CodeEditor
           editorId="prefix-key-editor"
           bind:editorValue={prefixKeyEditorValue}
@@ -125,7 +146,7 @@
       </div>
       <Separator />
       <div>
-        <p class="flex gap-2 items-center font-bold text-lg">Start</p>
+        <p class="font-bold text-lg">Start</p>
         <CodeEditor
           editorId="start-key-editor"
           bind:editorValue={startKeyEditorValue}
@@ -134,7 +155,7 @@
       </div>
       <Separator />
       <div>
-        <p class="flex gap-2 items-center font-bold text-lg">End</p>
+        <p class="font-bold text-lg">End</p>
         <CodeEditor
           editorId="end-key-editor"
           bind:editorValue={endKeyEditorValue}
@@ -149,7 +170,7 @@
         </Button>
         <Button variant="outline" size="sm" onclick={closeDialog}>
           <XIcon />
-          Cancel
+          Close
         </Button>
       </div>
     </div>
