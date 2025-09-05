@@ -10,4 +10,5 @@ export default defineConfig({
     devToolbar: {
         enabled: false
     },
+    base: `/denokv-gui-client`
 });
