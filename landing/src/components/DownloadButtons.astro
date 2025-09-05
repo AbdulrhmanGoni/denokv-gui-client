@@ -32,7 +32,7 @@ const macDownloadLink = downloadApp({
 ---
 
 <div>
-  <p class="font-semibold text-xl mb-3">
+  <p class="font-semibold text-lg sm:text-xl mb-3">
     Download the latest version: 🔖
     <a
       href={latestReleaseLink}
@@ -43,7 +43,7 @@ const macDownloadLink = downloadApp({
       v{import.meta.env.PUBLIC_APP_VERSION}
     </a>
   </p>
-  <div class="flex gap-3">
+  <div class="flex justify-center flex-wrap lg:justify-start gap-3">
     <a
       download-link
       href={linuxDownloadLink}
