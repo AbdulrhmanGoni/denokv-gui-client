@@ -31,6 +31,7 @@ To download the **Deno KV GUI Client** app, go to [releases](https://github.com/
 > # make sure to set the proper version
 > ```
 
-> [!NOTE] > **Note for Windows and Mac Users:**  
+> [!NOTE]
+> **Note for Windows and Mac Users:**  
 > This application is not code signed yet. When installing, you may encounter "Unknown Publisher" or similar security warnings.
 > So please ensure you trust the source code before proceeding with the installation.
