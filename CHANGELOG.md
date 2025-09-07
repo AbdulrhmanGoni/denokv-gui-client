@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.1.0...v1.2.0) (2025-09-07)
+
+
+### Features
+
+* enable "expires" option when adding kv entries ([4a93329](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/4a93329a4f35e5a04602e697c16f4c7c499bf93e))
+
+
+### Bug Fixes
+
+* **ui:** fix the colors of bigints, dates and regexps when displaying ([1112f70](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/1112f706211833fd0afe82aab39034c3de426d40))
+
 ## [1.1.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.0.0...v1.1.0) (2025-09-05)
 
 
