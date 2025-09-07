@@ -12,10 +12,12 @@
   import XIcon from "@lucide/svelte/icons/x";
   import ValueFileIcon from "@lucide/svelte/icons/file-json";
   import { closeAddKvEntryDialog, globalState } from "$lib/globalState.svelte";
+  import KvEntryExpirationDate from "./KvEntryExpirationDate.svelte";
 
   let addingEntry = $state(false);
   let kvKeyCodeEditor: KvKeyCodeEditor | undefined = $state();
   let kvValueCodeEditor: KvValueCodeEditor | undefined = $state();
+  let kvEntryExpirationDateValue: number | undefined = $state();
 
   function getOpen() {
     return globalState.openAddKvEntryForm;
@@ -30,7 +32,13 @@
     const key = kvKeyCodeEditor!.toString();
     const value = kvValueCodeEditor!.toKvValue();
 
-    const { error } = await kvClient.set(key, value);
+    const { error } = await kvClient.set(
+      key,
+      value,
+      kvEntryExpirationDateValue
+        ? { expires: kvEntryExpirationDateValue }
+        : undefined
+    );
 
     if (error) {
       toast.error("Failed to add the entry", { description: error });
@@ -57,6 +65,8 @@
       defaultValue={{ type: "Undefined", data: "undefined" }}
       titleIcon={valueFileIcon}
     />
+    <Separator class="my-3" />
+    <KvEntryExpirationDate bind:value={kvEntryExpirationDateValue} />
     <Separator class="my-3" />
     <div class="flex flex-row-reverse gap-2">
       <Button
