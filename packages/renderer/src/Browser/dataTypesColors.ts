@@ -7,6 +7,7 @@ const dataTypesColors: Record<string, string> = {
     null: "text-[#006ac7]",
     undefined: "text-gray-400",
     regexp: "text-[coral]",
+    date: "dark:text-[#a9cbff] text-[#386cb7]",
 };
 
 export default dataTypesColors

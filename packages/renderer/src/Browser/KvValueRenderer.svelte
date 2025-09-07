@@ -24,13 +24,17 @@
   {:else if entry.value.type === "Number"}
     {entry.value.data}
   {:else if entry.value.type === "BigInt"}
-    {entry.value.data}<span class={dataTypesColors.bigint}>n</span>
+    <span class={dataTypesColors.number}>{entry.value.data}</span>n
   {:else if entry.value.type === "Undefined"}
     undefined
   {:else if entry.value.type === "Null"}
     null
   {:else if entry.value.type === "Undefined"}
     undefined
+  {:else if entry.value.type === "Date"}
+    {entry.value.data}
+  {:else if entry.value.type === "RegExp"}
+    {entry.value.data}
   {:else}
     <CodeRenderer code={entry.value.data.toString()} {format} />
   {/if}
