@@ -4,8 +4,13 @@
   import ArrowLeft from "@lucide/svelte/icons/arrow-left";
   import { fetchEntries, kvEntriesState } from "./kvEntriesState.svelte";
 
+  let nomoreEntries = $derived(
+    kvEntriesState.entries.length < kvEntriesState.params.limit
+  );
+
   let thereIsNextCursor = $derived(
-    !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex]
+    !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex] &&
+      !nomoreEntries
   );
 
   let thereIsPreviousCursor = $derived(

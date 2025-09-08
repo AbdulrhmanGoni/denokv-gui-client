@@ -10,7 +10,7 @@ type BrowsingParams = {
     prefix: string;
     start: string;
     end: string;
-    limit: BrowseRouteOptions["limit"];
+    limit: NonNullable<BrowseRouteOptions["limit"]>;
     cursors: NonNullable<BrowseRouteOptions["cursor"]>[];
     nextCursorIndex: number;
 }
