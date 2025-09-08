@@ -2,9 +2,13 @@ name: Deploy Landing Page
 
 on:
   workflow_dispatch:
-  release:
+  workflow_run:
+    workflows:
+      - "Release"
     types:
-      - published
+      - completed
+    branches:
+      - main
   push:
     branches:
       - main
@@ -18,6 +22,7 @@ concurrency:
 
 jobs:
   build:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
