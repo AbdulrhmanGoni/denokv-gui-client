@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.2.0...v1.2.1) (2025-09-08)
+
+
+### Bug Fixes
+
+* fix "app hangs in loading state when entering an invalid key" problem ([ccf374b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/ccf374ba6f5e524c0b6e027225b30e2da5282572))
+
 ## [1.2.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.1.0...v1.2.0) (2025-09-07)
 
 
