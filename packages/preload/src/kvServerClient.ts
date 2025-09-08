@@ -51,7 +51,15 @@ export function get(key: SerializedKvKey) {
 }
 
 function kvKeyStringToSerializedForm(stringKvKey: string): { key: SerializedKvKey | null, error: string | null } {
-    const key = eval(`(${stringKvKey})`)
+    let key = null
+    try {
+        key = eval(`(${stringKvKey})`)
+    } catch (error) {
+        return {
+            key: null,
+            error: String(error)
+        };
+    }
 
     if (!(key instanceof Array)) {
         return {
