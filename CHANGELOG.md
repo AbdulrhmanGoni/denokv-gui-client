@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.2.1...v1.2.2) (2025-09-09)
+
+
+### Enhancements
+
+* disable "next" button when it's obvious there are no more entries ([9b0a1ab](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/9b0a1abba6ea4d81d158cb1cd2f3f1d2b92079b3))
+
 ## [1.2.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.2.0...v1.2.1) (2025-09-08)
 
 
