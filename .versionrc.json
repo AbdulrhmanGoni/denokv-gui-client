@@ -1,7 +1,23 @@
 {
-    "commit-and-tag-version": {
-        "writerOpts": {
-            "commitsSort": false
+    "writerOpts": {
+        "commitsSort": false
+    },
+    "types": [
+        {
+            "type": "feat",
+            "section": "Features"
+        },
+        {
+            "type": "fix",
+            "section": "Bug Fixes"
+        },
+        {
+            "type": "enhance",
+            "section": "Enhancements"
+        },
+        {
+            "type": "ui",
+            "section": "User Interface Changes"
         }
-    }
+    ]
 }
