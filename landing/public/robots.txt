@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abdulrhmangoni.github.io/denokv-gui-client/sitemap.xml
