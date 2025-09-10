@@ -1,19 +1,30 @@
+---
+import logo from "../assets/logo.png";
+
+const description = "Modern desktop app to browse and manage Deno KV databases";
+const title = "Deno KV GUI Client";
+const url = "https://abdulrhmangoni.github.io/denokv-gui-client/";
+---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta property="og:title" content={title} />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={logo.src} />
+    <meta property="og:url" content={url} />
+    <link rel="canonical" href={url} />
     <link
       rel="icon"
       type="image/svg+xml"
       href="/denokv-gui-client/favicon.png"
     />
     <meta name="generator" content={Astro.generator} />
-    <title>Deno KV GUI Client | Browse and Manage Deno KV Databases</title>
-    <meta
-      name="description"
-      content="A modern desktop app for browsing and managing Deno KV databases."
-    />
+    <title>{title} | Browse and Manage Deno KV Databases via a GUI</title>
+    <meta name="description" content={description} />
   </head>
   <body>
     <slot />
