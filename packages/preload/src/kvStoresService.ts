@@ -1,7 +1,7 @@
 import { readdir, writeFile, rm, rename, mkdir } from 'node:fs/promises';
 import { existsSync, statSync } from 'node:fs';
 import { exec } from 'node:child_process';
-import { deleteOneQuery, getAllQuery, insertQuery, updateQuery } from './db/kvStoresQueries.js';
+import { deleteOneQuery, getAllQuery, getOneQuery, insertQuery, updateQuery } from './db/kvStoresQueries.js';
 import path from 'node:path';
 import { openKv } from '@deno/kv';
 import { deadline } from '@std/async';
@@ -53,7 +53,15 @@ export async function update(kvStore: KvStore, changes: EditKvStoreInput): Promi
 }
 
 export async function getAll() {
-    return [...getAllQuery.all(), ...(await getDefaultLocalKvStores())] as KvStore[]
+    const kvStores = getAllQuery.all() as KvStore[];
+    const defaultKvStores = await getDefaultLocalKvStores(
+        kvStores.filter((store) => store.type == "default").map((s) => s.id)
+    );
+
+    return [...kvStores, ...defaultKvStores]
+        .sort((storeA, storeB) =>
+            new Date(storeB.updatedAt).getTime() - new Date(storeA.updatedAt).getTime()
+        );
 }
 
 export async function deleteOne(kvStore: KvStore) {
@@ -63,14 +71,20 @@ export async function deleteOne(kvStore: KvStore) {
             await rm(kvStore.url.replace(/kv.sqlite3$/gi, "kv.sqlite3-shm"))
             await rm(kvStore.url.replace(/kv.sqlite3$/gi, "kv.sqlite3-wal"))
         } catch { }
-        if (kvStore.type == "default") return true;
+
+        if (kvStore.type == "default") {
+            const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined
+            if (!storedKvStore) {
+                return true
+            }
+        }
     }
 
     const result = deleteOneQuery.run(kvStore.id)
     return !!result.changes
 }
 
-async function getDefaultLocalKvStores() {
+async function getDefaultLocalKvStores(exclude: KvStore["id"][]) {
     return new Promise<KvStore[]>((resolve) => {
         exec('deno info --json', async (err, infoResult) => {
             if (err) resolve([])
@@ -79,7 +93,7 @@ async function getDefaultLocalKvStores() {
                 const dataDirs: KvStore[] = [];
                 const dir = await readdir(localDenoKvsLocaltion, { withFileTypes: true })
                 for (const entry of dir) {
-                    if (entry.isDirectory()) {
+                    if (entry.isDirectory() && !exclude.includes(entry.name)) {
                         const kvFile = `${entry.parentPath}/${entry.name}/kv.sqlite3`;
                         if (existsSync(kvFile)) {
                             const fileStat = statSync(kvFile)
@@ -101,6 +115,32 @@ async function getDefaultLocalKvStores() {
             }
         })
     })
+}
+
+export async function renameDefaultLocalKvStore(store: KvStore, newName: string): Promise<boolean> {
+    if (store.type != "default") {
+        return false
+    }
+
+    const storedKvStore = getOneQuery.get(store.id) as KvStore | undefined
+    if (storedKvStore) {
+        const result = updateQuery.run({
+            $id: storedKvStore.id,
+            $name: newName,
+        });
+
+        return !!result.changes
+    } else {
+        const result = insertQuery.run(
+            store.id,
+            newName,
+            store.url,
+            store.type,
+            null
+        );
+
+        return !!result.changes
+    }
 }
 
 export async function testKvStoreConnection(kvStore: TestKvStoreParams): Promise<boolean> {

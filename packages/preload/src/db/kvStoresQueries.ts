@@ -32,3 +32,7 @@ export const deleteOneQuery = database.prepare(
 export const getAllQuery = database.prepare(
     'SELECT * FROM kvStores ORDER BY updatedAt DESC'
 );
+
+export const getOneQuery = database.prepare(
+    'SELECT * FROM kvStores WHERE id = ?'
+);

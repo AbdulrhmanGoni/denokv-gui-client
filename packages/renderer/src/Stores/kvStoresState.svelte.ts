@@ -10,6 +10,7 @@ type StoresState = {
     openedStore: KvStore | null;
     openedStoreToEdit: KvStore | null;
     openAddNewStoreForm: boolean;
+    renameDefaultKvStore: KvStore | null;
 }
 
 export let kvStoresState: StoresState = $state({
@@ -19,6 +20,7 @@ export let kvStoresState: StoresState = $state({
     openedStore: null,
     openedStoreToEdit: null,
     openAddNewStoreForm: false,
+    renameDefaultKvStore: null,
 });
 
 export async function loadKvStores() {

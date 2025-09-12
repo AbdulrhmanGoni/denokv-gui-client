@@ -11,6 +11,7 @@
   import SquarePenIcon from "@lucide/svelte/icons/square-pen";
   import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
   import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
+  import RenameIcon from "@lucide/svelte/icons/case-upper";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 </script>
@@ -45,6 +46,17 @@
           tooltipContent="Edit"
         >
           <SquarePenIcon />
+        </ButtonWithTooltip>
+      {:else}
+        <ButtonWithTooltip
+          onclick={() => {
+            kvStoresState.renameDefaultKvStore = kvStore;
+          }}
+          size="icon"
+          variant="secondary2"
+          tooltipContent="Rename"
+        >
+          <RenameIcon />
         </ButtonWithTooltip>
       {/if}
       <DeleteKvStoreButton {kvStore} />
