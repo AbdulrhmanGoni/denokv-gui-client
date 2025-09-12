@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.2.2...v1.3.0) (2025-09-12)
+
+
+### Features
+
+* add remaning default kv stores option ([e64e97a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e64e97a3a090c53268a30bc6501e5e224799e4ee))
+
 ## [1.2.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.2.1...v1.2.2) (2025-09-09)
 
 
