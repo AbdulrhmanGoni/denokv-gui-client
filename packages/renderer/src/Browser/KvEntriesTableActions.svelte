@@ -47,10 +47,10 @@
       <NotepadTextIcon />
       View
     </DropdownMenu.Item>
-    <DropdownMenu.Item onclick={() => copy(entry!.key.toString())}>
+    <DropdownMenu.Item onclick={() => copy(JSON.stringify(entry.key))}>
       <CopyKeyIcon /> Copy Key
     </DropdownMenu.Item>
-    <DropdownMenu.Item onclick={() => copy(entry!.value.data.toString())}>
+    <DropdownMenu.Item onclick={() => copy(JSON.stringify(entry.value))}>
       <CopyValueIcon /> Copy Value
     </DropdownMenu.Item>
     <DropdownMenu.Item>

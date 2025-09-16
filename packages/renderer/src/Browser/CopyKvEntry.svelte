@@ -14,7 +14,7 @@
       keyCoppied = false;
     }, 5000);
 
-    navigator.clipboard.writeText(entry!.key.toString());
+    navigator.clipboard.writeText(JSON.stringify(entry.key));
   }
 
   function copyValue() {
@@ -23,7 +23,7 @@
       valueCoppied = false;
     }, 5000);
 
-    navigator.clipboard.writeText(entry!.value.data.toString());
+    navigator.clipboard.writeText(JSON.stringify(entry.value));
   }
 </script>
 
