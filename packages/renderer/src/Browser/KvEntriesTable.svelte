@@ -23,6 +23,7 @@
     get data() {
       return kvEntriesState.entries;
     },
+    getRowId: (row) => JSON.stringify(row.key),
     columns,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: (updater) => {
@@ -82,7 +83,7 @@
             </td>
           </tr>
         {:else if kvEntriesState.fetched}
-          {#each table.getRowModel().rows as row (row.id)}
+          {#each table.getRowModel().rows as row (JSON.stringify(row.original.key))}
             <Table.Row
               data-state={row.getIsSelected() && "selected"}
               ondblclick={() => openKvEntryDialog(row.original)}
