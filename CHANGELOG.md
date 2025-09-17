@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.4.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.3.0...v1.4.0) (2025-09-17)
+
+
+### Features
+
+* enable deleting multiple kv entries at once ([78b2f24](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/78b2f24571760ac62475dfebbf8dd1abb252dd1f))
+
+
+### Bug Fixes
+
+* use keys as ids to ensure proper entry identification in kv entries table ([bd15527](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/bd15527b47adee4b6b36bf24ef4871d4abf40c4e))
+* correct "copy key or  value to clipboard" functionality ([5450068](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/545006809bf3520a60bca140c51b3e72c970700b))
+
 ## [1.3.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.2.2...v1.3.0) (2025-09-12)
 
 
