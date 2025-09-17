@@ -16,6 +16,7 @@
   import { openKvEntryDialog } from "./kvEntryDialogState.svelte";
   import { columns } from "./columns";
   import KvEntriesNavigation from "./KvEntriesNavigation.svelte";
+  import DeleteMultipleEntries from "./DeleteMultipleEntries.svelte";
 
   let rowSelection = $state<RowSelectionState>({});
 
@@ -39,6 +40,10 @@
       },
     },
   });
+
+  const selectedRows = $derived(table.getFilteredSelectedRowModel().rows);
+  const selectedRowsCount = $derived(selectedRows.length);
+  const displayedRows = $derived(table.getFilteredRowModel().rows.length);
 </script>
 
 <div class="rounded-md border">
@@ -116,9 +121,14 @@
     </Table.Root>
   </div>
   <Separator />
-  <div class="flex gap-2 p-2 items-center text-foreground text-sm bg-muted">
-    {table.getFilteredSelectedRowModel().rows.length} of {" "}
-    {table.getFilteredRowModel().rows.length} row(s) selected.
+  <div class="flex gap-2 p-2 bg-muted">
+    <div class="flex gap-2 items-center text-foreground text-sm">
+      {selectedRowsCount} of {" "}
+      {displayedRows} row{selectedRowsCount > 1 ? "s" : ""} selected.
+      {#if selectedRowsCount}
+        <DeleteMultipleEntries {selectedRows} />
+      {/if}
+    </div>
     <KvEntriesNavigation />
   </div>
 </div>
