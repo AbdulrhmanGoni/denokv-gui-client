@@ -4,6 +4,7 @@ type GlobalState = {
         text?: string,
     }
     openAddKvEntryForm: boolean,
+    openSettings: boolean,
 }
 
 export const globalState: GlobalState = $state({
@@ -11,6 +12,7 @@ export const globalState: GlobalState = $state({
         open: false,
     },
     openAddKvEntryForm: false,
+    openSettings: false,
 })
 
 export function openAddKvEntryDialog() {

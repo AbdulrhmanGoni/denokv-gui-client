@@ -24,12 +24,12 @@
           rel="noopener noreferrer"
         >
           <img
-            class="size-6 dark:size-0"
+            class="size-5 dark:size-0"
             src="GitHub_Invertocat_Dark.svg"
             alt="Logo"
           />
           <img
-            class="size-0 dark:size-6"
+            class="size-0 dark:size-5"
             src="GitHub_Invertocat_Light.svg"
             alt="Logo"
           />

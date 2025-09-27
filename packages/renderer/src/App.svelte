@@ -6,6 +6,8 @@
   import { kvStoresState } from "./Stores/kvStoresState.svelte";
   import { Toaster } from "$lib/components/shadcn/sonner";
   import LoadingOverlay from "$lib/components/custom/LoadingOverlay.svelte";
+  import { globalState } from "$lib/globalState.svelte";
+  import Settings from "./Settings/Settings.svelte";
 </script>
 
 <main
@@ -13,7 +15,9 @@
 >
   <Header />
   <div class="h-[600px]">
-    {#if kvStoresState.openedStore}
+    {#if globalState.openSettings}
+      <Settings />
+    {:else if kvStoresState.openedStore}
       <EntitiesBrowser />
     {:else}
       <StoresManagement />
