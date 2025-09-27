@@ -1,20 +1,36 @@
 <script lang="ts">
   import SunIcon from "@lucide/svelte/icons/sun";
   import MoonIcon from "@lucide/svelte/icons/moon";
-  import { toggleMode } from "mode-watcher";
-  import { Button } from "$lib/components/shadcn/button/index.js";
+  import MonitorCogIcon from "@lucide/svelte/icons/monitor-cog";
+  import { setMode, userPrefersMode } from "mode-watcher";
+  import * as Tabs from "$lib/components/shadcn/tabs/index.js";
+
+  function onThemeChange(mode: "dark" | "light" | "system") {
+    return function (
+      e: MouseEvent & {
+        currentTarget: EventTarget & HTMLButtonElement;
+      },
+    ) {
+      setMode(mode);
+    };
+  }
 </script>
 
-<Button
-  onclick={toggleMode}
-  variant="outline"
-  size="icon"
-  class="p-1.5 size-10"
->
-  <SunIcon
-    class="size-6 dark:rotate-0 dark:scale-100 transition-all -rotate-90 scale-0"
-  />
-  <MoonIcon
-    class="size-6 dark:rotate-90 dark:scale-0 transition-all rotate-0 scale-100 absolute"
-  />
-</Button>
+<div class="flex max-w-100 w-full flex-col gap-6">
+  <Tabs.Root value={userPrefersMode.current}>
+    <Tabs.List class="w-full">
+      <Tabs.Trigger onclick={onThemeChange("dark")} value="dark">
+        <MoonIcon class="size-4.5" />
+        Dark
+      </Tabs.Trigger>
+      <Tabs.Trigger onclick={onThemeChange("light")} value="light">
+        <SunIcon class="size-4.5" />
+        Light
+      </Tabs.Trigger>
+      <Tabs.Trigger onclick={onThemeChange("system")} value="system">
+        <MonitorCogIcon class="size-4.5" />
+        System
+      </Tabs.Trigger>
+    </Tabs.List>
+  </Tabs.Root>
+</div>
