@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.4.0...v1.5.0) (2025-09-27)
+
+
+### Features
+
+* add "update app" option to settings page ([cda9c6b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/cda9c6bbfe6539ad3e480abeea64e58d05f4113b))
+* disable automatic background updates without user awareness ([c0ae273](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c0ae273c2588ff78a934956a297f43c1b5908fff))
+* create settings page and put theme switcher in it ([586a1c0](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/586a1c0eb76b93a0e6dc7af89915043768146bee))
+* add "system" option to the theme switcher and change its design ([7c877ab](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7c877abcf2ad9badd14991fcc131a8d74985609d))
+
+
+### Bug Fixes
+
+* fix the incorrect format of top-level date values ([855895b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/855895bf30e3c49fd96a930a7bb3dd04bd62807d))
+
 ## [1.4.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.3.0...v1.4.0) (2025-09-17)
 
 
