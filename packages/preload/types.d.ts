@@ -24,3 +24,7 @@ type SerializedKvValue = import("@denokv-gui-client/bridge-server").SerializedKv
 type SerializedKvEntry = import("@denokv-gui-client/bridge-server").SerializedKvEntry
 
 type KvEntry = SerializedKvEntry
+
+type DownloadUpdateProgressInfo = import("electron-updater").ProgressInfo
+
+type UpdateCheckResult = import("electron-updater").UpdateCheckResult

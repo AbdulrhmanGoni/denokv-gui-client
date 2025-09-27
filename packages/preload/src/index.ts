@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron';
 import * as kvStoresService from './kvStoresService.js';
 import * as kvClient from './kvServerClient.js';
 import * as bridgeServer from './server.js';
+import * as appUpdater from './appUpdater.js';
 
 function selectDirectory() {
   return ipcRenderer.invoke('select-directory') as Promise<string>
@@ -14,4 +15,5 @@ export {
   kvStoresService,
   kvClient,
   bridgeServer,
+  appUpdater,
 };

@@ -2,6 +2,7 @@ import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
+import electronUpdater, { CancellationToken } from 'electron-updater';
 
 class WindowManager implements AppModule {
   readonly #preload: { path: string };
@@ -49,6 +50,34 @@ class WindowManager implements AppModule {
 
       if (result.canceled) return "";
       return result.filePaths[0];
+    });
+
+    const { autoUpdater } = electronUpdater;
+    autoUpdater.autoDownload = false;
+
+    let cancellationToken: CancellationToken;
+
+    ipcMain.handle('check-for-update', async () => {
+      return await autoUpdater.checkForUpdatesAndNotify()
+    });
+
+    ipcMain.handle('download-update', () => {
+      cancellationToken = new CancellationToken();
+      return autoUpdater.downloadUpdate(cancellationToken)
+    });
+
+    autoUpdater.on('download-progress', (progressInfo) => {
+      browserWindow.webContents.send('downloading-update-progress', progressInfo)
+    })
+
+    ipcMain.handle('cancel-downloading-update', () => {
+      if (cancellationToken && !cancellationToken.cancelled) {
+        cancellationToken.cancel()
+      }
+    })
+
+    ipcMain.handle('quit-and-install-update', async () => {
+      autoUpdater.quitAndInstall();
     });
 
     return browserWindow;
