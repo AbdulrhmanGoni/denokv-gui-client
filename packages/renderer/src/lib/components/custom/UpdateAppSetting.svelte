@@ -16,9 +16,10 @@
     import XIcon from "@lucide/svelte/icons/x";
     import CheckFileIcon from "@lucide/svelte/icons/file-check";
     import MonitorDownIcon from "@lucide/svelte/icons/monitor-down";
+    import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
 
-    const MEGA_BYTE = 1024 * 1024;
     const KILO_BYTE = 1024;
+    const MEGA_BYTE = KILO_BYTE * KILO_BYTE;
 </script>
 
 <div class="w-full space-y-2">
@@ -41,6 +42,11 @@
             <span class="font-semibold">
                 v{updateAppState.newUpdate.updateInfo.version}
             </span>
+            (<span>
+                {formatTimeAgo(
+                    new Date(updateAppState.newUpdate.updateInfo.releaseDate),
+                )}
+            </span>)
         </p>
         {#if updateAppState.downloadingUpdates}
             {#if updateAppState.downloadUpdateProgress}
