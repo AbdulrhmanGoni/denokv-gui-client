@@ -7,7 +7,11 @@ It's like **MongoDB Compass** for Mongo Database and **Redis Insight** for Redis
 
 <br />
 
-![Kv Entries Table screenshot](./screenshots/kv-entries-table.png)
+## Some Screenshots
+
+![Kv Entries Table screenshot](./screenshots/kv-stores-grid.png)
+![Kv Entries Table screenshot](./screenshots/entries-table.png)
+![Kv Entries Table screenshot](./screenshots/add-entry-form.png)
 
 ## Download
 
