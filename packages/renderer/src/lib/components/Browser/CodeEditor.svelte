@@ -5,7 +5,7 @@
   import hljs from "highlight.js/lib/core";
   import javascript from "highlight.js/lib/languages/javascript";
   import format from "../../helpers/codeFormatter";
-  import { cn } from "$lib/utils";
+  import { cn } from "$lib/shadcn-utils";
 
   type CodeEditorProps = {
     editorId: string;

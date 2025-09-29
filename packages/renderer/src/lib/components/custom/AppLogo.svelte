@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from "$lib/utils";
+  import { cn } from "$lib/shadcn-utils";
 
   const { className }: { className?: string } = $props();
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn, type WithElementRef } from "$lib/utils.js";
+  import { cn, type WithElementRef } from "$lib/shadcn-utils.js";
   import type { HTMLThAttributes } from "svelte/elements";
 
   let {
@@ -15,7 +15,7 @@
   data-slot="table-head"
   class={cn(
     "text-foreground h-13 whitespace-nowrap bg-clip-padding p-2.5 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0",
-    className
+    className,
   )}
   {...restProps}
 >

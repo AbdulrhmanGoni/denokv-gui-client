@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from "$lib/utils";
+  import { cn } from "$lib/shadcn-utils";
   import CodeRenderer from "./CodeRenderer.svelte";
   import dataTypesColors from "./dataTypesColors";
 
@@ -16,7 +16,7 @@
   class={cn(
     "font-semibold overflow-auto flex-1 py-1",
     dataTypeColor,
-    className
+    className,
   )}
 >
   {#if entry.value.type === "String"}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from "$lib/utils";
+  import { cn } from "$lib/shadcn-utils";
   import dataTypesColors from "./dataTypesColors";
 
   const { entry, className }: { entry: KvEntry; className?: string } = $props();
@@ -8,7 +8,7 @@
 <div
   class={cn(
     "flex gap-1 items-center font-semibold overflow-auto py-1",
-    className
+    className,
   )}
 >
   {"["}
