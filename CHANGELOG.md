@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.6.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.5.0...v1.6.0) (2025-09-29)
+
+
+### Features
+
+* show release notes when new updates come ([e4e1724](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e4e1724427f1df8958fc9e9fde487510233fd616))
+* provide "auto check for updates" option ([7533563](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7533563e9eea954309643112fe0c7162b21e6f60))
+
+
+### Bug Fixes
+
+* don't show an error when canceling update process ([94987de](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/94987ded5e739d50618a1872eead4a1aa0b67923))
+
+
+### Enhancements
+
+* show users since when new updates were released ([13a63a2](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/13a63a2cf16f031bb71703ae089ea2330b02a199))
+
 ## [1.5.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.4.0...v1.5.0) (2025-09-27)
 
 

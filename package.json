@@ -1,7 +1,7 @@
 {
   "name": "denokv-gui-client",
   "description": "An open source GUI client to browse the data inside a Deno KV database and perform CRUD operations",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "type": "module",
   "homepage": "https://github.com/AbdulrhmanGoni/denokv-gui-client",
