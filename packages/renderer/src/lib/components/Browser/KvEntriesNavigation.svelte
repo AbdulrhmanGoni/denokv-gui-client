@@ -2,19 +2,22 @@
   import Button from "$lib/components/shadcn/button/button.svelte";
   import ArrowRight from "@lucide/svelte/icons/arrow-right";
   import ArrowLeft from "@lucide/svelte/icons/arrow-left";
-  import { fetchEntries, kvEntriesState } from "./kvEntriesState.svelte";
+  import {
+    fetchEntries,
+    kvEntriesState,
+  } from "../../states/kvEntriesState.svelte";
 
   let nomoreEntries = $derived(
-    kvEntriesState.entries.length < kvEntriesState.params.limit
+    kvEntriesState.entries.length < kvEntriesState.params.limit,
   );
 
   let thereIsNextCursor = $derived(
     !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex] &&
-      !nomoreEntries
+      !nomoreEntries,
   );
 
   let thereIsPreviousCursor = $derived(
-    !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex - 1]
+    !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex - 1],
   );
 
   function next() {

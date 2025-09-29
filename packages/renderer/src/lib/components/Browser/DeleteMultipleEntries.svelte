@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Row } from "@tanstack/table-core";
     import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
-    import { removeEntryFromState } from "./kvEntriesState.svelte";
+    import { removeEntryFromState } from "../../states/kvEntriesState.svelte";
     import { toast } from "svelte-sonner";
     import { kvClient } from "@app/preload";
     import LoaderIcon from "@lucide/svelte/icons/loader";

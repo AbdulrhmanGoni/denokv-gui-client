@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { openAddKvEntryDialog } from "$lib/globalState.svelte";
+  import { openAddKvEntryDialog } from "$lib/states/globalState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
-  import { closeKvStore } from "../Stores/kvStoresState.svelte";
+  import { closeKvStore } from "../../states/kvStoresState.svelte";
   import KvEntriesTable from "./KvEntriesTable.svelte";
   import KvEntryDialog from "./KvEntryDialog.svelte";
   import PlusIcon from "@lucide/svelte/icons/plus";

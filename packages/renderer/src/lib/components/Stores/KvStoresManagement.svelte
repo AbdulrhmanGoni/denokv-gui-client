@@ -2,7 +2,7 @@
   import AddKvStoreForm from "./AddKvStoreForm.svelte";
   import EditKvStoreForm from "./EditKvStoreForm.svelte";
   import KvStoresGrid from "./KvStoresGrid.svelte";
-  import { kvStoresState } from "./kvStoresState.svelte";
+  import { kvStoresState } from "../../states/kvStoresState.svelte";
   import RenameDefaultKvStoreForm from "./RenameDefaultKvStoreForm.svelte";
 </script>
 

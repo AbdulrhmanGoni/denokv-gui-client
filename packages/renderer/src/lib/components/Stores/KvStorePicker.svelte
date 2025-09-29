@@ -1,6 +1,9 @@
 <script lang="ts">
   import * as Select from "$lib/components/shadcn/select/index.js";
-  import { kvStoresState, openKvStore } from "./kvStoresState.svelte";
+  import {
+    kvStoresState,
+    openKvStore,
+  } from "../../states/kvStoresState.svelte";
   import ServerIcon from "@lucide/svelte/icons/server";
   import GlobeIcon from "@lucide/svelte/icons/globe";
   import FileIcon from "@lucide/svelte/icons/file";
@@ -10,7 +13,7 @@
 
   async function onKvStoreChange(kvStoreId: string) {
     const chosenKvStore = kvStoresState.kvStores.find(
-      (kv) => kv.id == kvStoreId
+      (kv) => kv.id == kvStoreId,
     )!;
 
     const open = await openKvStore(chosenKvStore);

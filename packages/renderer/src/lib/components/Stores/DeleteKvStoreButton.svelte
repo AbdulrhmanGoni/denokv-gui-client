@@ -2,7 +2,7 @@
   import TrashIcon from "@lucide/svelte/icons/trash";
   import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
   import { kvStoresService } from "@app/preload";
-  import { kvStoresState } from "./kvStoresState.svelte";
+  import { kvStoresState } from "../../states/kvStoresState.svelte";
   import { toast } from "svelte-sonner";
   import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
 
@@ -24,7 +24,7 @@
       .then((deleted) => {
         if (deleted) {
           kvStoresState.kvStores = kvStoresState.kvStores.filter(
-            (c) => c.id != kvStore.id
+            (c) => c.id != kvStore.id,
           );
           openDialog = false;
         } else {

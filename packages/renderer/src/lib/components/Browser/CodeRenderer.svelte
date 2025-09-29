@@ -1,5 +1,5 @@
 <script lang="ts">
-  import codeFormatter from "./codeFormatter";
+  import codeFormatter from "../../helpers/codeFormatter";
   import "/src/code-highlight.css";
   import hljs from "highlight.js/lib/core";
   import javascript from "highlight.js/lib/languages/javascript";

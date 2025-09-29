@@ -9,11 +9,14 @@
     type RowSelectionState,
     getCoreRowModel,
   } from "@tanstack/table-core";
-  import { kvEntriesState, fetchEntries } from "./kvEntriesState.svelte";
+  import {
+    kvEntriesState,
+    fetchEntries,
+  } from "$lib/states/kvEntriesState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import RefreshIcon from "@lucide/svelte/icons/refresh-cw";
   import Loader from "@lucide/svelte/icons/loader";
-  import { openKvEntryDialog } from "./kvEntryDialogState.svelte";
+  import { openKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
   import { columns } from "./columns";
   import KvEntriesNavigation from "./KvEntriesNavigation.svelte";
   import DeleteMultipleEntries from "./DeleteMultipleEntries.svelte";

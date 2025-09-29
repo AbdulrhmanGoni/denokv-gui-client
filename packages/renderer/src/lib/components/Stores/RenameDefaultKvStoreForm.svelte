@@ -8,7 +8,10 @@
   import SaveIcon from "@lucide/svelte/icons/save";
   import { toast } from "svelte-sonner";
   import { kvStoresService } from "@app/preload";
-  import { kvStoresState, loadKvStores } from "./kvStoresState.svelte";
+  import {
+    kvStoresState,
+    loadKvStores,
+  } from "../../states/kvStoresState.svelte";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 

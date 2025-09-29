@@ -11,7 +11,10 @@
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import XIcon from "@lucide/svelte/icons/x";
   import ValueFileIcon from "@lucide/svelte/icons/file-json";
-  import { closeAddKvEntryDialog, globalState } from "$lib/globalState.svelte";
+  import {
+    closeAddKvEntryDialog,
+    globalState,
+  } from "$lib/states/globalState.svelte";
   import KvEntryExpirationDate from "./KvEntryExpirationDate.svelte";
 
   let addingEntry = $state(false);
@@ -37,7 +40,7 @@
       value,
       kvEntryExpirationDateValue
         ? { expires: kvEntryExpirationDateValue }
-        : undefined
+        : undefined,
     );
 
     if (error) {

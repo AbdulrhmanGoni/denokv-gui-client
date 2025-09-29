@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { globalState } from "$lib/globalState.svelte";
+  import { globalState } from "$lib/states/globalState.svelte";
   import LoaderIcon from "@lucide/svelte/icons/loader";
 </script>
 

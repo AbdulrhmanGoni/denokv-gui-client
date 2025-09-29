@@ -8,7 +8,7 @@
   import { Button } from "$lib/components/shadcn/button/index.js";
   import * as DropdownMenu from "$lib/components/shadcn/dropdown-menu/index.js";
   import DeleteKvEntryButton from "./DeleteKvEntryButton.svelte";
-  import { openKvEntryDialog } from "./kvEntryDialogState.svelte";
+  import { openKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
 
   const { entry }: { entry: KvEntry } = $props();
 

@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { kvStoresState, loadKvStores } from "./kvStoresState.svelte";
+  import {
+    kvStoresState,
+    loadKvStores,
+  } from "../../states/kvStoresState.svelte";
   import DatabaseIcon from "@lucide/svelte/icons/database";
   import PlusIcon from "@lucide/svelte/icons/circle-plus";
   import AlertIcon from "@lucide/svelte/icons/octagon-alert";

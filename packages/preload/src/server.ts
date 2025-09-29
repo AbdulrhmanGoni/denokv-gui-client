@@ -1,6 +1,6 @@
-import { Kv, openKv } from "@deno/kv";
+import { type Kv, openKv } from "@deno/kv";
 import { BridgeServerClient, openBridgeServerInNode } from '@denokv-gui-client/bridge-server';
-import { AddressInfo } from "node:net";
+import { type AddressInfo } from "node:net";
 
 let serverRef: { close: () => void } | null = null;
 let kv: Kv | null = null;

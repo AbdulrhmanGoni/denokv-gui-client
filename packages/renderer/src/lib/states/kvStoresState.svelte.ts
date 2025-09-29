@@ -1,6 +1,6 @@
-import { globalState } from "$lib/globalState.svelte";
+import { globalState } from "$lib/states/globalState.svelte";
 import { bridgeServer, kvStoresService } from "@app/preload";
-import { fetchEntries, resetEntriesState } from "../Browser/kvEntriesState.svelte";
+import { fetchEntries, resetEntriesState } from "$lib/states/kvEntriesState.svelte";
 import { toast } from "svelte-sonner";
 
 type StoresState = {

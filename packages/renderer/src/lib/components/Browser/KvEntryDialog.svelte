@@ -4,7 +4,7 @@
   import Separator from "$lib/components/shadcn/separator/separator.svelte";
   import KeyFileIcon from "@lucide/svelte/icons/file-key";
   import CopyKvEntry from "./CopyKvEntry.svelte";
-  import { kvEntryDialogState } from "./kvEntryDialogState.svelte";
+  import { kvEntryDialogState } from "$lib/states/kvEntryDialogState.svelte";
   import KvEntryValueUpdator from "./KvEntryValueUpdator.svelte";
   import KvValueRenderer from "./KvValueRenderer.svelte";
   import DataFileIcon from "@lucide/svelte/icons/file-json";

@@ -2,7 +2,7 @@
   import Button from "$lib/components/shadcn/button/button.svelte";
   import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
-  import { kvEntryDialogState } from "./kvEntryDialogState.svelte";
+  import { kvEntryDialogState } from "$lib/states/kvEntryDialogState.svelte";
   import KvValueEditor from "./KvValueEditor.svelte";
   import SaveIcon from "@lucide/svelte/icons/save";
   import XIcon from "@lucide/svelte/icons/x";
@@ -16,7 +16,7 @@
     if (jar) {
       const { error } = await kvClient.set(
         $state.snapshot(entry!).key,
-        jar.toKvValue()
+        jar.toKvValue(),
       );
 
       if (error) {

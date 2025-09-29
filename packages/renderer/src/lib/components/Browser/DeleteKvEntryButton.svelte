@@ -1,10 +1,10 @@
 <script lang="ts">
   import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
-  import { globalState } from "$lib/globalState.svelte";
+  import { globalState } from "$lib/states/globalState.svelte";
   import { kvClient } from "@app/preload";
   import TrashIcon from "@lucide/svelte/icons/trash";
   import { toast } from "svelte-sonner";
-  import { removeEntryFromState } from "./kvEntriesState.svelte";
+  import { removeEntryFromState } from "../../states/kvEntriesState.svelte";
 
   const {
     entry,

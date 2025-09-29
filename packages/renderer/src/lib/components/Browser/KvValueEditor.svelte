@@ -6,7 +6,7 @@
   import KvValueDataTypeSelect from "./KvValueDataTypeSelect.svelte";
   import type { KvDataType } from "./dataTypes";
   import CodeEditor from "./CodeEditor.svelte";
-  import codeFormatter from "./codeFormatter";
+  import codeFormatter from "../../helpers/codeFormatter";
   import { onMount, type Snippet } from "svelte";
 
   type ValueEditorProps = {

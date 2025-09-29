@@ -1,5 +1,5 @@
 import { kvClient } from "@app/preload";
-import { kvStoresState } from "../Stores/kvStoresState.svelte";
+import { kvStoresState } from "./kvStoresState.svelte";
 
 type kvEntriesState = {
     entries: KvEntry[];

@@ -3,7 +3,7 @@
   import PenIcon from "@lucide/svelte/icons/square-pen";
   import SaveIcon from "@lucide/svelte/icons/save";
   import XIcon from "@lucide/svelte/icons/x";
-  import { kvStoresState } from "./kvStoresState.svelte";
+  import { kvStoresState } from "../../states/kvStoresState.svelte";
   import { toast } from "svelte-sonner";
   import KvStoreForm from "./KvStoreForm.svelte";
 
@@ -11,7 +11,7 @@
 
   async function onSubmitForm(
     store: CreateKvStoreInput,
-    form?: HTMLFormElement
+    form?: HTMLFormElement,
   ) {
     const changes = getChanges(store);
     if (!changes) {
