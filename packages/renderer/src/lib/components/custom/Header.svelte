@@ -1,5 +1,5 @@
 <script>
-  import SettingsButton from "./SettingsButton.svelte";
+  import SettingsButton from "../Settings/SettingsButton.svelte";
   import AppInfo from "./AppInfo.svelte";
 </script>
 

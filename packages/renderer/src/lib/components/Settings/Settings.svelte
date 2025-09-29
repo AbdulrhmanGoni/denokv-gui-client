@@ -1,8 +1,7 @@
 <script lang="ts">
-    import UpdateAppSetting from "$lib/components/custom/UpdateAppSetting.svelte";
-    import SwitchThemeButton from "$lib/components/custom/SwitchThemeButton.svelte";
+    import UpdateAppSetting from "$lib/components/Settings/UpdateAppSetting.svelte";
+    import AppThemeSetting from "$lib/components/Settings/AppThemeSetting.svelte";
     import Separator from "$lib/components/shadcn/separator/separator.svelte";
-    import PaletteIcon from "@lucide/svelte/icons/palette";
     import SettingsIcon from "@lucide/svelte/icons/settings";
 </script>
 
@@ -14,12 +13,6 @@
     <Separator />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <UpdateAppSetting />
-        <div class="space-y-4">
-            <h3 class="font-semibold text-xl flex gap-2 items-center">
-                <PaletteIcon />
-                Theme
-            </h3>
-            <SwitchThemeButton />
-        </div>
+        <AppThemeSetting />
     </div>
 </div>
