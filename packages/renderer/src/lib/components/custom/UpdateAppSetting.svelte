@@ -6,6 +6,10 @@
         cancelDownloadingUpdate,
         quitAndInstallTheUpdate,
     } from "$lib/states/appUpdate.svelte";
+    import {
+        setAutoCheckForUpdate,
+        settingsState,
+    } from "$lib/states/settingsState.svelte";
     import { versions } from "@app/preload";
     import Progress from "../shadcn/progress/progress.svelte";
     import Button from "../shadcn/button/button.svelte";
@@ -16,6 +20,8 @@
     import XIcon from "@lucide/svelte/icons/x";
     import CheckFileIcon from "@lucide/svelte/icons/file-check";
     import MonitorDownIcon from "@lucide/svelte/icons/monitor-down";
+    import { Label } from "../shadcn/label/index";
+    import { Checkbox } from "../shadcn/checkbox/index";
     import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
 
     const KILO_BYTE = 1024;
@@ -120,8 +126,8 @@
                     </span>
                 {/if}
             {:else if updateAppState.checkingForUpdatesDone}
-                <span class="text-muted-foreground">
-                    No new update available
+                <span class="text-muted-foreground italic">
+                    No new update is available
                 </span>
             {/if}
         </p>
@@ -140,6 +146,16 @@
             {/if}
         </Button>
     {/if}
+    <div class="flex items-center gap-2 mt-1">
+        <Checkbox
+            id="auto-check-for-updates"
+            checked={!!settingsState.autoCheckForUpdate}
+            onCheckedChange={setAutoCheckForUpdate}
+        />
+        <Label for="auto-check-for-updates">
+            Always check for new updates automatically
+        </Label>
+    </div>
 </div>
 
 {#snippet downloadUpdateProgress(progressInfo: DownloadUpdateProgressInfo)}

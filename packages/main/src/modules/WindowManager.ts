@@ -80,6 +80,8 @@ class WindowManager implements AppModule {
       autoUpdater.quitAndInstall();
     });
 
+    browserWindow.webContents.send('window-ready')
+
     return browserWindow;
   }
 

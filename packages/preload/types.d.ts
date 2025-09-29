@@ -28,3 +28,7 @@ type KvEntry = SerializedKvEntry
 type DownloadUpdateProgressInfo = import("electron-updater").ProgressInfo
 
 type UpdateCheckResult = import("electron-updater").UpdateCheckResult
+
+type Settings = Partial<{
+    autoCheckForUpdate: boolean;
+}>

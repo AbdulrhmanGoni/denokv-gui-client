@@ -24,7 +24,8 @@
     "test": "npx playwright test ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",
-    "typecheck": "npm run typecheck -ws --if-present"
+    "typecheck": "npm run typecheck -ws --if-present",
+    "migration": "dbmate -u sqlite:database.sqlite -d packages/preload/src/db/migrations"
   },
   "devDependencies": {
     "@npmcli/map-workspaces": "4.0.2",
