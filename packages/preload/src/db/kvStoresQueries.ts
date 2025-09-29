@@ -1,14 +1,4 @@
-import { DatabaseSync } from 'node:sqlite';
-import { getDatabasePath } from './dbPath.js';
-import { migrateDatabaseSchema } from './migrate.js';
-
-const dbPath = getDatabasePath();
-
-export const database = new DatabaseSync(dbPath);
-
-if (process.env.NODE_ENV !== 'development') {
-    migrateDatabaseSchema(dbPath);
-}
+import { database } from './db.js';
 
 export const insertQuery = database.prepare(`
     INSERT INTO kvStores(id, name, url, type, accessToken, createdAt, updatedAt) 
