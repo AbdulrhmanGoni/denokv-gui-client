@@ -6,8 +6,8 @@ on:
     branches:
       - main
     paths-ignore:
-      - "**.md"
-      - "**.d.ts"
+      - "**/*.md"
+      - "**/*.d.ts"
       - "LICENSE"
       - "landing/**"
   pull_request:
@@ -15,8 +15,8 @@ on:
       - opened
       - synchronize
     paths-ignore:
-      - "**.md"
-      - "**.d.ts"
+      - "**/*.md"
+      - "**/*.d.ts"
       - "LICENSE"
       - "landing/**"
 
@@ -44,3 +44,8 @@ jobs:
     needs:
       - compile-and-test
     uses: ./.github/workflows/release.yml
+
+  deploy-landing-page:
+    needs:
+      - release
+    uses: ./.github/workflows/deploy-landing-page.yml

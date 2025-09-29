@@ -3,21 +3,11 @@ name: Release
 on:
   workflow_call:
 
-permissions:
-  contents: write
-
-defaults:
-  run:
-    shell: "bash"
-
-env:
-  NODE_NO_WARNINGS: 1
-  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-  npm_config_audit: false
-  npm_config_fund: false
 
 jobs:
   release:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

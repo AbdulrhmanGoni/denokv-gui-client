@@ -7,20 +7,20 @@ defaults:
   run:
     shell: "bash"
 
-permissions:
-  contents: write
-  id-token: write
-  attestations: write
-
-env:
-  NODE_NO_WARNINGS: 1
-  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-  npm_config_audit: false
-  npm_config_fund: false
-  USE_HARD_LINKS: false
-
 jobs:
-  compile:
+  compile-and-test:
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    
+    env:
+      NODE_NO_WARNINGS: 1
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+      npm_config_audit: false
+      npm_config_fund: false
+      USE_HARD_LINKS: false
+
     strategy:
       fail-fast: false
       matrix:
@@ -28,7 +28,9 @@ jobs:
           - windows-latest
           - ubuntu-latest
           - macos-latest
+
     runs-on: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,6 +38,7 @@ jobs:
           node-version: ">=23.0.0"
 
       - run: npm install
+
       - run: npm run compile -- -p never
 
       - run: npm run test --if-present

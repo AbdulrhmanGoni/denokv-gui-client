@@ -1,20 +1,17 @@
 name: Deploy Landing Page
 
 on:
+  workflow_call:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - "Release"
-    types:
-      - completed
-    branches:
-      - main
   push:
     branches:
       - main
     paths:
       - "landing/src/**"
       - "landing/public/**"
+      - "landing/astro.config.mjs"
+      - "landing/package.json"
+      - "landing/pnpm-lock.yaml"
 
 concurrency:
   group: "landing-page-deployment"
