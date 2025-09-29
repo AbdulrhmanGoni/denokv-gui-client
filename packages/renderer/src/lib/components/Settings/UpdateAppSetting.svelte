@@ -60,6 +60,8 @@
             <p class="text-destructive">
                 {#if updateAppState.downloadingUpdatesError.includes("net::")}
                     Network connectivity Error
+                {:else if updateAppState.downloadingUpdatesError.includes("cancelled")}
+                    {""}
                 {:else}
                     {updateAppState.downloadingUpdatesError}
                 {/if}
