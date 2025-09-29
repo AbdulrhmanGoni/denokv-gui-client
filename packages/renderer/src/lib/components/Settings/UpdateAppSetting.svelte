@@ -23,6 +23,8 @@
     import { Label } from "../shadcn/label/index";
     import { Checkbox } from "../shadcn/checkbox/index";
     import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
+    import ReleaseNotes from "./ReleaseNotes.svelte";
+    import type { Snippet } from "svelte";
 
     const KILO_BYTE = 1024;
     const MEGA_BYTE = KILO_BYTE * KILO_BYTE;
@@ -54,6 +56,15 @@
                 )}
             </span>)
         </p>
+        {#if updateAppState.downloadingUpdatesError}
+            <p class="text-destructive">
+                {#if updateAppState.downloadingUpdatesError.includes("net::")}
+                    Network connectivity Error
+                {:else}
+                    {updateAppState.downloadingUpdatesError}
+                {/if}
+            </p>
+        {/if}
         {#if updateAppState.downloadingUpdates}
             {#if updateAppState.downloadUpdateProgress}
                 {@render downloadUpdateProgress(
@@ -68,14 +79,7 @@
                     delta: 0,
                 })}
             {/if}
-            <Button
-                variant="destructive"
-                size="sm"
-                onclick={cancelDownloadingUpdate}
-            >
-                Cancel Update
-                <XIcon />
-            </Button>
+            {@render actionsButtons(cancelUpdateButton)}
         {:else if updateAppState.downloadingUpdatesDone}
             <p
                 class="dark:text-green-500 text-green-600 flex items-center gap-2"
@@ -83,32 +87,9 @@
                 <CheckFileIcon class="size-4.5" />
                 The update was downloaded
             </p>
-            <Button
-                variant="default"
-                size="sm"
-                onclick={quitAndInstallTheUpdate}
-            >
-                Quit and install the update
-                <MonitorDownIcon />
-            </Button>
+            {@render actionsButtons(quitAndInstallButton)}
         {:else}
-            {#if updateAppState.downloadingUpdatesError}
-                <p class="text-destructive">
-                    {#if updateAppState.downloadingUpdatesError.includes("net::")}
-                        Network connectivity Error
-                    {:else}
-                        {updateAppState.downloadingUpdatesError}
-                    {/if}
-                </p>
-            {/if}
-            <Button
-                variant="secondary"
-                size="sm"
-                onclick={startDownloadingUpdate}
-            >
-                Download Update
-                <DownloadIcon />
-            </Button>
+            {@render actionsButtons(downloadButton)}
         {/if}
     {:else}
         <p>
@@ -131,20 +112,7 @@
                 </span>
             {/if}
         </p>
-        <Button
-            variant="secondary2"
-            size="sm"
-            onclick={startCheckingForUpdates}
-            disabled={updateAppState.checkingForUpdates}
-        >
-            {#if updateAppState.checkingForUpdates}
-                Checking for update
-                <LoaderIcon class="animate-spin" />
-            {:else}
-                Check for update
-                <SearchCheckIcon />
-            {/if}
-        </Button>
+        {@render actionsButtons(checkForUpdateButton)}
     {/if}
     <div class="flex items-center gap-2 mt-1">
         <Checkbox
@@ -157,6 +125,53 @@
         </Label>
     </div>
 </div>
+
+{#snippet actionsButtons(anotherButton: Snippet)}
+    <div class="flex gap-2.5 flex-wrap">
+        {@render anotherButton()}
+        {#if updateAppState.newUpdate}
+            <ReleaseNotes newUpdate={updateAppState.newUpdate} />
+        {/if}
+    </div>
+{/snippet}
+
+{#snippet downloadButton()}
+    <Button variant="secondary" size="sm" onclick={startDownloadingUpdate}>
+        Download Update
+        <DownloadIcon />
+    </Button>
+{/snippet}
+
+{#snippet checkForUpdateButton()}
+    <Button
+        variant="secondary2"
+        size="sm"
+        onclick={startCheckingForUpdates}
+        disabled={updateAppState.checkingForUpdates}
+    >
+        {#if updateAppState.checkingForUpdates}
+            Checking for update
+            <LoaderIcon class="animate-spin" />
+        {:else}
+            Check for update
+            <SearchCheckIcon />
+        {/if}
+    </Button>
+{/snippet}
+
+{#snippet cancelUpdateButton()}
+    <Button variant="destructive" size="sm" onclick={cancelDownloadingUpdate}>
+        Cancel Update
+        <XIcon />
+    </Button>
+{/snippet}
+
+{#snippet quitAndInstallButton()}
+    <Button variant="default" size="sm" onclick={quitAndInstallTheUpdate}>
+        Quit and install the update
+        <MonitorDownIcon />
+    </Button>
+{/snippet}
 
 {#snippet downloadUpdateProgress(progressInfo: DownloadUpdateProgressInfo)}
     <div>

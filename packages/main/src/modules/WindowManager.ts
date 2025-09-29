@@ -54,6 +54,7 @@ class WindowManager implements AppModule {
 
     const { autoUpdater } = electronUpdater;
     autoUpdater.autoDownload = false;
+    autoUpdater.fullChangelog = true;
 
     let cancellationToken: CancellationToken;
 
