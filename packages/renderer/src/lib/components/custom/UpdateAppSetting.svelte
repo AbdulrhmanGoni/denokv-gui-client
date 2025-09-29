@@ -5,7 +5,7 @@
         startDownloadingUpdate,
         cancelDownloadingUpdate,
         quitAndInstallTheUpdate,
-    } from "$lib/globalState.svelte";
+    } from "$lib/states/appUpdate.svelte";
     import { versions } from "@app/preload";
     import Progress from "../shadcn/progress/progress.svelte";
     import Button from "../shadcn/button/button.svelte";

@@ -1,6 +1,7 @@
 <script lang="ts">
     import Button from "$lib/components/shadcn/button/button.svelte";
-    import { globalState, updateAppState } from "$lib/globalState.svelte";
+    import { globalState } from "$lib/globalState.svelte";
+    import { updateAppState } from "$lib/states/appUpdate.svelte";
     import SettingsIcon from "@lucide/svelte/icons/settings";
     import ArrowLeftIcon from "@lucide/svelte/icons/arrow-left";
 </script>
