@@ -17,7 +17,7 @@ function reloadSettings() {
     Object.assign(settingsState, settingsService.getSettings())
 }
 
-onWindowReady(async () => {
+onWindowReady(() => {
     if (settingsState.autoCheckForUpdate) {
         startCheckingForUpdates();
     }

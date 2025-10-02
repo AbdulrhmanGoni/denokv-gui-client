@@ -1,4 +1,4 @@
-import { appUpdater } from "@app/preload"
+import { appUpdater, lastFetchedUpdateService } from "@app/preload"
 
 type UpdateAppState = {
     downloadUpdateProgress: DownloadUpdateProgressInfo | null;
@@ -24,6 +24,14 @@ export const updateAppState: UpdateAppState = $state({
 })
 
 export async function startCheckingForUpdates() {
+    const lastFetchedUpdate = lastFetchedUpdateService.getLastFetchedUpdate()
+    if (lastFetchedUpdate) {
+        updateAppState.newUpdate = lastFetchedUpdate
+        updateAppState.checkingForUpdatesDone = true
+        updateAppState.newUpdate = await appUpdater.checkForUpdate()
+        return
+    }
+
     updateAppState.checkingForUpdates = true;
     try {
         updateAppState.newUpdate = await appUpdater.checkForUpdate();
