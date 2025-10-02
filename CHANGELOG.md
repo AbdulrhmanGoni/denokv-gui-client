@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.6.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.6.0...v1.6.1) (2025-10-02)
+
+
+### Bug Fixes
+
+* fix showing the current version as a new update issue ([8d7fa61](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8d7fa61a866b5dc9767580760be113b5753d705e))
+
+
+### Enhancements
+
+* cache last fetched update info to improve app startup experience ([0d7ceff](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0d7ceff52636347717f42500c9cc9d30a89f653f))
+
 ## [1.6.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.5.0...v1.6.0) (2025-09-29)
 
 
