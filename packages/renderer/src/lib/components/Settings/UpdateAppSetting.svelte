@@ -41,7 +41,7 @@
         {/if}
     </h3>
 
-    {#if updateAppState.newUpdate}
+    {#if updateAppState.newUpdate?.isUpdateAvailable}
         <p>
             Current Version:
             <span class="font-semibold">v{versions.appVersion}</span>
@@ -131,7 +131,7 @@
 {#snippet actionsButtons(anotherButton: Snippet)}
     <div class="flex gap-2.5 flex-wrap">
         {@render anotherButton()}
-        {#if updateAppState.newUpdate}
+        {#if updateAppState.newUpdate?.isUpdateAvailable}
             <ReleaseNotes newUpdate={updateAppState.newUpdate} />
         {/if}
     </div>
