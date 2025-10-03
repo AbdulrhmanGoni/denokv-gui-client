@@ -58,7 +58,13 @@ To download the **Deno KV GUI Client** app, go to [releases](https://github.com/
 
 ### Development Mode
 
-To run the app in development mode:
+You first need to run the mingrations to set up the development database:
+
+```bash
+  npm mingration up
+```
+
+Then run the app in development mode with:
 
 ```bash
   npm start
