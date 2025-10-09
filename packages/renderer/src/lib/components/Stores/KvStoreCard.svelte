@@ -9,13 +9,12 @@
   import LocalStorageIcon from "@lucide/svelte/icons/hard-drive";
   import CalendarSync from "@lucide/svelte/icons/calendar-sync";
   import CalendarFold from "@lucide/svelte/icons/calendar-fold";
-  import LinkIcon from "@lucide/svelte/icons/link";
-  import FileLinkIcon from "@lucide/svelte/icons/file-symlink";
   import SquarePenIcon from "@lucide/svelte/icons/square-pen";
   import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
   import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
   import RenameIcon from "@lucide/svelte/icons/case-upper";
   import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
+  import KvStorePathOrUrl from "./KvStorePathOrUrl.svelte";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 </script>
@@ -66,16 +65,7 @@
       <DeleteKvStoreButton {kvStore} />
     </div>
   </div>
-  <p class="flex items-center gap-2 text-sm">
-    {#if kvStore.type == "local" || kvStore.type == "default"}
-      <FileLinkIcon class="shrink-0 size-4" />
-      Path:
-    {:else}
-      <LinkIcon class="shrink-0 size-4" />
-      Url:
-    {/if}
-    <span class="line-clamp-1">{kvStore.url}</span>
-  </p>
+  <KvStorePathOrUrl {kvStore} />
   <p class="flex gap-2 items-center text-sm">
     <CalendarFold class="size-4" />
     Created:

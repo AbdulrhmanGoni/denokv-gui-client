@@ -1,6 +1,6 @@
 import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
-import { BrowserWindow, dialog, ipcMain } from 'electron';
+import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
 import electronUpdater, { CancellationToken } from 'electron-updater';
 
@@ -50,6 +50,10 @@ class WindowManager implements AppModule {
 
       if (result.canceled) return "";
       return result.filePaths[0];
+    });
+
+    ipcMain.handle('open-path', async (_, path) => {
+      return shell.showItemInFolder(path);
     });
 
     const { autoUpdater } = electronUpdater;

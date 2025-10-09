@@ -11,6 +11,10 @@ function selectDirectory() {
   return ipcRenderer.invoke('select-directory') as Promise<string>
 }
 
+function openPath(path: string) {
+  ipcRenderer.invoke('open-path', path)
+}
+
 function onWindowReady(cb: () => void) {
   return ipcRenderer.on('window-ready', cb)
 }
@@ -18,6 +22,7 @@ function onWindowReady(cb: () => void) {
 export {
   versions,
   selectDirectory,
+  openPath,
   kvStoresService,
   kvClient,
   bridgeServer,
