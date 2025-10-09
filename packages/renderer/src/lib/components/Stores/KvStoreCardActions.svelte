@@ -4,6 +4,7 @@
   import SquarePenIcon from "@lucide/svelte/icons/square-pen";
   import FilePenIcon from "@lucide/svelte/icons/file-pen-line";
   import SquareArrowOutUpRightIcon from "@lucide/svelte/icons/square-arrow-out-up-right";
+  import CopyIcon from "@lucide/svelte/icons/copy";
   import OpenPathIcon from "@lucide/svelte/icons/folder-open";
   import { Button } from "$lib/components/shadcn/button/index.js";
   import { kvStoresState, openKvStore } from "$lib/states/kvStoresState.svelte";
@@ -14,6 +15,10 @@
 
   let openMenu = $state(false);
 
+  function copy(text: string) {
+    navigator.clipboard.writeText(text);
+  }
+
   function getOpenMenu() {
     return openMenu;
   }
@@ -21,6 +26,8 @@
   function setOpenMenu(state: boolean) {
     openMenu = state;
   }
+
+  const isLocal = kvStore.type == "local" || kvStore.type == "default";
 </script>
 
 <DropdownMenu.Root bind:open={getOpenMenu, setOpenMenu}>
@@ -40,6 +47,9 @@
     <DropdownMenu.Item onclick={() => openKvStore(kvStore)}>
       <SquareArrowOutUpRightIcon />
       Browse
+    </DropdownMenu.Item>
+    <DropdownMenu.Item onclick={() => copy(kvStore.url)}>
+      <CopyIcon /> Copy {isLocal ? "Path" : "URL"}
     </DropdownMenu.Item>
     <DropdownMenu.Item
       onclick={() => {
