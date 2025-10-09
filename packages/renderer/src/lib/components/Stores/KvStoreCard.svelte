@@ -15,6 +15,7 @@
   import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
   import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
   import RenameIcon from "@lucide/svelte/icons/case-upper";
+  import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 </script>
@@ -78,11 +79,11 @@
   <p class="flex gap-2 items-center text-sm">
     <CalendarFold class="size-4" />
     Created:
-    <span>{kvStore.createdAt.slice(0, 10)}</span>
+    <span>{formatTimeAgo(new Date(kvStore.createdAt))}</span>
   </p>
   <p class="flex gap-2 items-center text-sm">
     <CalendarSync class="size-4" />
     Last Update:
-    <span>{kvStore.updatedAt.slice(0, 10)}</span>
+    <span>{formatTimeAgo(new Date(kvStore.updatedAt))}</span>
   </p>
 </div>
