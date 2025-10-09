@@ -1,27 +1,22 @@
 <script lang="ts">
-  import {
-    kvStoresState,
-    openKvStore,
-  } from "../../states/kvStoresState.svelte";
+  import { openKvStore } from "../../states/kvStoresState.svelte";
   import ServerIcon from "@lucide/svelte/icons/server";
   import GlobeIcon from "@lucide/svelte/icons/globe";
   import FileIcon from "@lucide/svelte/icons/file";
   import LocalStorageIcon from "@lucide/svelte/icons/hard-drive";
   import CalendarSync from "@lucide/svelte/icons/calendar-sync";
   import CalendarFold from "@lucide/svelte/icons/calendar-fold";
-  import SquarePenIcon from "@lucide/svelte/icons/square-pen";
-  import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
-  import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
-  import RenameIcon from "@lucide/svelte/icons/case-upper";
   import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
   import KvStorePathOrUrl from "./KvStorePathOrUrl.svelte";
+  import KvStoreCardActions from "./KvStoreCardActions.svelte";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="bg-card rounded-md shadow-md text-muted-foreground p-4 space-y-2 transition w-full h-full"
-  ondblclickcapture={() => {
+  ondblclick={() => {
     openKvStore(kvStore);
   }}
 >
@@ -39,30 +34,7 @@
       {kvStore.name}
     </p>
     <div class="flex gap-2 items-center justify-end">
-      {#if kvStore.type != "default"}
-        <ButtonWithTooltip
-          onclick={() => {
-            kvStoresState.openedStoreToEdit = kvStore;
-          }}
-          size="icon"
-          variant="secondary"
-          tooltipContent="Edit"
-        >
-          <SquarePenIcon />
-        </ButtonWithTooltip>
-      {:else}
-        <ButtonWithTooltip
-          onclick={() => {
-            kvStoresState.renameDefaultKvStore = kvStore;
-          }}
-          size="icon"
-          variant="secondary2"
-          tooltipContent="Rename"
-        >
-          <RenameIcon />
-        </ButtonWithTooltip>
-      {/if}
-      <DeleteKvStoreButton {kvStore} />
+      <KvStoreCardActions {kvStore} />
     </div>
   </div>
   <KvStorePathOrUrl {kvStore} />

@@ -4,7 +4,6 @@
   import { kvStoresService } from "@app/preload";
   import { kvStoresState } from "../../states/kvStoresState.svelte";
   import { toast } from "svelte-sonner";
-  import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 
@@ -44,15 +43,12 @@
 </script>
 
 <AlertDialog.Root bind:open={getOpen, setOpen}>
-  <AlertDialog.Trigger>
-    <ButtonWithTooltip
-      tooltipContent="Delete"
-      className="size-7"
-      size="icon"
-      variant="destructive"
-    >
-      <TrashIcon />
-    </ButtonWithTooltip>
+  <AlertDialog.Trigger
+    onclick={(e) => e.stopPropagation()}
+    class="flex gap-1 !text-destructive w-full"
+  >
+    <TrashIcon class="!text-destructive" />
+    Delete
   </AlertDialog.Trigger>
   <AlertDialog.Content>
     <AlertDialog.Header>
