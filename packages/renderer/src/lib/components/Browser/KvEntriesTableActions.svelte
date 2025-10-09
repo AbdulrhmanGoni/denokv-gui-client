@@ -53,7 +53,7 @@
     <DropdownMenu.Item onclick={() => copy(JSON.stringify(entry.value))}>
       <CopyValueIcon /> Copy Value
     </DropdownMenu.Item>
-    <DropdownMenu.Item>
+    <DropdownMenu.Item onclick={() => copy(entry.versionstamp)}>
       <TagsIcon /> Copy Version
     </DropdownMenu.Item>
     <DropdownMenu.Item onclick={() => openKvEntryDialog(entry, true)}>
