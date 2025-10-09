@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.6.1...v1.7.0) (2025-10-09)
+
+
+### Features
+
+* provide an option to copy Kv store path or URL ([e974860](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e974860e04dde46e470977f57535324d9ffee665))
+* make local kv stores paths clickable to quick open in file explorer ([aa19273](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/aa19273a438590bd15a93682fdabaf49408bdfed))
+
+
+### Bug Fixes
+
+* make "Copy Version" action in Kv Entries table work ([c264b7d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c264b7d3f311cb8d03f261ae2fd8940a5957ef36))
+
+
+### User Interface Changes
+
+* put actions buttons of Kv Store cards in a dropdown menu ([5ee6881](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5ee6881d59234ed9d9ee5c93079d7781069fb14b))
+* change the date format of "Created" and "Last Update" in Kv store cards ([f058e85](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f058e85dc157316e8dffac6694df817d63e3929b))
+
 ## [1.6.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.6.0...v1.6.1) (2025-10-02)
 
 
@@ -103,8 +122,14 @@ All notable changes to this project will be documented in this file. See [commit
 
 ### Bug Fixes
 
-* **ui:** correct app version display format ([92779de](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/92779de4eed1c87a56c37375db7f2e5f3a103fea))
 * **ui:** unlock app container element's height to screen's height ([7e43658](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7e4365867d10623cdcc35171a6edc3df1a5b3a22))
+* **ui:** correct app version display format ([92779de](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/92779de4eed1c87a56c37375db7f2e5f3a103fea))
+
+
+### User Interface Changes
+
+* display a diffrent Kv entry value icon based on mode (edit or show) ([aa76169](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/aa7616915bd617e3a238915bb7d45dfe5eedf4c2))
+
 
 ## 1.0.0 (2025-09-02)
 
