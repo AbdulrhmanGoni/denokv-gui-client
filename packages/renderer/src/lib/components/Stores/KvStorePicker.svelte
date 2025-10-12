@@ -8,6 +8,10 @@
   import GlobeIcon from "@lucide/svelte/icons/globe";
   import FileIcon from "@lucide/svelte/icons/file";
   import LocalStorageIcon from "@lucide/svelte/icons/hard-drive";
+  import type { Table } from "@tanstack/table-core";
+
+  const { kvEntriesTable }: { kvEntriesTable: Table<SerializedKvEntry> } =
+    $props();
 
   let openedKvStoreId = $derived(kvStoresState.openedStore?.id);
 
@@ -19,6 +23,8 @@
     const open = await openKvStore(chosenKvStore);
     if (!open) {
       openedKvStoreId = kvStoresState.openedStore!.id;
+    } else {
+      kvEntriesTable.resetRowSelection();
     }
   }
 </script>

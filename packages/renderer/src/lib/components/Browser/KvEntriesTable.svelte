@@ -1,18 +1,12 @@
 <script lang="ts">
-  import {
-    createSvelteTable,
-    FlexRender,
-  } from "$lib/components/shadcn/data-table/index.js";
+  import { FlexRender } from "$lib/components/shadcn/data-table/index.js";
   import Separator from "$lib/components/shadcn/separator/separator.svelte";
   import * as Table from "$lib/components/shadcn/table/index.js";
-  import {
-    type RowSelectionState,
-    getCoreRowModel,
-  } from "@tanstack/table-core";
   import {
     kvEntriesState,
     fetchEntries,
   } from "$lib/states/kvEntriesState.svelte";
+  import type { Table as TableType } from "@tanstack/table-core";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import RefreshIcon from "@lucide/svelte/icons/refresh-cw";
   import Loader from "@lucide/svelte/icons/loader";
@@ -21,28 +15,7 @@
   import KvEntriesNavigation from "./KvEntriesNavigation.svelte";
   import DeleteMultipleEntries from "./DeleteMultipleEntries.svelte";
 
-  let rowSelection = $state<RowSelectionState>({});
-
-  const table = createSvelteTable({
-    get data() {
-      return kvEntriesState.entries;
-    },
-    getRowId: (row) => JSON.stringify(row.key),
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    onRowSelectionChange: (updater) => {
-      if (typeof updater === "function") {
-        rowSelection = updater(rowSelection);
-      } else {
-        rowSelection = updater;
-      }
-    },
-    state: {
-      get rowSelection() {
-        return rowSelection;
-      },
-    },
-  });
+  const { table }: { table: TableType<SerializedKvEntry> } = $props();
 
   const selectedRows = $derived(table.getFilteredSelectedRowModel().rows);
   const selectedRowsCount = $derived(selectedRows.length);

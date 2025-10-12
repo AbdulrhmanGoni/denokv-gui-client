@@ -10,6 +10,9 @@
   import AddKvEntryDialog from "./AddKvEntryDialog.svelte";
   import KvStorePicker from "../Stores/KvStorePicker.svelte";
   import BrowseParams from "./BrowseParams.svelte";
+  import { createKvEntriesTable } from "$lib/states/kvEntriesState.svelte";
+
+  const table = createKvEntriesTable();
 
   onDestroy(closeKvStore);
 </script>
@@ -19,7 +22,7 @@
     <Button size="default" variant="outline" onclick={closeKvStore}>
       <ArrowLeftFromLineIcon class="size-5" />
     </Button>
-    <KvStorePicker />
+    <KvStorePicker kvEntriesTable={table} />
   </div>
   <div class="flex gap-2 items-center justify-end">
     <BrowseParams />
@@ -28,7 +31,7 @@
       <PlusIcon />
     </Button>
   </div>
-  <KvEntriesTable />
+  <KvEntriesTable {table} />
   <KvEntryDialog />
   <AddKvEntryDialog />
 </div>

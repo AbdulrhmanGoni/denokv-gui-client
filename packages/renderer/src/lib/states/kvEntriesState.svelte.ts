@@ -1,7 +1,10 @@
 import { kvClient } from "@app/preload";
 import { kvStoresState } from "./kvStoresState.svelte";
+import { columns } from "$lib/components/Browser/columns";
+import { createSvelteTable } from "$lib/components/shadcn/data-table";
+import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
 
-type kvEntriesState = {
+type KvEntriesState = {
     entries: KvEntry[];
     params: BrowsingParams;
     loading: boolean;
@@ -9,7 +12,7 @@ type kvEntriesState = {
     error: string;
 }
 
-export const kvEntriesStateDefaultValues: kvEntriesState = {
+export const kvEntriesStateDefaultValues: KvEntriesState = {
     entries: [],
     params: {
         limit: 40,
@@ -24,7 +27,7 @@ export const kvEntriesStateDefaultValues: kvEntriesState = {
     error: "",
 }
 
-export const kvEntriesState: kvEntriesState = $state(kvEntriesStateDefaultValues);
+export const kvEntriesState: KvEntriesState = $state(kvEntriesStateDefaultValues);
 
 export async function fetchEntries() {
     if (kvStoresState.openedStore) {
@@ -72,4 +75,29 @@ export function resetEntriesState() {
 
 export function resetBrowsingParamsState() {
     kvEntriesState.params = kvEntriesStateDefaultValues.params
+}
+
+export function createKvEntriesTable() {
+    let rowSelection = $state<RowSelectionState>({});
+
+    return createSvelteTable({
+        get data() {
+            return kvEntriesState.entries;
+        },
+        getRowId: (row) => JSON.stringify(row.key),
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        onRowSelectionChange: (updater) => {
+            if (typeof updater === "function") {
+                rowSelection = updater(rowSelection);
+            } else {
+                rowSelection = updater;
+            }
+        },
+        state: {
+            get rowSelection() {
+                return rowSelection;
+            },
+        },
+    });
 }
