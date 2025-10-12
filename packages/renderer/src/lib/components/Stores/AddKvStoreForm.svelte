@@ -12,6 +12,7 @@
         if (res) {
           toast.success("The Kv Store was created successfully");
           form?.reset();
+          kvStoresState.openAddNewStoreForm = false;
         } else {
           toast.error("Creation Failed", {
             description: "We could not create the Kv Store for unknown reason",
