@@ -10,6 +10,8 @@ on:
       - "**/*.d.ts"
       - "LICENSE"
       - "landing/**"
+      - "screenshots/*"
+      - ".versionrc.json"
   pull_request:
     types:
       - opened
@@ -19,6 +21,8 @@ on:
       - "**/*.d.ts"
       - "LICENSE"
       - "landing/**"
+      - "screenshots/*"
+      - ".versionrc.json"
 
 concurrency:
   group: ${{github.workflow}}-${{ github.ref }}
@@ -40,7 +44,7 @@ jobs:
       - compile-and-test
     uses: ./.github/workflows/release.yml
 
-  deploy-landing-page:    
+  deploy-landing-page:
     permissions:
       pages: write
       id-token: write
