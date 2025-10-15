@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.0...v1.7.1) (2025-10-15)
+
+
+### Bug Fixes
+
+* selecting an entry no longer selects entries with same key in other KV stores ([62578d3](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/62578d3bd41608f17f83138c10e76eb227b52689))
+
+
+### Enhancements
+
+* close "Add New Kv Store" form automatically after successful creation ([38db43f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/38db43fa9012f65653b52e9ef5e89fea8c00d9c6))
+
 ## [1.7.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.6.1...v1.7.0) (2025-10-09)
 
 
