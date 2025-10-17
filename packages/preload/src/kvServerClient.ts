@@ -16,6 +16,13 @@ export function browse(params: BrowsingParams) {
         const result = kvKeyStringToSerializedForm(params[param])
         if (result.key && result.key.length) {
             Object.assign(options, { [param]: result.key })
+        } else {
+            if (!result.key) {
+                return {
+                    error: result.error,
+                    result: null,
+                }
+            }
         }
     }
 
