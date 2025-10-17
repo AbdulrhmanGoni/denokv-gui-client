@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.1...v1.7.2) (2025-10-17)
+
+
+### Bug Fixes
+
+* fix "filtering kv entries doesn't work" issue ([5db1e40](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5db1e406e54b5d92defc33806b620c60089234ee))
+* correct creation and update timestamps of KV stores ([2243fc5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2243fc529fb468f36a8fda014c0ea982251c3ce4))
+
 ## [1.7.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.0...v1.7.1) (2025-10-15)
 
 
