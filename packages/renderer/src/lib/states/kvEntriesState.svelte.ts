@@ -10,6 +10,7 @@ type KvEntriesState = {
     loading: boolean;
     fetched: boolean;
     error: string;
+    noMoreEntries: boolean;
 }
 
 export const kvEntriesStateDefaultValues: KvEntriesState = {
@@ -25,6 +26,7 @@ export const kvEntriesStateDefaultValues: KvEntriesState = {
     loading: false,
     fetched: false,
     error: "",
+    noMoreEntries: false,
 }
 
 export const kvEntriesState: KvEntriesState = $state(kvEntriesStateDefaultValues);
@@ -52,6 +54,10 @@ export async function fetchEntries() {
                 }
             } else {
                 kvEntriesState.params.nextCursorIndex++
+            }
+
+            if (kvEntriesState.entries.length < kvEntriesState.params.limit) {
+                kvEntriesState.noMoreEntries = true
             }
         }
         kvEntriesState.loading = false;

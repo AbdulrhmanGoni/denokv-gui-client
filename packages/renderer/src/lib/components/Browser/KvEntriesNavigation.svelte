@@ -7,13 +7,9 @@
     kvEntriesState,
   } from "../../states/kvEntriesState.svelte";
 
-  let nomoreEntries = $derived(
-    kvEntriesState.entries.length < kvEntriesState.params.limit,
-  );
-
   let thereIsNextCursor = $derived(
     !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex] &&
-      !nomoreEntries,
+      !kvEntriesState.noMoreEntries,
   );
 
   let thereIsPreviousCursor = $derived(
