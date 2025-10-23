@@ -36,6 +36,7 @@ export async function startCheckingForUpdates() {
     try {
         updateAppState.newUpdate = await appUpdater.checkForUpdate();
         updateAppState.checkingForUpdatesDone = true
+        updateAppState.checkingForUpdatesError = "";
     } catch (error) {
         updateAppState.checkingForUpdatesError = String(error);
         updateAppState.checkingForUpdatesDone = false
