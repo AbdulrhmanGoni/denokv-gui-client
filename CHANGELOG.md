@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.3](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.2...v1.7.3) (2025-10-23)
+
+
+### Bug Fixes
+
+* reset browsing params when switching kv stores ([3a4cc85](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/3a4cc852d5ae4d108270a262b50704e0e0de150b))
+* fix disabling "next" button after deleting any entry in kv entries table ([397d3a6](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/397d3a6b58c71725aedf822b7bc33f9b151eecf2))
+
 ## [1.7.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.1...v1.7.2) (2025-10-17)
 
 
