@@ -21,6 +21,7 @@ export function browse(params: BrowsingParams) {
                 return {
                     error: result.error,
                     result: null,
+                    cursor: ""
                 }
             }
         }
