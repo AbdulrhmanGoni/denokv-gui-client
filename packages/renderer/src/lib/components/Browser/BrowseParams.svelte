@@ -16,11 +16,13 @@
   import XIcon from "@lucide/svelte/icons/x";
   import CodeRenderer from "./CodeRenderer.svelte";
   import Input from "$lib/components/shadcn/input/input.svelte";
+  import { kvStoresState } from "$lib/states/kvStoresState.svelte";
+  import { untrack } from "svelte";
 
-  let prefixKeyEditorValue = $state("[]");
-  let startKeyEditorValue = $state("[]");
-  let endKeyEditorValue = $state("[]");
-  let limitValue = $state(kvEntriesState.params.limit);
+  let prefixKeyEditorValue = $state(kvEntriesStateDefaultValues.params.prefix);
+  let startKeyEditorValue = $state(kvEntriesStateDefaultValues.params.start);
+  let endKeyEditorValue = $state(kvEntriesStateDefaultValues.params.end);
+  let limitValue = $derived(kvEntriesState.params.limit);
 
   let openBrowseParamsForm = $state(false);
 
@@ -47,6 +49,17 @@
   function closeDialog() {
     setOpen(false);
   }
+
+  $effect(() => {
+    if (kvStoresState.openedStore?.id) {
+      untrack(() => {
+        prefixKeyEditorValue = kvEntriesStateDefaultValues.params.prefix;
+        startKeyEditorValue = kvEntriesStateDefaultValues.params.start;
+        endKeyEditorValue = kvEntriesStateDefaultValues.params.end;
+        limitValue = kvEntriesStateDefaultValues.params.limit;
+      });
+    }
+  });
 </script>
 
 <div class="flex gap-2 flex-1">
