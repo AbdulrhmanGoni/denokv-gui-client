@@ -9,7 +9,7 @@
     resetBrowsingParamsState,
   } from "../../states/kvEntriesState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
-  import SaveIcon from "@lucide/svelte/icons/save";
+  import SaveFilterIcon from "@lucide/svelte/icons/funnel-plus";
   import RotateCwIcon from "@lucide/svelte/icons/rotate-cw";
   import FunnelPlusIcon from "@lucide/svelte/icons/funnel-plus";
   import FunnelIcon from "@lucide/svelte/icons/funnel";
@@ -26,7 +26,7 @@
 
   let openBrowseParamsForm = $state(false);
 
-  function onSaveParams() {
+  function onApplyParams() {
     kvEntriesState.params = {
       ...kvEntriesStateDefaultValues.params,
       prefix: prefixKeyEditorValue,
@@ -62,26 +62,34 @@
   });
 </script>
 
-<div class="flex gap-2 flex-1">
+<div class="flex gap-2 flex-1 overflow-auto">
   <div
-    class="flex gap-1 items-center font-bold bg-card px-2 rounded-sm text-sm"
+    class="flex gap-2 overflow-auto scroll-smooth"
+    id="wheel"
+    onwheel={(e) => {
+      e.currentTarget.scrollLeft += e.deltaY;
+    }}
   >
-    <p>Prefix:</p>
-    <CodeRenderer code={kvEntriesState.params.prefix} />
-  </div>
+    <div
+      class="flex gap-1 items-center font-bold bg-card px-2 rounded-sm text-sm"
+    >
+      <p>Prefix:</p>
+      <CodeRenderer code={kvEntriesState.params.prefix} />
+    </div>
 
-  <div
-    class="flex gap-1 items-center font-bold bg-card px-2 rounded-sm text-sm"
-  >
-    <p>Start:</p>
-    <CodeRenderer code={kvEntriesState.params.start} />
-  </div>
+    <div
+      class="flex gap-1 items-center font-bold bg-card px-2 rounded-sm text-sm"
+    >
+      <p>Start:</p>
+      <CodeRenderer code={kvEntriesState.params.start} />
+    </div>
 
-  <div
-    class="flex gap-1 items-center font-bold bg-card px-2 rounded-sm text-sm"
-  >
-    <p>End:</p>
-    <CodeRenderer code={kvEntriesState.params.end} />
+    <div
+      class="flex gap-1 items-center font-bold bg-card px-2 rounded-sm text-sm"
+    >
+      <p>End:</p>
+      <CodeRenderer code={kvEntriesState.params.end} />
+    </div>
   </div>
 
   <div
@@ -122,7 +130,7 @@
 
 <AlertDialog.Root bind:open={getOpen, setOpen}>
   <AlertDialog.Content class="!max-w-xl w-full p-3 gap-2">
-    <h1 class="flex gap-2 items-center text-2xl font-bold mb-">
+    <h1 class="flex gap-2 items-center text-2xl font-bold">
       <FunnelIcon /> Filter
     </h1>
     <p class="gap-1.5 text-foreground">
@@ -136,7 +144,7 @@
         official manual
       </a>
       of <strong>Deno Kv database</strong> for more information about how filtering
-      works.
+      entries works.
     </p>
     <div class="grid w-full items-start gap-2 mt-2">
       <div class="flex gap-3 justify-between items-end">
@@ -177,9 +185,9 @@
       </div>
       <Separator />
       <div class="flex flex-row-reverse gap-2">
-        <Button onclick={onSaveParams} variant="secondary" size="sm">
+        <Button onclick={onApplyParams} variant="secondary" size="sm">
           Apply
-          <SaveIcon />
+          <SaveFilterIcon />
         </Button>
         <Button variant="outline" size="sm" onclick={closeDialog}>
           <XIcon />
@@ -189,3 +197,9 @@
     </div>
   </AlertDialog.Content>
 </AlertDialog.Root>
+
+<style>
+  #wheel::-webkit-scrollbar {
+    height: 2px;
+  }
+</style>
