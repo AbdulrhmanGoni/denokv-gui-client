@@ -1,4 +1,4 @@
-import { getSettingsQuery, insertSettingQuery, updateSettingQuery } from "./db/settingsQueries.js";
+import { getSettingsQuery, insertSettingQuery, updateSettingQuery } from "../db/settingsQueries.js";
 
 export function getSettings(): Settings | undefined {
     const result = getSettingsQuery.get() as { settingsAsJsonText: string } | undefined

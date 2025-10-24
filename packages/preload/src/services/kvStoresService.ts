@@ -1,7 +1,7 @@
 import { readdir, writeFile, rm, rename, mkdir } from 'node:fs/promises';
 import { existsSync, statSync } from 'node:fs';
 import { exec } from 'node:child_process';
-import { deleteOneQuery, getAllQuery, getOneQuery, insertQuery, updateQuery } from './db/kvStoresQueries.js';
+import { deleteOneQuery, getAllQuery, getOneQuery, insertQuery, updateQuery } from '../db/kvStoresQueries.js';
 import path from 'node:path';
 import { openKv } from '@deno/kv';
 import { deadline } from '@std/async';

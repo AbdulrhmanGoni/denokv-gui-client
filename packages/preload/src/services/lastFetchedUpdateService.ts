@@ -3,9 +3,9 @@ import {
     getLastFetchedUpdateQuery,
     insertLastFetchedUpdateQuery,
     updateLastFetchedUpdateQuery,
-} from "./db/lastFetchedUpdateQueries.js";
-import { isGreaterVersion } from "./helpers.js";
-import { versions } from "./index.js";
+} from "../db/lastFetchedUpdateQueries.js";
+import { isGreaterVersion } from "../helpers.js";
+import { versions } from "../index.js";
 
 export function getLastFetchedUpdate(): UpdateCheckResult | null {
     const row = getLastFetchedUpdateQuery.get() as { updateInfoAsJson: string } | undefined
