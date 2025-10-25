@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.4](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.3...v1.7.4) (2025-10-25)
+
+
+### Bug Fixes
+
+* fix "next" button sticks as disabled after reaching the last page ([78519c5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/78519c5114b987b153fa702ffc8b22eaa47c0bb6))
+* fix "next" button sticks as disabled after applying new filters ([0f8823a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0f8823a47ea0e0aff7512e4ef224363cdcc9aa54))
+* add scrolling when filtering keys overflow ([746f601](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/746f601c07e2bf5c3e4ee4173ec254289ddfd36c))
+* clear any previous error if "check for update" succeeded after a failure ([b7d2c33](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b7d2c337fb33882eaee9dcc99d4aa3e907d1f316))
+
 ## [1.7.3](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.2...v1.7.3) (2025-10-23)
 
 
