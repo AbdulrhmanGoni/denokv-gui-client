@@ -25,6 +25,9 @@
   function prev() {
     if (thereIsPreviousCursor) {
       kvEntriesState.params.nextCursorIndex -= 2;
+      if (kvEntriesState.noMoreEntries) {
+        kvEntriesState.noMoreEntries = false;
+      }
       fetchEntries();
     }
   }
