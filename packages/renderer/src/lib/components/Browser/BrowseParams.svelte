@@ -7,6 +7,7 @@
     kvEntriesState,
     kvEntriesStateDefaultValues,
     resetBrowsingParamsState,
+    setBrowsingParams,
   } from "../../states/kvEntriesState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import SaveFilterIcon from "@lucide/svelte/icons/funnel-plus";
@@ -27,14 +28,12 @@
   let openBrowseParamsForm = $state(false);
 
   function onApplyParams() {
-    kvEntriesState.params = {
-      ...kvEntriesStateDefaultValues.params,
+    setBrowsingParams({
       prefix: prefixKeyEditorValue,
       start: startKeyEditorValue,
       end: endKeyEditorValue,
       limit: limitValue,
-    };
-    fetchEntries();
+    });
     closeDialog();
   }
 

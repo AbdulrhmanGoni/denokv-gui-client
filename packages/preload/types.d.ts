@@ -11,8 +11,6 @@ type BrowsingParams = {
     start: string;
     end: string;
     limit: NonNullable<BrowseRouteOptions["limit"]>;
-    cursors: NonNullable<BrowseRouteOptions["cursor"]>[];
-    nextCursorIndex: number;
 }
 
 type SerializedKvKey = import("@denokv-gui-client/bridge-server").SerializedKvKey

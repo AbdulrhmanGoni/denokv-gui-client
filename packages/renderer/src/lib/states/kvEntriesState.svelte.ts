@@ -6,7 +6,10 @@ import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
 
 type KvEntriesState = {
     entries: KvEntry[];
-    params: BrowsingParams;
+    params: BrowsingParams & {
+        nextCursorIndex: number;
+        cursors: NonNullable<BrowseRouteOptions["cursor"]>[];
+    };
     loading: boolean;
     fetched: boolean;
     error: string;
@@ -106,4 +109,13 @@ export function createKvEntriesTable() {
             },
         },
     });
+}
+
+export function setBrowsingParams(params: BrowsingParams) {
+    kvEntriesState.params = {
+        ...kvEntriesStateDefaultValues.params,
+        ...params,
+    };
+    kvEntriesState.noMoreEntries = false;
+    fetchEntries();
 }
