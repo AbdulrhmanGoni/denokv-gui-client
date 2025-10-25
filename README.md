@@ -1,5 +1,7 @@
 # Deno KV GUI Client
 
+![downloads](https://img.shields.io/github/downloads/abdulrhmangoni/denokv-gui-client/total.svg)
+
 This is an open source desktop app client for [**Deno KV Database**](https://docs.deno.com/deploy/kv/manual/). <br/>
 It enable you to browse your stored data inside Deno KV Databases and preform CRUD operations in a nice and modern GUI.
 
