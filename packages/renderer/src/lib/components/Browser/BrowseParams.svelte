@@ -1,7 +1,5 @@
 <script lang="ts">
-  import CodeEditor from "./CodeEditor.svelte";
   import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
-  import Separator from "$lib/components/shadcn/separator/separator.svelte";
   import {
     fetchEntries,
     kvEntriesState,
@@ -16,14 +14,14 @@
   import FunnelIcon from "@lucide/svelte/icons/funnel";
   import XIcon from "@lucide/svelte/icons/x";
   import CodeRenderer from "./CodeRenderer.svelte";
-  import Input from "$lib/components/shadcn/input/input.svelte";
   import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import { untrack } from "svelte";
+  import BrowsingParamsForm from "./BrowsingParamsForm.svelte";
 
   let prefixKeyEditorValue = $state(kvEntriesStateDefaultValues.params.prefix);
   let startKeyEditorValue = $state(kvEntriesStateDefaultValues.params.start);
   let endKeyEditorValue = $state(kvEntriesStateDefaultValues.params.end);
-  let limitValue = $derived(kvEntriesState.params.limit);
+  let limitValue = $derived(kvEntriesStateDefaultValues.params.limit);
 
   let openBrowseParamsForm = $state(false);
 
@@ -145,44 +143,12 @@
       of <strong>Deno Kv database</strong> for more information about how filtering
       entries works.
     </p>
-    <div class="grid w-full items-start gap-2 mt-2">
-      <div class="flex gap-3 justify-between items-end">
-        <p class="font-bold text-lg">Limit</p>
-        <Input
-          type="number"
-          bind:value={limitValue}
-          class="w-18"
-          placeholder="Limit"
-        />
-      </div>
-      <Separator />
-      <div>
-        <p class="font-bold text-lg">Prefix</p>
-        <CodeEditor
-          editorId="prefix-key-editor"
-          bind:editorValue={prefixKeyEditorValue}
-          className="w-full max-h-28"
-        />
-      </div>
-      <Separator />
-      <div>
-        <p class="font-bold text-lg">Start</p>
-        <CodeEditor
-          editorId="start-key-editor"
-          bind:editorValue={startKeyEditorValue}
-          className="w-full max-h-28"
-        />
-      </div>
-      <Separator />
-      <div>
-        <p class="font-bold text-lg">End</p>
-        <CodeEditor
-          editorId="end-key-editor"
-          bind:editorValue={endKeyEditorValue}
-          className="w-full max-h-28"
-        />
-      </div>
-      <Separator />
+    <BrowsingParamsForm
+      bind:prefix={prefixKeyEditorValue}
+      bind:start={startKeyEditorValue}
+      bind:end={endKeyEditorValue}
+      bind:limit={limitValue}
+    >
       <div class="flex flex-row-reverse gap-2">
         <Button onclick={onApplyParams} size="sm">
           Apply
@@ -193,7 +159,7 @@
           <XIcon />
         </Button>
       </div>
-    </div>
+    </BrowsingParamsForm>
   </AlertDialog.Content>
 </AlertDialog.Root>
 
