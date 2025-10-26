@@ -26,8 +26,8 @@
   </div>
   <div class="flex gap-2 items-center justify-end">
     <BrowseParams />
-    <Button onclick={openAddKvEntryDialog} size="sm">
-      Add Kv Entry
+    <Button onclick={openAddKvEntryDialog}>
+      Add Entry
       <PlusIcon />
     </Button>
   </div>

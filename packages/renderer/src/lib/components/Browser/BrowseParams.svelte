@@ -184,13 +184,13 @@
       </div>
       <Separator />
       <div class="flex flex-row-reverse gap-2">
-        <Button onclick={onApplyParams} variant="secondary" size="sm">
+        <Button onclick={onApplyParams} size="sm">
           Apply
           <SaveFilterIcon />
         </Button>
         <Button variant="outline" size="sm" onclick={closeDialog}>
-          <XIcon />
           Close
+          <XIcon />
         </Button>
       </div>
     </div>
