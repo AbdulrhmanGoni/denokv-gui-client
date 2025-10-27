@@ -26,6 +26,7 @@
             (c) => c.id != kvStore.id,
           );
           openDialog = false;
+          toast.success("The Kv Store was deleted successfully");
         } else {
           toast.error("Failed to delete the kvStore", {
             description: "We could not delete the kvStore for unknown reason",
