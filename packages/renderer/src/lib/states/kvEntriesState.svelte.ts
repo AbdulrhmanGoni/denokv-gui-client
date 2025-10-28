@@ -1,4 +1,4 @@
-import { kvClient } from "@app/preload";
+import { kvClient, browsingParamsService } from "@app/preload";
 import { kvStoresState } from "./kvStoresState.svelte";
 import { columns } from "$lib/components/Browser/columns";
 import { createSvelteTable } from "$lib/components/shadcn/data-table";
@@ -16,13 +16,17 @@ type KvEntriesState = {
     noMoreEntries: boolean;
 }
 
+const defaultBrowsingParams = {
+    limit: 40,
+    prefix: "[]",
+    start: "[]",
+    end: "[]",
+}
+
 export const kvEntriesStateDefaultValues: KvEntriesState = {
     entries: [],
     params: {
-        limit: 40,
-        prefix: "[]",
-        start: "[]",
-        end: "[]",
+        ...defaultBrowsingParams,
         cursors: [],
         nextCursorIndex: -1,
     },
@@ -79,10 +83,12 @@ export function removeEntryFromState(entry: KvEntry) {
 }
 
 export function resetEntriesState() {
+    fetchSavedDefaultBrowsingParams()
     Object.assign(kvEntriesState, kvEntriesStateDefaultValues)
 }
 
 export function resetBrowsingParamsState() {
+    fetchSavedDefaultBrowsingParams()
     kvEntriesState.params = kvEntriesStateDefaultValues.params
 }
 
@@ -118,4 +124,49 @@ export function setBrowsingParams(params: BrowsingParams) {
     };
     kvEntriesState.noMoreEntries = false;
     fetchEntries();
+}
+
+type SavedBrowsingParamsState = {
+    savedParams: SavedBrowsingParamsRecord<BrowsingParams>[];
+    fetched: boolean;
+    error: string;
+    selectedParamsToEdit: SavedBrowsingParamsRecord<BrowsingParams> | null;
+}
+
+export const savedBrowsingParamsState: SavedBrowsingParamsState = $state({
+    savedParams: [],
+    fetched: false,
+    error: "",
+    selectedParamsToEdit: null,
+});
+
+export function fetchSavedBrowsingParams() {
+    if (kvStoresState.openedStore) {
+        const { result, error } =
+            browsingParamsService.getSavedBrowsingParamsRecords(
+                kvStoresState.openedStore.id,
+            );
+
+        if (result) {
+            savedBrowsingParamsState.savedParams = result;
+            savedBrowsingParamsState.error = "";
+            savedBrowsingParamsState.fetched = true;
+        } else {
+            savedBrowsingParamsState.error = error;
+            savedBrowsingParamsState.fetched = false;
+        }
+    }
+}
+
+export function fetchSavedDefaultBrowsingParams() {
+    if (kvStoresState.openedStore) {
+        const { result } = browsingParamsService.getDefaultSavedBrowsingParams(
+            kvStoresState.openedStore.id
+        )
+
+        kvEntriesStateDefaultValues.params = {
+            ...kvEntriesStateDefaultValues.params,
+            ...(result?.paramsAsJson || defaultBrowsingParams)
+        }
+    }
 }

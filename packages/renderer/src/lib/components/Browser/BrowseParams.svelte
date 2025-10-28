@@ -2,8 +2,8 @@
   import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
   import {
     fetchEntries,
+    fetchSavedDefaultBrowsingParams,
     kvEntriesState,
-    kvEntriesStateDefaultValues,
     resetBrowsingParamsState,
     setBrowsingParams,
   } from "../../states/kvEntriesState.svelte";
@@ -17,13 +17,21 @@
   import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import { untrack } from "svelte";
   import BrowsingParamsForm from "./BrowsingParamsForm.svelte";
+  import SavedBrowsingParamsList from "./SavedBrowsingParamsList.svelte";
+  import { browsingParamsService } from "@app/preload";
+  import { toast } from "svelte-sonner";
+  import Checkbox from "../shadcn/checkbox/checkbox.svelte";
+  import Label from "../shadcn/label/label.svelte";
 
-  let prefixKeyEditorValue = $state(kvEntriesStateDefaultValues.params.prefix);
-  let startKeyEditorValue = $state(kvEntriesStateDefaultValues.params.start);
-  let endKeyEditorValue = $state(kvEntriesStateDefaultValues.params.end);
-  let limitValue = $derived(kvEntriesStateDefaultValues.params.limit);
+  let prefixKeyEditorValue = $derived(kvEntriesState.params.prefix);
+  let startKeyEditorValue = $derived(kvEntriesState.params.start);
+  let endKeyEditorValue = $derived(kvEntriesState.params.end);
+  let limitValue = $derived(kvEntriesState.params.limit);
 
   let openBrowseParamsForm = $state(false);
+
+  let saveParams = $state(false);
+  let setParamsAsDefault = $state(false);
 
   function onApplyParams() {
     setBrowsingParams({
@@ -33,6 +41,9 @@
       limit: limitValue,
     });
     closeDialog();
+    if (saveParams) {
+      saveBrowsingParams();
+    }
   }
 
   function getOpen() {
@@ -50,13 +61,43 @@
   $effect(() => {
     if (kvStoresState.openedStore?.id) {
       untrack(() => {
-        prefixKeyEditorValue = kvEntriesStateDefaultValues.params.prefix;
-        startKeyEditorValue = kvEntriesStateDefaultValues.params.start;
-        endKeyEditorValue = kvEntriesStateDefaultValues.params.end;
-        limitValue = kvEntriesStateDefaultValues.params.limit;
+        resetBrowsingParamsState();
       });
     }
   });
+
+  $effect(() => {
+    if (!openBrowseParamsForm) {
+      untrack(() => {
+        saveParams = false;
+        setParamsAsDefault = false;
+      });
+    }
+  });
+
+  function saveBrowsingParams() {
+    if (kvStoresState.openedStore) {
+      const { result, error } = browsingParamsService.saveBrowsingParams(
+        kvStoresState.openedStore.id,
+        {
+          browsingParams: {
+            prefix: prefixKeyEditorValue,
+            start: startKeyEditorValue,
+            end: endKeyEditorValue,
+            limit: limitValue,
+          },
+          setAsDefault: saveParams && setParamsAsDefault,
+        },
+      );
+
+      if (result) {
+        toast.success("Filter has been saved successfully");
+        fetchSavedDefaultBrowsingParams();
+      } else {
+        toast.error(error);
+      }
+    }
+  }
 </script>
 
 <div class="flex gap-2 flex-1 overflow-auto">
@@ -108,15 +149,14 @@
     Filter
   </Button>
 
+  <SavedBrowsingParamsList />
+
   <Button
     size="sm"
     class="h-9"
     variant="outline"
     onclick={() => {
       resetBrowsingParamsState();
-      prefixKeyEditorValue = "[]";
-      startKeyEditorValue = "[]";
-      endKeyEditorValue = "[]";
       fetchEntries();
     }}
   >
@@ -149,6 +189,20 @@
       bind:end={endKeyEditorValue}
       bind:limit={limitValue}
     >
+      <div class="flex items-center gap-3 [&>*]:cursor-pointer">
+        <Checkbox id="save" bind:checked={saveParams} />
+        <Label for="save">Save this filter for reusing in the future</Label>
+      </div>
+      <div class="flex items-center gap-3 [&>*]:cursor-pointer">
+        <Checkbox
+          id="set-default"
+          bind:checked={setParamsAsDefault}
+          disabled={!saveParams}
+        />
+        <Label for="set-default">
+          Set this filter as the default for the current KV store
+        </Label>
+      </div>
       <div class="flex flex-row-reverse gap-2">
         <Button onclick={onApplyParams} size="sm">
           Apply
