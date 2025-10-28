@@ -1,6 +1,5 @@
 import { globalState } from "$lib/states/globalState.svelte";
 import { bridgeServer, kvStoresService } from "@app/preload";
-import { fetchEntries, resetEntriesState } from "$lib/states/kvEntriesState.svelte";
 import { toast } from "svelte-sonner";
 
 type StoresState = {
@@ -42,9 +41,11 @@ export async function openKvStore(kvStore: KvStore) {
     globalState.loadingOverlay.text = ""
 
     if (testSucceed) {
-        kvStoresState.openedStore = kvStore;
-        await startKvStoreServer(kvStore)
-        return true
+        const isStarted = await startKvStoreServer(kvStore)
+        if (isStarted) {
+            kvStoresState.openedStore = kvStore;
+        }
+        return isStarted
     }
 
     toast.error("Connection Failed", {
@@ -55,30 +56,31 @@ export async function openKvStore(kvStore: KvStore) {
 
 export async function closeKvStore() {
     kvStoresState.openedStore = null;
-    resetEntriesState();
     bridgeServer.closeServer();
 }
 
 async function startKvStoreServer(kvStore: KvStore) {
+    let isOpened = false;
+    let error = "";
+
     try {
         globalState.loadingOverlay.open = true
         globalState.loadingOverlay.text = "Starting the Kv bridge server..."
-        const isOpened = await bridgeServer.openServer($state.snapshot(kvStore));
+        isOpened = await bridgeServer.openServer($state.snapshot(kvStore));
+    } catch (e) {
+        error = String(e)
+    } finally {
         globalState.loadingOverlay.open = false
         globalState.loadingOverlay.text = ""
-        if (isOpened) {
-            resetEntriesState();
-            await fetchEntries();
-        } else {
-            toast.error("Failed to open the server", {
-                description: "We could not open the server which communicates with the Deno KV database.",
-            });
-        }
-    } catch (error) {
-        toast.error("Failed to open the server", {
-            description: String(error),
+    }
+
+    if (!isOpened) {
+        toast.error("Error when trying to start the server", {
+            description: error || "We could not start the server that communicates with the Deno KV database.",
         });
     }
+
+    return isOpened
 }
 
 const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { ModeWatcher } from "mode-watcher";
+  import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import Header from "$lib/components/custom/Header.svelte";
   import EntitiesBrowser from "$lib/components/Browser/EntitiesBrowser.svelte";
   import StoresManagement from "$lib/components/Stores/KvStoresManagement.svelte";
-  import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import { Toaster } from "$lib/components/shadcn/sonner";
   import LoadingOverlay from "$lib/components/custom/LoadingOverlay.svelte";
   import { globalState } from "$lib/states/globalState.svelte";

@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, untrack } from "svelte";
   import { openAddKvEntryDialog } from "$lib/states/globalState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
-  import { closeKvStore } from "../../states/kvStoresState.svelte";
+  import {
+    closeKvStore,
+    kvStoresState,
+  } from "../../states/kvStoresState.svelte";
   import KvEntriesTable from "./KvEntriesTable.svelte";
   import KvEntryDialog from "./KvEntryDialog.svelte";
   import PlusIcon from "@lucide/svelte/icons/plus";
@@ -10,16 +13,33 @@
   import AddKvEntryDialog from "./AddKvEntryDialog.svelte";
   import KvStorePicker from "../Stores/KvStorePicker.svelte";
   import BrowseParams from "./BrowseParams.svelte";
-  import { createKvEntriesTable } from "$lib/states/kvEntriesState.svelte";
+  import {
+    createKvEntriesTable,
+    fetchEntries,
+    resetEntriesState,
+  } from "$lib/states/kvEntriesState.svelte";
 
   const table = createKvEntriesTable();
 
-  onDestroy(closeKvStore);
+  function close() {
+    closeKvStore();
+  }
+
+  onDestroy(close);
+
+  $effect(() => {
+    if (kvStoresState.openedStore?.id) {
+      untrack(() => {
+        resetEntriesState();
+        fetchEntries();
+      });
+    }
+  });
 </script>
 
 <div class="space-y-2 flex flex-col justify-center h-full">
   <div class="flex gap-2 items-center mb-4">
-    <Button size="default" variant="outline" onclick={closeKvStore}>
+    <Button size="default" variant="outline" onclick={close}>
       <ArrowLeftFromLineIcon class="size-5" />
     </Button>
     <KvStorePicker kvEntriesTable={table} />
