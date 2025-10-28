@@ -6,6 +6,7 @@ import * as bridgeServer from './server.js';
 import * as appUpdater from './appUpdater.js';
 import * as settingsService from './services/settingsService.js';
 import * as lastFetchedUpdateService from './services/lastFetchedUpdateService.js';
+import * as browsingParamsService from './services/browsingParamsService.js';
 
 function selectDirectory() {
   return ipcRenderer.invoke('select-directory') as Promise<string>
@@ -30,4 +31,5 @@ export {
   settingsService,
   onWindowReady,
   lastFetchedUpdateService,
+  browsingParamsService,
 };

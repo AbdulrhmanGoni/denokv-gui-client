@@ -5,6 +5,7 @@ import { deleteOneQuery, getAllQuery, getOneQuery, insertQuery, updateQuery } fr
 import path from 'node:path';
 import { openKv } from '@deno/kv';
 import { deadline } from '@std/async';
+import { clearSavedParamsQuery } from '../db/browsingParamsQueries.js';
 
 export async function create(input: CreateKvStoreInput): Promise<boolean> {
     if (input.type == "local") {
@@ -75,12 +76,18 @@ export async function deleteOne(kvStore: KvStore) {
         if (kvStore.type == "default") {
             const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined
             if (!storedKvStore) {
+                clearSavedParamsQuery.run(kvStore.id)
                 return true
             }
         }
     }
 
     const result = deleteOneQuery.run(kvStore.id)
+
+    if (!!result.changes) {
+        clearSavedParamsQuery.run(kvStore.id)
+    }
+
     return !!result.changes
 }
 

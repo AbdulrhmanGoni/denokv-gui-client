@@ -13,6 +13,17 @@ type BrowsingParams = {
     limit: NonNullable<BrowseRouteOptions["limit"]>;
 }
 
+type SavedBrowsingParams = Pick<BrowsingParams, "prefix" | "start" | "end" | "limit">
+
+type SavedBrowsingParamsRecord<T> = {
+    id: string;
+    kvStoreId: string;
+    paramsAsJson: T;
+    isDefault: 1 | 0;
+    createdAt: number;
+    updatedAt: number;
+}
+
 type SerializedKvKey = import("@denokv-gui-client/bridge-server").SerializedKvKey
 
 type SetKeyOptions = import("@denokv-gui-client/bridge-server").SetKeyOptions

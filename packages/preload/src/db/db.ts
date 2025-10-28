@@ -11,3 +11,15 @@ export const database = new DatabaseSync(dbPath);
 if (!isDev) {
     migrateDatabaseSchema(dbPath);
 }
+
+export function databaseTransaction<T>(fn: () => T) {
+    database.exec("BEGIN");
+    try {
+        const result = fn()
+        database.exec("COMMIT");
+        return result
+    } catch {
+        database.exec("ROLLBACK");
+        throw new Error("Transaction failed");
+    }
+}
