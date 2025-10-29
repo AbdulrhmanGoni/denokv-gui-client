@@ -19,7 +19,7 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 > [!TIP]
 > **Always recommended to download from the latest release**
 
-To download the **Deno KV GUI Client** app, go to [releases](https://github.com/denokv-gui-client/releases) page, pick and download the file that matches your operating system:
+To download the **Deno KV GUI Client** app, go to [releases](https://github.com/AbdulrhmanGoni/denokv-gui-client/releases) page, pick and download the file that matches your operating system:
 
 - **Linux**
   - `.AppImage` (for all common Linux distributions)
