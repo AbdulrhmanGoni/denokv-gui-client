@@ -10,9 +10,14 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 
 ## Some Screenshots
 
-![Kv Entries Table screenshot](./screenshots/kv-stores-grid.png)
-![Kv Entries Table screenshot](./screenshots/entries-table.png)
-![Kv Entries Table screenshot](./screenshots/add-entry-form.png)
+![Kv Entries Table screenshot (Dark)](./screenshots/kv-stores-grid-dark.png#gh-dark-mode-only)
+![Kv Entries Table screenshot (Light)](./screenshots/kv-stores-grid-light.png#gh-light-mode-only)
+
+![Kv Entries Table screenshot (Dark)](./screenshots/entries-table-dark.png#gh-dark-mode-only)
+![Kv Entries Table screenshot (Light)](./screenshots/entries-table-light.png#gh-light-mode-only)
+
+![Kv Entries Table screenshot (Dark)](./screenshots/add-entry-form-dark.png#gh-dark-mode-only)
+![Kv Entries Table screenshot (Light)](./screenshots/add-entry-form-light.png#gh-light-mode-only)
 
 ## Download
 
