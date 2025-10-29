@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.8.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.4...v1.8.0) (2025-10-29)
+
+
+### Features
+
+* enable saving filters for reuse and setting a default filter per kv store ([b5ab56e](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b5ab56e7c005835789be2bedbed58aff03df7bfd))
+
+
+### Enhancements
+
+* fire a success toast message for successful Kv Store deletion ([cbad14a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/cbad14aa27170860b450b4c7dd9027c171d698f9))
+
 ## [1.7.4](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.3...v1.7.4) (2025-10-25)
 
 
