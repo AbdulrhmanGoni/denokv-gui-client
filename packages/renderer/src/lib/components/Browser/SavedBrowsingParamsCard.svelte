@@ -9,7 +9,6 @@
     import dataTypesColors from "./dataTypesColors";
     import Button from "../shadcn/button/button.svelte";
     import {
-        fetchSavedDefaultBrowsingParams,
         savedBrowsingParamsState,
         setBrowsingParams,
     } from "$lib/states/kvEntriesState.svelte";
