@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.8.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.8.0...v1.8.1) (2025-11-10)
+
+
+### Bug Fixes
+
+* prevent infinite loading state when network fails or bridge server is unreachable ([49b6d5a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/49b6d5ae6bb911970d55639dd9357997317fc919))
+
 ## [1.8.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.7.4...v1.8.0) (2025-10-29)
 
 
