@@ -41,23 +41,24 @@ export const kvEntriesState: KvEntriesState = $state(kvEntriesStateDefaultValues
 export async function fetchEntries() {
     if (kvStoresState.openedStore) {
         kvEntriesState.loading = true;
-        const { error, result, cursor } = await kvClient.browse(
+        const { error, result } = await kvClient.browse(
             $state.snapshot(kvEntriesState.params),
             kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex]
         );
+
         if (error) {
             kvEntriesState.error = error;
             kvEntriesState.entries = [];
             kvEntriesState.fetched = false;
         } else {
             kvEntriesState.error = "";
-            kvEntriesState.entries = result ? result : [];
+            kvEntriesState.entries = result?.entries ? result?.entries : [];
             kvEntriesState.fetched = true;
 
-            if (cursor) {
-                const nextCursorIndex = kvEntriesState.params.cursors.indexOf(cursor)
+            if (result?.cursor) {
+                const nextCursorIndex = kvEntriesState.params.cursors.indexOf(result?.cursor)
                 if (nextCursorIndex == -1) {
-                    kvEntriesState.params.cursors.push(cursor)
+                    kvEntriesState.params.cursors.push(result?.cursor)
                     kvEntriesState.params.nextCursorIndex++
                 } else {
                     kvEntriesState.params.nextCursorIndex = nextCursorIndex
