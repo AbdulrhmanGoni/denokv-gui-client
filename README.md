@@ -21,8 +21,12 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 
 ## Download
 
-> [!TIP]
-> **Always recommended to download from the latest release**
+***Always recommended to download from the latest release***
+
+> [!NOTE]
+> For Windows and Mac Users: <br />
+> This application is not code signed yet. When installing, you may encounter "Unknown Publisher" or similar security warnings.
+> So please ensure you trust the source code before proceeding with the installation.
 
 To download the **Deno KV GUI Client** app, go to [releases](https://github.com/AbdulrhmanGoni/denokv-gui-client/releases) page, pick and download the file that matches your operating system:
 
@@ -44,10 +48,14 @@ To download the **Deno KV GUI Client** app, go to [releases](https://github.com/
 > # make sure to replace x.x.x with the proper version
 > ```
 
-> [!NOTE]
-> For Windows and Mac Users: <br />
-> This application is not code signed yet. When installing, you may encounter "Unknown Publisher" or similar security warnings.
-> So please ensure you trust the source code before proceeding with the installation.
+> [!IMPORTANT]
+> In Mac, When you download and install the app, you'll most likely be prevented from opening it and see a warnings like this:
+> > “denokv-gui-client.app” is damaged and can’t be opened. You should move it to the Bin.
+>
+> You can bypass this by running the following command:
+> ```sh
+> xattr -c /path/to/denokv-gui-client.app
+> ```
 
 ## Install and run localy
 
