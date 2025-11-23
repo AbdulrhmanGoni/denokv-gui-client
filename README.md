@@ -45,7 +45,7 @@ To download the **Deno KV GUI Client** app, go to [releases](https://github.com/
 >
 > ```bash
 > chmod +x path/to/denokv-gui-client-x.x.x-linux-x86_64.AppImage
-> # make sure to replace x.x.x with the proper version
+> # make sure to set the right path and replace x.x.x with the proper version
 > ```
 
 > [!IMPORTANT]
@@ -55,6 +55,7 @@ To download the **Deno KV GUI Client** app, go to [releases](https://github.com/
 > You can bypass this by running the following command:
 > ```sh
 > xattr -c /path/to/denokv-gui-client.app
+> # make sure to set the right path
 > ```
 
 ## Install and run localy
