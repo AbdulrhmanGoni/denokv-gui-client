@@ -21,6 +21,10 @@ export const dataTypes: KvDataType[] = [
         starter: "BigInt(0)"
     },
     {
+        type: "KvU64",
+        starter: "0"
+    },
+    {
         type: "Date",
         starter: "new Date()"
     },

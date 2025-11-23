@@ -2,7 +2,6 @@
   import { CodeJar } from "codejar";
   import ScanTextIcon from "@lucide/svelte/icons/scan-text";
   import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
-  import EditFileIcon from "@lucide/svelte/icons/file-pen";
   import KvValueDataTypeSelect from "./KvValueDataTypeSelect.svelte";
   import type { KvDataType } from "./dataTypes";
   import CodeEditor from "./CodeEditor.svelte";

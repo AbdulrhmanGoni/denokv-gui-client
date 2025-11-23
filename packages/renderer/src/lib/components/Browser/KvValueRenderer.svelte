@@ -25,8 +25,14 @@
     {entry.value.data}
   {:else if entry.value.type === "BigInt"}
     <span class={dataTypesColors.number}>{entry.value.data}</span>n
-  {:else if entry.value.type === "Undefined"}
-    undefined
+  {:else if entry.value.type === "KvU64"}
+    KvU64<span class="text-foreground">(</span><!--
+    --><span
+      class={dataTypesColors.number}
+    >
+      {entry.value.data}<span class={dataTypesColors.bigint}>n</span>
+    </span><!--
+    --><span class="text-foreground">)</span>
   {:else if entry.value.type === "Null"}
     null
   {:else if entry.value.type === "Undefined"}

@@ -3,6 +3,7 @@ const dataTypesColors: Record<string, string> = {
     string: "text-[#c6834e]",
     boolean: "dark:text-[#6c48b5] text-[#8142ff]",
     bigint: "dark:text-blue-500 text-blue-800",
+    kvu64: "dark:text-[#ffdd00] text-[#e5ab00]",
     uint8Array: "text-[#6f4dff] dark:text-[#9981ff]",
     null: "text-[#006ac7]",
     undefined: "text-gray-400",
