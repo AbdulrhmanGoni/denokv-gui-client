@@ -9,7 +9,7 @@
   } from "../../states/kvEntriesState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import SaveFilterIcon from "@lucide/svelte/icons/funnel-plus";
-  import RotateCwIcon from "@lucide/svelte/icons/rotate-cw";
+  import ClearFilter from "@lucide/svelte/icons/funnel-x";
   import FunnelPlusIcon from "@lucide/svelte/icons/funnel-plus";
   import FunnelIcon from "@lucide/svelte/icons/funnel";
   import XIcon from "@lucide/svelte/icons/x";
@@ -160,8 +160,8 @@
       fetchEntries();
     }}
   >
+    <ClearFilter />
     Reset
-    <RotateCwIcon />
   </Button>
 </div>
 
