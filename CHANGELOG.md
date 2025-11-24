@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.9.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.8.1...v1.9.0) (2025-11-24)
+
+
+### Features
+
+* support reading and updating "KvU64" values properly ([44a408c](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/44a408c8330502ef80c9a00673b35f38f45a525c))
+
+
+### User Interface Changes
+
+* change the icon of "Reset filter" button ([bc8431d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/bc8431d38b77358e7b0d69e3a5d6ab286fe89a2f))
+
 ## [1.8.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.8.0...v1.8.1) (2025-11-10)
 
 
