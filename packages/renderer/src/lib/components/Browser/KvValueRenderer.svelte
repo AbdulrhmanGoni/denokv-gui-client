@@ -2,6 +2,7 @@
   import { cn } from "$lib/shadcn-utils";
   import CodeRenderer from "./CodeRenderer.svelte";
   import dataTypesColors from "./dataTypesColors";
+  import KvValueRegExpRenderer from "./KvValueRegExpRenderer.svelte";
 
   const {
     entry,
@@ -40,7 +41,7 @@
   {:else if entry.value.type === "Date"}
     {entry.value.data}
   {:else if entry.value.type === "RegExp"}
-    {entry.value.data}
+    <KvValueRegExpRenderer regExpValue={String(entry.value.data)} />
   {:else}
     <CodeRenderer code={entry.value.data.toString()} {format} />
   {/if}
