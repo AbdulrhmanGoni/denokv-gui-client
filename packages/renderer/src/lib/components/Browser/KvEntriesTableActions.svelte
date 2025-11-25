@@ -50,7 +50,7 @@
     <DropdownMenu.Item onclick={() => copy(JSON.stringify(entry.key))}>
       <CopyKeyIcon /> Copy Key
     </DropdownMenu.Item>
-    <DropdownMenu.Item onclick={() => copy(JSON.stringify(entry.value))}>
+    <DropdownMenu.Item onclick={() => copy(String(entry.value.data))}>
       <CopyValueIcon /> Copy Value
     </DropdownMenu.Item>
     <DropdownMenu.Item onclick={() => copy(entry.versionstamp)}>

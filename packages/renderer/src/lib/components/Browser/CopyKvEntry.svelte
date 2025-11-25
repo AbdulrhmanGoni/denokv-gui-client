@@ -23,7 +23,7 @@
       valueCoppied = false;
     }, 5000);
 
-    navigator.clipboard.writeText(JSON.stringify(entry.value));
+    navigator.clipboard.writeText(String(entry.value.data));
   }
 </script>
 
