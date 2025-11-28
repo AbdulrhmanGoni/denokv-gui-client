@@ -13,8 +13,8 @@
   import ValueFileIcon from "@lucide/svelte/icons/file-json";
   import {
     closeAddKvEntryDialog,
-    globalState,
-  } from "$lib/states/globalState.svelte";
+    openAddKvEntryFormState,
+  } from "$lib/states/kvEntryDialogState.svelte";
   import KvEntryExpirationDate from "./KvEntryExpirationDate.svelte";
 
   let addingEntry = $state(false);
@@ -23,11 +23,11 @@
   let kvEntryExpirationDateValue: number | undefined = $state();
 
   function getOpen() {
-    return globalState.openAddKvEntryForm;
+    return openAddKvEntryFormState.open;
   }
 
   function setOpen(newOpen: boolean) {
-    globalState.openAddKvEntryForm = newOpen;
+    openAddKvEntryFormState.open = newOpen;
   }
 
   async function addEntry() {

@@ -16,3 +16,13 @@ export function openKvEntryDialog(entry: KvEntry, edit?: boolean) {
     kvEntryDialogState.open = true
     kvEntryDialogState.openValueEditor = !!edit
 }
+
+export const openAddKvEntryFormState = $state({ open: false });
+
+export function openAddKvEntryDialog() {
+    openAddKvEntryFormState.open = true
+}
+
+export function closeAddKvEntryDialog() {
+    openAddKvEntryFormState.open = false
+}

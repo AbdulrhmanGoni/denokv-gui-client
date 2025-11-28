@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, untrack } from "svelte";
-  import { openAddKvEntryDialog } from "$lib/states/globalState.svelte";
+  import { openAddKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import {
     closeKvStore,
