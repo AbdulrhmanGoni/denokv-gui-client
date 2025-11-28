@@ -149,8 +149,6 @@
     Filter
   </Button>
 
-  <SavedBrowsingParamsList />
-
   <Button
     size="sm"
     class="h-9"
@@ -162,6 +160,21 @@
   >
     <ClearFilter />
     Reset
+  </Button>
+
+  <SavedBrowsingParamsList />
+
+  <Button
+    size="sm"
+    class="h-9"
+    variant="outline"
+    onclick={() => {
+      kvEntriesState.params.nextCursorIndex -= 1;
+      fetchEntries();
+    }}
+  >
+    Reload
+    <RotateCwIcon />
   </Button>
 </div>
 
