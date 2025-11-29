@@ -14,6 +14,13 @@ export default /** @type import('electron-builder').Configuration */
       "node_modules/@app/preload/dist/migrations/**",
     ],
     generateUpdatesFilesForAllChannels: true,
+    mac: {
+      target: [
+        { target: "dmg", arch: ["x64", "arm64"] },
+        { target: "zip", arch: ["x64", "arm64"] },
+      ],
+      icon: "buildResources/icon.icns",
+    },
     linux: {
       target: ['deb', 'AppImage'],
       icon: "buildResources",
