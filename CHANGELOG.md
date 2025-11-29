@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.10.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.9.0...v1.10.0) (2025-11-29)
+
+
+### Features
+
+* introduce `mac-x64` build support ([adc78f0](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/adc78f09623cd6811fbcd5e08b568d57331748c9))
+* enable searching for a single kv entry by it's key ([4e2f62f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/4e2f62f40d9b05871e018d2f2209a11bc5c4b068))
+* add "Reload" button to Kv Entries table ([54c16c3](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/54c16c3bdf9c3cce234d6c7251f31a73dd50e74a))
+
+
+### Bug Fixes
+
+* fix how kv values are copied ([00813c2](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/00813c2412e094d2add8a6b496112a16a15affdc))
+
+
+### Enhancements
+
+* distinguish flags from the actual expression when rendering RegExp top-level value ([d9e584d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d9e584d880276f6b60a87decf6406933c25bead9))
+
 ## [1.9.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.8.1...v1.9.0) (2025-11-24)
 
 
