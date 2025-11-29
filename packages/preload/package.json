@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@deno/kv": "^0.10.0",
-    "@denokv-gui-client/bridge-server": "npm:@jsr/denokv-gui-client__bridge-server@^3.1.1",
+    "@denokv-gui-client/bridge-server": "npm:@jsr/denokv-gui-client__bridge-server@3.1.1",
     "@std/async": "npm:@jsr/std__async@^1.0.13"
   }
 }
