@@ -52,8 +52,21 @@ export function deleteKey(key: SerializedKvKey) {
     return serverClient.delete(key)
 }
 
-export function get(key: SerializedKvKey) {
+export function get(key: string | SerializedKvKey) {
     const serverClient = getServerClient()
+
+    if (typeof key == "string") {
+        const result = kvKeyStringToSerializedForm(key)
+        if (result.key) {
+            return serverClient.get(result.key)
+        }
+
+        return {
+            error: result.error,
+            result: null
+        }
+    }
+
     return serverClient.get(key)
 }
 

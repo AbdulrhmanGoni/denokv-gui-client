@@ -20,6 +20,8 @@
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         secondary2:
           "bg-secondary-2 text-secondary-2-foreground shadow-xs hover:bg-secondary-2/80",
+        secondary1:
+          "bg-secondary-1 text-secondary-1-foreground shadow-xs hover:bg-secondary-1/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",

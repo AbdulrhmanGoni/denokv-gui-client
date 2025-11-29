@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onDestroy, untrack } from "svelte";
-  import { openAddKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
+  import {
+    openAddKvEntryDialog,
+    openLookUpKeyDialog,
+  } from "$lib/states/kvEntryDialogState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import {
     closeKvStore,
@@ -9,6 +12,7 @@
   import KvEntriesTable from "./KvEntriesTable.svelte";
   import KvEntryDialog from "./KvEntryDialog.svelte";
   import PlusIcon from "@lucide/svelte/icons/plus";
+  import SearchIcon from "@lucide/svelte/icons/search";
   import ArrowLeftFromLineIcon from "@lucide/svelte/icons/arrow-left-from-line";
   import AddKvEntryDialog from "./AddKvEntryDialog.svelte";
   import KvStorePicker from "../Stores/KvStorePicker.svelte";
@@ -18,6 +22,7 @@
     fetchEntries,
     resetEntriesState,
   } from "$lib/states/kvEntriesState.svelte";
+  import LookUpKvEntryDialog from "./LookUpKvEntryDialog.svelte";
 
   const table = createKvEntriesTable();
 
@@ -46,12 +51,17 @@
   </div>
   <div class="flex gap-2 items-center justify-end">
     <BrowseParams />
-    <Button onclick={openAddKvEntryDialog}>
+    <Button size="sm" variant="secondary1" onclick={openLookUpKeyDialog}>
+      <SearchIcon />
+      Look up Entry
+    </Button>
+    <Button size="sm" onclick={openAddKvEntryDialog}>
       Add Entry
       <PlusIcon />
     </Button>
   </div>
   <KvEntriesTable {table} />
+  <LookUpKvEntryDialog />
   <KvEntryDialog />
   <AddKvEntryDialog />
 </div>

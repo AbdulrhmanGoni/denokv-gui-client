@@ -26,3 +26,13 @@ export function openAddKvEntryDialog() {
 export function closeAddKvEntryDialog() {
     openAddKvEntryFormState.open = false
 }
+
+export const openLookUpKeyDialogState = $state({ open: false });
+
+export function openLookUpKeyDialog() {
+    openLookUpKeyDialogState.open = true
+}
+
+export function closeLookUpKeyDialog() {
+    openLookUpKeyDialogState.open = false
+}
