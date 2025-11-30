@@ -12,7 +12,6 @@ export default /** @type import('electron-builder').Configuration */
     asarUnpack: [
       "node_modules/@dbmate/**",
       "node_modules/@app/preload/dist/migrations/**",
-      "node_modules/@deno/**",
     ],
     generateUpdatesFilesForAllChannels: true,
     mac: {
