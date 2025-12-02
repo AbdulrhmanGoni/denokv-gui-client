@@ -8,7 +8,7 @@ const dataTypesColors: Record<string, string> = {
     kvu64: "dark:text-[#ffdd00] text-[#e5ab00]",
     uint8Array: "text-[#6f4dff] dark:text-[#9981ff]",
     null: "text-[#006ac7]",
-    undefined: "text-gray-400",
+    undefined: "dark:text-gray-400 text-gray-500",
     regexp: "text-[coral]",
     date: "dark:text-[#a9cbff] text-[#386cb7]",
     blue,
