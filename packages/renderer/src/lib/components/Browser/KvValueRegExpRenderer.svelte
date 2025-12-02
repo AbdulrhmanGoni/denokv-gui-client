@@ -2,7 +2,9 @@
     import dataTypesColors from "./dataTypesColors";
 
     let { regExpValue }: { regExpValue: string } = $props();
-    const regExp: RegExp = $derived(new RegExp(eval(regExpValue)));
+    const regExp: { source: string; flags: string } = $derived(
+        JSON.parse(regExpValue),
+    );
 </script>
 
 {@render fSlash()}{regExp.source}{@render fSlash()}<!--
