@@ -19,7 +19,11 @@
 
   let addingEntry = $state(false);
   let kvKeyCodeEditor: KvKeyCodeEditor | undefined = $state();
-  let kvValueCodeEditor: KvValueCodeEditor | undefined = $state();
+  const defaultValue = {
+    type: "Undefined",
+    data: "undefined",
+  };
+  let kvValueEditorValue: KvEntry["value"] = $state(defaultValue);
   let kvEntryExpirationDateValue: number | undefined = $state();
 
   function getOpen() {
@@ -32,12 +36,10 @@
 
   async function addEntry() {
     addingEntry = true;
-    const key = kvKeyCodeEditor!.toString();
-    const value = kvValueCodeEditor!.toKvValue();
-
+    const key = kvKeyCodeEditor!?.toString();
     const { error } = await kvClient.set(
       key,
-      value,
+      $state.snapshot(kvValueEditorValue),
       kvEntryExpirationDateValue
         ? { expires: kvEntryExpirationDateValue }
         : undefined,
@@ -47,6 +49,7 @@
       toast.error("Failed to add the entry", { description: error });
     } else {
       toast.success("The entry was added successfully");
+      kvValueEditorValue = defaultValue;
       closeAddKvEntryDialog();
     }
 
@@ -58,14 +61,14 @@
   <AlertDialog.Content class="!max-w-3xl w-full p-3 gap-0">
     <h1 class="flex items-center gap-2 text-2xl font-bold">
       <FileIcon class="size-7" />
-      Add Deno KV Entry
+      Add KV Entry
     </h1>
     <Separator class="my-3" />
     <KvKeyEditor bind:jar={kvKeyCodeEditor} />
     <Separator class="my-3" />
     <KvValueEditor
-      bind:jar={kvValueCodeEditor}
-      defaultValue={{ type: "Undefined", data: "undefined" }}
+      bind:editorValue={kvValueEditorValue}
+      {defaultValue}
       titleIcon={valueFileIcon}
     />
     <Separator class="my-3" />

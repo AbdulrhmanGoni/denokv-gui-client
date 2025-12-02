@@ -7,16 +7,24 @@
   import SaveIcon from "@lucide/svelte/icons/save";
   import XIcon from "@lucide/svelte/icons/x";
   import EditFileIcon from "@lucide/svelte/icons/file-pen";
+  import { globalState } from "$lib/states/globalState.svelte";
 
   const { entry }: { entry: KvEntry } = $props();
 
-  let jar: KvValueCodeEditor | undefined = $state();
+  let kvValueEditorValue: KvEntry["value"] = $state(
+    $state.snapshot(entry.value),
+  );
 
   async function saveChanges() {
-    if (jar) {
+    if (
+      kvValueEditorValue.type != entry.value.type ||
+      kvValueEditorValue.data != entry.value.data
+    ) {
+      globalState.loadingOverlay.open = true;
+      globalState.loadingOverlay.text = "Updating entry...";
       const { error } = await kvClient.set(
-        $state.snapshot(entry!).key,
-        jar.toKvValue(),
+        $state.snapshot(entry).key,
+        $state.snapshot(kvValueEditorValue),
       );
 
       if (error) {
@@ -26,12 +34,20 @@
       }
 
       kvEntryDialogState.openValueEditor = false;
+      globalState.loadingOverlay.open = false;
+      globalState.loadingOverlay.text = "";
+    } else {
+      toast.warning("No changes to the value");
     }
   }
 </script>
 
 <div class="space-y-3 overflow-auto">
-  <KvValueEditor bind:jar defaultValue={entry.value} titleIcon={editFileIcon} />
+  <KvValueEditor
+    bind:editorValue={kvValueEditorValue}
+    defaultValue={entry.value}
+    titleIcon={editFileIcon}
+  />
   <div class="flex flex-row-reverse gap-2">
     <Button variant="secondary" size="sm" onclick={saveChanges}>
       <SaveIcon />

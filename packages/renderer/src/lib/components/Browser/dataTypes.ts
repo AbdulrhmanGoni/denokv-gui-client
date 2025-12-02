@@ -1,32 +1,48 @@
+type DataType =
+    | "String"
+    | "Number"
+    | "Boolean"
+    | "BigInt"
+    | "KvU64"
+    | "Date"
+    | "Object"
+    | "Array"
+    | "Set"
+    | "Map"
+    | "RegExp"
+    | "Uint8Array"
+    | "Null"
+    | "Undefined";
+
 export type KvDataType = {
-    type: string;
+    type: DataType;
     starter: string;
 }
 
 export const dataTypes: KvDataType[] = [
     {
         type: "String",
-        starter: '""',
+        starter: "",
     },
     {
         type: "Number",
-        starter: "0"
+        starter: ""
     },
     {
         type: "Boolean",
-        starter: "false"
+        starter: ""
     },
     {
         type: "BigInt",
-        starter: "BigInt(0)"
+        starter: ""
     },
     {
         type: "KvU64",
-        starter: "0"
+        starter: ""
     },
     {
         type: "Date",
-        starter: "new Date()"
+        starter: ""
     },
     {
         type: "Object",
