@@ -3,6 +3,7 @@
   import CodeRenderer from "./CodeRenderer.svelte";
   import dataTypesColors from "./dataTypesColors";
   import KvValueRegExpRenderer from "./KvValueRegExpRenderer.svelte";
+  import KvValueDateRenderer from "./KvValueDateRenderer.svelte";
 
   const {
     entry,
@@ -39,7 +40,7 @@
   {:else if entry.value.type === "Undefined"}
     undefined
   {:else if entry.value.type === "Date"}
-    {entry.value.data}
+    <KvValueDateRenderer value={String(entry.value.data)} />
   {:else if entry.value.type === "RegExp"}
     <KvValueRegExpRenderer regExpValue={String(entry.value.data)} />
   {:else}
