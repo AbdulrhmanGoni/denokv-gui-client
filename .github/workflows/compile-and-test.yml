@@ -42,7 +42,7 @@ jobs:
         run: npm install
 
       - name: Download "denokv-x86_64-apple-darwin" binary for mac-x64 build
-        if: matrix.os != 'macos-15-intel'
+        if: matrix.os == 'macos-15-intel'
         run: | 
           releaseUrl=https://api.github.com/repos/AbdulrhmanGoni/denokv-x86_64-apple-darwin-binary-build/releases/latest
           curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -sSL --retry 3 --retry-delay 3 $releaseUrl -o release.json
