@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.11.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.10.0...v1.11.0) (2025-12-04)
+
+
+### Features
+
+* introduce data-type-specific input fields in Kv value editor ([b7d5aa9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b7d5aa9ccee5a3790019308970359a6ef89b09ca))
+
+
+### Bug Fixes
+
+* fix what causes the referred links in the app to not open ([0be3b60](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0be3b60c58bfc03216fbd79fb177002245375c7d))
+
+
+### User Interface Changes
+
+* change the appearance of top-level Date values ([f614f67](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f614f6757f8fef122a316bc5aa6114e0b5f524e3))
+
 ## [1.10.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.9.0...v1.10.0) (2025-11-29)
 
 
