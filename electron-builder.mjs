@@ -1,10 +1,43 @@
-import pkg from './package.json' with {type: 'json'};
+import pkg from './package.json' with { type: 'json' };
 import mapWorkspaces from '@npmcli/map-workspaces';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import os from 'node:os';
+
+/** @type import('electron-builder').Configuration */
+const platformSpecificConfig = {}
+
+switch (os.platform()) {
+  case "linux":
+    platformSpecificConfig.linux = {
+      target: ['deb', 'AppImage'],
+      icon: "buildResources",
+    }
+    break;
+
+  case "darwin":
+    if (os.arch() == "x64") {
+      platformSpecificConfig.mac = {
+        identity: null,
+        target: [
+          { target: "dmg", arch: ["x64"] },
+          { target: "zip", arch: ["x64"] },
+        ],
+        icon: "buildResources/icon.icns",
+      }
+    } else if (os.arch() == "arm64") {
+      // uses the default config for now
+    }
+    break;
+
+  case "win32":
+    // uses the default config for now
+    break;
+}
 
 export default /** @type import('electron-builder').Configuration */
   ({
+    ...platformSpecificConfig,
     directories: {
       output: 'dist',
       buildResources: 'buildResources',
@@ -14,10 +47,6 @@ export default /** @type import('electron-builder').Configuration */
       "node_modules/@app/preload/dist/migrations/**",
     ],
     generateUpdatesFilesForAllChannels: true,
-    linux: {
-      target: ['deb', 'AppImage'],
-      icon: "buildResources",
-    },
     artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
     files: [
       'LICENSE*',
@@ -55,64 +84,6 @@ export default /** @type import('electron-builder').Configuration */
     ],
   });
 
-/**
- * By default, electron-builder copies each package into the output compilation entirety,
- * including the source code, tests, configuration, assets, and any other files.
- *
- * So you may get compiled app structure like this:
- * ```
- * app/
- * ├── node_modules/
- * │   └── workspace-packages/
- * │       ├── package-a/
- * │       │   ├── src/            # Garbage. May be safely removed
- * │       │   ├── dist/
- * │       │   │   └── index.js    # Runtime code
- * │       │   ├── vite.config.js  # Garbage
- * │       │   ├── .env            # some sensitive config
- * │       │   └── package.json
- * │       ├── package-b/
- * │       ├── package-c/
- * │       └── package-d/
- * ├── packages/
- * │   └── entry-point.js
- * └── package.json
- * ```
- *
- * To prevent this, we read the “files”
- * property from each package's package.json
- * and add all files that do not match the patterns to the exclusion list.
- *
- * This way,
- * each package independently determines which files will be included in the final compilation and which will not.
- *
- * So if `package-a` in its `package.json` describes
- * ```json
- * {
- *   "name": "package-a",
- *   "files": [
- *     "dist/**\/"
- *   ]
- * }
- * ```
- *
- * Then in the compilation only those files and `package.json` will be included:
- * ```
- * app/
- * ├── node_modules/
- * │   └── workspace-packages/
- * │       ├── package-a/
- * │       │   ├── dist/
- * │       │   │   └── index.js    # Runtime code
- * │       │   └── package.json
- * │       ├── package-b/
- * │       ├── package-c/
- * │       └── package-d/
- * ├── packages/
- * │   └── entry-point.js
- * └── package.json
- * ```
- */
 async function getListOfFilesFromEachWorkspace() {
 
   /**
