@@ -20,10 +20,7 @@ export async function initApp(initConfig: AppInitConfig) {
       new Set(initConfig.renderer instanceof URL ? [initConfig.renderer.origin] : []),
     ))
     .init(allowExternalUrls(
-      new Set(
-        initConfig.renderer instanceof URL ?
-          ['https://github.com', 'https://docs.deno.com'] : [],
-      )),
+      new Set(['https://github.com', 'https://docs.deno.com'])),
     );
 
   await moduleRunner;
