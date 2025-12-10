@@ -10,14 +10,14 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 
 ## Some Screenshots
 
-![Kv Entries Table screenshot (Dark)](./screenshots/kv-stores-grid-dark.png#gh-dark-mode-only)
-![Kv Entries Table screenshot (Light)](./screenshots/kv-stores-grid-light.png#gh-light-mode-only)
+![Kv Stores Grid screenshot (Dark)](./screenshots/kvStoresGrid_dark.png#gh-dark-mode-only)
+![Kv Stores Grid screenshot (Light)](./screenshots/kvStoresGrid_light.png#gh-light-mode-only)
 
-![Kv Entries Table screenshot (Dark)](./screenshots/entries-table-dark.png#gh-dark-mode-only)
-![Kv Entries Table screenshot (Light)](./screenshots/entries-table-light.png#gh-light-mode-only)
+![Kv Entries Table screenshot (Dark)](./screenshots/KvEntriesTable_dark.png#gh-dark-mode-only)
+![Kv Entries Table screenshot (Light)](./screenshots/KvEntriesTable_light.png#gh-light-mode-only)
 
-![Kv Entries Table screenshot (Dark)](./screenshots/add-entry-form-dark.png#gh-dark-mode-only)
-![Kv Entries Table screenshot (Light)](./screenshots/add-entry-form-light.png#gh-light-mode-only)
+![Add Entry Form screenshot (Dark)](./screenshots/AddKvEntryForm_dark.png#gh-dark-mode-only)
+![Add Entry Form screenshot (Light)](./screenshots/AddKvEntryForm_light.png#gh-light-mode-only)
 
 ## Download
 

@@ -25,7 +25,8 @@
     "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",
     "typecheck": "npm run typecheck -ws --if-present",
-    "migration": "dbmate -u sqlite:database.sqlite -d packages/preload/src/db/migrations"
+    "migration": "dbmate -u sqlite:database.sqlite -d packages/preload/src/db/migrations",
+    "screenshots": "node scripts/takeScreenshots.ts"
   },
   "devDependencies": {
     "@npmcli/map-workspaces": "4.0.2",
@@ -36,7 +37,8 @@
     "electron": "38.0.0",
     "electron-builder": "26.0.12",
     "glob": "11.1.0",
-    "playwright": "^1.55.0"
+    "playwright": "^1.55.0",
+    "sharp": "^0.34.5"
   },
   "dependencies": {
     "@app/main": "*"

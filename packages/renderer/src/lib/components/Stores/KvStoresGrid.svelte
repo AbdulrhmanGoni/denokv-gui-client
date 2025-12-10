@@ -57,7 +57,10 @@
       {@render addKvStoreButton()}
     </div>
   {:else}
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto pe-1.5">
+    <div
+      id="kv-stores-grid"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto pe-1.5"
+    >
       {#each kvStoresState.kvStores as kvStore (kvStore.id)}
         <KvStoreCard {kvStore} />
       {/each}
