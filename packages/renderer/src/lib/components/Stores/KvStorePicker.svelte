@@ -47,7 +47,7 @@
 </Select.Root>
 
 {#snippet item(kvStore: KvStore)}
-  <div class="!flex gap-2 items-center max-w-sm py-1">
+  <div class="flex! gap-2 items-center max-w-sm py-1">
     {#if kvStore.type == "remote"}
       <GlobeIcon class="text-secondary shrink-0 size-5" />
     {:else if kvStore.type == "default"}

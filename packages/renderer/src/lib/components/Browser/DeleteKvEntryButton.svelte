@@ -45,9 +45,9 @@
 <AlertDialog.Root bind:open={getOpen, setOpen}>
   <AlertDialog.Trigger
     onclick={(e) => e.stopPropagation()}
-    class="flex gap-1 !text-destructive w-full"
+    class="flex gap-1 text-destructive! w-full"
   >
-    <TrashIcon class="!text-destructive" />
+    <TrashIcon class="text-destructive!" />
     Delete
   </AlertDialog.Trigger>
   <AlertDialog.Content>

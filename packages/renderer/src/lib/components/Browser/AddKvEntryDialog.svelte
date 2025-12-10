@@ -58,7 +58,7 @@
 </script>
 
 <Dialog.Root bind:open={getOpen, setOpen}>
-  <Dialog.Content class="!max-w-3xl w-full p-3 gap-0">
+  <Dialog.Content class="max-w-3xl! w-full p-3 gap-0">
     <h1 class="flex items-center gap-2 text-2xl font-bold">
       <FileIcon class="size-7" />
       Add KV Entry

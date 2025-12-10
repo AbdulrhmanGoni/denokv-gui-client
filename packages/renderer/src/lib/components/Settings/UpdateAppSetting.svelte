@@ -36,7 +36,7 @@
         App Update
         {#if updateAppState.newUpdate?.isUpdateAvailable}
             <div
-                class="!size-2 bg-red-500 rounded-full -ms-1 mt-1 self-start"
+                class="size-2! bg-red-500 rounded-full -ms-1 mt-1 self-start"
             ></div>
         {/if}
     </h3>

@@ -16,12 +16,12 @@
             See Release Notes
             <NotesIcon class="size-4" />
         </AlertDialog.Trigger>
-        <AlertDialog.Content class="!max-w-3xl w-full p-3 gap-0">
+        <AlertDialog.Content class="max-w-3xl! w-full p-3 gap-0">
             <h1 class="flex items-center gap-2 text-2xl font-bold">
                 <NotesIcon class="size-6" />
                 Release Notes
                 <AlertDialog.Cancel
-                    class="ms-auto !bg-transparent w-fit border-0 !p-1"
+                    class="ms-auto bg-transparent! w-fit border-0 p-1!"
                 >
                     <XIcon class="size-5" />
                 </AlertDialog.Cancel>

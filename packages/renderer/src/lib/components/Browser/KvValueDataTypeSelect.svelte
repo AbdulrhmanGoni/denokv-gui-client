@@ -20,7 +20,7 @@
     onSelect?.(selectedDataType);
   }}
 >
-  <Select.Trigger class="w-full text-foreground bg-transparent !h-7 py-1">
+  <Select.Trigger class="w-full text-foreground bg-transparent h-7! py-1">
     {selectedDataType.type}
   </Select.Trigger>
   <Select.Content>

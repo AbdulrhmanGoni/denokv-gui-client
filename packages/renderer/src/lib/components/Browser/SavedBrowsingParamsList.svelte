@@ -40,7 +40,7 @@
             <BookMarkedIcon class="size-5" />
         </ButtonWithTooltip>
     </Dialog.Trigger>
-    <Dialog.Content class="!max-w-xl w-full p-3 gap-2">
+    <Dialog.Content class="max-w-xl! w-full p-3 gap-2">
         <h1 class="flex gap-2 items-center text-2xl font-bold mb-">
             <BookMarkedIcon />
             Saved Filters

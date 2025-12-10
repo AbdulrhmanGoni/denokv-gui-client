@@ -19,7 +19,7 @@
     {:else}
         {#if updateAppState.newUpdate?.isUpdateAvailable}
             <div
-                class="!size-2 bg-red-500 rounded-full absolute right-1 top-1"
+                class="size-2! bg-red-500 rounded-full absolute right-1 top-1"
             ></div>
         {/if}
         <SettingsIcon class="text-foreground size-6" />

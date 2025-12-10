@@ -27,7 +27,7 @@
 </script>
 
 <Dialog.Root bind:open={getOpen, setOpen}>
-  <Dialog.Content class="!max-w-3xl w-full p-3 gap-0">
+  <Dialog.Content class="max-w-3xl! w-full p-3 gap-0">
     {#if kvEntryDialogState.entry}
       {@render keySection(kvEntryDialogState.entry)}
       <Separator class="my-3" />

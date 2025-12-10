@@ -180,7 +180,7 @@
 </div>
 
 <Dialog.Root bind:open={getOpen, setOpen}>
-  <Dialog.Content class="!max-w-xl w-full p-3 gap-2">
+  <Dialog.Content class="max-w-xl! w-full p-3 gap-2">
     <h1 class="flex gap-2 items-center text-2xl font-bold">
       <FunnelIcon /> Filter
     </h1>
@@ -203,11 +203,11 @@
       bind:end={endKeyEditorValue}
       bind:limit={limitValue}
     >
-      <div class="flex items-center gap-3 [&>*]:cursor-pointer">
+      <div class="flex items-center gap-3 *:cursor-pointer">
         <Checkbox id="save" bind:checked={saveParams} />
         <Label for="save">Save this filter for reusing in the future</Label>
       </div>
-      <div class="flex items-center gap-3 [&>*]:cursor-pointer">
+      <div class="flex items-center gap-3 *:cursor-pointer">
         <Checkbox
           id="set-default"
           bind:checked={setParamsAsDefault}
