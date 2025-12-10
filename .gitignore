@@ -4,5 +4,6 @@ dist
 .vscode
 *.local
 test-results
-database.sqlite
+database.dev.sqlite
+database.test.sqlite
 .env

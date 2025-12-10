@@ -76,11 +76,15 @@ To download the **Deno KV GUI Client** app, go to [releases](https://github.com/
 
 ### Development Mode
 
-You first need to run the mingrations to set up the development database:
+You first need to run the migration to set up the development database:
 
 ```bash
-  npm mingration up
+  npm migration up
 ```
+
+> [!NOTE]
+> A development SQLite database file will be created in he root directory of the project once you run migration command for the first time.
+> It will be where any data and settings created in development mode are stored.
 
 Then run the app in development mode with:
 
@@ -90,7 +94,7 @@ Then run the app in development mode with:
 
 ### Compiling The App
 
-To compile or build the app use:
+To compile or build the app for production use:
 
 ```bash
   npm run compile
@@ -100,11 +104,11 @@ To compile or build the app use:
 
 ### Tests
 
-To run the tests use:
+To run the tests, compile the app first, and then run:
 
 ```bash
   npm run test
 ```
 
 > [!NOTE]
-> To be able to run the tests, you should compile the app by running `npm run compile` first, Because the tests will be run on the compiled app inside `dist` directory.
+> A testing SQLite database file will be created in he root directory of the project once you run migration command for the first time.
