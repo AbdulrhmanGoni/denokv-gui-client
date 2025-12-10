@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
+  import * as Dialog from "$lib/components/shadcn/dialog/index.js";
   import KvKeyRenderer from "./KvKeyRenderer.svelte";
   import Separator from "$lib/components/shadcn/separator/separator.svelte";
   import KeyFileIcon from "@lucide/svelte/icons/file-key";
@@ -26,8 +26,8 @@
   }
 </script>
 
-<AlertDialog.Root bind:open={getOpen, setOpen}>
-  <AlertDialog.Content class="!max-w-3xl w-full p-3 gap-0">
+<Dialog.Root bind:open={getOpen, setOpen}>
+  <Dialog.Content class="!max-w-3xl w-full p-3 gap-0">
     {#if kvEntryDialogState.entry}
       {@render keySection(kvEntryDialogState.entry)}
       <Separator class="my-3" />
@@ -37,8 +37,8 @@
         {@render valueSection(kvEntryDialogState.entry)}
       {/if}
     {/if}
-  </AlertDialog.Content>
-</AlertDialog.Root>
+  </Dialog.Content>
+</Dialog.Root>
 
 {#snippet keySection(entry: KvEntry)}
   <div class="space-y-3">

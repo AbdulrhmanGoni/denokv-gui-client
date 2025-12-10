@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
+  import * as Dialog from "$lib/components/shadcn/dialog/index.js";
   import {
     fetchEntries,
     fetchSavedDefaultBrowsingParams,
@@ -179,8 +179,8 @@
   </Button>
 </div>
 
-<AlertDialog.Root bind:open={getOpen, setOpen}>
-  <AlertDialog.Content class="!max-w-xl w-full p-3 gap-2">
+<Dialog.Root bind:open={getOpen, setOpen}>
+  <Dialog.Content class="!max-w-xl w-full p-3 gap-2">
     <h1 class="flex gap-2 items-center text-2xl font-bold">
       <FunnelIcon /> Filter
     </h1>
@@ -228,8 +228,8 @@
         </Button>
       </div>
     </BrowsingParamsForm>
-  </AlertDialog.Content>
-</AlertDialog.Root>
+  </Dialog.Content>
+</Dialog.Root>
 
 <style>
   #wheel::-webkit-scrollbar {

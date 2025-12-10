@@ -1,5 +1,5 @@
 <script lang="ts">
-    import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
+    import * as Dialog from "$lib/components/shadcn/dialog/index.js";
     import Separator from "$lib/components/shadcn/separator/separator.svelte";
     import { kvClient } from "@app/preload";
     import { toast } from "svelte-sonner";
@@ -43,8 +43,8 @@
     }
 </script>
 
-<AlertDialog.Root bind:open={getOpen, setOpen}>
-    <AlertDialog.Content class="max-w-3xl! w-full p-3 gap-0">
+<Dialog.Root bind:open={getOpen, setOpen}>
+    <Dialog.Content class="max-w-3xl! w-full p-3 gap-0">
         <h1 class="flex items-center gap-2 text-2xl font-bold">
             <FileIcon class="size-7" />
             Look Up KV Entry
@@ -77,5 +77,5 @@
                 Close
             </Button>
         </div>
-    </AlertDialog.Content>
-</AlertDialog.Root>
+    </Dialog.Content>
+</Dialog.Root>

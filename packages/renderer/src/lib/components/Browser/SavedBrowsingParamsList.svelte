@@ -1,8 +1,7 @@
 <script lang="ts">
-    import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
+    import * as Dialog from "$lib/components/shadcn/dialog/index.js";
     import Separator from "$lib/components/shadcn/separator/separator.svelte";
     import BookMarkedIcon from "@lucide/svelte/icons/book-marked";
-    import XIcon from "@lucide/svelte/icons/x";
     import BookAlertIcon from "@lucide/svelte/icons/book-alert";
     import BookXIcon from "@lucide/svelte/icons/book-x";
     import ButtonWithTooltip from "../custom/ButtonWithTooltip.svelte";
@@ -28,8 +27,8 @@
     }
 </script>
 
-<AlertDialog.Root bind:open={getOpen, setOpen}>
-    <AlertDialog.Trigger>
+<Dialog.Root bind:open={getOpen, setOpen}>
+    <Dialog.Trigger>
         <ButtonWithTooltip
             size="sm"
             tooltipContent="Saved Filters"
@@ -40,14 +39,11 @@
         >
             <BookMarkedIcon class="size-5" />
         </ButtonWithTooltip>
-    </AlertDialog.Trigger>
-    <AlertDialog.Content class="!max-w-xl w-full p-3 gap-2">
+    </Dialog.Trigger>
+    <Dialog.Content class="!max-w-xl w-full p-3 gap-2">
         <h1 class="flex gap-2 items-center text-2xl font-bold mb-">
             <BookMarkedIcon />
             Saved Filters
-            <button onclick={closeList} class="ms-auto cursor-pointer">
-                <XIcon class="size-5" />
-            </button>
         </h1>
         {#if savedBrowsingParamsState.selectedParamsToEdit}
             <EditSavedBrowsingParamsForm
@@ -85,5 +81,5 @@
                 {/if}
             </div>
         {/if}
-    </AlertDialog.Content>
-</AlertDialog.Root>
+    </Dialog.Content>
+</Dialog.Root>

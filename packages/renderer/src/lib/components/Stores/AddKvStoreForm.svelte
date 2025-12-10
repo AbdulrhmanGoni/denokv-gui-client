@@ -1,6 +1,6 @@
 <script lang="ts">
   import { kvStoresService } from "@app/preload";
-  import CirclePlusIcon from "@lucide/svelte/icons/circle-plus";
+  import DatabaseIcon from "@lucide/svelte/icons/database";
   import { kvStoresState } from "../../states/kvStoresState.svelte";
   import { toast } from "svelte-sonner";
   import KvStoreForm from "./KvStoreForm.svelte";
@@ -38,5 +38,5 @@
 />
 
 {#snippet icon()}
-  <CirclePlusIcon />
+  <DatabaseIcon />
 {/snippet}

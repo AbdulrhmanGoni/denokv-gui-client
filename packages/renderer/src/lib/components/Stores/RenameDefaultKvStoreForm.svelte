@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
+  import * as Dialog from "$lib/components/shadcn/dialog/index.js";
   import { Input } from "$lib/components/shadcn/input/index.js";
   import { Label } from "$lib/components/shadcn/label/index.js";
   import { Button } from "$lib/components/shadcn/button/index.js";
@@ -46,8 +46,8 @@
   }
 </script>
 
-<AlertDialog.Root open>
-  <AlertDialog.Content class="!max-w-2xl w-full p-3 gap-0">
+<Dialog.Root open>
+  <Dialog.Content class="!max-w-2xl w-full p-3 gap-0">
     <form class="flex flex-col gap-4 overflow-hidden" onsubmit={submitHandler}>
       <h2 class="text-xl font-bold flex gap-2 items-center">
         <RenameIcon />
@@ -83,5 +83,5 @@
         </Button>
       </div>
     </form>
-  </AlertDialog.Content>
-</AlertDialog.Root>
+  </Dialog.Content>
+</Dialog.Root>
