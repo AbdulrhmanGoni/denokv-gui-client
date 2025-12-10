@@ -1,8 +1,11 @@
-type CreateKvStoreInput = Pick<KvStore, "name" | "url" | "type" | "accessToken">
+type CreateKvStoreInput = Pick<KvStore, "name" | "url" | "type" | "accessToken" | "authToken">
 
-type EditKvStoreInput = Partial<Pick<KvStore, "name" | "url" | "type">> & { accessToken: KvStore["accessToken"] }
+type EditKvStoreInput = Partial<Pick<KvStore, "name" | "url" | "type">> & {
+    accessToken: KvStore["accessToken"];
+    authToken: KvStore["authToken"];
+}
 
-type TestKvStoreParams = Pick<KvStore, "url" | "type" | "accessToken">
+type TestKvStoreParams = Pick<KvStore, "url" | "type" | "accessToken" | "authToken">
 
 type BrowseRouteOptions = import("@denokv-gui-client/bridge-server").BrowsingOptions
 

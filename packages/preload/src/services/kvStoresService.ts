@@ -18,7 +18,8 @@ export async function create(input: CreateKvStoreInput): Promise<boolean> {
         input.name,
         input.url,
         input.type,
-        input.accessToken
+        input.accessToken,
+        input.authToken,
     );
 
     return !!result.changes
@@ -48,6 +49,7 @@ export async function update(kvStore: KvStore, changes: EditKvStoreInput): Promi
         $url: changes.url ?? null,
         $type: changes.type ?? null,
         $accessToken: changes.accessToken,
+        $authToken: changes.authToken,
     });
 
     return true
@@ -112,6 +114,7 @@ async function getDefaultLocalKvStores(exclude: KvStore["id"][]) {
                                 createdAt: fileStat.birthtime.toISOString(),
                                 updatedAt: fileStat.ctime.toISOString(),
                                 accessToken: null,
+                                authToken: null,
                             })
                         }
                     }
@@ -152,9 +155,10 @@ export async function renameDefaultLocalKvStore(store: KvStore, newName: string)
 
 export async function testKvStoreConnection(kvStore: TestKvStoreParams): Promise<boolean> {
     if (kvStore.type == "bridge") {
-        return await fetch(`${kvStore.url}/check`)
-            .then((res) => res.ok)
-            .catch(() => false)
+        return await fetch(
+            `${kvStore.url}/check`,
+            { headers: kvStore.authToken ? { Authorization: kvStore.authToken } : undefined },
+        ).then((res) => res.ok).catch(() => false)
     } else {
         try {
             const kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken });

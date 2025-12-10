@@ -19,6 +19,10 @@
             "section": "Enhancements"
         },
         {
+            "type": "secure",
+            "section": "Security"
+        },
+        {
             "type": "ui",
             "section": "User Interface Changes"
         }

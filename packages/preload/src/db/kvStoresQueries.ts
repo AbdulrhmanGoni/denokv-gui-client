@@ -1,8 +1,8 @@
 import { database } from './db.js';
 
 export const insertQuery = database.prepare(`
-    INSERT INTO kvStores(id, name, url, type, accessToken, createdAt, updatedAt) 
-    VALUES(?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+    INSERT INTO kvStores(id, name, url, type, accessToken, authToken, createdAt, updatedAt) 
+    VALUES(?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
 `);
 
 export const updateQuery = database.prepare(`
@@ -10,6 +10,7 @@ export const updateQuery = database.prepare(`
         name = COALESCE($name, name), 
         url = COALESCE($url, url), 
         accessToken = $accessToken,
+        authToken = $authToken,
         type = COALESCE($type, type), 
         updatedAt = datetime('now') 
     WHERE id = $id

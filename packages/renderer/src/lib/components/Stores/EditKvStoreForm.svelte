@@ -44,6 +44,7 @@
 
     const changes: EditKvStoreInput = {
       accessToken: kvStoreForm.accessToken,
+      authToken: kvStoreForm.authToken,
     };
 
     let isChanged = false;

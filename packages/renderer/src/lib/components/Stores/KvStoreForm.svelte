@@ -36,18 +36,19 @@
   let localKvDirectory = $state(
     defaultValues?.type == "local"
       ? defaultValues?.url?.replace(/kv.sqlite3$/gi, "")
-      : ""
+      : "",
   );
   let openedStoreType: KvStore["type"] | undefined = $state(
-    defaultValues?.type
+    defaultValues?.type,
   );
   let isRemoteStore = $derived(openedStoreType == "remote");
   let isLocalStore = $derived(openedStoreType == "local");
+  let isBridgedStore = $derived(openedStoreType == "bridge");
 
   async function handleSubmit(
     event: SubmitEvent & {
       currentTarget: EventTarget & HTMLFormElement;
-    }
+    },
   ) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -56,12 +57,14 @@
     const kvStoreUrl = formData.get("url")?.toString() as string;
     const type = formData.get("type")?.toString() as string;
     const accessToken = formData.get("accessToken")?.toString() ?? null;
+    const authToken = formData.get("authToken")?.toString() ?? null;
 
     const store: CreateKvStoreInput = {
       name: kvStoreName,
       url: kvStoreUrl,
       type: type as CreateKvStoreInput["type"],
       accessToken: isRemoteStore ? accessToken : null,
+      authToken: isBridgedStore ? authToken : null,
     };
 
     onSubmitForm(store, form);
@@ -165,6 +168,21 @@
     />
     <p class="text-muted-foreground text-sm">
       Enter the access token of your remote kv store.
+    </p>
+  </div>
+  <div class="space-y-1.5 {isBridgedStore ? '' : 'opacity-40'}">
+    <Label for="authToken">Auth Token</Label>
+    <Input
+      type="text"
+      id="authToken"
+      name="authToken"
+      placeholder="Token..."
+      disabled={!isBridgedStore || isLoading}
+      defaultValue={defaultValues?.authToken ?? ""}
+    />
+    <p class="text-muted-foreground text-sm">
+      Enter the auth token of bridge server if it's required to access the
+      server.
     </p>
   </div>
   <div class="flex gap-2 items-end mt-auto justify-end">

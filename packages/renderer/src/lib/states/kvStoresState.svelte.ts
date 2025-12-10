@@ -85,7 +85,7 @@ async function startKvStoreServer(kvStore: KvStore) {
 
 const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
     local: "Either the path to this local KV Store is wrong, moved or deleted",
-    remote: "Either the url is wrong or the remote server is unreachable.",
+    remote: "Either authentication failed or the remote server is unreachable.",
     default: "Either the path to this default local KV Store is wrong, moved or deleted",
-    bridge: "Either the url is wrong or the bridge server is not running.",
+    bridge: "Either authentication failed or the bridge server is down.",
 }
