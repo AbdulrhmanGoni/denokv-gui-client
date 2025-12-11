@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.11.0...v1.12.0) (2025-12-11)
+
+
+### Security
+
+* enable token-based accees control for bridge servers ([36af16d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/36af16dc58fd739b5756684d5af73ac810494065))
+
 ## [1.11.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.10.0...v1.11.0) (2025-12-04)
 
 
