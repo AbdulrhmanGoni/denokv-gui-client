@@ -5,24 +5,26 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "**/*.md"
-      - "**/*.d.ts"
-      - "LICENSE"
-      - "landing/**"
-      - "screenshots/*"
-      - ".versionrc.json"
+    paths:
+      - "packages/**/*.{js,ts,svelte,html}"
+      - "packages/**/package.json"
+      - "buildResources"
+      - "package-lock.json"
+      - "package.json"
+      - "electron-builder.mjs"
+      - "scripts/extractLastReleaseChangelog.js"
   pull_request:
     types:
       - opened
       - synchronize
-    paths-ignore:
-      - "**/*.md"
-      - "**/*.d.ts"
-      - "LICENSE"
-      - "landing/**"
-      - "screenshots/*"
-      - ".versionrc.json"
+    paths:
+      - "packages/**/*.{js,ts,svelte,html}"
+      - "packages/**/package.json"
+      - "buildResources"
+      - "package-lock.json"
+      - "package.json"
+      - "electron-builder.mjs"
+      - "scripts/extractLastReleaseChangelog.js"
 
 concurrency:
   group: ${{github.workflow}}-${{ github.ref }}
