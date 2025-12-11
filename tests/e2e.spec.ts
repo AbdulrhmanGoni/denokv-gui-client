@@ -91,7 +91,7 @@ test('Main window state', async ({ electronApp, page }) => {
 });
 
 test.describe('Preload context should be exposed', async () => {
-  test.describe(`versions should be exposed`, async () => {
+  test.describe(`'versions' should be exposed`, async () => {
     test('with same type`', async ({ page }) => {
       const type = await page.evaluate(() => typeof globalThis[btoa('versions')]);
       expect(type).toEqual('object');
@@ -105,6 +105,120 @@ test.describe('Preload context should be exposed', async () => {
         appVersion: expect.stringMatching(versionMatching),
         electronVersion: expect.stringMatching(versionMatching),
         nodeVersion: expect.stringMatching(versionMatching),
+      });
+    });
+  });
+
+  test.describe(`'kvStoresService' should be exposed`, async () => {
+    test('with same type`', async ({ page }) => {
+      const type = await page.evaluate(() => typeof globalThis[btoa('kvStoresService')]);
+      expect(type).toEqual('object');
+    });
+
+    test('with same methods', async ({ page }) => {
+      const kvStoresService = await page.evaluate(() => globalThis[btoa('kvStoresService')]);
+      const exposedMethods = Object.keys(kvStoresService)
+
+      const targetMethods = [
+        "create",
+        "update",
+        "getAll",
+        "deleteOne",
+        "renameDefaultLocalKvStore",
+        "testKvStoreConnection",
+      ]
+
+      expect(exposedMethods.length).toBe(targetMethods.length)
+      targetMethods.forEach((method) => expect(exposedMethods).toContain(method))
+    });
+  });
+
+  test.describe(`'kvClient' should be exposed`, async () => {
+    test('with same methods', async ({ page }) => {
+      const exposedMethods = await page.evaluate(() => Object.keys(globalThis[btoa('kvClient')]));
+      const targetMethods = ['browse', 'set', 'deleteKey', 'get'];
+
+      expect(exposedMethods.length).toBe(targetMethods.length);
+      targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+  });
+
+  test.describe(`'bridgeServer' should be exposed`, async () => {
+    test('with same methods', async ({ page }) => {
+      const exposedMethods = await page.evaluate(() => Object.keys(globalThis[btoa('bridgeServer')]));
+      const targetMethods = ['openServer', 'closeServer', 'getServerClient'];
+
+      expect(exposedMethods.length).toBe(targetMethods.length);
+      targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+  });
+
+  test.describe(`'appUpdater' should be exposed`, async () => {
+    test('with same methods', async ({ page }) => {
+      const exposedMethods = await page.evaluate(() => Object.keys(globalThis[btoa('appUpdater')]));
+      const targetMethods = [
+        'checkForUpdate',
+        'downloadUpdate',
+        'cancelUpdate',
+        'onDownloadingUpdateProgress',
+        'quitAndInstallUpdate',
+      ];
+
+      expect(exposedMethods.length).toBe(targetMethods.length);
+      targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+  });
+
+  test.describe(`'settingsService' should be exposed`, async () => {
+    test('with same methods', async ({ page }) => {
+      const exposedMethods = await page.evaluate(() => Object.keys(globalThis[btoa('settingsService')]));
+      const targetMethods = ['getSettings', 'updateSettings'];
+
+      expect(exposedMethods.length).toBe(targetMethods.length);
+      targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+  });
+
+  test.describe(`'lastFetchedUpdateService' should be exposed`, async () => {
+    test('with same methods', async ({ page }) => {
+      const exposedMethods = await page.evaluate(
+        () => Object.keys(globalThis[btoa('lastFetchedUpdateService')]),
+      );
+      const targetMethods = ['getLastFetchedUpdate', 'setLastFetchedUpdate', 'deleteLastFetchedUpdate'];
+
+      expect(exposedMethods.length).toBe(targetMethods.length);
+      targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+  });
+
+  test.describe(`'browsingParamsService' should be exposed`, async () => {
+    test('with same methods', async ({ page }) => {
+      const exposedMethods = await page.evaluate(
+        () => Object.keys(globalThis[btoa('browsingParamsService')]),
+      );
+      const targetMethods = [
+        'saveBrowsingParams',
+        'getSavedBrowsingParamsRecords',
+        'getDefaultSavedBrowsingParams',
+        'updateSavedBrowsingParams',
+        'deleteSavedBrowsingParams',
+      ];
+
+      expect(exposedMethods.length).toBe(targetMethods.length);
+      targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+  });
+
+  test.describe('Utility preload functions should be exposed', async () => {
+    const utilExports = ['selectDirectory', 'openPath', 'onWindowReady'] as const;
+
+    utilExports.forEach((exportName) => {
+      test(`'${exportName}' is exposed as a function`, async ({ page }) => {
+        const type = await page.evaluate(
+          (key) => typeof globalThis[btoa(key as string)],
+          exportName,
+        );
+        expect(type).toEqual('function');
       });
     });
   });
