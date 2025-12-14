@@ -2,11 +2,10 @@
 
 ![downloads](https://img.shields.io/github/downloads/abdulrhmangoni/denokv-gui-client/total.svg)
 
-This is an open source desktop app client for [**Deno KV Database**](https://docs.deno.com/deploy/kv/manual/). <br/>
-It enable you to browse your stored data inside Deno KV Databases and preform CRUD operations in a nice and modern GUI.
+This is an open source desktop app client to manage [**Deno KV Databases**](https://docs.deno.com/deploy/kv/manual/). <br/>
+It enables you to browse your data inside Deno KV Databases in a modern GUI, perform CRUD operations and more!.
 
-It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with **Redis**, **"pgAdmin"** with "Postgres" database, **"Beekeeper Studio"** with many different databases, etc...
-
+It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with **Redis**, **"pgAdmin"** with **Postgres** database, **"Beekeeper Studio"** with many different databases, etc...
 
 ## Some Screenshots
 
@@ -21,48 +20,81 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 
 ## Download
 
-***Always recommended to download from the latest release***
+**_Always recommended to download from the latest release_**
 
 > [!NOTE]
 > For Windows and Mac Users: <br />
-> This application is not code signed yet. When installing, you may encounter "Unknown Publisher" or similar security warnings.
-> So please ensure you trust the source code before proceeding with the installation.
+> This application is not code signed yet.
+> When running the app, you may encounter security warnings like "Unknown Publisher" or "'\*.app' is damaged and can’t be opened", So please ensure you trust the source code before proceeding with the installation.
 
-To download the **Deno KV GUI Client** app, go to [releases](https://github.com/AbdulrhmanGoni/denokv-gui-client/releases) page, pick and download the file that matches your operating system:
+To download the **Deno KV GUI Client** app, go to [releases][releases-page] page, pick and download the file that matches your operating system:
 
-- **Linux**
-  - `.AppImage` (for all common Linux distributions)
-  - `.deb` (Debian/Ubuntu installer)
-- **Windows**
-  - `.exe` (installer)
-- **macOS**
-  - `.dmg` (installer)
+### Linux
+
+There are two options for Linux users:
+
+#### `.AppImage` format (compatible with most Linux distributions)
+
+> [!TIP]
+> To easily download the `.AppImage` file and set up a desktop entry for the app, run:
+>
+> ```bash
+> curl -sS https://abdulrhmangoni.github.io/denokv-gui-client/linux-AppImage-install.sh | sh
+> ```
+>
+> If you've already downloaded the `.AppImage` file from the [releases][releases-page] page, you can pass its path to installation script to skip downloading it again and just set up the desktop entry:
+>
+> ```bash
+> curl -sS https://abdulrhmangoni.github.io/denokv-gui-client/linux-AppImage-install.sh path/to/denokv-gui-client-x.x.x-linux-x86_64.AppImage | sh
+> ```
 
 > [!IMPORTANT]
-> If you are a linux user and downloaded the `.AppImage` file, you may need to make it executable before running it.
->
-> You can make it executable like this: :point_down:
+> If you decided to manually download and run the `.AppImage` file, you might need to make it executable before running it:
 >
 > ```bash
 > chmod +x path/to/denokv-gui-client-x.x.x-linux-x86_64.AppImage
-> # make sure to set the right path and replace x.x.x with the proper version
 > ```
+>
+> _Make sure to replace 'path/to' and 'x.x.x' with the actual location and version._
+
+#### `.deb` format (Debian/Ubuntu installer)
+
+If you picked `.deb` installer and downloaded it, you can install it like the following:
+
+```bash
+sudo dpkg -i path/to/denokv-gui-client-x.x.x-linux-x86_64.deb
+```
+
+### MacOS
+
+The application is provided as a `.dmg` installer for both Apple Silicon (arm64) and Intel (x86_64) architectures.  
+Download the correct version for your Mac from the [releases][releases-page] page:
+
+- `denokv-gui-client-x.x.x-mac-arm64.dmg` for **Apple Silicon Macs**
+- `denokv-gui-client-x.x.x-mac-x64.dmg` for **Intel-based Macs**
 
 > [!IMPORTANT]
-> In Mac, When you download and install the app, you'll most likely be prevented from opening it and see a warnings like this:
+> When you download and install the app, you'll most likely be prevented from opening it and see a warnings like this:
+>
 > > “denokv-gui-client.app” is damaged and can’t be opened. You should move it to the Bin.
 >
-> You can bypass this by running the following command:
+> You can bypass this using following command:
+>
 > ```sh
 > xattr -c /path/to/denokv-gui-client.app
-> # make sure to set the right path
 > ```
+>
+> _Make sure to set the right path_
 
-## Install and run localy
+### Windows
+
+On Windows, you just need to download the `denokv-gui-client-x.x.x-win-x64.exe` file from [releases][releases-page] page and run it.
+
+## Install and run locally
 
 ### Installation
 
-1. clone the repo and entry project's directory
+1. Clone the repo and enter the project's directory
 
 ```bash
   git clone https://github.com/AbdulrhmanGoni/denokv-gui-client.git && cd denokv-gui-client
@@ -79,11 +111,11 @@ To download the **Deno KV GUI Client** app, go to [releases](https://github.com/
 You first need to run the migration to set up the development database:
 
 ```bash
-  npm migration up
+  npm run migration up
 ```
 
 > [!NOTE]
-> A development SQLite database file will be created in he root directory of the project once you run migration command for the first time.
+> A development SQLite database file will be created in the root directory of the project once you run the migration command for the first time.
 > It will be where any data and settings created in development mode are stored.
 
 Then run the app in development mode with:
@@ -111,4 +143,6 @@ To run the tests, compile the app first, and then run:
 ```
 
 > [!NOTE]
-> A testing SQLite database file will be created in he root directory of the project once you run migration command for the first time.
+> A testing SQLite database file will be created in the root directory of the project once you run the migration command for the first time.
+
+[releases-page]: https://github.com/AbdulrhmanGoni/denokv-gui-client/releases
