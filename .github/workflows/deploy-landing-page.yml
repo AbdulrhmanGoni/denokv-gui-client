@@ -20,6 +20,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      APP_VERSION: ""
     steps:
       - uses: actions/checkout@v4
 
@@ -35,6 +37,11 @@ jobs:
         env:
           PUBLIC_APP_VERSION: ${{ env.APP_VERSION }}
           PUBLIC_REPOSITORY_URL: https://github.com/${{ github.repository }}
+
+      - name: Include Linux AppImage install script
+        run: |
+          sed -i "s/appVersion=\"\"/appVersion="\"$APP_VERSION"\"/g" linux-AppImage-install.sh
+          mv linux-AppImage-install.sh landing/dist/
 
       - name: Upload landing page files as artifact
         id: deployment
