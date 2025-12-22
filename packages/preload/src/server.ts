@@ -1,5 +1,5 @@
 import { type Kv, openKv } from "@deno/kv";
-import { BridgeServerClient, openBridgeServerInNode } from '@denokv-gui-client/bridge-server';
+import { BridgeServerClient, openBridgeServerInNode } from '@app/bridge-server';
 import { type AddressInfo } from "node:net";
 import { randomBytes } from "node:crypto";
 

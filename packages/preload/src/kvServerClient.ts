@@ -1,5 +1,5 @@
 import { getServerClient } from "./server.js"
-import { serializeKvKey } from '@denokv-gui-client/bridge-server';
+import { serializeKvKey } from '@app/bridge-server';
 
 export function browse(params: BrowsingParams, nextCursor?: string) {
     const serverClient = getServerClient()

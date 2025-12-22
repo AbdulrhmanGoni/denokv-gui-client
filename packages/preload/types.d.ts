@@ -7,7 +7,7 @@ type EditKvStoreInput = Partial<Pick<KvStore, "name" | "url" | "type">> & {
 
 type TestKvStoreParams = Pick<KvStore, "url" | "type" | "accessToken" | "authToken">
 
-type BrowseRouteOptions = import("@denokv-gui-client/bridge-server").BrowsingOptions
+type BrowseRouteOptions = import("@app/bridge-server").BrowsingOptions
 
 type BrowsingParams = {
     prefix: string;
@@ -27,13 +27,13 @@ type SavedBrowsingParamsRecord<T> = {
     updatedAt: number;
 }
 
-type SerializedKvKey = import("@denokv-gui-client/bridge-server").SerializedKvKey
+type SerializedKvKey = import("@app/bridge-server").SerializedKvKey
 
-type SetKeyOptions = import("@denokv-gui-client/bridge-server").SetKeyOptions
+type SetKeyOptions = import("@app/bridge-server").SetKeyOptions
 
-type SerializedKvValue = import("@denokv-gui-client/bridge-server").SerializedKvValue
+type SerializedKvValue = import("@app/bridge-server").SerializedKvValue
 
-type SerializedKvEntry = import("@denokv-gui-client/bridge-server").SerializedKvEntry
+type SerializedKvEntry = import("@app/bridge-server").SerializedKvEntry
 
 type KvEntry = SerializedKvEntry
 
