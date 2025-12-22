@@ -58,24 +58,8 @@ export default /** @type import('electron-builder').Configuration */
         to: "node_modules/@deno",
       },
       {
-        from: "node_modules/hono",
-        to: "node_modules/hono",
-      },
-      {
-        from: "node_modules/@hono/node-server",
-        to: "node_modules/@hono/node-server",
-      },
-      {
-        from: "node_modules/serialize-javascript",
-        to: "node_modules/serialize-javascript",
-      },
-      {
         from: "node_modules/randombytes",
         to: "node_modules/randombytes",
-      },
-      {
-        from: "node_modules/dbmate",
-        to: "node_modules/dbmate",
       },
       {
         from: "node_modules/@dbmate",
