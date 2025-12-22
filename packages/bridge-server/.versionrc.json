@@ -1,0 +1,40 @@
+{
+    "writerOpts": {
+        "commitsSort": false
+    },
+    "tagPrefix": "bridge-server@v",
+    "packageFiles": [
+        {
+            "filename": "package.json",
+            "type": "json"
+        },
+        {
+            "filename": "jsr.json",
+            "type": "json"
+        }
+    ],
+    "bumpFiles": [
+        {
+            "filename": "package.json",
+            "type": "json"
+        },
+        {
+            "filename": "jsr.json",
+            "type": "json"
+        }
+    ],
+    "types": [
+        {
+            "type": "bs_feat",
+            "section": "Features"
+        },
+        {
+            "type": "bs_fix",
+            "section": "Bug Fixes"
+        },
+        {
+            "type": "bs_secure",
+            "section": "Security"
+        }
+    ]
+}
