@@ -2,7 +2,10 @@
     "writerOpts": {
         "commitsSort": false
     },
-    "tagPrefix": "bridge-server@v",
+    "tagPrefix": "bridge-server@",
+    "skip": {
+        "tag": true
+    },
     "packageFiles": [
         {
             "filename": "package.json",

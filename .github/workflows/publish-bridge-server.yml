@@ -23,7 +23,7 @@ jobs:
 
       - name: Extract package's version
         working-directory: packages/bridge-server
-        run: echo "PACKAGE_VERSION=v$(jq -r .version jsr.json)" >> $GITHUB_ENV
+        run: echo "PACKAGE_VERSION=$(jq -r .version jsr.json)" >> $GITHUB_ENV
 
       - name: Check if a new release was prepared
         working-directory: packages/bridge-server
@@ -47,6 +47,6 @@ jobs:
       - name: Create GitHub Release
         if: ${{ env.isNewVersion == 'true' }}
         working-directory: packages/bridge-server
-        run: gh release new $PACKAGE_VERSION --notes-file RELEASE_NOTES.md
+        run: gh release new "bridge-server@${PACKAGE_VERSION}" --notes-file RELEASE_NOTES.md
         env:
           GH_TOKEN: ${{ github.token }}
