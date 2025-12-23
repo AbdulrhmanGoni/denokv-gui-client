@@ -1,0 +1,52 @@
+name: Publish bridge-server package
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      isNewVersion: false
+    steps:
+      - name: Setup the repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ">=23.0.0"
+
+      - name: Extract package's version
+        working-directory: packages/bridge-server
+        run: echo "PACKAGE_VERSION=v$(jq -r .version jsr.json)" >> $GITHUB_ENV
+
+      - name: Check if a new release was prepared
+        working-directory: packages/bridge-server
+        run: |
+          packageVersionsUrl="https://api.jsr.io/scopes/denokv-gui-client/packages/bridge-server/versions/$PACKAGE_VERSION"
+          statusCode=$(curl -sSL -o /dev/null -w "%{http_code}" "$packageVersionsUrl")
+          if [ -n "$PACKAGE_VERSION" ] && [ "$statusCode" -eq 404 ]; then
+            echo "isNewVersion=true" >> $GITHUB_ENV
+          fi
+
+      - name: Extract the changelogs of the new release
+        if: ${{ env.isNewVersion == 'true' }}
+        working-directory: packages/bridge-server
+        run: node ../../scripts/extractLastReleaseChangelog.js > RELEASE_NOTES.md
+
+      - name: Publish to JSR
+        if: ${{ env.isNewVersion == 'true' }}
+        working-directory: packages/bridge-server
+        run: npx jsr publish
+
+      - name: Create GitHub Release
+        if: ${{ env.isNewVersion == 'true' }}
+        working-directory: packages/bridge-server
+        run: gh release new $PACKAGE_VERSION --notes-file RELEASE_NOTES.md
+        env:
+          GH_TOKEN: ${{ github.token }}

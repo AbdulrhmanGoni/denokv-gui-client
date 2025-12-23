@@ -41,6 +41,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Run bridge server tests
+        working-directory: packages/bridge-server
+        run: npm run test
+
       - name: Download "denokv-x86_64-apple-darwin" binary for mac-x64 build
         if: matrix.os == 'macos-15-intel'
         run: | 

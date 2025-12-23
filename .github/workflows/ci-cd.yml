@@ -38,12 +38,22 @@ jobs:
       attestations: write
     uses: ./.github/workflows/compile-and-test.yml
 
+  publish-bridge-server:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      id-token: write
+    needs:
+      - compile-and-test
+    uses: ./.github/workflows/publish-bridge-server.yml
+
   release:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     permissions:
       contents: write
     needs:
       - compile-and-test
+      - publish-bridge-server
     uses: ./.github/workflows/release.yml
 
   deploy-landing-page:
