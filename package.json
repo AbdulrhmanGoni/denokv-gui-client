@@ -24,6 +24,7 @@
     "test": "npx playwright test ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",
+    "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
     "typecheck": "npm run typecheck -ws --if-present",
     "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/preload/src/db/migrations",
     "screenshots": "node scripts/takeScreenshots.ts"
