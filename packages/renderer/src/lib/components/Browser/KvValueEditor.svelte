@@ -32,14 +32,14 @@
       (dataTypes.find((dt) => dt.type == "Undefined") as KvDataType),
   );
 
-  const formatableValue = $derived(
+  const isFormattableValue = $derived(
     ["Object", "Array", "Set", "Map", "Uint8Array", "RegExp"].includes(
       dataType.type,
     ),
   );
 
   function formatEditorValue() {
-    if (formatableValue) {
+    if (isFormattableValue) {
       jar?.updateCode(codeFormatter(String(editorValue.data)));
     }
   }
@@ -51,11 +51,11 @@
   function onDataTypeChange(selectedDataType: KvDataType) {
     if (selectedDataType.type == defaultValue?.type) {
       editorValue.data = String(defaultValue.data);
-      formatableValue &&
+      isFormattableValue &&
         jar?.updateCode(codeFormatter(kvValueToEditorValue(defaultValue)));
     } else {
       editorValue.data = selectedDataType.starter;
-      formatableValue &&
+      isFormattableValue &&
         jar?.updateCode(codeFormatter(selectedDataType.starter));
     }
 
@@ -68,19 +68,21 @@
     {@render titleIcon()}
     <p class="font-bold text-lg">Value</p>
     <div class="flex gap-2 items-center ml-auto">
+      {#if isFormattableValue}
+        <ButtonWithTooltip
+          tooltipContent="Format"
+          size="icon"
+          onclick={formatEditorValue}
+          variant="outline"
+          disabled={!isFormattableValue}
+        >
+          <ScanTextIcon />
+        </ButtonWithTooltip>
+      {/if}
       <KvValueDataTypeSelect
         bind:selectedDataType={dataType}
         onSelect={onDataTypeChange}
       />
-      <ButtonWithTooltip
-        tooltipContent="Format"
-        size="icon"
-        onclick={formatEditorValue}
-        variant="outline"
-        disabled={!formatableValue}
-      >
-        <ScanTextIcon />
-      </ButtonWithTooltip>
     </div>
   </div>
   <div class="h-[270px]">
