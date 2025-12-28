@@ -100,7 +100,7 @@
         placeholder="String..."
       />
     {:else if editorValue.type == "Boolean"}
-      <KvValueBooleanInput bind:value={editorValue.data as string} />
+      <KvValueBooleanInput bind:value={editorValue.data as boolean} />
     {:else if editorValue.type == "Date"}
       <KvValueDateInput bind:value={editorValue.data as string} />
     {:else if editorValue.type == "Null" || editorValue.type == "Undefined"}

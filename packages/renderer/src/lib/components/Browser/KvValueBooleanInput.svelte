@@ -3,7 +3,7 @@
     import dataTypesColors from "./dataTypesColors";
 
     type ValueEditorProps = {
-        value: string;
+        value: boolean;
     };
 
     let { value = $bindable() }: ValueEditorProps = $props();
@@ -19,16 +19,12 @@
         class={cn(
             "flex gap-1 basis-2/4 items-center font-bold bg-card px-3 py-2 rounded-sm cursor-pointer hover:bg-accent border border-transparent",
             dataTypesColors.blue,
-            String(boolean) == value ? "border-primary" : "",
+            boolean === value ? "border-primary" : "",
         )}
         onclick={() => {
-            if (String(boolean) == value) {
-                value = "";
-            } else {
-                value = String(boolean);
-            }
+            value = boolean;
         }}
     >
-        {String(boolean)}
+        {boolean}
     </button>
 {/snippet}
