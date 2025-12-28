@@ -6,25 +6,27 @@ on:
     branches:
       - main
     paths:
-      - "packages/**/*.{js,ts,svelte,html}"
+      - "packages/**/*.js"
+      - "packages/**/*.ts"
+      - "packages/**/*.svelte"
+      - "packages/**/*.html"
       - "packages/**/package.json"
-      - "buildResources"
       - "package-lock.json"
       - "package.json"
       - "electron-builder.mjs"
-      - "scripts/extractLastReleaseChangelog.js"
   pull_request:
     types:
       - opened
       - synchronize
     paths:
-      - "packages/**/*.{js,ts,svelte,html}"
+      - "packages/**/*.js"
+      - "packages/**/*.ts"
+      - "packages/**/*.svelte"
+      - "packages/**/*.html"
       - "packages/**/package.json"
-      - "buildResources"
       - "package-lock.json"
       - "package.json"
       - "electron-builder.mjs"
-      - "scripts/extractLastReleaseChangelog.js"
 
 concurrency:
   group: ${{github.workflow}}-${{ github.ref }}
