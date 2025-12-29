@@ -1,8 +1,8 @@
 {
+    "releaseCommitMessageFormat": "chore(bridge-server-release): {{currentTag}}",
     "writerOpts": {
         "commitsSort": false
     },
-    "tagPrefix": "bridge-server@",
     "skip": {
         "tag": true
     },
