@@ -52,6 +52,7 @@ const rendererWatchServerProvider = {
 
 /** @type {string[]} */
 const packagesToStart = [
+  'packages/bridge-server',
   'packages/preload',
   'packages/main',
 ];
