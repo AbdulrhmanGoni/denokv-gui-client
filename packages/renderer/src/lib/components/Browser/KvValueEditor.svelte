@@ -13,6 +13,7 @@
   import KvValueBooleanInput from "./KvValueBooleanInput.svelte";
   import KvValueDateInput from "./KvValueDateInput.svelte";
   import KvValueNumberInputWithSpecials from "./KvValueNumberInputWithSpecials.svelte";
+  import KvValueRegExpInput from "./KvValueRegExpInput.svelte";
 
   type ValueEditorProps = {
     defaultValue?: KvEntry["value"];
@@ -33,9 +34,7 @@
   );
 
   const isFormattableValue = $derived(
-    ["Object", "Array", "Set", "Map", "Uint8Array", "RegExp"].includes(
-      dataType.type,
-    ),
+    ["Object", "Array", "Set", "Map", "Uint8Array"].includes(dataType.type),
   );
 
   function formatEditorValue() {
@@ -103,6 +102,8 @@
       <KvValueBooleanInput bind:value={editorValue.data as boolean} />
     {:else if editorValue.type == "Date"}
       <KvValueDateInput bind:value={editorValue.data as string} />
+    {:else if editorValue.type == "RegExp"}
+      <KvValueRegExpInput bind:value={editorValue.data as string} />
     {:else if editorValue.type == "Null" || editorValue.type == "Undefined"}
       <div
         class="flex gap-1 items-center font-bold bg-card px-3 py-2.5 rounded-sm"

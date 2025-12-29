@@ -62,7 +62,7 @@ export const dataTypes: KvDataType[] = [
     },
     {
         type: "RegExp",
-        starter: 'new RegExp("")'
+        starter: '{ "source": "", "flags": "" }'
     },
     {
         type: "Uint8Array",
