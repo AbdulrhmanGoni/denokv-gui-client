@@ -83,7 +83,7 @@ describe("deserializeKvValue", () => {
 
     it("should deserialize regular expressions", async () => {
         const result = await deserializeKvValue(
-            { type: "RegExp", data: 'new RegExp("^test-\\\\w","gi")' },
+            { type: "RegExp", data: JSON.stringify({ source: "^test-\\w", flags: "gi" }) },
             kv,
         ) as RegExp;
         expect(result).toBeInstanceOf(RegExp);
