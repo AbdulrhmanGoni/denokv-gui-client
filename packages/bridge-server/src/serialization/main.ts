@@ -283,6 +283,20 @@ export async function deserializeKvValue(body: Partial<SerializedKvValue>, kv: K
         case "Undefined": return undefined;
 
         case "Null": return null;
+
+        case "RegExp": {
+            try {
+                const serilizedRegexp = JSON.parse(body.data.toString())
+                if (typeof serilizedRegexp.source == "string" && typeof serilizedRegexp.flags == "string") {
+                    return new RegExp(serilizedRegexp.source, serilizedRegexp.flags)
+                }
+            } catch { }
+
+            throw new Error(
+                'Invalid serilized RegExp received, it should be in the form {"source":"...", "flags": "..."}'
+                , errorCause
+            );
+        }
     }
 
     const evaluatedData = eval(`(${body.data})`)
@@ -306,11 +320,6 @@ export async function deserializeKvValue(body: Partial<SerializedKvValue>, kv: K
         case "Map": {
             if (evaluatedData instanceof Map) return evaluatedData
             throw new Error("Invalid Map received", errorCause);
-        }
-
-        case "RegExp": {
-            if (evaluatedData instanceof RegExp) return evaluatedData
-            throw new Error("Invalid RegExp received", errorCause);
         }
 
         case "Uint8Array": {
