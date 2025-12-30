@@ -16,7 +16,7 @@
   import KvValueRegExpInput from "./KvValueRegExpInput.svelte";
 
   type ValueEditorProps = {
-    defaultValue?: KvEntry["value"];
+    defaultValue: KvEntry["value"];
     editorValue: KvEntry["value"];
     titleIcon: Snippet;
   };
@@ -29,8 +29,8 @@
 
   let jar: CodeJar | undefined = $state();
   let dataType: KvDataType = $state(
-    dataTypes.find((dt) => defaultValue?.type == dt.type) ??
-      (dataTypes.find((dt) => dt.type == "Undefined") as KvDataType),
+    dataTypes.find((dt) => editorValue?.type == dt.type) ??
+      (dataTypes.find((dt) => dt.type == defaultValue.type) as KvDataType),
   );
 
   const isFormattableValue = $derived(
