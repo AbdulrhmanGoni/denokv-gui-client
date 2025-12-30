@@ -47,7 +47,7 @@ jobs:
       - name: Publish to JSR
         if: ${{ env.isNewVersion == 'true' }}
         working-directory: packages/bridge-server
-        run: npx jsr publish
+        run: npx jsr publish --allow-dirty
 
       - name: Create GitHub Release
         if: ${{ env.isNewVersion == 'true' }}
