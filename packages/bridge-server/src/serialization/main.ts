@@ -142,7 +142,12 @@ export function deserializeKvKey(key: string, options?: { allowEmptyKey?: boolea
 export function serializeKvValue(value: unknown): SerializedKvValue {
     switch (typeof value) {
         case "string": return { type: "String", data: value };
-        case "number": return { type: "Number", data: value };
+        case "number": {
+            if (value == Infinity || value == -Infinity || isNaN(value)) {
+                return { type: "Number", data: value.toString() }
+            }
+            return { type: "Number", data: value }
+        };
         case "boolean": return { type: "Boolean", data: value };
         case "bigint": return { type: "BigInt", data: value.toString() };
         case "undefined": return { type: "Undefined", data: "undefined" };
