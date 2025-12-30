@@ -8,4 +8,9 @@ All notable changes to this project will be documented in this file. See [commit
 
 * use a new approach to deserialize top-level RegExp values ([0af8c9f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0af8c9fe7aea21653a0510b48aa8e78d8f7261ca))
 
+
+### Bug Fixes
+
+* fix "Infinity" and "NaN" top-level values serialization ([cebd066](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/cebd06656a81ce3c4ef46e71f5a33c52902652ce))
+
 **Moving the development of the Deno KV bridge server package from [denokv-bridge-server](https://github.com/AbdulrhmanGoni/denokv-bridge-server) repository to the current repository inside [packages/bridge-server](https://github.com/AbdulrhmanGoni/denokv-gui-client/tree/main/packages/bridge-server) directory**
