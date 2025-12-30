@@ -39,6 +39,11 @@ jobs:
         working-directory: packages/bridge-server
         run: node ../../scripts/extractLastReleaseChangelog.js > RELEASE_NOTES.md
 
+      - name: Install dependencies
+        if: ${{ env.isNewVersion == 'true' }}
+        working-directory: packages/bridge-server
+        run: npm install
+
       - name: Publish to JSR
         if: ${{ env.isNewVersion == 'true' }}
         working-directory: packages/bridge-server
