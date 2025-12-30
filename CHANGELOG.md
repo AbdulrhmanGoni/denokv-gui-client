@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.13.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.12.0...v1.13.0) (2025-12-30)
+
+
+### Features
+
+* introduce a new RegExp input field in kv values editor ([f967fa6](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f967fa6e3ccecf01fdc2f21184317ea67e1a68ce))
+
+
+### Bug Fixes
+
+* fix type & value mismatch after closing & re-opening kv value editor ([c3f8d40](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c3f8d40bd0f995e76f3ab52528a0d25fe2f58115))
+* fix "Infinity" and "NaN" top-level values serialization ([cebd066](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/cebd06656a81ce3c4ef46e71f5a33c52902652ce))
+
+### User Interface Changes
+
+* auto-highlight current boolean value in kv value editor ([2c2ec45](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2c2ec45c53bc79aa3d426821a4a8350a0a20eedb))
+* hide "Format" button in kv value editor when selected data type isn't formattable ([bbc0a4f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/bbc0a4fc14c7e66a422a689a21770af3cf3ace3a))
+
 ## [1.12.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.11.0...v1.12.0) (2025-12-11)
 
 
