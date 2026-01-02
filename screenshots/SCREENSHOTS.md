@@ -3,8 +3,12 @@
 There are some screenshots of how `Denokv GUI Client` app looks 
 
 ### KV Stores Grid
-![KV Stores Grid (Dark)](./kvStoresGrid_dark.png#gh-dark-mode-only)
-![KV Stores Grid (Light)](./kvStoresGrid_light.png#gh-light-mode-only)
+![KV Stores Grid (Dark)](./KvStoresGrid_dark.png#gh-dark-mode-only)
+![KV Stores Grid (Light)](./KvStoresGrid_light.png#gh-light-mode-only)
+
+### KV Store Form
+![KV Store Form (Dark)](./KvStoreForm_dark.png#gh-dark-mode-only)
+![KV Store Form (Light)](./KvStoreForm_light.png#gh-light-mode-only)
 
 ### KV Entries Table
 ![KV Entries Table (Dark)](./KvEntriesTable_dark.png#gh-dark-mode-only)

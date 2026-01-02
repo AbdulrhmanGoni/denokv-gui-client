@@ -53,6 +53,7 @@ type Mode = "dark" | "light";
 async function takeScreenshots(page: Page, mode: Mode) {
     const steps = [
         takeScreenshotOfKvStoresGrid,
+        takeScreenshotOfKvStoreForm,
         takeScreenshotOfKvEntriesTable,
         takeScreenshotOfDisplayKvEntryDialog,
         takeScreenshotOfAddKvEntryForm,
@@ -81,6 +82,14 @@ async function switchMode(page: Page, mode: Mode) {
 
 async function takeScreenshotOfKvStoresGrid(page: Page, mode: Mode) {
     await page.screenshot({ path: `./screenshots/KvStoresGrid_${mode}.temp.png`, fullPage: true });
+}
+
+async function takeScreenshotOfKvStoreForm(page: Page, mode: Mode) {
+    const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" });
+    await addKvStoreButton.click();
+    await page.screenshot({ path: `./screenshots/KvStoreForm_${mode}.temp.png`, fullPage: true });
+    const backButton = page.locator("button", { hasText: "Back" });
+    await backButton.click()
 }
 
 async function takeScreenshotOfKvEntriesTable(page: Page, mode: Mode) {
@@ -141,7 +150,7 @@ async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page, mode: Mode)
 }
 
 for (const file of readdirSync("./screenshots")) {
-    if (file.endsWith(".png")) {
+    if (file.endsWith(".temp.png")) {
         await sharp("./screenshots/" + file)
             .png({ quality: 70 })
             .toFile("./screenshots/" + file.replace(".temp", ""));
