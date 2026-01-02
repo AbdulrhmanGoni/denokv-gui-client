@@ -1,21 +1,25 @@
 ---
-import kvEntriesScreenshotLight from "../assets/kv-entries-table-screenshot-light.png";
-import kvStoresScreenshotLight from "../assets/kv-stores-screenshot-light.png";
-import entriesCrudScreenshotLight from "../assets/entries-crud-screenshot-light.png";
+import KvEntriesTableScreenshot_light from "../assets/KvEntriesTable_light.png";
+import KvStoresGridScreenshot_light from "../assets/KvStoresGrid_light.png";
+import AddKvEntryFormScreenshot_light from "../assets/AddKvEntryForm_light.png";
+import BrowsingParamsDialogScreenshot_light from "../assets/BrowsingParamsDialog_light.png";
 import Wave from "../assets/wave.svg";
 ---
 
 <section id="features-1" class="bg-surface">
   <div class="container">
     <div class="features-text">
-      <h2>Create Deno KV DB Connections</h2>
+      <h2>Create Connections to your Deno KVs</h2>
       <p>
         Create connections to your <strong>Deno Key-Value</strong> databases which
-        can be <strong>local</strong> or <strong>remote</strong> connection, and
-        switch between them easily
+        can be <strong>local</strong> or <strong>remote</strong> connection, and switch
+        between them easily
       </p>
     </div>
-    <img src={kvStoresScreenshotLight.src} alt="KV Stores list screenshot" />
+    <img
+      src={KvStoresGridScreenshot_light.src}
+      alt="KV Stores list screenshot"
+    />
   </div>
   <div class="background-gradient-ltr flex items-start">
     <Wave style="transform: translateY(-1px) rotate(180deg);" />
@@ -25,12 +29,12 @@ import Wave from "../assets/wave.svg";
 <section id="features-2" class="background-gradient-ltr">
   <div class="container">
     <img
-      src={kvEntriesScreenshotLight.src}
+      src={KvEntriesTableScreenshot_light.src}
       alt="KV Entries screenshot"
       loading="lazy"
     />
     <div class="features-text">
-      <h2>Open and browse a Deno KV DB</h2>
+      <h2>Open and browse a Deno KV</h2>
       <p>
         Pick one of your connections to your Deno KV databases and open it, so
         you can <strong>browse</strong> the entries inside the database and perform
@@ -48,6 +52,27 @@ import Wave from "../assets/wave.svg";
     <Wave style="transform: translateY(1px)" />
   </div>
   <div class="container">
+    <img
+      src={BrowsingParamsDialogScreenshot_light.src}
+      alt="A CRUD operation screenshot"
+      loading="lazy"
+    />
+    <div class="features-text">
+      <h2>Filter Deno KV Entries</h2>
+      <p>
+        Filter Deno KV entries with <code>prefix</code> selector or
+        <code>start</code> and <code>end</code> range selectors through a simple and
+        easy to use UI
+      </p>
+    </div>
+  </div>
+  <div class="background-gradient-rtl">
+    <Wave style="transform: translateY(-1px) rotate(180deg);" />
+  </div>
+</section>
+
+<section id="features-4" class="background-gradient-rtl">
+  <div class="container">
     <div class="features-text">
       <h2>Add, Edit or Delete Kv Entries</h2>
       <p>
@@ -57,13 +82,10 @@ import Wave from "../assets/wave.svg";
       </p>
     </div>
     <img
-      src={entriesCrudScreenshotLight.src}
+      src={AddKvEntryFormScreenshot_light.src}
       alt="A CRUD operation screenshot"
       loading="lazy"
     />
-  </div>
-  <div class="background-gradient-rtl">
-    <Wave style="transform: translateY(-1px) rotate(180deg);" />
   </div>
 </section>
 

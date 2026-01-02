@@ -80,7 +80,7 @@ async function switchMode(page: Page, mode: Mode) {
 }
 
 async function takeScreenshotOfKvStoresGrid(page: Page, mode: Mode) {
-    await page.screenshot({ path: `./screenshots/kvStoresGrid_${mode}.temp.png`, fullPage: true });
+    await page.screenshot({ path: `./screenshots/KvStoresGrid_${mode}.temp.png`, fullPage: true });
 }
 
 async function takeScreenshotOfKvEntriesTable(page: Page, mode: Mode) {
