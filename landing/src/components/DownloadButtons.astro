@@ -2,41 +2,51 @@
 import LinuxLogo from "../assets/linuxLogo.svg";
 import WindowsLogo from "../assets/windowsLogo.svg";
 import AppleLogo from "../assets/appleLogo.svg";
+import FileIcon from "../assets/fileIcon.svg";
 
 const repositoryUrl = import.meta.env.PUBLIC_REPOSITORY_URL;
 const appVersion = import.meta.env.PUBLIC_APP_VERSION;
 const latestReleaseLink = `${repositoryUrl}/releases/tag/v${appVersion}`;
 
-function downloadApp(target: { os: string; arch: string; type: string }) {
-  const file = `denokv-gui-client-${appVersion}-${target.os}-${target.arch}.${target.type}`;
+function getDownloadUrl(os: string, arch: string, format: string) {
+  const file = `denokv-gui-client-${appVersion}-${os}-${arch}.${format}`;
   return `${repositoryUrl}/releases/download/v${appVersion}/${file}`;
 }
 
-const linuxDownloadLink = downloadApp({
-  os: "linux",
-  arch: "x86_64",
-  type: "AppImage",
-});
-
-const windowsDownloadLink = downloadApp({
-  os: "win",
-  arch: "x64",
-  type: "exe",
-});
-
-const macDownloadLink = downloadApp({
-  os: "mac",
-  arch: "arm64",
-  type: "dmg",
-});
+const platforms = [
+  {
+    name: "Linux",
+    logo: LinuxLogo,
+    options: [
+      {
+        label: "x64.AppImage",
+        url: getDownloadUrl("linux", "x86_64", "AppImage"),
+      },
+      { label: "amd64.deb", url: getDownloadUrl("linux", "amd64", "deb") },
+    ],
+  },
+  {
+    name: "Windows",
+    logo: WindowsLogo,
+    options: [{ label: "x64.exe", url: getDownloadUrl("win", "x64", "exe") }],
+  },
+  {
+    name: "MacOS",
+    logo: AppleLogo,
+    options: [
+      { label: "x64.dmg", url: getDownloadUrl("mac", "x64", "dmg") },
+      { label: "arm64.dmg", url: getDownloadUrl("mac", "arm64", "dmg") },
+    ],
+  },
+];
 ---
 
-<div>
+<div class="download-section">
   <p class="font-semibold text-lg sm:text-xl mb-3">
     Download the latest version: 🔖
     <a
       href={latestReleaseLink}
-      class="hover:underline"
+      class="underline"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -44,52 +54,189 @@ const macDownloadLink = downloadApp({
     </a>
   </p>
   <div class="flex justify-center flex-wrap lg:justify-start gap-3">
-    <a
-      download-link
-      href={linuxDownloadLink}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <LinuxLogo />
-      Linux
-    </a>
-    <a
-      download-link
-      href={windowsDownloadLink}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <WindowsLogo />
-      Windows
-    </a>
-    <a
-      download-link
-      href={macDownloadLink}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <AppleLogo />
-      MacOS
-    </a>
+    {
+      platforms.map((platform) => (
+        <div class="dropdown" data-dropdown>
+          <button class="dropdown-trigger" data-dropdown-trigger>
+            <platform.logo />
+            {platform.name}
+            <svg
+              class="chevron"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="dropdown-menu" data-dropdown-menu>
+            {platform.options.map((option, i) => (
+              <>
+                <a
+                  href={option.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="dropdown-item flex gap-1.5 items-center"
+                >
+                  <FileIcon />
+                  denokv-gui-client-{option.label}
+                </a>
+                {i < platform.options.length - 1 && (
+                  <hr class="border-gray-300" />
+                )}
+              </>
+            ))}
+          </div>
+        </div>
+      ))
+    }
   </div>
 </div>
 
+<script>
+  function initDropdowns() {
+    const dropdowns = document.querySelectorAll("[data-dropdown]");
+
+    dropdowns.forEach((dropdown) => {
+      const trigger = dropdown.querySelector("[data-dropdown-trigger]");
+
+      trigger?.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        dropdowns.forEach((other) => {
+          if (other !== dropdown) {
+            other.classList.remove("open");
+          }
+        });
+
+        dropdown.classList.toggle("open");
+      });
+    });
+
+    document.addEventListener("click", () => {
+      dropdowns.forEach((dropdown) => {
+        dropdown.classList.remove("open");
+      });
+    });
+  }
+
+  // Support for Astro Page Transitions
+  document.addEventListener("astro:page-load", initDropdowns);
+
+  initDropdowns();
+</script>
+
 <style>
-  [download-link] {
+  .download-section {
+    position: relative;
+    z-index: 40;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-trigger {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     background-color: var(--color-primary);
-    gap: 6px;
+    gap: 8px;
     color: white;
     font-weight: 600;
-    padding: 10px 14px;
-    border: 0px;
+    padding: 10px 16px;
+    border: none;
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      transform 0.1s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-    svg {
+    &:hover {
+      background-color: color-mix(in oklch, var(--color-primary), black 10%);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    svg:not(.chevron) {
+      width: 20px;
+      height: 20px;
       fill: white;
+    }
+
+    .chevron {
+      transition: transform 0.3s ease;
+    }
+  }
+
+  .dropdown.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 180px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 6px;
+    gap: 1px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      visibility 0.3s;
+    z-index: 100;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .dropdown.open .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: var(--color-primary);
+      color: white;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .dropdown-menu {
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+    }
+    .dropdown.open .dropdown-menu {
+      transform: translateX(-50%) translateY(0);
     }
   }
 </style>
