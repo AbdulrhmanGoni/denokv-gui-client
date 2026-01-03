@@ -3,12 +3,10 @@ type GlobalState = {
         open: boolean,
         text?: string,
     }
-    openSettings: boolean,
 }
 
 export const globalState: GlobalState = $state({
     loadingOverlay: {
         open: false,
     },
-    openSettings: false,
 })
