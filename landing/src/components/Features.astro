@@ -1,8 +1,13 @@
 ---
-import KvEntriesTableScreenshot_light from "../assets/KvEntriesTable_light.png";
-import KvStoresGridScreenshot_light from "../assets/KvStoresGrid_light.png";
-import AddKvEntryFormScreenshot_light from "../assets/AddKvEntryForm_light.png";
-import BrowsingParamsDialogScreenshot_light from "../assets/BrowsingParamsDialog_light.png";
+import KvEntriesTableScreenshot_light from "../../../screenshots/KvEntriesTable_light.png";
+import KvStoresGridScreenshot_light from "../../../screenshots/KvStoresGrid_light.png";
+import AddKvEntryFormScreenshot_light from "../../../screenshots/AddKvEntryForm_light.png";
+import BrowsingParamsDialogScreenshot_light from "../../../screenshots/BrowsingParamsDialog_light.png";
+import SavedBrowsingParamsDialogScreenshot_light from "../../../screenshots/SavedBrowsingParamsDialog_light.png";
+import DisplayKvEntryDialogScreenshot_light from "../../../screenshots/DisplayKvEntryDialog_light.png";
+import EditKvEntryDialogScreenshot_light from "../../../screenshots/EditKvEntryDialog_light.png";
+import KvStoreFormScreenshot_light from "../../../screenshots/KvStoreForm_light.png";
+import FeatureCarousel from "./FeatureCarousel.astro";
 import Wave from "../assets/wave.svg";
 ---
 
@@ -16,9 +21,17 @@ import Wave from "../assets/wave.svg";
         between them easily
       </p>
     </div>
-    <img
-      src={KvStoresGridScreenshot_light.src}
-      alt="KV Stores list screenshot"
+    <FeatureCarousel
+      images={[
+        {
+          src: KvStoresGridScreenshot_light.src,
+          alt: "KV Stores Grid screenshot",
+        },
+        {
+          src: KvStoreFormScreenshot_light.src,
+          alt: "KV Store Form screenshot",
+        },
+      ]}
     />
   </div>
   <div class="background-gradient-ltr flex items-start">
@@ -28,17 +41,24 @@ import Wave from "../assets/wave.svg";
 
 <section id="features-2" class="background-gradient-ltr">
   <div class="container">
-    <img
-      src={KvEntriesTableScreenshot_light.src}
-      alt="KV Entries screenshot"
-      loading="lazy"
+    <FeatureCarousel
+      images={[
+        {
+          src: KvEntriesTableScreenshot_light.src,
+          alt: "KV Entries Table screenshot",
+        },
+        {
+          src: DisplayKvEntryDialogScreenshot_light.src,
+          alt: "Display Kv Entry form screenshot",
+        },
+      ]}
     />
     <div class="features-text">
       <h2>Open and browse a Deno KV</h2>
       <p>
-        Pick one of your connections to your Deno KV databases and open it, so
-        you can <strong>browse</strong> the entries inside the database and perform
-        <strong>filters</strong>.
+        Pick one of your connections to your Deno KV databases, open it, and
+        start <strong>browsing</strong> and navigating through the pages of Kv entries
+        easily
       </p>
     </div>
   </div>
@@ -52,17 +72,25 @@ import Wave from "../assets/wave.svg";
     <Wave style="transform: translateY(1px)" />
   </div>
   <div class="container">
-    <img
-      src={BrowsingParamsDialogScreenshot_light.src}
-      alt="A CRUD operation screenshot"
-      loading="lazy"
+    <FeatureCarousel
+      images={[
+        {
+          src: BrowsingParamsDialogScreenshot_light.src,
+          alt: "Browsing Params Dialog screenshot",
+        },
+        {
+          src: SavedBrowsingParamsDialogScreenshot_light.src,
+          alt: "Saved Browsing Params Dialog screenshot",
+        },
+      ]}
     />
     <div class="features-text">
-      <h2>Filter Deno KV Entries</h2>
+      <h2>Filter KV Entries</h2>
       <p>
-        Filter Deno KV entries with <code>prefix</code> selector or
-        <code>start</code> and <code>end</code> range selectors through a simple and
-        easy to use UI
+        Filter the Deno KV entries in entries table using <code>prefix</code> selector
+        or <code>start</code> and <code>end</code>
+        <strong>range</strong> selector with flexible page size option through
+        <strong>"limit"</strong> option
       </p>
     </div>
   </div>
@@ -76,15 +104,22 @@ import Wave from "../assets/wave.svg";
     <div class="features-text">
       <h2>Add, Edit or Delete Kv Entries</h2>
       <p>
-        Perform the
-        <strong>C</strong><span class="opacity-70">R</span><strong>UD</strong>
-        operations on your Deno KV databases through a simple and easy to use UI
+        Mutate your Deno KV databases by adding, editing or deleting Kv entries
+        through a feature-rich, simple and easy to use
+        <strong>Key/Values editor</strong>
       </p>
     </div>
-    <img
-      src={AddKvEntryFormScreenshot_light.src}
-      alt="A CRUD operation screenshot"
-      loading="lazy"
+    <FeatureCarousel
+      images={[
+        {
+          src: AddKvEntryFormScreenshot_light.src,
+          alt: "Add Kv Entry form screenshot",
+        },
+        {
+          src: EditKvEntryDialogScreenshot_light.src,
+          alt: "Edit Kv Entry form screenshot",
+        },
+      ]}
     />
   </div>
 </section>
@@ -98,6 +133,8 @@ import Wave from "../assets/wave.svg";
     flex-direction: column;
     text-align: center;
     gap: 20px;
+    padding-bottom: 12px;
+    padding-top: 12px;
   }
 
   .features-text {
@@ -134,7 +171,7 @@ import Wave from "../assets/wave.svg";
       justify-content: space-evenly;
       text-align: start;
 
-      img,
+      .carousel-container,
       .features-text {
         order: initial;
       }

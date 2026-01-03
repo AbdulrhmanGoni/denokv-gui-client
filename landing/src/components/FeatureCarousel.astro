@@ -1,0 +1,225 @@
+---
+interface Props {
+    images: {
+        src: string;
+        alt: string;
+    }[];
+}
+
+const { images } = Astro.props;
+const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
+---
+
+<div class="carousel-container" id={carouselId}>
+    <div class="carousel-track-viewport">
+        <div class="carousel-track">
+            {
+                images.map((image, index) => (
+                    <div class="carousel-slide" data-index={index}>
+                        <img src={image.src} alt={image.alt} loading="lazy" />
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+
+    <div class="carousel-controls">
+        <div class="carousel-navigation">
+            <button class="nav-btn prev" aria-label="Previous slide">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><path d="m15 18-6-6 6-6"></path></svg
+                >
+            </button>
+            <div class="carousel-indicators">
+                {
+                    images.map((_, index) => (
+                        <button
+                            class={`indicator ${index === 0 ? "active" : ""}`}
+                            data-index={index}
+                            aria-label={`Go to slide ${index + 1}`}
+                        />
+                    ))
+                }
+            </div>
+            <button class="nav-btn next" aria-label="Next slide">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg
+                >
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .carousel-container {
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        order: 2;
+    }
+
+    .carousel-track-viewport {
+        width: 100%;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: var(--box-shadow);
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+    }
+
+    .carousel-slide {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    .carousel-slide img {
+        width: 100%;
+        height: auto;
+        display: block;
+        box-shadow: none;
+        max-width: none;
+    }
+
+    .carousel-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .carousel-navigation {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        background: var(--color-surface);
+        padding: 0.25rem 0.7rem;
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+    }
+
+    .nav-btn {
+        background: transparent;
+        border: none;
+        color: var(--color-primary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+    }
+
+    .nav-btn:hover {
+        background-color: var(--color-soft);
+    }
+
+    .carousel-indicators {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--color-muted-foreground);
+        opacity: 0.3;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.3s;
+    }
+
+    .indicator.active {
+        opacity: 1;
+        background-color: var(--color-primary);
+        transform: scale(1.2);
+    }
+
+    @media (width >= 80rem) {
+        .carousel-container {
+            order: initial;
+        }
+    }
+</style>
+
+<script is:inline define:vars={{ carouselId }}>
+    const container = document.getElementById(carouselId);
+    if (container) {
+        const track = container.querySelector(".carousel-track");
+        const slides = container.querySelectorAll(".carousel-slide");
+        const indicators = container.querySelectorAll(".indicator");
+        const prevBtn = container.querySelector(".nav-btn.prev");
+        const nextBtn = container.querySelector(".nav-btn.next");
+
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+
+        const updateCarousel = (index) => {
+            currentIndex = (index + totalSlides) % totalSlides;
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            indicators.forEach((ind, i) => {
+                ind.classList.toggle("active", i === currentIndex);
+            });
+        };
+
+        prevBtn?.addEventListener("click", () =>
+            updateCarousel(currentIndex - 1),
+        );
+        nextBtn?.addEventListener("click", () =>
+            updateCarousel(currentIndex + 1),
+        );
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener("click", () => updateCarousel(index));
+        });
+
+        // Touch support
+        let touchStartX = 0;
+        let isDragging = false;
+
+        track.addEventListener("touchstart", (e) => {
+            touchStartX = e.touches[0].clientX;
+            isDragging = true;
+        });
+
+        track.addEventListener("touchmove", (e) => {
+            if (!isDragging) return;
+            const currentX = e.touches[0].clientX;
+            const diff = touchStartX - currentX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) updateCarousel(currentIndex + 1);
+                else updateCarousel(currentIndex - 1);
+                isDragging = false;
+            }
+        });
+
+        track.addEventListener("touchend", () => {
+            isDragging = false;
+        });
+    }
+</script>
