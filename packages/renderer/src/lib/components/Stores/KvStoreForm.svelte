@@ -98,6 +98,28 @@
       Enter the name of the new kv store.
     </p>
   </div>
+  <div class="space-y-1.5">
+    <Label for="name">Kv Store Type</Label>
+    <Select.Root
+      type="single"
+      required
+      disabled={isLoading}
+      name="type"
+      value={openedStoreType}
+      onValueChange={(value) => {
+        openedStoreType = value as KvStore["type"];
+      }}
+    >
+      <Select.Trigger class="w-full bg-background">
+        {openedStoreType ? openedStoreType : "Select Type"}
+      </Select.Trigger>
+      <Select.Content>
+        <Select.Item value="remote">remote</Select.Item>
+        <Select.Item value="bridge">bridge</Select.Item>
+        <Select.Item value="local">local</Select.Item>
+      </Select.Content>
+    </Select.Root>
+  </div>
   {#if isLocalStore}
     <div class="space-y-1.5">
       <Label for="url">Kv Store Directory (absolute path)</Label>
@@ -133,28 +155,6 @@
       <p class="text-muted-foreground text-sm">Enter URL of the kv Store.</p>
     </div>
   {/if}
-  <div class="space-y-1.5">
-    <Label for="name">Kv Store Type</Label>
-    <Select.Root
-      type="single"
-      required
-      disabled={isLoading}
-      name="type"
-      value={openedStoreType}
-      onValueChange={(value) => {
-        openedStoreType = value as KvStore["type"];
-      }}
-    >
-      <Select.Trigger class="w-full bg-background">
-        {openedStoreType ? openedStoreType : "Select Type"}
-      </Select.Trigger>
-      <Select.Content>
-        <Select.Item value="remote">remote</Select.Item>
-        <Select.Item value="bridge">bridge</Select.Item>
-        <Select.Item value="local">local</Select.Item>
-      </Select.Content>
-    </Select.Root>
-  </div>
   <div class="space-y-1.5 {isRemoteStore ? '' : 'opacity-40'}">
     <Label for="accessToken">Access Token</Label>
     <Input
