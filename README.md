@@ -9,8 +9,8 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 
 ## Some Screenshots
 
-![Kv Stores Grid screenshot (Dark)](./screenshots/kvStoresGrid_dark.png#gh-dark-mode-only)
-![Kv Stores Grid screenshot (Light)](./screenshots/kvStoresGrid_light.png#gh-light-mode-only)
+![Kv Stores Grid screenshot (Dark)](./screenshots/KvStoresGrid_dark.png#gh-dark-mode-only)
+![Kv Stores Grid screenshot (Light)](./screenshots/KvStoresGrid_light.png#gh-light-mode-only)
 
 ![Kv Entries Table screenshot (Dark)](./screenshots/KvEntriesTable_dark.png#gh-dark-mode-only)
 ![Kv Entries Table screenshot (Light)](./screenshots/KvEntriesTable_light.png#gh-light-mode-only)
