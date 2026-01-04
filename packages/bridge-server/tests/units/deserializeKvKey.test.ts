@@ -21,10 +21,16 @@ describe("Test deserializeKvKey function", () => {
     expect(deserializeKvKey(key)).toEqual(expected);
   });
 
+  it("should parse a KvKey with a regular number in the custom form", () => {
+    const key = '[{ "type": "Number", "value": "123" }, { "type": "Number", "value": 1234 }]';
+    const expected = [123, 1234];
+    expect(deserializeKvKey(key)).toEqual(expected);
+  });
+
   it("should parse a KvKey with a BigInt value", () => {
     const key =
-      '[{ "type": "BigInt", "value": "12345678901234567890" }, 6, "king"]';
-    const expected = [12345678901234567890n, 6, "king"];
+      '[{ "type": "BigInt", "value": "1234567890123" }, { "type": "BigInt", "value": 123456 }]';
+    const expected = [1234567890123n, 123456n];
     expect(deserializeKvKey(key)).toEqual(expected);
   });
 

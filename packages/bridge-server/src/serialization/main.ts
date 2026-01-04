@@ -89,13 +89,17 @@ export function deserializeKvKey(key: string, options?: { allowEmptyKey?: boolea
         }
 
         // Handle custom representation of Uint8Array, Infinity, NaN and BigInt
-        if (typeof part === "object" && part !== null && typeof part.value === "string") {
+        if (typeof part == "object" && part !== null && (typeof part.value == "string" || typeof part.value == "number")) {
             if (part.type === "Number") {
                 switch (part.value) {
                     case "Infinity": return Infinity;
                     case "-Infinity": return -Infinity;
                     case "NaN": return NaN;
-                    default: throw new Error("Invalid Number value: " + part.value, errorCause);
+                    default: {
+                        const number = toNumber(String(part.value))
+                        if (number != undefined) return number
+                        throw new Error("Invalid Number value: " + part.value, errorCause);
+                    }
                 }
             }
 
