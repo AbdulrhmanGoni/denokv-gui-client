@@ -18,6 +18,8 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 ![Add Entry Form screenshot (Dark)](./screenshots/AddKvEntryForm_dark.png#gh-dark-mode-only)
 ![Add Entry Form screenshot (Light)](./screenshots/AddKvEntryForm_light.png#gh-light-mode-only)
 
+For more screenshots about how this app looks like, check out [screenshots](./screenshots/SCREENSHOTS.md).
+
 ## Download
 
 **_Always recommended to download from the latest release_**
