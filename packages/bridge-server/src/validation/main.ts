@@ -1,19 +1,20 @@
-import type { KvKey, KvListSelector } from "@deno/kv";
+import type { Kv, KvKey, KvListOptions, KvListSelector } from "@deno/kv";
 import { deserializeKvKey } from "../serialization/main.ts";
+import { toNumber } from "../helpers";
 
 const errorCause = { cause: "ValidationError" }
 
 type ValidBrowseRequestParams = {
-    limit?: number;
     listSelector: KvListSelector;
-    cursor?: string;
+    options?: KvListOptions;
 }
 /**
  * Parse and validate query parameters of `/browse` endpoint.
  *
- * - `prefix`, `start`, and `end` parameters which will be parsed using `deserializeKvKey`.
- * - `limit` optional parameter must be a positive integer when provided.
- * - `cursor` is passed through as-is when present.
+ * - `prefix`, `start`, and `end` selectors: parsed using `deserializeKvKey`.
+ * - `limit` and `batchSize`: optional positive integers.
+ * - `consistency`, `cursor`: passed through as-is.
+ * - `reverse`: boolean flag. (set to "true" for `true`, otherwise `false`).
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
@@ -21,18 +22,32 @@ type ValidBrowseRequestParams = {
  * @returns An object containing the validated query parameters
  */
 export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams {
-    const limitOption = url.searchParams.get("limit")?.toString();
-    let limit: number | undefined = undefined;
-    if (limitOption) {
-        limit = Number(limitOption);
-        if (isNaN(limit) || limit <= 0) {
-            throw new Error(`Invalid limit option: must be positive integer. Got: ${limitOption}`);
-        }
+    const limitOption = url.searchParams.get("limit");
+    const batchSizeOption = url.searchParams.get("batchSize");
+    const consistency = url.searchParams.get("consistency")?.toString() as KvListOptions["consistency"];
+    const reverseOption = url.searchParams.get("reverse");
+    const cursor = url.searchParams.get("cursor")?.toString();
+
+    const defaultLimit = 40;
+    const limit = limitOption ? toNumber(limitOption) : defaultLimit;
+    if (limitOption && (limit === undefined || limit <= 0)) {
+        throw new Error(`Invalid limit option: must be positive integer. Got: ${limitOption}`, errorCause);
     }
 
-    const cursor = url.searchParams.get("cursor") ?? undefined;
+    const batchSize = batchSizeOption ? toNumber(batchSizeOption) : undefined;
+    if (batchSizeOption && (batchSize === undefined || batchSize <= 0)) {
+        throw new Error(`Invalid batchSize option: must be positive integer. Got: ${batchSizeOption}`, errorCause);
+    }
 
-    const listSelector = {} as KvListSelector
+    const options: ValidBrowseRequestParams["options"] = {
+        cursor,
+        limit,
+        batchSize,
+        consistency,
+        reverse: reverseOption === "true",
+    };
+
+    const listSelector = {} as ValidBrowseRequestParams["listSelector"];
 
     const prefixOption = url.searchParams.get("prefix")
     const prefix = prefixOption ? deserializeKvKey(prefixOption, { allowEmptyKey: true }) : undefined;
@@ -57,9 +72,8 @@ export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams 
     }
 
     return {
-        limit,
         listSelector,
-        cursor,
+        options,
     };
 }
 

@@ -53,10 +53,9 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
     })
 
     app.get("/browse", async (c) => {
-        const { limit, listSelector, cursor } = validateBrowseRequestParams(new URL(c.req.url))
-        const defaultLimit = 40;
+        const { listSelector, options } = validateBrowseRequestParams(new URL(c.req.url))
 
-        const iterator = kv.list(listSelector, { cursor, limit: limit ?? defaultLimit });
+        const iterator = kv.list(listSelector, options);
         const records: KvEntry<unknown>[] = []
         for await (const record of iterator) {
             records.push(record as KvEntry<unknown>)

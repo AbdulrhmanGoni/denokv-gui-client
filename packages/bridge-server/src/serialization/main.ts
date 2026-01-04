@@ -1,5 +1,6 @@
 import type { Kv, KvEntry, KvKey } from "@deno/kv";
 import sJs from "serialize-javascript";
+import { toNumber } from "../helpers";
 
 function serializeJs(jsValue: any) {
     return sJs(jsValue, { ignoreFunction: true })
@@ -187,15 +188,6 @@ export function serializeKvValue(value: unknown): SerializedKvValue {
     if (value instanceof Uint8Array) return { type: "Uint8Array", data: serializeUint8Array(value) }
 
     return { type: "Object", data: serializeJs(value) };
-}
-
-function toNumber(value: string): number | undefined {
-    if (!value.trim()) {
-        return undefined;
-    }
-
-    const num = Number(value);
-    return isNaN(num) ? undefined : num;
 }
 
 /**
