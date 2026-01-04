@@ -69,11 +69,9 @@ export async function getAll() {
 
 export async function deleteOne(kvStore: KvStore) {
     if (kvStore.type == "default" || kvStore.type == "local") {
-        await rm(kvStore.url)
-        try {
-            await rm(kvStore.url.replace(/kv.sqlite3$/gi, "kv.sqlite3-shm"))
-            await rm(kvStore.url.replace(/kv.sqlite3$/gi, "kv.sqlite3-wal"))
-        } catch { }
+        await rm(kvStore.url, { force: true })
+        await rm(`${kvStore.url}-shm`, { force: true });
+        await rm(`${kvStore.url}-wal`, { force: true });
 
         if (kvStore.type == "default") {
             const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined
@@ -86,11 +84,11 @@ export async function deleteOne(kvStore: KvStore) {
 
     const result = deleteOneQuery.run(kvStore.id)
 
-    if (!!result.changes) {
+    if (result.changes) {
         clearSavedParamsQuery.run(kvStore.id)
     }
 
-    return !!result.changes
+    return result.changes
 }
 
 async function getDefaultLocalKvStores(exclude: KvStore["id"][]) {
