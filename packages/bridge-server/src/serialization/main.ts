@@ -198,13 +198,17 @@ export function serializeKvValue(value: unknown): SerializedKvValue {
  * @param body The serialized Kv Entry value using `serializeKvValue` function
  * @returns The deserialized Kv Entry value which can be added into Deno KV Databases
  */
-export async function deserializeKvValue(body: Partial<SerializedKvValue>, kv: Kv | Deno.Kv): Promise<unknown> {
-    if (!body?.type) {
-        throw new Error("No data type provided for the value", errorCause);
+export async function deserializeKvValue(body: unknown, kv: Kv | Deno.Kv): Promise<unknown> {
+    if (!(body instanceof Object)) {
+        throw new Error("Invalid serialized Kv value: Should be an object with type and data properties", errorCause);
     }
 
-    if (body?.data === undefined) {
-        throw new Error("No data provided for the value", errorCause);
+    if (!("type" in body)) {
+        throw new Error("Invalid serialized Kv value: No data type provided for the Kv value", errorCause);
+    }
+
+    if (!("data" in body) || body.data === undefined) {
+        throw new Error("Invalid serialized Kv value: No data provided for the Kv value", errorCause);
     }
 
     switch (body.type) {
@@ -286,15 +290,17 @@ export async function deserializeKvValue(body: Partial<SerializedKvValue>, kv: K
         case "Null": return null;
 
         case "RegExp": {
-            try {
-                const serilizedRegexp = JSON.parse(body.data.toString())
-                if (typeof serilizedRegexp.source == "string" && typeof serilizedRegexp.flags == "string") {
-                    return new RegExp(serilizedRegexp.source, serilizedRegexp.flags)
-                }
-            } catch { }
+            if (typeof body.data == "string") {
+                try {
+                    const serilizedRegexp = JSON.parse(body.data)
+                    if (typeof serilizedRegexp.source == "string" && typeof serilizedRegexp.flags == "string") {
+                        return new RegExp(serilizedRegexp.source, serilizedRegexp.flags)
+                    }
+                } catch { }
+            }
 
             throw new Error(
-                'Invalid serilized RegExp received, it should be in the form {"source":"...", "flags": "..."}'
+                'Invalid serilized RegExp received, it should be a json object in the form {"source": "...", "flags": "..."}'
                 , errorCause
             );
         }
