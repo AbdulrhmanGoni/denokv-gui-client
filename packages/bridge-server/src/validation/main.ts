@@ -77,7 +77,7 @@ export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams 
     };
 }
 
-type ValidateSetRequestParams = {
+type ValidSetRequestParams = {
     key: KvKey;
     expires?: number;
 }
@@ -92,7 +92,7 @@ type ValidateSetRequestParams = {
  * @param url URL containing the query parameters validate
  * @returns An object containing the validated key and optional expiration
  */
-export function validateSetRequestParams(url: URL): ValidateSetRequestParams {
+export function validateSetRequestParams(url: URL): ValidSetRequestParams {
     const targetKey = url.searchParams.get("key")
     const key = targetKey ? deserializeKvKey(targetKey) : undefined;
 
