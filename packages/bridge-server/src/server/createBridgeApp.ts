@@ -95,10 +95,8 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         const { key, expires } = validateSetRequestParams(new URL(c.req.url))
 
         const validValue = await deserializeKvValue(await c.req.json(), kv)
-
-        await kv.set(key, validValue, { expireIn: expires })
-
-        return c.json({ result: true })
+        const result = await kv.set(key, validValue, { expireIn: expires })
+        return c.json({ result: result.ok })
     });
 
     app.delete("/delete", async (c) => {
