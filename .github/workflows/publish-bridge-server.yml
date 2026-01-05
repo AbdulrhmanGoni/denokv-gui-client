@@ -34,11 +34,6 @@ jobs:
             echo "isNewVersion=true" >> $GITHUB_ENV
           fi
 
-      - name: Extract the changelogs of the new release
-        if: ${{ env.isNewVersion == 'true' }}
-        working-directory: packages/bridge-server
-        run: node ../../scripts/extractLastReleaseChangelog.js > RELEASE_NOTES.md
-
       - name: Install dependencies
         if: ${{ env.isNewVersion == 'true' }}
         working-directory: packages/bridge-server
@@ -48,10 +43,3 @@ jobs:
         if: ${{ env.isNewVersion == 'true' }}
         working-directory: packages/bridge-server
         run: npx jsr publish --allow-dirty
-
-      - name: Create GitHub Release
-        if: ${{ env.isNewVersion == 'true' }}
-        working-directory: packages/bridge-server
-        run: gh release new "bridge-server@${PACKAGE_VERSION}" --notes-file RELEASE_NOTES.md
-        env:
-          GH_TOKEN: ${{ github.token }}
