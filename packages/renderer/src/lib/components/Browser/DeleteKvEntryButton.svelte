@@ -1,9 +1,7 @@
 <script lang="ts">
   import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
   import { globalState } from "$lib/states/globalState.svelte";
-  import { kvClient } from "@app/preload";
-  import { toast } from "svelte-sonner";
-  import { removeEntryFromState } from "../../states/kvEntriesState.svelte";
+  import { deleteKvEntry } from "$lib/helpers/deleteKvEntry.svelte";
   import type { Snippet } from "svelte";
 
   type Props = {
@@ -26,24 +24,22 @@
     open = state;
   }
 
-  async function deleteKvEntry() {
+  async function deleteFn() {
     globalState.loadingOverlay.open = true;
     globalState.loadingOverlay.text = "Deleting Kv Entry...";
     isDeleting = true;
 
-    const { error } = await kvClient.deleteKey($state.snapshot(entry.key));
-    if (error) {
-      toast.error("Failed to delete entry", { description: error });
-    } else {
-      toast.success("The entry was deleted successfully");
-      setOpen(false);
-      removeEntryFromState(entry);
-      onDeleteSuccess?.();
-    }
-
-    globalState.loadingOverlay.open = false;
-    globalState.loadingOverlay.text = "";
-    isDeleting = false;
+    deleteKvEntry(entry, {
+      onSuccess() {
+        setOpen(false);
+        onDeleteSuccess?.();
+      },
+      onFinally() {
+        globalState.loadingOverlay.open = false;
+        globalState.loadingOverlay.text = "";
+        isDeleting = false;
+      },
+    });
   }
 </script>
 
@@ -61,7 +57,7 @@
     </AlertDialog.Header>
     <AlertDialog.Footer>
       <AlertDialog.Cancel disabled={isDeleting}>Cancel</AlertDialog.Cancel>
-      <AlertDialog.Action disabled={isDeleting} onclick={deleteKvEntry}>
+      <AlertDialog.Action disabled={isDeleting} onclick={deleteFn}>
         Confirm
       </AlertDialog.Action>
     </AlertDialog.Footer>

@@ -1,9 +1,8 @@
 <script lang="ts">
     import type { Row } from "@tanstack/table-core";
     import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
-    import { removeEntryFromState } from "../../states/kvEntriesState.svelte";
+    import { deleteKvEntry } from "$lib/helpers/deleteKvEntry.svelte";
     import { toast } from "svelte-sonner";
-    import { kvClient } from "@app/preload";
     import LoaderIcon from "@lucide/svelte/icons/loader";
     import XIcon from "@lucide/svelte/icons/x";
     import Button, {
@@ -30,19 +29,11 @@
                 if (isCanceled) break;
 
                 const entry = rowsToDelete[i].original;
-
-                const { error } = await kvClient.deleteKey(
-                    $state.snapshot(entry.key),
-                );
-
-                if (error) {
-                    toast.error("Failed to delete entry", {
-                        description: error,
-                    });
-                } else {
-                    successfullyDeletedEntries++;
-                    removeEntryFromState(entry);
-                }
+                await deleteKvEntry(entry, {
+                    onSuccess() {
+                        successfullyDeletedEntries++;
+                    },
+                });
             }
 
             if (rowsToDelete.length == successfullyDeletedEntries) {
