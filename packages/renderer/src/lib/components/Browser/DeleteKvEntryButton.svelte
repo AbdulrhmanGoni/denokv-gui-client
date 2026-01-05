@@ -2,14 +2,19 @@
   import * as AlertDialog from "$lib/components/shadcn/alert-dialog/index.js";
   import { globalState } from "$lib/states/globalState.svelte";
   import { kvClient } from "@app/preload";
-  import TrashIcon from "@lucide/svelte/icons/trash";
   import { toast } from "svelte-sonner";
   import { removeEntryFromState } from "../../states/kvEntriesState.svelte";
+  import type { Snippet } from "svelte";
 
-  const {
-    entry,
-    onDeleteSuccess,
-  }: { entry: KvEntry; onDeleteSuccess?: () => void } = $props();
+  type Props = {
+    entry: KvEntry;
+    children: Snippet;
+    className?: string;
+    onDeleteSuccess?: () => void;
+  };
+
+  const { entry, children, className, onDeleteSuccess }: Props = $props();
+
   let open = $state(false);
   let isDeleting = $state(false);
 
@@ -43,12 +48,8 @@
 </script>
 
 <AlertDialog.Root bind:open={getOpen, setOpen}>
-  <AlertDialog.Trigger
-    onclick={(e) => e.stopPropagation()}
-    class="flex gap-1 text-destructive! w-full"
-  >
-    <TrashIcon class="text-destructive!" />
-    Delete
+  <AlertDialog.Trigger onclick={(e) => e.stopPropagation()} class={className}>
+    {@render children()}
   </AlertDialog.Trigger>
   <AlertDialog.Content>
     <AlertDialog.Header>
@@ -60,9 +61,9 @@
     </AlertDialog.Header>
     <AlertDialog.Footer>
       <AlertDialog.Cancel disabled={isDeleting}>Cancel</AlertDialog.Cancel>
-      <AlertDialog.Action disabled={isDeleting} onclick={deleteKvEntry}
-        >Confirm</AlertDialog.Action
-      >
+      <AlertDialog.Action disabled={isDeleting} onclick={deleteKvEntry}>
+        Confirm
+      </AlertDialog.Action>
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>

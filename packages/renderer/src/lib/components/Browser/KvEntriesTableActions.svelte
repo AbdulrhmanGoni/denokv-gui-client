@@ -5,6 +5,7 @@
   import CopyKeyIcon from "@lucide/svelte/icons/copy";
   import CopyValueIcon from "@lucide/svelte/icons/clipboard-copy";
   import TagsIcon from "@lucide/svelte/icons/tags";
+  import TrashIcon from "@lucide/svelte/icons/trash";
   import { Button } from "$lib/components/shadcn/button/index.js";
   import * as DropdownMenu from "$lib/components/shadcn/dropdown-menu/index.js";
   import DeleteKvEntryButton from "./DeleteKvEntryButton.svelte";
@@ -61,7 +62,14 @@
     </DropdownMenu.Item>
     <DropdownMenu.Separator />
     <DropdownMenu.Item>
-      <DeleteKvEntryButton {entry} onDeleteSuccess={() => setOpenMenu(false)} />
+      <DeleteKvEntryButton
+        className="flex gap-1 text-destructive! w-full"
+        {entry}
+        onDeleteSuccess={() => setOpenMenu(false)}
+      >
+        <TrashIcon class="text-destructive!" />
+        Delete
+      </DeleteKvEntryButton>
     </DropdownMenu.Item>
   </DropdownMenu.Content>
 </DropdownMenu.Root>
