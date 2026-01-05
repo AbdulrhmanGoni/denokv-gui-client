@@ -50,18 +50,18 @@
   />
   <div class="flex flex-row-reverse gap-2">
     <Button variant="secondary" size="sm" onclick={saveChanges}>
-      <SaveIcon />
       Save
+      <SaveIcon />
     </Button>
     <Button
-      variant="destructive"
+      variant="outline"
       size="sm"
       onclick={() => {
         kvEntryDialogState.openValueEditor = false;
       }}
     >
-      <XIcon />
       Cancel
+      <XIcon />
     </Button>
   </div>
 </div>

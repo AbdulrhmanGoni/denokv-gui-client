@@ -8,10 +8,13 @@
   import KvEntryValueUpdator from "./KvEntryValueUpdator.svelte";
   import KvValueRenderer from "./KvValueRenderer.svelte";
   import DataFileIcon from "@lucide/svelte/icons/file-json";
-  import PencilIcon from "@lucide/svelte/icons/pencil";
-  import ButtonWithTooltip from "$lib/components/custom/ButtonWithTooltip.svelte";
-  import Button from "$lib/components/shadcn/button/button.svelte";
-  import XIcon from "@lucide/svelte/icons/x";
+  import PencilIcon from "@lucide/svelte/icons/pencil-line";
+  import TrashIcon from "@lucide/svelte/icons/trash";
+  import Button, {
+    buttonVariants,
+  } from "$lib/components/shadcn/button/button.svelte";
+  import DeleteKvEntryButton from "./DeleteKvEntryButton.svelte";
+  import { cn } from "$lib/shadcn-utils";
 
   function getOpen() {
     return kvEntryDialogState.open;
@@ -57,17 +60,6 @@
     <div class="flex gap-2 items-center">
       <DataFileIcon />
       <p class="font-bold text-lg">Value</p>
-      <ButtonWithTooltip
-        tooltipContent="Edit the value"
-        className="ml-auto"
-        size="icon"
-        variant="outline"
-        onclick={() => {
-          kvEntryDialogState.openValueEditor = true;
-        }}
-      >
-        <PencilIcon />
-      </ButtonWithTooltip>
     </div>
     <div
       class="overflow-auto h-[270px] flex gap-2 justify-between bg-card p-3 rounded-md"
@@ -77,15 +69,23 @@
     </div>
     <div class="flex flex-row-reverse gap-2">
       <Button
-        variant="outline"
         size="sm"
+        variant="secondary2"
         onclick={() => {
-          setOpen(false);
+          kvEntryDialogState.openValueEditor = true;
         }}
       >
-        <XIcon />
-        Close
+        <PencilIcon />
+        Edit Entry
       </Button>
+      <DeleteKvEntryButton
+        {entry}
+        className={cn(buttonVariants({ variant: "destructive", size: "sm" }))}
+        onDeleteSuccess={() => setOpen(false)}
+      >
+        <TrashIcon />
+        Delete Entry
+      </DeleteKvEntryButton>
     </div>
   </div>
 {/snippet}
