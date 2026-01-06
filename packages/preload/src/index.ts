@@ -20,6 +20,10 @@ function onWindowReady(cb: () => void) {
   return ipcRenderer.on('window-ready', cb)
 }
 
+const environment =
+  process.env.PLAYWRIGHT_TEST == 'true' ? 'testing' :
+    process.env.NODE_ENV == 'development' ? 'development' : 'production'
+
 export {
   versions,
   selectDirectory,
@@ -32,4 +36,5 @@ export {
   onWindowReady,
   lastFetchedUpdateService,
   browsingParamsService,
+  environment
 };
