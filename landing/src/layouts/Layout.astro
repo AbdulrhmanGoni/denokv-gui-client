@@ -23,6 +23,15 @@ const url = "https://abdulrhmangoni.github.io/denokv-gui-client/";
       {title} | Desktop app to browse & manage Deno KV Databases
     </title>
     <meta name="description" content={description} />
+    <script is:inline>
+      const mode =
+        localStorage.getItem("theme") ??
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light");
+
+      document.documentElement.classList.toggle("dark", mode == "dark");
+    </script>
   </head>
   <body>
     <slot />

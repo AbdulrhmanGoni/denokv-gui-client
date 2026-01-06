@@ -1,13 +1,22 @@
 ---
 import KvEntriesTableScreenshot_light from "../../../screenshots/KvEntriesTable_light.png";
+import KvEntriesTableScreenshot_dark from "../../../screenshots/KvEntriesTable_dark.png";
 import LookupEntryDialogScreenshot_light from "../../../screenshots/LookupEntryDialog_light.png";
+import LookupEntryDialogScreenshot_dark from "../../../screenshots/LookupEntryDialog_dark.png";
 import KvStoresGridScreenshot_light from "../../../screenshots/KvStoresGrid_light.png";
+import KvStoresGridScreenshot_dark from "../../../screenshots/KvStoresGrid_dark.png";
 import AddKvEntryFormScreenshot_light from "../../../screenshots/AddKvEntryForm_light.png";
+import AddKvEntryFormScreenshot_dark from "../../../screenshots/AddKvEntryForm_dark.png";
 import BrowsingParamsDialogScreenshot_light from "../../../screenshots/BrowsingParamsDialog_light.png";
+import BrowsingParamsDialogScreenshot_dark from "../../../screenshots/BrowsingParamsDialog_dark.png";
 import SavedBrowsingParamsDialogScreenshot_light from "../../../screenshots/SavedBrowsingParamsDialog_light.png";
+import SavedBrowsingParamsDialogScreenshot_dark from "../../../screenshots/SavedBrowsingParamsDialog_dark.png";
 import DisplayKvEntryDialogScreenshot_light from "../../../screenshots/DisplayKvEntryDialog_light.png";
+import DisplayKvEntryDialogScreenshot_dark from "../../../screenshots/DisplayKvEntryDialog_dark.png";
 import EditKvEntryDialogScreenshot_light from "../../../screenshots/EditKvEntryDialog_light.png";
+import EditKvEntryDialogScreenshot_dark from "../../../screenshots/EditKvEntryDialog_dark.png";
 import KvStoreFormScreenshot_light from "../../../screenshots/KvStoreForm_light.png";
+import KvStoreFormScreenshot_dark from "../../../screenshots/KvStoreForm_dark.png";
 import FeatureCarousel from "./FeatureCarousel.astro";
 import Wave from "../assets/wave.svg";
 ---
@@ -25,11 +34,13 @@ import Wave from "../assets/wave.svg";
     <FeatureCarousel
       images={[
         {
-          src: KvStoresGridScreenshot_light.src,
+          lightSrc: KvStoresGridScreenshot_light.src,
+          darkSrc: KvStoresGridScreenshot_dark.src,
           alt: "KV Stores Grid screenshot",
         },
         {
-          src: KvStoreFormScreenshot_light.src,
+          lightSrc: KvStoreFormScreenshot_light.src,
+          darkSrc: KvStoreFormScreenshot_dark.src,
           alt: "KV Store Form screenshot",
         },
       ]}
@@ -45,15 +56,18 @@ import Wave from "../assets/wave.svg";
     <FeatureCarousel
       images={[
         {
-          src: KvEntriesTableScreenshot_light.src,
+          lightSrc: KvEntriesTableScreenshot_light.src,
+          darkSrc: KvEntriesTableScreenshot_dark.src,
           alt: "KV Entries Table screenshot",
         },
         {
-          src: LookupEntryDialogScreenshot_light.src,
+          lightSrc: LookupEntryDialogScreenshot_light.src,
+          darkSrc: LookupEntryDialogScreenshot_dark.src,
           alt: "Lookup Entry form screenshot",
         },
         {
-          src: DisplayKvEntryDialogScreenshot_light.src,
+          lightSrc: DisplayKvEntryDialogScreenshot_light.src,
+          darkSrc: DisplayKvEntryDialogScreenshot_dark.src,
           alt: "Display Kv Entry form screenshot",
         },
       ]}
@@ -80,11 +94,13 @@ import Wave from "../assets/wave.svg";
     <FeatureCarousel
       images={[
         {
-          src: BrowsingParamsDialogScreenshot_light.src,
+          lightSrc: BrowsingParamsDialogScreenshot_light.src,
+          darkSrc: BrowsingParamsDialogScreenshot_dark.src,
           alt: "Browsing Params Dialog screenshot",
         },
         {
-          src: SavedBrowsingParamsDialogScreenshot_light.src,
+          lightSrc: SavedBrowsingParamsDialogScreenshot_light.src,
+          darkSrc: SavedBrowsingParamsDialogScreenshot_dark.src,
           alt: "Saved Browsing Params Dialog screenshot",
         },
       ]}
@@ -92,10 +108,10 @@ import Wave from "../assets/wave.svg";
     <div class="features-text">
       <h2>Filter KV Entries</h2>
       <p>
-        Filter the Deno KV entries in entries table using <code>prefix</code> selector
-        or <code>start</code> and <code>end</code>
-        <strong>range</strong> selector with flexible page size option through
-        <strong>"limit"</strong> option
+        Filter Deno KV entries using <code>prefix</code> selector or
+        <code>start</code> and <code>end</code>
+        <strong>range</strong> selector. And you can <strong>save</strong> your filters
+        for feature reuse if you want
       </p>
     </div>
   </div>
@@ -117,11 +133,13 @@ import Wave from "../assets/wave.svg";
     <FeatureCarousel
       images={[
         {
-          src: AddKvEntryFormScreenshot_light.src,
+          lightSrc: AddKvEntryFormScreenshot_light.src,
+          darkSrc: AddKvEntryFormScreenshot_dark.src,
           alt: "Add Kv Entry form screenshot",
         },
         {
-          src: EditKvEntryDialogScreenshot_light.src,
+          lightSrc: EditKvEntryDialogScreenshot_light.src,
+          darkSrc: EditKvEntryDialogScreenshot_dark.src,
           alt: "Edit Kv Entry form screenshot",
         },
       ]}

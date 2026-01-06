@@ -1,7 +1,8 @@
 ---
 interface Props {
     images: {
-        src: string;
+        darkSrc: string;
+        lightSrc: string;
         alt: string;
     }[];
 }
@@ -16,7 +17,18 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
             {
                 images.map((image, index) => (
                     <div class="carousel-slide" data-index={index}>
-                        <img src={image.src} alt={image.alt} loading="lazy" />
+                        <img
+                            class="hidden! dark:block!"
+                            src={image.darkSrc}
+                            alt={`${image.alt} (dark)`}
+                            loading="lazy"
+                        />
+                        <img
+                            class="block dark:hidden!"
+                            src={image.lightSrc}
+                            alt={`${image.alt} (light)`}
+                            loading="lazy"
+                        />
                     </div>
                 ))
             }
@@ -28,8 +40,8 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
             <button class="nav-btn prev" aria-label="Previous slide">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                    width="27"
+                    height="27"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -53,8 +65,8 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
             <button class="nav-btn next" aria-label="Next slide">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                    width="27"
+                    height="27"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -73,7 +85,7 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
         max-width: 700px;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 0.3rem;
         order: 2;
     }
 
@@ -86,7 +98,7 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
 
     .carousel-track {
         display: flex;
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         will-change: transform;
     }
 
@@ -112,11 +124,8 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
     .carousel-navigation {
         display: flex;
         align-items: center;
-        gap: 2rem;
-        background: var(--color-surface);
+        gap: 3rem;
         padding: 0.25rem 0.7rem;
-        border-radius: 12px;
-        box-shadow: var(--box-shadow);
     }
 
     .nav-btn {

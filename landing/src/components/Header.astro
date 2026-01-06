@@ -1,6 +1,7 @@
 ---
 import logo from "../assets/logo.png";
 import GitHubIconDark from "../assets/GitHubIconDark.svg";
+import ThemeToggle from "./ThemeToggle.astro";
 ---
 
 <header class="shadow sticky top-0 z-50 bg-surface">
@@ -9,7 +10,7 @@ import GitHubIconDark from "../assets/GitHubIconDark.svg";
       <img src={logo.src} alt="Logo" class="size-9" />
       <p class="font-bold text-xl">Deno KV GUI Client</p>
     </div>
-    <div class="flex gap-3">
+    <div class="flex items-center gap-3">
       <a
         id="releases"
         class="flex gap-2 items-end cursor-pointer font-semibold hover:underline"
@@ -17,8 +18,9 @@ import GitHubIconDark from "../assets/GitHubIconDark.svg";
         target="_blank"
         rel="noopener noreferrer"
       >
-        <GitHubIconDark class="size-6" />
+        <GitHubIconDark class="size-5 fill-[#1B1F24] dark:fill-[#fff]" />
       </a>
+      <ThemeToggle />
     </div>
   </div>
 </header>

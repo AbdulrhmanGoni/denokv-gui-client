@@ -88,7 +88,7 @@ const platforms = [
                   denokv-gui-client-{option.label}
                 </a>
                 {i < platform.options.length - 1 && (
-                  <hr class="border-gray-300" />
+                  <hr class="border-gray-300 dark:border-gray-800" />
                 )}
               </>
             ))}
@@ -188,7 +188,7 @@ const platforms = [
     top: calc(100% + 8px);
     left: 0;
     min-width: 180px;
-    background-color: white;
+    background-color: var(--color-surface);
     border-radius: 6px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     padding: 6px;

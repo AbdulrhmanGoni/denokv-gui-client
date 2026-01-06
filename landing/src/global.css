@@ -1,13 +1,34 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-    --color-primary: oklch(0.62 0.2 255.23);
-    --color-surface: oklch(100% 0.0 255.000);
-    --color-background: oklch(0.82 0.1 245.62);
-    --color-soft: oklch(0.94 0.03 243.75 / 0.82);
-    --color-foreground: oklch(0 0 0);
-    --color-muted-foreground: oklch(0 0 0 / 0.8);
-    --box-shadow: 0px 0px 10px rgb(0 0 0 / 20%);
+    --color-primary: var(--primary);
+    --color-surface: var(--surface);
+    --color-background: var(--background);
+    --color-soft: var(--soft);
+    --color-foreground: var(--foreground);
+    --color-muted-foreground: var(--muted-foreground);
+    --box-shadow: var(--shadow);
+}
+
+:root {
+    --primary: oklch(0.62 0.2 255.23);
+    --surface: oklch(100% 0.0 255.000);
+    --background: oklch(0.82 0.1 245.62);
+    --soft: oklch(0.94 0.03 243.75 / 0.82);
+    --foreground: oklch(0 0 0);
+    --muted-foreground: oklch(0 0 0 / 0.8);
+    --shadow: 0px 0px 10px rgb(0 0 0 / 20%);
+}
+
+.dark {
+    --surface: oklch(13.145% 0.03574 248.419);
+    --background: oklch(0.32 0.13 253.04);
+    --soft: oklch(0.18 0.04 249.12);
+    --foreground: oklch(0.98 0 0);
+    --muted-foreground: oklch(0.98 0 0 / 0.8);
+    --shadow: 0px 0px 3px rgb(0 61 134 / 50%);
 }
 
 body {
