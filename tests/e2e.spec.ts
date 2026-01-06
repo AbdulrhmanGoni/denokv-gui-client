@@ -5,10 +5,12 @@ import { globSync } from 'glob';
 import { platform } from 'node:process';
 import { mainWindowTests } from './mainWindowTests';
 import { preloadContextExposureToRendererTests } from './preloadContextExposureToRendererTests';
+import { rmSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+import { kvStoresTests } from './kvStoresTests';
 
 process.env.PLAYWRIGHT_TEST = 'true';
 
-// Declare the types of your fixtures.
 type TestFixtures = {
   electronApp: ElectronApplication;
 };
@@ -62,6 +64,22 @@ export const test = base.extend<TestFixtures>({
   },
 });
 
+export const testingKvStore = {
+  name: 'Testing Kv Store',
+  path: import.meta.dirname,
+}
+
+test.afterAll(() => {
+  writeFileSync(path.resolve(import.meta.dirname, './database.test.sqlite'), "")
+
+  const testingKvStorePath = path.resolve(testingKvStore.path, 'kv.sqlite3')
+  rmSync(testingKvStorePath, { force: true })
+  rmSync(`${testingKvStorePath}-shm`, { force: true })
+  rmSync(`${testingKvStorePath}-wal`, { force: true })
+})
+
 test('Main window state', mainWindowTests)
 
 test.describe('Preload context exposure to renderer tests', preloadContextExposureToRendererTests)
+
+test.describe('Kv Stores Tests', kvStoresTests)

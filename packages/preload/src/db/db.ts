@@ -5,7 +5,7 @@ import { migrateDatabaseSchema } from './migrate.js';
 const isDev = process.env.NODE_ENV == 'development'
 const isTest = process.env.PLAYWRIGHT_TEST == 'true'
 
-const dbPath = isDev ? "./database.dev.sqlite" : isTest ? "./database.test.sqlite" : getDatabasePath();
+const dbPath = isDev ? "./database.dev.sqlite" : isTest ? "./tests/database.test.sqlite" : getDatabasePath();
 
 export const database = new DatabaseSync(dbPath);
 
