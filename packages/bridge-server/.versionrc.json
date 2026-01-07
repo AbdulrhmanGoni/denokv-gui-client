@@ -3,6 +3,7 @@
     "writerOpts": {
         "commitsSort": false
     },
+    "tagPrefix": "bridge-server@",
     "skip": {
         "tag": true
     },
