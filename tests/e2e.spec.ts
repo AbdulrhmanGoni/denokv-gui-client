@@ -8,6 +8,7 @@ import { preloadContextExposureToRendererTests } from './preloadContextExposureT
 import { rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { kvStoresTests } from './kvStoresTests';
+import { kvEntriesTests } from './kvEntriesTests';
 
 process.env.PLAYWRIGHT_TEST = 'true';
 
@@ -83,3 +84,5 @@ test('Main window state', mainWindowTests)
 test.describe('Preload context exposure to renderer tests', preloadContextExposureToRendererTests)
 
 test.describe('Kv Stores Tests', kvStoresTests)
+
+test.describe('Kv Entries Tests', kvEntriesTests)
