@@ -94,14 +94,14 @@ export async function deleteOne(kvStore: KvStore) {
 async function getDefaultLocalKvStores(exclude: KvStore["id"][]) {
     return new Promise<KvStore[]>((resolve) => {
         exec('deno info --json', async (err, infoResult) => {
-            if (err) resolve([])
+            if (err) return resolve([])
             const localDenoKvsLocaltion = JSON.parse(infoResult).originStorage
             if (localDenoKvsLocaltion && existsSync(localDenoKvsLocaltion)) {
                 const dataDirs: KvStore[] = [];
                 const dir = await readdir(localDenoKvsLocaltion, { withFileTypes: true })
                 for (const entry of dir) {
                     if (entry.isDirectory() && !exclude.includes(entry.name)) {
-                        const kvFile = `${entry.parentPath}/${entry.name}/kv.sqlite3`;
+                        const kvFile = path.join(entry.parentPath, entry.name, "kv.sqlite3");
                         if (existsSync(kvFile)) {
                             const fileStat = statSync(kvFile)
                             dataDirs.push({
