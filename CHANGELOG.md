@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.14.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.13.0...v1.14.0) (2026-01-07)
+
+### Features
+
+* add "Delete Entry" button to Kv entry dialog ([f7e241b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f7e241b0332f002cfce2a44fb68df624561f26d0))
+
+
+### User Interface Changes
+
+* convert settings page into an overlay window ([35aa58a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/35aa58ae7e1db1b218ecb8d377463018457b2ae7))
+* reposition Kv Store Type field in Kv Store Form ([5e91554](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5e91554c33e4ede5e7ffdfb7b79c3a88acdd5556))
+
 ## [1.13.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.12.0...v1.13.0) (2025-12-30)
 
 
