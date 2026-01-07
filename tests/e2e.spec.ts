@@ -45,8 +45,6 @@ export const test = base.extend<TestFixtures>({
 
     await use(electronApp);
 
-    // This code runs after all the tests in the worker process.
-    await electronApp.close();
   }, { scope: 'worker', auto: true } as any],
 
   page: async ({ electronApp }, use) => {
@@ -70,7 +68,9 @@ export const testingKvStore = {
   path: import.meta.dirname,
 }
 
-test.afterAll(() => {
+test.afterAll(async ({ electronApp }) => {
+  await electronApp.close();
+
   writeFileSync(path.resolve(import.meta.dirname, './database.test.sqlite'), "")
 
   const testingKvStorePath = path.resolve(testingKvStore.path, 'kv.sqlite3')
