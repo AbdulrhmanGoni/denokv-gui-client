@@ -164,6 +164,7 @@ export async function testKvStoreConnection(kvStore: TestKvStoreParams): Promise
             return await deadline(kv.get([crypto.randomUUID()]), 6000) // Reject after 6s because remote KVs might hang forever
                 .then(() => true)
                 .catch(() => false)
+                .finally(() => kv.close())
         } catch {
             return false
         }
