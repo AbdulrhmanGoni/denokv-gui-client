@@ -6,6 +6,7 @@
   import Loader from "@lucide/svelte/icons/loader";
   import * as Select from "$lib/components/shadcn/select";
   import type { Snippet } from "svelte";
+  import { Checkbox } from "$lib/components/shadcn/checkbox/index.js";
 
   type KvStoreFormProps = {
     defaultValues?: Partial<CreateKvStoreInput>;
@@ -38,6 +39,7 @@
       ? defaultValues?.url?.replace(/kv.sqlite3$/gi, "")
       : "",
   );
+  let replaceExisting = $state(defaultValues?.replaceExisting ?? false);
   let openedStoreType: KvStore["type"] | undefined = $state(
     defaultValues?.type,
   );
@@ -65,6 +67,7 @@
       type: type as CreateKvStoreInput["type"],
       accessToken: isRemoteStore ? accessToken : null,
       authToken: isBridgedStore ? authToken : null,
+      replaceExisting: isLocalStore ? replaceExisting : undefined,
     };
 
     onSubmitForm(store, form);
@@ -119,6 +122,9 @@
         <Select.Item value="local">local</Select.Item>
       </Select.Content>
     </Select.Root>
+    <p class="text-muted-foreground text-sm">
+      Select the type of the kv store you want to create a connection to.
+    </p>
   </div>
   {#if isLocalStore}
     <div class="space-y-1.5">
@@ -134,11 +140,32 @@
           class="flex-1"
           bind:value={localKvDirectory}
         />
-        <Button onclick={pickDirectory}>Pick Dir</Button>
+        <Button onclick={pickDirectory}>Pick Directory</Button>
       </div>
       <p class="text-muted-foreground text-sm">
-        Select the directory where you want us create your local Deno KV stroe
+        Select the directory where you want to create your local Deno KV store.
       </p>
+    </div>
+    <div class="items-top flex gap-x-2 my-2">
+      <Checkbox
+        id="replaceExisting"
+        name="replaceExisting"
+        bind:checked={replaceExisting}
+      />
+      <div class="grid gap-1.5">
+        <Label
+          for="replaceExisting"
+          class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Replace Existing?
+        </Label>
+        <p class="text-sm text-muted-foreground">
+          If there is already existing Deno kv database (<code
+            class="font-mono bg-muted px-1 py-0.5 rounded">kv.sqlite3</code
+          >
+          file) in the picked directory, replace it with a new empty database file.
+        </p>
+      </div>
     </div>
   {:else}
     <div class="space-y-1.5">
@@ -155,36 +182,40 @@
       <p class="text-muted-foreground text-sm">Enter URL of the kv Store.</p>
     </div>
   {/if}
-  <div class="space-y-1.5 {isRemoteStore ? '' : 'opacity-40'}">
-    <Label for="accessToken">Access Token</Label>
-    <Input
-      type="text"
-      id="accessToken"
-      name="accessToken"
-      placeholder="ddp_..."
-      disabled={!isRemoteStore || isLoading}
-      defaultValue={defaultValues?.accessToken ?? ""}
-      required={isRemoteStore}
-    />
-    <p class="text-muted-foreground text-sm">
-      Enter the access token of your remote kv store.
-    </p>
-  </div>
-  <div class="space-y-1.5 {isBridgedStore ? '' : 'opacity-40'}">
-    <Label for="authToken">Auth Token</Label>
-    <Input
-      type="text"
-      id="authToken"
-      name="authToken"
-      placeholder="Token..."
-      disabled={!isBridgedStore || isLoading}
-      defaultValue={defaultValues?.authToken ?? ""}
-    />
-    <p class="text-muted-foreground text-sm">
-      Enter the auth token of bridge server if it's required to access the
-      server.
-    </p>
-  </div>
+  {#if isRemoteStore}
+    <div class="space-y-1.5">
+      <Label for="accessToken">Access Token</Label>
+      <Input
+        type="text"
+        id="accessToken"
+        name="accessToken"
+        placeholder="ddp_..."
+        disabled={isLoading}
+        defaultValue={defaultValues?.accessToken ?? ""}
+        required={isRemoteStore}
+      />
+      <p class="text-muted-foreground text-sm">
+        Enter the access token of your remote kv store.
+      </p>
+    </div>
+  {/if}
+  {#if isBridgedStore}
+    <div class="space-y-1.5">
+      <Label for="authToken">Auth Token</Label>
+      <Input
+        type="text"
+        id="authToken"
+        name="authToken"
+        placeholder="Token..."
+        disabled={isLoading}
+        defaultValue={defaultValues?.authToken ?? ""}
+      />
+      <p class="text-muted-foreground text-sm">
+        Enter the auth token of bridge server if it's required to access the
+        server.
+      </p>
+    </div>
+  {/if}
   <div class="flex gap-2 items-end mt-auto justify-end">
     <Button
       onclick={onBack}

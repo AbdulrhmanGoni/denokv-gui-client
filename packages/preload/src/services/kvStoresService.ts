@@ -10,7 +10,9 @@ import { clearSavedParamsQuery } from '../db/browsingParamsQueries.js';
 export async function create(input: CreateKvStoreInput): Promise<boolean> {
     if (input.type == "local") {
         input.url = path.join(input.url, "kv.sqlite3")
-        await writeFile(input.url, "");
+        if (input.replaceExisting || !existsSync(input.url)) {
+            await writeFile(input.url, "");
+        }
     }
 
     const result = insertQuery.run(
