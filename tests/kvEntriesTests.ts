@@ -14,8 +14,6 @@ export function kvEntriesTests() {
 
         await page.locator('div[data-slot="dialog-content"] button', { hasText: "Add" }).click();
 
-        await page.keyboard.press("Escape")
-
         await page.locator('button', { hasText: "Reload" }).click()
 
         await expect(page.locator('td', { hasText: "testing-kv-entry" })).toBeVisible();
