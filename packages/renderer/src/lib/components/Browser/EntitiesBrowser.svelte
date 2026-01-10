@@ -20,9 +20,11 @@
   import {
     createKvEntriesTable,
     fetchEntries,
+    kvEntriesState,
     resetEntriesState,
   } from "$lib/states/kvEntriesState.svelte";
   import LookUpKvEntryDialog from "./LookUpKvEntryDialog.svelte";
+  import RotateCwIcon from "@lucide/svelte/icons/rotate-cw";
 
   const table = createKvEntriesTable();
 
@@ -51,6 +53,18 @@
   </div>
   <div class="flex gap-2 items-center justify-end">
     <BrowseParams />
+    <Button
+      size="sm"
+      class="me-auto"
+      variant="outline"
+      onclick={() => {
+        kvEntriesState.params.nextCursorIndex -= 1;
+        fetchEntries();
+      }}
+    >
+      Reload
+      <RotateCwIcon />
+    </Button>
     <Button size="sm" variant="secondary1" onclick={openLookUpKeyDialog}>
       <SearchIcon />
       Look up Entry

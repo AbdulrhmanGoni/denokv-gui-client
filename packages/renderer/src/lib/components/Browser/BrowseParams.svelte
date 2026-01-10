@@ -9,7 +9,6 @@
   } from "../../states/kvEntriesState.svelte";
   import Button from "$lib/components/shadcn/button/button.svelte";
   import SaveFilterIcon from "@lucide/svelte/icons/funnel-plus";
-  import RotateCwIcon from "@lucide/svelte/icons/rotate-cw";
   import ClearFilter from "@lucide/svelte/icons/funnel-x";
   import FunnelPlusIcon from "@lucide/svelte/icons/funnel-plus";
   import FunnelIcon from "@lucide/svelte/icons/funnel";
@@ -164,19 +163,6 @@
   </Button>
 
   <SavedBrowsingParamsList />
-
-  <Button
-    size="sm"
-    class="h-9"
-    variant="outline"
-    onclick={() => {
-      kvEntriesState.params.nextCursorIndex -= 1;
-      fetchEntries();
-    }}
-  >
-    Reload
-    <RotateCwIcon />
-  </Button>
 </div>
 
 <Dialog.Root bind:open={getOpen, setOpen}>
