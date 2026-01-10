@@ -1,10 +1,10 @@
 <script lang="ts">
     import Separator from "$lib/components/shadcn/separator/separator.svelte";
-    import TrashIcon from "@lucide/svelte/icons/trash";
     import EditIcon from "@lucide/svelte/icons/square-pen";
     import CheckIcon from "@lucide/svelte/icons/check";
     import CodeRenderer from "./CodeRenderer.svelte";
     import ButtonWithTooltip from "../custom/ButtonWithTooltip.svelte";
+    import DeleteSavedBrowsingParamsButton from "./DeleteSavedBrowsingParamsButton.svelte";
     import { browsingParamsService } from "@app/preload";
     import dataTypesColors from "./dataTypesColors";
     import Button from "../shadcn/button/button.svelte";
@@ -21,25 +21,6 @@
     };
 
     const { browsingParamsRecord, closeList }: Props = $props();
-
-    function deleteSavedBrowsingParams() {
-        const { result, error } =
-            browsingParamsService.deleteSavedBrowsingParams(
-                browsingParamsRecord.id,
-            );
-
-        if (result) {
-            toast.success(
-                "The saved browsing params were deleted successfully",
-            );
-            savedBrowsingParamsState.savedParams =
-                savedBrowsingParamsState.savedParams.filter(
-                    (record) => record.id != browsingParamsRecord.id,
-                );
-        } else {
-            toast.error(error);
-        }
-    }
 
     function setSavedBrowsingParamsAsTheDefault(setValue: boolean) {
         if (kvStoresState.openedStore) {
@@ -117,14 +98,7 @@
         >
             Apply
         </Button>
-        <ButtonWithTooltip
-            variant="destructive"
-            tooltipContent="delete"
-            size="icon"
-            onclick={deleteSavedBrowsingParams}
-        >
-            <TrashIcon />
-        </ButtonWithTooltip>
+        <DeleteSavedBrowsingParamsButton {browsingParamsRecord} />
         <ButtonWithTooltip
             variant="secondary2"
             tooltipContent="Edit"
