@@ -1,30 +1,37 @@
 <script lang="ts">
   import CodeEditor from "./CodeEditor.svelte";
   import Separator from "$lib/components/shadcn/separator/separator.svelte";
-  import Input from "$lib/components/shadcn/input/input.svelte";
   import type { Snippet } from "svelte";
+  import * as InputGroup from "../shadcn/input-group/index";
+  import type { CodeJar } from "codejar";
+
+  type Props = BrowsingParams & {
+    children: Snippet;
+    prefixRef?: CodeJar;
+    startRef?: CodeJar;
+    endRef?: CodeJar;
+  };
 
   let {
     prefix = $bindable(),
+    prefixRef = $bindable(),
     start = $bindable(),
+    startRef = $bindable(),
     end = $bindable(),
+    endRef = $bindable(),
     limit = $bindable(),
     children,
-  }: BrowsingParams & { children: Snippet } = $props();
+  }: Props = $props();
 </script>
 
 <div class="grid w-full items-start gap-2 mt-2">
-  <div class="flex gap-3 justify-between items-end">
-    <p class="font-bold text-lg">Limit</p>
-    <Input type="number" bind:value={limit} class="w-18" placeholder="Limit" />
-  </div>
-  <Separator />
   <div>
     <p class="font-bold text-lg">Prefix</p>
     <CodeEditor
       editorId="prefix-key-editor"
       bind:editorValue={prefix}
-      className="w-full max-h-28"
+      bind:jar={prefixRef}
+      className="w-full max-h-28 py-2 px-3"
     />
   </div>
   <Separator />
@@ -33,7 +40,8 @@
     <CodeEditor
       editorId="start-key-editor"
       bind:editorValue={start}
-      className="w-full max-h-28"
+      bind:jar={startRef}
+      className="w-full max-h-28 py-2 px-3"
     />
   </div>
   <Separator />
@@ -42,8 +50,20 @@
     <CodeEditor
       editorId="end-key-editor"
       bind:editorValue={end}
-      className="w-full max-h-28"
+      bind:jar={endRef}
+      className="w-full max-h-28 py-2 px-3"
     />
+  </div>
+  <Separator />
+  <div class="flex gap-3">
+    <div class="flex gap-2 items-end">
+      <InputGroup.Root>
+        <InputGroup.Addon>
+          <InputGroup.Text class="me-1">Limit:</InputGroup.Text>
+        </InputGroup.Addon>
+        <InputGroup.Input type="number" bind:value={limit} class="ps-0.5!" />
+      </InputGroup.Root>
+    </div>
   </div>
   <Separator />
   {@render children()}
