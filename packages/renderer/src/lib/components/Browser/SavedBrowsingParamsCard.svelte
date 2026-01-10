@@ -11,6 +11,7 @@
     import {
         savedBrowsingParamsState,
         setBrowsingParams,
+        setDefaultBrowsingParams,
     } from "$lib/states/kvEntriesState.svelte";
     import { toast } from "svelte-sonner";
     import { kvStoresState } from "$lib/states/kvStoresState.svelte";
@@ -22,23 +23,28 @@
 
     const { browsingParamsRecord, closeList }: Props = $props();
 
-    function setSavedBrowsingParamsAsTheDefault(setValue: boolean) {
+    function setSavedBrowsingParamsAsTheDefault(setAsDefault: boolean) {
         if (kvStoresState.openedStore) {
             const { result, error } =
                 browsingParamsService.updateSavedBrowsingParams(
                     kvStoresState.openedStore.id,
                     browsingParamsRecord.id,
-                    { setAsDefault: setValue },
+                    { setAsDefault },
                 );
 
             if (result) {
                 toast.success(
-                    `The saved browsing params were ${setValue ? "set" : "unset"} as the default successfully`,
+                    `The saved browsing params were ${setAsDefault ? "set" : "unset"} as the default successfully`,
                 );
                 savedBrowsingParamsState.savedParams =
                     savedBrowsingParamsState.savedParams.map((record) => {
                         if (record.id == browsingParamsRecord.id) {
-                            record.isDefault = setValue ? 1 : 0;
+                            record.isDefault = setAsDefault ? 1 : 0;
+                            setDefaultBrowsingParams(
+                                record.isDefault
+                                    ? browsingParamsRecord.paramsAsJson
+                                    : undefined,
+                            );
                         } else {
                             record.isDefault = 0;
                         }

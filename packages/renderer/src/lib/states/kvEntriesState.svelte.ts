@@ -17,10 +17,10 @@ type KvEntriesState = {
 }
 
 const defaultBrowsingParams = {
-    limit: 40,
     prefix: "[]",
     start: "[]",
     end: "[]",
+    limit: 40,
 }
 
 export const kvEntriesStateDefaultValues: KvEntriesState = {
@@ -173,4 +173,8 @@ export function fetchSavedDefaultBrowsingParams() {
             ...(result?.paramsAsJson || defaultBrowsingParams)
         }
     }
+}
+
+export function setDefaultBrowsingParams(params?: BrowsingParams) {
+    Object.assign(kvEntriesStateDefaultValues.params, params ?? defaultBrowsingParams)
 }
