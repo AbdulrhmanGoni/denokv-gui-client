@@ -59,17 +59,23 @@
 </script>
 
 <div class="p-2 flex flex-col gap-1.5 bg-card rounded-sm">
-    <div class="flex gap-1 items-center font-bold px-2">
+    <div class="flex gap-1.5 items-center font-bold px-2">
         <p>Prefix:</p>
-        <CodeRenderer code={browsingParamsRecord.paramsAsJson.prefix} />
+        <div class="overflow-auto">
+            <CodeRenderer code={browsingParamsRecord.paramsAsJson.prefix} />
+        </div>
     </div>
     <div class="flex gap-1 items-center font-bold px-2">
         <p>Start:</p>
-        <CodeRenderer code={browsingParamsRecord.paramsAsJson.start} />
+        <div class="overflow-auto">
+            <CodeRenderer code={browsingParamsRecord.paramsAsJson.start} />
+        </div>
     </div>
     <div class="flex gap-1 items-center font-bold px-2">
         <p>End:</p>
-        <CodeRenderer code={browsingParamsRecord.paramsAsJson.end} />
+        <div class="overflow-auto">
+            <CodeRenderer code={browsingParamsRecord.paramsAsJson.end} />
+        </div>
     </div>
     <div class="flex gap-1 items-center font-bold px-2">
         <p>Limit:</p>
