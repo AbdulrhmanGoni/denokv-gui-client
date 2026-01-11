@@ -2,7 +2,7 @@ import type { SerializedKvEntry, SerializedKvKey, SerializedKvValue } from "../s
 
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 
-type CallBridgeServerOptions = Record<string, SerializedKvKey | number | string>
+type CallBridgeServerOptions = Record<string, SerializedKvKey | number | string | boolean>
 
 type CallBridgeServerParams = {
     url: string,
@@ -66,6 +66,9 @@ async function callBridgeServerRequest<ResultT = unknown>(
 export type BrowsingOptions = {
     limit?: number;
     cursor?: string;
+    batchSize?: number;
+    consistency?: string;
+    reverse?: boolean;
     prefix?: SerializedKvKey;
     start?: SerializedKvKey;
     end?: SerializedKvKey;
@@ -100,7 +103,7 @@ export class BridgeServerClient {
         })
     }
 
-    set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<{ result: true }> {
+    set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<{ result: boolean }> {
         return callBridgeServerRequest<{ result: true }>({
             url: `${this.baseUrl}/set`,
             options: {
