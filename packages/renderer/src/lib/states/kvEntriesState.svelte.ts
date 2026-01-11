@@ -21,6 +21,9 @@ const defaultBrowsingParams = {
     start: "[]",
     end: "[]",
     limit: 40,
+    batchSize: 40,
+    reverse: false,
+    consistency: "strong",
 }
 
 export const kvEntriesStateDefaultValues: KvEntriesState = {

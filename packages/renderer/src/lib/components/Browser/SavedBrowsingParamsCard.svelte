@@ -11,6 +11,7 @@
     import {
         savedBrowsingParamsState,
         setBrowsingParams,
+        kvEntriesStateDefaultValues,
         setDefaultBrowsingParams,
     } from "$lib/states/kvEntriesState.svelte";
     import { toast } from "svelte-sonner";
@@ -74,6 +75,27 @@
         <p>Limit:</p>
         <span class={dataTypesColors.number}>
             {browsingParamsRecord.paramsAsJson.limit}
+        </span>
+    </div>
+    <div class="flex gap-1 items-center font-bold px-2">
+        <p>Batch size:</p>
+        <span class={dataTypesColors.number}>
+            {browsingParamsRecord.paramsAsJson.batchSize ??
+                kvEntriesStateDefaultValues.params.batchSize}
+        </span>
+    </div>
+    <div class="flex gap-1 items-center font-bold px-2">
+        <p>Consistency:</p>
+        <span class={dataTypesColors.string}>
+            "{browsingParamsRecord.paramsAsJson.consistency ??
+                kvEntriesStateDefaultValues.params.consistency}"
+        </span>
+    </div>
+    <div class="flex gap-1 items-center font-bold px-2">
+        <p>Reverse?:</p>
+        <span class={dataTypesColors.boolean}>
+            {browsingParamsRecord.paramsAsJson.reverse ??
+                kvEntriesStateDefaultValues.params.reverse}
         </span>
     </div>
     <Separator />

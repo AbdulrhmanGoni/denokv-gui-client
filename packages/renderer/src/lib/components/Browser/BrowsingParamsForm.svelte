@@ -2,6 +2,8 @@
   import CodeEditor from "./CodeEditor.svelte";
   import Separator from "$lib/components/shadcn/separator/separator.svelte";
   import type { Snippet } from "svelte";
+  import * as Select from "../shadcn/select";
+  import { Checkbox } from "../shadcn/checkbox/index";
   import * as InputGroup from "../shadcn/input-group/index";
   import type { CodeJar } from "codejar";
 
@@ -20,6 +22,9 @@
     end = $bindable(),
     endRef = $bindable(),
     limit = $bindable(),
+    batchSize = $bindable(),
+    consistency = $bindable(),
+    reverse = $bindable(),
     children,
   }: Props = $props();
 </script>
@@ -63,6 +68,43 @@
         </InputGroup.Addon>
         <InputGroup.Input type="number" bind:value={limit} class="ps-0.5!" />
       </InputGroup.Root>
+    </div>
+    <div class="flex gap-2 items-end">
+      <InputGroup.Root>
+        <InputGroup.Addon>
+          <InputGroup.Text class="me-1">Batch Size:</InputGroup.Text>
+        </InputGroup.Addon>
+        <InputGroup.Input
+          type="number"
+          bind:value={batchSize}
+          class="ps-0.5!"
+        />
+      </InputGroup.Root>
+    </div>
+    <div class="flex gap-2 items-end">
+      <InputGroup.Root>
+        <InputGroup.Addon>
+          <InputGroup.Text class="me-1">Consistency:</InputGroup.Text>
+        </InputGroup.Addon>
+        <Select.Root type="single" bind:value={consistency}>
+          <Select.Trigger class="w-fit bg-transparent! border-0">
+            {consistency[0].toUpperCase() + consistency.substring(1)}
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="strong">Strong (default)</Select.Item>
+            <Select.Item value="eventual">Eventual</Select.Item>
+          </Select.Content>
+        </Select.Root>
+      </InputGroup.Root>
+    </div>
+  </div>
+  <div class="flex gap-2 items-start">
+    <Checkbox class="mt-1" bind:checked={reverse} />
+    <div>
+      <p class="font-bold text-base">Reverse?</p>
+      <p class="text-sm text-muted-foreground">
+        Return the entries in reverse order
+      </p>
     </div>
   </div>
   <Separator />

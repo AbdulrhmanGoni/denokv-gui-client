@@ -35,6 +35,9 @@
   let endKeyEditorRef: CodeJar | undefined = $state();
 
   let limitValue = $derived(kvEntriesState.params.limit);
+  let batchSizeValue = $derived(kvEntriesState.params.batchSize);
+  let consistencyValue = $derived(kvEntriesState.params.consistency);
+  let reverseValue = $derived(!!kvEntriesState.params.reverse);
 
   let openBrowseParamsForm = $state(false);
 
@@ -46,6 +49,9 @@
     startKeyEditorRef?.updateCode(kvEntriesStateDefaultValues.params.start);
     endKeyEditorRef?.updateCode(kvEntriesStateDefaultValues.params.end);
     limitValue = kvEntriesStateDefaultValues.params.limit;
+    batchSizeValue = kvEntriesStateDefaultValues.params.batchSize;
+    consistencyValue = kvEntriesStateDefaultValues.params.consistency;
+    reverseValue = !!kvEntriesStateDefaultValues.params.reverse;
   }
 
   function onApplyParams() {
@@ -54,6 +60,9 @@
       start: startKeyEditorValue,
       end: endKeyEditorValue,
       limit: limitValue,
+      batchSize: batchSizeValue,
+      consistency: consistencyValue,
+      reverse: reverseValue,
     });
     setOpen(false);
     if (saveParams) {
@@ -96,6 +105,9 @@
             start: startKeyEditorValue,
             end: endKeyEditorValue,
             limit: limitValue,
+            batchSize: batchSizeValue,
+            consistency: consistencyValue,
+            reverse: reverseValue,
           },
           setAsDefault: saveParams && setParamsAsDefault,
         },
@@ -198,6 +210,9 @@
         bind:end={endKeyEditorValue}
         bind:endRef={endKeyEditorRef}
         bind:limit={limitValue}
+        bind:batchSize={batchSizeValue}
+        bind:consistency={consistencyValue}
+        bind:reverse={reverseValue}
       >
         <div class="flex items-center gap-3 *:cursor-pointer">
           <Checkbox id="save" bind:checked={saveParams} />

@@ -6,6 +6,9 @@ export function browse(params: BrowsingParams, nextCursor?: string) {
 
     const options: BrowseRouteOptions = {
         limit: params.limit,
+        batchSize: params.batchSize,
+        consistency: params.consistency,
+        reverse: params.reverse,
     }
 
     if (nextCursor) {

@@ -1,5 +1,8 @@
 <script lang="ts">
-    import { savedBrowsingParamsState } from "../../states/kvEntriesState.svelte";
+    import {
+        kvEntriesStateDefaultValues,
+        savedBrowsingParamsState,
+    } from "../../states/kvEntriesState.svelte";
     import Button from "$lib/components/shadcn/button/button.svelte";
     import SaveFilterIcon from "@lucide/svelte/icons/funnel-plus";
     import XIcon from "@lucide/svelte/icons/x";
@@ -18,10 +21,30 @@
     let start = $state(savedBrowsingParamsRecord.paramsAsJson.start);
     let end = $state(savedBrowsingParamsRecord.paramsAsJson.end);
     let limit = $state(savedBrowsingParamsRecord.paramsAsJson.limit);
+    let consistency = $state(
+        savedBrowsingParamsRecord.paramsAsJson.consistency ??
+            kvEntriesStateDefaultValues.params.consistency,
+    );
+    let batchSize = $state(
+        savedBrowsingParamsRecord.paramsAsJson.batchSize ??
+            kvEntriesStateDefaultValues.params.batchSize,
+    );
+    let reverse = $state(
+        savedBrowsingParamsRecord.paramsAsJson.reverse ??
+            kvEntriesStateDefaultValues.params.reverse,
+    );
 
     function saveUpdate() {
         if (kvStoresState.openedStore) {
-            const newBrowsingParams = { end, limit, prefix, start };
+            const newBrowsingParams = {
+                end,
+                limit,
+                prefix,
+                start,
+                batchSize,
+                consistency,
+                reverse,
+            };
             const { result, error } =
                 browsingParamsService.updateSavedBrowsingParams(
                     kvStoresState.openedStore.id,
@@ -50,7 +73,15 @@
     }
 </script>
 
-<BrowseParamsForm bind:prefix bind:start bind:end bind:limit>
+<BrowseParamsForm
+    bind:prefix
+    bind:start
+    bind:end
+    bind:limit
+    bind:batchSize
+    bind:consistency
+    bind:reverse
+>
     <div class="flex flex-row-reverse gap-2">
         <Button onclick={saveUpdate} size="sm">
             Save

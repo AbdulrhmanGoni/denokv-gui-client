@@ -16,9 +16,13 @@ type BrowsingParams = {
     start: string;
     end: string;
     limit: NonNullable<BrowseRouteOptions["limit"]>;
+    batchSize: NonNullable<BrowseRouteOptions["batchSize"]>;
+    consistency: NonNullable<BrowseRouteOptions["consistency"]>;
+    reverse: NonNullable<BrowseRouteOptions["reverse"]>;
 }
 
-type SavedBrowsingParams = Pick<BrowsingParams, "prefix" | "start" | "end" | "limit">
+type SavedBrowsingParams =
+    Pick<BrowsingParams, "prefix" | "start" | "end" | "limit" | "batchSize" | "consistency" | "reverse">
 
 type SavedBrowsingParamsRecord<T> = {
     id: string;
