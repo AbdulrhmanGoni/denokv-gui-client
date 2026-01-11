@@ -15,6 +15,9 @@ export async function openServer(kvStore: KvStore): Promise<boolean> {
         bridgeServerAuthToken = kvStore.authToken
     } else {
         bridgeServerAuthToken = randomBytes(30).toString("base64")
+        if (kv || serverRef) {
+            closeServer()
+        }
         kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken })
         const server = openBridgeServerInNode(kv, { port: 0, authToken: bridgeServerAuthToken });
         const address = server.address() as AddressInfo
