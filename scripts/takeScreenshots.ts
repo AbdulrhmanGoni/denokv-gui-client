@@ -3,10 +3,11 @@ import type { Page } from 'playwright';
 import { globSync } from 'glob';
 import { platform } from 'node:process';
 import sharp from "sharp";
-import { readdirSync, rmSync } from 'node:fs';
+import { readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { randomTestingKvEntries } from '../tests/testingKvEntries.ts';
+import path from 'node:path';
 
 process.env.PLAYWRIGHT_TEST = 'true';
-process.env.NODE_ENV = 'development';
 
 let executablePattern = 'dist/*/denokv-gui-client{,.*}';
 if (platform === 'darwin') {
@@ -40,12 +41,56 @@ try {
     // Wait for the page to load
     await page.waitForLoadState('load');
 
+    await page.evaluate(async (path) => {
+        const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
+        await kvStoresService.create({
+            name: "Some Local KV Store",
+            url: path,
+            type: "local",
+            accessToken: null,
+            authToken: null,
+        })
+
+        await kvStoresService.create({
+            name: "Some Production KV Store",
+            url: "https://some-remote-database.com/kv",
+            type: "remote",
+            accessToken: "some-access-token",
+            authToken: null,
+        })
+
+        await kvStoresService.create({
+            name: "Some KV Store Bridge Server",
+            url: "https://localhost:8704/kv/bridge-server",
+            type: "bridge",
+            accessToken: null,
+            authToken: "some-auth-token",
+        })
+    }, import.meta.dirname);
+
     await switchMode(page, 'dark')
     await takeScreenshots(page, 'dark')
     await switchMode(page, 'light')
     await takeScreenshots(page, 'light')
 } finally {
     await electronApp.close();
+
+    writeFileSync(path.resolve(import.meta.dirname, '../tests/database.test.sqlite'), "")
+
+    const testingKvStorePath = path.resolve(import.meta.dirname, 'kv.sqlite3')
+    rmSync(testingKvStorePath, { force: true })
+    rmSync(`${testingKvStorePath}-shm`, { force: true })
+    rmSync(`${testingKvStorePath}-wal`, { force: true })
+
+    for (const file of readdirSync("./screenshots")) {
+        if (file.endsWith(".temp.png")) {
+            await sharp("./screenshots/" + file)
+                .png({ quality: 70 })
+                .toFile("./screenshots/" + file.replace(".temp", ""));
+
+            rmSync("./screenshots/" + file)
+        }
+    }
 }
 
 type Mode = "dark" | "light";
@@ -56,6 +101,7 @@ async function takeScreenshots(page: Page, mode: Mode) {
         takeScreenshotOfKvStoreForm,
         takeScreenshotOfKvEntriesTable,
         takeScreenshotOfDisplayKvEntryDialog,
+        takeScreenshotOfEditKvEntryDialog,
         takeScreenshotOfAddKvEntryForm,
         takeScreenshotOfLookupEntryDialog,
         takeScreenshotOfBrowsingParamsDialog,
@@ -76,8 +122,7 @@ async function switchMode(page: Page, mode: Mode) {
 
     await page.screenshot({ path: `./screenshots/SettingsPage_${mode}.temp.png`, fullPage: true });
 
-    const backButton = page.locator("button svg.lucide-arrow-left");
-    await backButton.click()
+    await page.reload();
 }
 
 async function takeScreenshotOfKvStoresGrid(page: Page, mode: Mode) {
@@ -93,26 +138,45 @@ async function takeScreenshotOfKvStoreForm(page: Page, mode: Mode) {
 }
 
 async function takeScreenshotOfKvEntriesTable(page: Page, mode: Mode) {
-    const kvStoreCard = page.locator('#kv-stores-grid > div', { has: page.locator("svg.lucide-file") }).first();
-    await kvStoreCard.dblclick({ position: { x: 5, y: 5 } });
+    await page.locator(
+        '#kv-stores-grid > div',
+        { hasText: "Some Local KV Store" }
+    ).dblclick({ position: { x: 5, y: 5 } });
+
+    await page.evaluate(async (entries) => {
+        const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+
+        if (!(await kvClient.get(entries[0].key))?.result) {
+            for (const entry of entries) {
+                await kvClient.set(entry.key, entry.value)
+            }
+        }
+    }, randomTestingKvEntries);
+
+    await page.locator("button", { hasText: "Reload" }).click();
+    await page.waitForTimeout(100)
     await page.screenshot({ path: `./screenshots/KvEntriesTable_${mode}.temp.png`, fullPage: true });
 }
 
 async function takeScreenshotOfDisplayKvEntryDialog(page: Page, mode: Mode) {
-    const c = page.locator('td', { hasText: "settings" });
-    await c.dblclick({ position: { x: 5, y: 5 } });
-    await page.waitForTimeout(100)
+    await page.locator('td', { hasText: /"admins"/ }).dblclick({ position: { x: 5, y: 5 } });
+    await page.waitForTimeout(100);
     await page.screenshot({ path: `./screenshots/DisplayKvEntryDialog_${mode}.temp.png`, fullPage: true });
-    const closeButton = page.locator('button', { has: page.locator("svg.lucide-x"), hasText: "close" });
-    await closeButton.click();
+}
+
+async function takeScreenshotOfEditKvEntryDialog(page: Page, mode: Mode) {
+    await page.locator('button', { hasText: "Edit Entry" }).click();
+    await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Object" }).click();
+    await page.waitForTimeout(100);
+    await page.screenshot({ path: `./screenshots/EditKvEntryDialog_${mode}.temp.png`, fullPage: true });
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
 }
 
 async function takeScreenshotOfAddKvEntryForm(page: Page, mode: Mode) {
-    const addKvEntryButton = page.locator('button', { hasText: "Add Entry" });
-    await addKvEntryButton.click();
+    await page.locator('button', { hasText: "Add Entry" }).click();
     await page.waitForTimeout(100);
-    const dataTypesSelectBox = page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" });
-    await dataTypesSelectBox.click();
+    await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
     await page.waitForTimeout(100);
     await page.screenshot({ path: `./screenshots/AddKvEntryForm_${mode}.temp.png`, fullPage: true });
     await page.keyboard.press('Escape');
@@ -120,41 +184,45 @@ async function takeScreenshotOfAddKvEntryForm(page: Page, mode: Mode) {
 }
 
 async function takeScreenshotOfLookupEntryDialog(page: Page, mode: Mode) {
-    const lookupEntryButton = page.locator('button', { hasText: "Look up Entry" });
-    await lookupEntryButton.click();
+    await page.locator('button', { hasText: "Look up Entry" }).click();
     await page.waitForTimeout(100);
     await page.screenshot({ path: `./screenshots/LookupEntryDialog_${mode}.temp.png`, fullPage: true });
     await page.keyboard.press('Escape');
 }
 
 async function takeScreenshotOfBrowsingParamsDialog(page: Page, mode: Mode) {
-    const openFiltersButton = page.locator('button', { hasText: "Filter" });
-    await openFiltersButton.click();
+    await page.locator('button', { has: page.locator("svg.lucide-pencil-line") }).click();
     await page.waitForTimeout(100);
     await page.screenshot({ path: `./screenshots/BrowsingParamsDialog_${mode}.temp.png`, fullPage: true });
-    await page.keyboard.press('Escape');
 }
 
 async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page, mode: Mode) {
-    const openSavedBrowsingParamsButton = page.locator(
-        'button',
-        {
-            has: page.locator("svg.lucide-book-marked"),
-            hasNot: page.locator("button"),
+    await page.evaluate(async () => {
+        const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
+        const store = (await kvStoresService.getAll()).find((store: any) => store.type === "local")
+
+        const browsingParamsService = globalThis[btoa('browsingParamsService') as keyof typeof globalThis]
+
+        const res = await browsingParamsService.getSavedBrowsingParamsRecords(store.id)
+        if (res.result.length) {
+            return
         }
-    );
-    await openSavedBrowsingParamsButton.click();
+
+        await browsingParamsService.saveBrowsingParams(store.id, {
+            browsingParams: {
+                prefix: '["orders", "failed"]',
+                start: "[]",
+                end: "[]",
+                limit: 50,
+                batchSize: 50,
+                consistency: "string",
+                reverse: false
+            },
+            setAsDefault: false
+        })
+    });
+
+    await page.locator('button', { hasText: "Saved Filters List" }).click();
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `./screenshots/SavedBrowsingParamsDialog_${mode}.temp.png`, fullPage: true })
-    await page.keyboard.press('Escape');
-}
-
-for (const file of readdirSync("./screenshots")) {
-    if (file.endsWith(".temp.png")) {
-        await sharp("./screenshots/" + file)
-            .png({ quality: 70 })
-            .toFile("./screenshots/" + file.replace(".temp", ""));
-
-        rmSync("./screenshots/" + file)
-    }
+    await page.screenshot({ path: `./screenshots/SavedBrowsingParamsDialog_${mode}.temp.png`, fullPage: true });
 }
