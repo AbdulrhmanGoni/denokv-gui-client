@@ -99,13 +99,13 @@
     </div>
   </div>
   <div class="flex gap-2 items-start">
-    <Checkbox class="mt-1" bind:checked={reverse} />
-    <div>
+    <Checkbox id="reverse-option" class="mt-1" bind:checked={reverse} />
+    <label for="reverse-option">
       <p class="font-bold text-base">Reverse?</p>
       <p class="text-sm text-muted-foreground">
         Return the entries in reverse order
       </p>
-    </div>
+    </label>
   </div>
   <Separator />
   {@render children()}

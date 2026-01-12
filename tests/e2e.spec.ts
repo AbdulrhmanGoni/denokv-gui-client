@@ -9,6 +9,7 @@ import { rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { kvStoresTests } from './kvStoresTests';
 import { kvEntriesTests } from './kvEntriesTests';
+import { filteringKvEntriesTests } from './filteringKvEntriesTests';
 
 process.env.PLAYWRIGHT_TEST = 'true';
 
@@ -86,3 +87,5 @@ test.describe('Preload context exposure to renderer tests', preloadContextExposu
 test.describe('Kv Stores Tests', kvStoresTests)
 
 test.describe('Kv Entries Tests', kvEntriesTests)
+
+test.describe('Filtering Kv Entries Tests', filteringKvEntriesTests)
