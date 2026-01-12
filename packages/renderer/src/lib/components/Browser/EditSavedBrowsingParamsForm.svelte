@@ -4,7 +4,7 @@
         savedBrowsingParamsState,
     } from "../../states/kvEntriesState.svelte";
     import Button from "$lib/components/shadcn/button/button.svelte";
-    import SaveFilterIcon from "@lucide/svelte/icons/funnel-plus";
+    import SaveFilterIcon from "@lucide/svelte/icons/save";
     import XIcon from "@lucide/svelte/icons/x";
     import BrowseParamsForm from "./BrowsingParamsForm.svelte";
     import { toast } from "svelte-sonner";
