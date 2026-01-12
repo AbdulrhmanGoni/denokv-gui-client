@@ -20,11 +20,10 @@ export function filteringKvEntriesTests() {
     test("Apply 'prefix' filter and check only entries with prefix are fetched", async ({ page }) => {
         await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click()
         const prefixKeyEditor = page.locator("#prefix-key-editor")
+        // Focus on the editor and enter a space just to trigger `CodeJar` to set the value to the state variable
         await prefixKeyEditor.fill('["users"]')
-
-        // Focus on the editor and press space twice just to give `CodeJar` time trigger the event that sets the value to the state variable
-        await prefixKeyEditor.focus()
-        await prefixKeyEditor.pressSequentially("  ", { delay: 70 })
+        await prefixKeyEditor.press('Space')
+        await page.waitForTimeout(70)
 
         // save for subsequent tests
         await page.locator("label", { hasText: "Save this filter" }).click()
@@ -45,13 +44,13 @@ export function filteringKvEntriesTests() {
 
         const startKeyEditor = page.locator("#start-key-editor")
         await startKeyEditor.fill('["users", 5]')
-        await startKeyEditor.focus()
-        await startKeyEditor.pressSequentially("  ", { delay: 70 })
+        await startKeyEditor.press('Space')
+        await page.waitForTimeout(100)
 
         const endKeyEditor = page.locator("#end-key-editor")
         await endKeyEditor.fill('["users", 10]')
-        await endKeyEditor.focus()
-        await endKeyEditor.pressSequentially("  ", { delay: 70 })
+        await endKeyEditor.press('Space')
+        await page.waitForTimeout(100)
 
         await page.locator("button", { hasText: "Apply" }).click()
         await expect(page.locator("tr", { hasText: '"users"' })).toHaveCount(5)
@@ -64,8 +63,8 @@ export function filteringKvEntriesTests() {
 
         const prefixKeyEditor = page.locator("#prefix-key-editor")
         await prefixKeyEditor.fill(`["random", "${crypto.randomUUID()}"]`)
-        await prefixKeyEditor.focus()
-        await prefixKeyEditor.pressSequentially("  ", { delay: 100 })
+        await prefixKeyEditor.press('Space')
+        await page.waitForTimeout(70)
 
         await page.locator("button", { hasText: "Apply" }).click()
         await expect(page.locator("tr", { hasText: 'No Entries in this Deno Kv Store.' })).toHaveCount(1)
