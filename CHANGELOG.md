@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.15.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.14.0...v1.15.0) (2026-01-12)
+
+
+### Features
+
+* add support for "batchSize", "consistency", and "reverse" browse/filter options ([b9bb888](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b9bb8881553c1c8d6f0a19ec9f384cbc63bb05dc))
+* add confirmation dialog for deleting saved filters ([c3e2eb3](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c3e2eb362e518a31854381026b0bd753a1edf6aa))
+* enable adding an existing local kv db instead of always creating a new one ([92ae410](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/92ae4102ff0bf680c7c5cd2c5dbcc3de2645180e))
+
+
+### Bug Fixes
+
+* ensure previous KV store and bridge server are closed before starting a new one ([8c9914d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8c9914d7d1aeb8ff7064721a4a0c4110fc129356))
+* fix ui overflow issue in saved filters list for long "Prefix", "Start", and "End" keys ([0f06853](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0f0685362d0ff025654eb1d7f72136b03e063f78))
+* apply saved parameters immediately when set as default ([b413b0b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b413b0b1e14fb180e1bcd20f251f0afee42551d8))
+
+
+### User Interface Changes
+
+* re-design the UI of the filters feature in the kv entries table ([8986507](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8986507a2770f68baee23795e8ca6c2e5730b7ff))
+
 ## [1.14.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.13.0...v1.14.0) (2026-01-07)
 
 ### Features
