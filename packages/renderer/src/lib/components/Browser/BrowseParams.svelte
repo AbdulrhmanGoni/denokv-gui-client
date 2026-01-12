@@ -123,9 +123,11 @@
   }
 
   let openSavedBrowsingParamsList = $state(false);
-  function closeSavedBrowsingParamsList() {
+  function closeSavedBrowsingParamsList(closeDialog?: boolean) {
     openSavedBrowsingParamsList = false;
-    setOpen(false);
+    if (closeDialog) {
+      setOpen(false);
+    }
   }
 </script>
 

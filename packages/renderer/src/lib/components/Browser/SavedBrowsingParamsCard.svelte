@@ -19,7 +19,7 @@
 
     type Props = {
         browsingParamsRecord: SavedBrowsingParamsRecord<SavedBrowsingParams>;
-        closeList: () => void;
+        closeList: (closeDialog: boolean) => void;
     };
 
     const { browsingParamsRecord, closeList }: Props = $props();
@@ -127,7 +127,7 @@
             class="me-auto"
             onclick={() => {
                 setBrowsingParams(browsingParamsRecord.paramsAsJson);
-                closeList();
+                closeList(true);
             }}
         >
             Apply
