@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## 7.0.1 (2026-01-12)
+
+### Bug Fixes
+
+* **types:** add some missing fields and correct a return type ([6f4cf57](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/6f4cf57c6b36c59e809d2b17c06c7d13b53c67a1))
+
+
 ## 7.0.0 (2026-01-07)
 
 
