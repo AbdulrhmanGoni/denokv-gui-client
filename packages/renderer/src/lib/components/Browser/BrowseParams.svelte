@@ -125,6 +125,7 @@
   let openSavedBrowsingParamsList = $state(false);
   function closeSavedBrowsingParamsList() {
     openSavedBrowsingParamsList = false;
+    setOpen(false);
   }
 </script>
 
