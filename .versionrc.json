@@ -1,5 +1,5 @@
 {
-    "releaseCommitMessageFormat": "chore(app-release): {{currentTag}}",
+    "releaseCommitMessageFormat": "chore(app-release): v{{currentTag}}",
     "writerOpts": {
         "commitsSort": false
     },
