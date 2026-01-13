@@ -1,5 +1,102 @@
-<footer class="shadow bg-surface">
-  <div class="container flex items-center justify-center p-4.5 gap-5">
-    <p>© 2025 denokv-gui-client</p>
+---
+import logo from "../assets/logo.png";
+---
+
+<footer
+  class="shadow bg-surface py-8 sm:py-12 border-t border-gray-100 dark:border-gray-800"
+>
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
+      <div class="flex flex-col gap-4">
+        <div class="flex gap-2 items-center">
+          <img src={logo.src} alt="Logo" class="size-8" />
+          <p class="font-bold text-lg italic">Deno KV GUI Client</p>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+          Open-source GUI client for Deno KV databases. Explore, edit, and
+          manage your data with ease via modern GUI.
+        </p>
+
+        <p class="text-sm text-gray-500">
+          © {new Date().getFullYear()} Deno KV GUI Client
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-bold mb-4 text-sm uppercase tracking-wider">Product</h3>
+        <ul
+          class="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <li>
+            <a
+              href="https://github.com/AbdulrhmanGoni/denokv-gui-client/tags"
+              target="_blank"
+              class="hover:text-primary transition-colors"
+            >
+              Releases
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/AbdulrhmanGoni/denokv-gui-client/blob/main/CHANGELOG.md"
+              target="_blank"
+              class="hover:text-primary transition-colors"
+            >
+              Full Changelog
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/AbdulrhmanGoni/denokv-gui-client/blob/main/LICENSE"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-primary transition-colors"
+            >
+              MIT License
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-bold mb-4 text-sm uppercase tracking-wider">
+          Community
+        </h3>
+        <ul
+          class="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <li>
+            <a
+              href="https://github.com/AbdulrhmanGoni/denokv-gui-client"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-primary transition-colors"
+            >
+              GitHub Repository
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/AbdulrhmanGoni/denokv-gui-client/blob/main/CONTRIBUTING.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-primary transition-colors"
+            >
+              Contribution Guidelines
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/AbdulrhmanGoni/denokv-gui-client/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-primary transition-colors"
+            >
+              Reporting Issues
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </footer>
