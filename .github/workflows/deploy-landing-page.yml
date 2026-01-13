@@ -12,6 +12,7 @@ on:
       - "landing/astro.config.mjs"
       - "landing/package.json"
       - "landing/pnpm-lock.yaml"
+      - "screenshots/*.png"
 
 concurrency:
   group: "landing-page-deployment"
