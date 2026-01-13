@@ -3,6 +3,7 @@ import { kvStoresState } from "./kvStoresState.svelte";
 import { columns } from "$lib/components/Browser/columns";
 import { createSvelteTable } from "$lib/components/shadcn/data-table";
 import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
+import { sameKvKeys } from "$lib/helpers/compareKvKeys";
 
 type KvEntriesState = {
     entries: KvEntry[];
@@ -79,14 +80,7 @@ export async function fetchEntries() {
 }
 
 export function removeEntryFromState(entry: KvEntry) {
-    kvEntriesState.entries = kvEntriesState.entries.filter((ent) => (
-        !ent.key.every((part, i) => {
-            if (typeof part === "object" && typeof entry.key[i] === "object") {
-                return part.type == entry.key[i].type && part.value == entry.key[i].value
-            }
-            return entry.key[i] === part
-        })
-    ))
+    kvEntriesState.entries = kvEntriesState.entries.filter((ent) => !sameKvKeys(entry.key, ent.key))
 }
 
 export function resetEntriesState() {
