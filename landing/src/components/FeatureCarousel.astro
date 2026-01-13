@@ -77,6 +77,54 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
             </button>
         </div>
     </div>
+
+    <!-- Preview Modal -->
+    <div class="modal" id={`${carouselId}-modal`} aria-hidden="true">
+        <div class="modal-overlay"></div>
+        <button class="modal-close" aria-label="Close preview">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+            >
+        </button>
+        <button class="modal-nav prev" aria-label="Previous image">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg
+            >
+        </button>
+        <div class="modal-content">
+            <img class="modal-image" src="" alt="" />
+        </div>
+        <button class="modal-nav next" aria-label="Next image">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg
+            >
+        </button>
+    </div>
 </div>
 
 <style>
@@ -105,6 +153,7 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
     .carousel-slide {
         flex: 0 0 100%;
         width: 100%;
+        cursor: pointer;
     }
 
     .carousel-slide img {
@@ -168,9 +217,116 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
         transform: scale(1.2);
     }
 
+    /* Modal Styles */
+    .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal[aria-hidden="false"] {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+        position: relative;
+        z-index: 1002;
+        max-width: 90vw;
+        max-height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-close,
+    .modal-nav {
+        position: fixed;
+        z-index: 1003;
+        background-color: var(--color-surface);
+        color: var(--color-primary);
+        border: none;
+        border-radius: 50%;
+        padding: 0.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--box-shadow);
+        transition:
+            background-color 0.2s,
+            transform 0.2s;
+    }
+
+    .modal-close:hover,
+    .modal-nav:hover {
+        background-color: var(--color-soft);
+        transform: scale(1.1);
+    }
+
+    .modal-close {
+        top: 1.5rem;
+        right: 1.5rem;
+    }
+
+    .modal-nav.prev {
+        left: 1.5rem;
+    }
+
+    .modal-nav.next {
+        right: 1.5rem;
+    }
+
     @media (width >= 80rem) {
         .carousel-container {
             order: initial;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .modal-close svg,
+        .modal-nav svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .modal-close,
+        .modal-nav {
+            padding: 0.35rem;
+        }
+
+        .modal-close {
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .modal-nav.prev {
+            left: 0.5rem;
+        }
+
+        .modal-nav.next {
+            right: 0.5rem;
         }
     }
 </style>
@@ -184,7 +340,16 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
         const prevBtn = container.querySelector(".nav-btn.prev");
         const nextBtn = container.querySelector(".nav-btn.next");
 
+        // Modal elements
+        const modal = document.getElementById(`${carouselId}-modal`);
+        const modalImage = modal?.querySelector(".modal-image");
+        const modalCloseBtn = modal?.querySelector(".modal-close");
+        const modalPrevBtn = modal?.querySelector(".modal-nav.prev");
+        const modalNextBtn = modal?.querySelector(".modal-nav.next");
+        const modalOverlay = modal?.querySelector(".modal-overlay");
+
         let currentIndex = 0;
+        let modalIndex = 0;
         const totalSlides = slides.length;
 
         const updateCarousel = (index) => {
@@ -196,6 +361,47 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
             });
         };
 
+        const updateModalImage = (index) => {
+            modalIndex = (index + totalSlides) % totalSlides;
+            const slide = slides[modalIndex];
+            const imgs = slide.querySelectorAll("img");
+            let targetSrc = "";
+            let targetAlt = "";
+
+            // Fallback
+            if (imgs.length > 0) {
+                targetSrc = imgs[0].src;
+                targetAlt = imgs[0].alt;
+            }
+
+            for (const img of imgs) {
+                if (window.getComputedStyle(img).display !== "none") {
+                    targetSrc = img.src;
+                    targetAlt = img.alt;
+                    break;
+                }
+            }
+
+            if (modalImage) {
+                modalImage.src = targetSrc;
+                modalImage.alt = targetAlt;
+            }
+        };
+
+        const openModal = (index) => {
+            if (!modal) return;
+            updateModalImage(index);
+            modal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden"; // Prevent background scrolling
+        };
+
+        const closeModal = () => {
+            if (!modal) return;
+            modal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        };
+
+        // Navigation listeners
         prevBtn?.addEventListener("click", () =>
             updateCarousel(currentIndex - 1),
         );
@@ -207,7 +413,34 @@ const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
             indicator.addEventListener("click", () => updateCarousel(index));
         });
 
-        // Touch support
+        // Modal listeners
+        slides.forEach((slide, index) => {
+            slide.addEventListener("click", () => openModal(index));
+        });
+
+        modalCloseBtn?.addEventListener("click", closeModal);
+        modalOverlay?.addEventListener("click", closeModal);
+
+        modalPrevBtn?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            updateModalImage(modalIndex - 1);
+        });
+
+        modalNextBtn?.addEventListener("click", (e) => {
+            e.stopPropagation();
+            updateModalImage(modalIndex + 1);
+        });
+
+        // Keyboard navigation
+        document.addEventListener("keydown", (e) => {
+            if (modal?.getAttribute("aria-hidden") === "false") {
+                if (e.key === "Escape") closeModal();
+                if (e.key === "ArrowLeft") updateModalImage(modalIndex - 1);
+                if (e.key === "ArrowRight") updateModalImage(modalIndex + 1);
+            }
+        });
+
+        // Touch support for carousel
         let touchStartX = 0;
         let isDragging = false;
 
