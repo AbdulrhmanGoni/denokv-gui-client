@@ -1,7 +1,7 @@
 import { kvClient, browsingParamsService } from "@app/preload";
 import { kvStoresState } from "./kvStoresState.svelte";
-import { columns } from "$lib/components/Browser/columns";
-import { createSvelteTable } from "$lib/components/shadcn/data-table";
+import { columns } from "$lib/features/kv-browser/table/columns";
+import { createSvelteTable } from "$lib/ui/shadcn/data-table";
 import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
 import { sameKvKeys } from "$lib/helpers/compareKvKeys";
 
