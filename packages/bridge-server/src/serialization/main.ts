@@ -37,21 +37,28 @@ const errorCause = { cause: "SerializationError" }
  */
 export function serializeKvKey(key: KvKey): SerializedKvKey {
     return key.map((part) => {
+        if (typeof part == "string" || typeof part == "boolean") {
+            return part
+        }
+
+        if (typeof part == "bigint") {
+            return { type: "BigInt", value: part.toString() }
+        }
+
+        if (typeof part == "number") {
+            if ([NaN, Infinity, -Infinity].includes(part)) {
+                return { type: "Number", value: part.toString() }
+            } else return part
+        }
+
         if (part instanceof Uint8Array) {
             return { type: "Uint8Array", value: serializeUint8Array(part) }
         }
 
-        if (typeof part === "bigint") {
-            return { type: "BigInt", value: part.toString() }
-        }
-
-        if (typeof part === "number") {
-            if ([NaN, Infinity, -Infinity].includes(part)) {
-                return { type: "Number", value: part.toString() }
-            }
-        }
-
-        return part
+        throw new Error(
+            "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array",
+            errorCause
+        )
     })
 }
 

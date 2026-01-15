@@ -44,4 +44,19 @@ describe("Test serializeKvKey function", () => {
     ];
     expect(serializeKvKey(key)).toEqual(expected);
   });
+
+  it("should throw an error for unexpected key parts", () => {
+    const errorMessage = "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array"
+    // @ts-expect-error - Testing invalid key part
+    expect(() => serializeKvKey([{ some: "object" }])).toThrow(errorMessage);
+
+    // @ts-expect-error - Testing invalid key part
+    expect(() => serializeKvKey([null])).toThrow(errorMessage);
+
+    // @ts-expect-error - Testing invalid key part
+    expect(() => serializeKvKey([undefined])).toThrow(errorMessage);
+
+    // @ts-expect-error - Testing invalid key part
+    expect(() => serializeKvKey([["another", "array"]])).toThrow(errorMessage);
+  });
 });
