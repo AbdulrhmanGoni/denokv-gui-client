@@ -1,5 +1,9 @@
 import type { Kv, KvKey, KvListOptions, KvListSelector } from "@deno/kv";
-import { deserializeKvKey } from "../serialization/main.ts";
+import {
+    deserializeKvKey,
+    deserializeKvValue,
+    type SerializedKvValue
+} from "../serialization/main.ts";
 import { toNumber } from "../helpers";
 
 const errorCause = { cause: "ValidationError" }
@@ -111,4 +115,87 @@ export function validateSetRequestParams(url: URL): ValidSetRequestParams {
     }
 
     return { key, expires };
+}
+
+export type EnqueueRequestInput = {
+    value: unknown,
+    options?: {
+        backoffSchedule?: number[],
+        delay?: number,
+        keysIfUndelivered?: string[],
+    }
+}
+
+type ValidEnqueueRequestBody = {
+    value: unknown,
+    options?: {
+        backoffSchedule?: number[],
+        delay?: number,
+        keysIfUndelivered?: KvKey[],
+    }
+}
+
+function validateEnqueueOptions(options: unknown): ValidEnqueueRequestBody["options"] | undefined {
+    if (!options) return;
+
+    if (!(options instanceof Object)) {
+        throw new Error("'options' of 'enqueue' operation should be an object when set");
+    }
+
+    const ops: ValidEnqueueRequestBody["options"] = {}
+
+    if ("backoffSchedule" in options) {
+        if (!(options.backoffSchedule instanceof Array)) {
+            throw new Error("'backoffSchedule' option of 'enqueue' operation should be an array of numbers");
+        }
+
+        ops.backoffSchedule = options.backoffSchedule
+    }
+
+    if ("delay" in options) {
+        if (typeof options.delay != "number") {
+            throw new Error("'delay' option of 'enqueue' operation should be a number");
+        }
+
+        ops.delay = options.delay
+    }
+
+    if ("keysIfUndelivered" in options) {
+        if (!(options.keysIfUndelivered instanceof Array)) {
+            throw new Error("'keysIfUndelivered' option of 'enqueue' operation should be an array of valid Kv Keys in the serialized form as string");
+        }
+
+        ops.keysIfUndelivered = options.keysIfUndelivered.map((key) => deserializeKvKey(key))
+    }
+
+    return ops
+}
+
+/**
+ * Parse and validate the body of `/enqueue` endpoint which should be an object containing:
+ *
+ * - `value`: The actual value to enqueue. Should be in `SerializedKvValue` type (will be deserialized by `deserializeKvValue` fn)
+ * - `options`: An optional object containing the following optional properties:
+ *   - `backoffSchedule`: An optional array of numbers representing the backoff schedule in milliseconds
+ *   - `delay`: An optional number representing the delay in milliseconds
+ *   - `keysIfUndelivered`: An optional array of keys to be used if the message is undelivered
+ *
+ * Throws an Error with cause "ValidationError" on invalid inputs.
+ *
+ * @param url URL containing the query parameters validate
+ * @returns An object containing the validated value and optional options
+ */
+export async function validateEnqueueRequest(body: unknown, kv: Deno.Kv | Kv): Promise<ValidEnqueueRequestBody> {
+    if (!(body instanceof Object)) {
+        throw new Error("Invalid enqueue request body", errorCause);
+    }
+
+    if (!("value" in body)) {
+        throw new Error("Invalid enqueue request body: must have a value", errorCause);
+    }
+
+    return {
+        value: await deserializeKvValue(body.value, kv),
+        options: "options" in body ? validateEnqueueOptions(body.options) : undefined,
+    }
 }

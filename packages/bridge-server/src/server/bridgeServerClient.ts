@@ -1,3 +1,4 @@
+import { EnqueueRequestInput } from "../validation/main.ts";
 import type { SerializedKvEntry, SerializedKvKey, SerializedKvValue } from "../serialization/main.ts";
 
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
@@ -6,8 +7,8 @@ type CallBridgeServerOptions = Record<string, SerializedKvKey | number | string 
 
 type CallBridgeServerParams = {
     url: string,
-    body?: SerializedKvValue,
-    method?: "GET" | "PUT" | "DELETE",
+    body?: unknown,
+    method?: "GET" | "PUT" | "DELETE" | "POST",
     options?: CallBridgeServerOptions,
     headers?: Record<string, string>
 }
@@ -40,7 +41,7 @@ async function callBridgeServerRequest<ResultT = unknown>(
             url + (options ? "?" + optionsToUrlSearchParams(options).toString() : ""),
             {
                 method: method ?? "GET",
-                body: JSON.stringify(body),
+                body: body ? JSON.stringify(body) : undefined,
                 headers,
             }
         );
@@ -130,6 +131,15 @@ export class BridgeServerClient {
             options: { key },
             headers: this.headers,
             method: "DELETE"
+        })
+    }
+
+    enqueue(value: EnqueueRequestInput["value"], options?: EnqueueRequestInput["options"]): CallBridgeServerReturn<boolean> {
+        return callBridgeServerRequest<boolean>({
+            url: `${this.baseUrl}/enqueue`,
+            body: { value, options },
+            method: "POST",
+            headers: this.headers,
         })
     }
 }

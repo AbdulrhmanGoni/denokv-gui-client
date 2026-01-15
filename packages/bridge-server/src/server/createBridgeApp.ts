@@ -7,6 +7,7 @@ import {
 import {
     validateBrowseRequestParams,
     validateSetRequestParams,
+    validateEnqueueRequest,
 } from "../validation/main.ts";
 import type { Kv, KvEntry } from "@deno/kv";
 import { Hono } from 'hono/tiny';
@@ -110,6 +111,12 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         await kv.delete(key)
 
         return c.json({ result: true })
+    });
+
+    app.post("/enqueue", async (c) => {
+        const { value, options } = await validateEnqueueRequest(await c.req.json(), kv)
+        const result = await kv.enqueue(value, options)
+        return c.json({ result: result.ok })
     });
 
     app.get("/check", async (c) => {
