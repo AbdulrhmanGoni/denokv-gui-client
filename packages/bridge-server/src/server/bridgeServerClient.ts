@@ -103,8 +103,8 @@ export class BridgeServerClient {
         })
     }
 
-    set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<{ result: boolean }> {
-        return callBridgeServerRequest<{ result: true }>({
+    set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<boolean> {
+        return callBridgeServerRequest<boolean>({
             url: `${this.baseUrl}/set`,
             options: {
                 key,
@@ -124,8 +124,8 @@ export class BridgeServerClient {
         })
     }
 
-    delete(key: SerializedKvKey): CallBridgeServerReturn<{ result: true }> {
-        return callBridgeServerRequest<{ result: true }>({
+    delete(key: SerializedKvKey): CallBridgeServerReturn<true> {
+        return callBridgeServerRequest<true>({
             url: `${this.baseUrl}/delete`,
             options: { key },
             headers: this.headers,
