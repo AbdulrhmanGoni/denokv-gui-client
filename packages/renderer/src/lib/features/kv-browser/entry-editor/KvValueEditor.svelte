@@ -22,15 +22,18 @@
     defaultValue: KvEntry["value"];
     editorValue: KvEntry["value"];
     titleIcon: Snippet;
+    title?: string;
+    jar?: CodeJar;
   };
 
   let {
     defaultValue,
     editorValue = $bindable(),
     titleIcon,
+    title,
+    jar = $bindable(),
   }: ValueEditorProps = $props();
 
-  let jar: CodeJar | undefined = $state();
   let dataType: KvDataType = $state(
     dataTypes.find((dt) => editorValue?.type == dt.type) ??
       (dataTypes.find((dt) => dt.type == defaultValue.type) as KvDataType),
@@ -68,7 +71,7 @@
 <div class="space-y-3">
   <div class="flex gap-2 items-center">
     {@render titleIcon()}
-    <p class="font-bold text-lg">Value</p>
+    <p class="font-bold text-lg">{title ?? "Value"}</p>
     <div class="flex gap-2 items-center ml-auto">
       {#if isFormattableValue}
         <ButtonWithTooltip

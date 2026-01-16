@@ -12,6 +12,7 @@
     editorValue: string;
     jar?: CodeJar;
     className?: string;
+    autoFormat?: boolean;
   };
 
   let {
@@ -19,6 +20,7 @@
     editorValue = $bindable(),
     jar = $bindable(),
     className,
+    autoFormat = true,
   }: CodeEditorProps = $props();
 
   hljs.registerLanguage("javascript", javascript);
@@ -35,7 +37,7 @@
       addClosing: false,
     });
 
-    jar?.updateCode(format(editorValue));
+    jar?.updateCode(autoFormat ? format(editorValue) : editorValue);
   });
 </script>
 

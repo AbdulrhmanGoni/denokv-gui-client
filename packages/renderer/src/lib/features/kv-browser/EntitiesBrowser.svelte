@@ -25,6 +25,7 @@
   } from "$lib/states/kvEntriesState.svelte";
   import LookUpKvEntryDialog from "$lib/features/kv-browser/actions/LookUpKvEntryDialog.svelte";
   import RotateCwIcon from "@lucide/svelte/icons/rotate-cw";
+  import EnqueueMessage from "$lib/features/kv-browser/enqueue-message/EnqueueMessage.svelte";
 
   const table = createKvEntriesTable();
 
@@ -65,9 +66,10 @@
       Reload
       <RotateCwIcon />
     </Button>
+    <EnqueueMessage />
     <Button size="sm" variant="secondary1" onclick={openLookUpKeyDialog}>
-      <SearchIcon />
       Look up Entry
+      <SearchIcon class="rotate-75" />
     </Button>
     <Button size="sm" onclick={openAddKvEntryDialog}>
       Add Entry
