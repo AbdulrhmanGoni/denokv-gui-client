@@ -38,7 +38,7 @@ export function preloadContextExposureToRendererTests() {
         expect(typeof kvClient).toEqual('object');
 
         const exposedMethods = Object.keys(kvClient)
-        const targetMethods = ['browse', 'set', 'deleteKey', 'get'];
+        const targetMethods = ['browse', 'set', 'deleteKey', 'get', 'enqueue'];
 
         expect(exposedMethods.length).toBe(targetMethods.length);
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
