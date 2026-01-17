@@ -10,14 +10,15 @@
   import * as DropdownMenu from "$lib/ui/shadcn/dropdown-menu/index.js";
   import DeleteKvEntryButton from "$lib/features/kv-browser/actions/DeleteKvEntryButton.svelte";
   import { openKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
+  import {
+    copyEntryKey,
+    copyEntryValue,
+    copyEntryVersionStamp,
+  } from "../utils/copyKvEntry";
 
   const { entry }: { entry: KvEntry } = $props();
 
   let openMenu = $state(false);
-
-  function copy(text: string) {
-    navigator.clipboard.writeText(text);
-  }
 
   function getOpenMenu() {
     return openMenu;
@@ -48,13 +49,13 @@
       <NotepadTextIcon />
       View
     </DropdownMenu.Item>
-    <DropdownMenu.Item onclick={() => copy(JSON.stringify(entry.key))}>
+    <DropdownMenu.Item onclick={() => copyEntryKey(entry)}>
       <CopyKeyIcon /> Copy Key
     </DropdownMenu.Item>
-    <DropdownMenu.Item onclick={() => copy(String(entry.value.data))}>
+    <DropdownMenu.Item onclick={() => copyEntryValue(entry)}>
       <CopyValueIcon /> Copy Value
     </DropdownMenu.Item>
-    <DropdownMenu.Item onclick={() => copy(entry.versionstamp)}>
+    <DropdownMenu.Item onclick={() => copyEntryVersionStamp(entry)}>
       <TagsIcon /> Copy Version
     </DropdownMenu.Item>
     <DropdownMenu.Item onclick={() => openKvEntryDialog(entry, true)}>

@@ -2,6 +2,7 @@
   import CopyIcon from "@lucide/svelte/icons/copy";
   import CheckIcon from "@lucide/svelte/icons/check";
   import ButtonWithTooltip from "$lib/ui/primitives/ButtonWithTooltip.svelte";
+  import { copyEntryKey, copyEntryValue } from "../utils/copyKvEntry";
 
   const { entry, isKey }: { entry: KvEntry; isKey?: boolean } = $props();
 
@@ -14,7 +15,7 @@
       keyCoppied = false;
     }, 5000);
 
-    navigator.clipboard.writeText(JSON.stringify(entry.key));
+    copyEntryKey(entry);
   }
 
   function copyValue() {
@@ -23,7 +24,7 @@
       valueCoppied = false;
     }, 5000);
 
-    navigator.clipboard.writeText(String(entry.value.data));
+    copyEntryValue(entry);
   }
 </script>
 
