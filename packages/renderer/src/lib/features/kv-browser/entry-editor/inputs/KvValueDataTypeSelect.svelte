@@ -23,10 +23,10 @@
     onSelect?.(selectedDataType);
   }}
 >
-  <Select.Trigger class="w-full text-foreground bg-transparent h-7! py-1">
+  <Select.Trigger class="w-30 text-foreground bg-transparent h-7! py-1">
     {selectedDataType.type}
   </Select.Trigger>
-  <Select.Content>
+  <Select.Content class="max-h-88">
     {#each dataTypes as dataType}
       <Select.Item value={dataType.type}>{dataType.type}</Select.Item>
     {/each}
