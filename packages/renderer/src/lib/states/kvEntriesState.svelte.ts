@@ -83,13 +83,13 @@ export function removeEntryFromState(entry: KvEntry) {
     kvEntriesState.entries = kvEntriesState.entries.filter((ent) => !sameKvKeys(entry.key, ent.key))
 }
 
-export function resetEntriesState() {
-    fetchSavedDefaultBrowsingParams()
+export async function resetEntriesState() {
+    await fetchSavedDefaultBrowsingParams()
     Object.assign(kvEntriesState, kvEntriesStateDefaultValues)
 }
 
-export function resetBrowsingParamsState() {
-    fetchSavedDefaultBrowsingParams()
+export async function resetBrowsingParamsState() {
+    await fetchSavedDefaultBrowsingParams()
     kvEntriesState.params = kvEntriesStateDefaultValues.params
 }
 
@@ -141,10 +141,10 @@ export const savedBrowsingParamsState: SavedBrowsingParamsState = $state({
     selectedParamsToEdit: null,
 });
 
-export function fetchSavedBrowsingParams() {
+export async function fetchSavedBrowsingParams() {
     if (kvStoresState.openedStore) {
         const { result, error } =
-            browsingParamsService.getSavedBrowsingParamsRecords(
+            await browsingParamsService.getSavedBrowsingParamsRecords(
                 kvStoresState.openedStore.id,
             );
 
@@ -159,9 +159,9 @@ export function fetchSavedBrowsingParams() {
     }
 }
 
-export function fetchSavedDefaultBrowsingParams() {
+export async function fetchSavedDefaultBrowsingParams() {
     if (kvStoresState.openedStore) {
-        const { result } = browsingParamsService.getDefaultSavedBrowsingParams(
+        const { result } = await browsingParamsService.getDefaultSavedBrowsingParams(
             kvStoresState.openedStore.id
         )
 

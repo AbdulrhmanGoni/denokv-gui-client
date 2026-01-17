@@ -6,6 +6,7 @@ import { terminateAppOnLastWindowClose } from './modules/ApplicationTerminatorOn
 import { hardwareAccelerationMode } from './modules/HardwareAccelerationModule.js';
 import { allowInternalOrigins } from './modules/BlockNotAllowdOrigins.js';
 import { allowExternalUrls } from './modules/ExternalUrls.js';
+import { createBusinessLogicModule } from './modules/BusinessLogicModule.js';
 
 
 export async function initApp(initConfig: AppInitConfig) {
@@ -14,6 +15,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())
     .init(hardwareAccelerationMode({ enable: false }))
+    .init(createBusinessLogicModule())
 
     // Security
     .init(allowInternalOrigins(

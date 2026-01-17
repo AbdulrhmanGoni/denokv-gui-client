@@ -5,7 +5,7 @@ import {
     updateLastFetchedUpdateQuery,
 } from "../db/lastFetchedUpdateQueries.js";
 import { isGreaterVersion } from "../helpers.js";
-import { versions } from "../index.js";
+import * as versions from "../versions.js";
 
 export function getLastFetchedUpdate(): UpdateCheckResult | null {
     const row = getLastFetchedUpdateQuery.get() as { updateInfoAsJson: string } | undefined

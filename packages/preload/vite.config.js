@@ -29,7 +29,7 @@ export default /**
       emptyOutDir: true,
       reportCompressedSize: false,
     },
-    plugins: [mockExposed(), handleHotReload(), copyMigrations()],
+    plugins: [mockExposed(), handleHotReload()],
   });
 
 
@@ -120,14 +120,4 @@ function handleHotReload() {
       });
     },
   };
-}
-
-function copyMigrations() {
-  return {
-    name: 'copy-migrations',
-    closeBundle() {
-      const distPath = resolve(__dirname, 'dist')
-      cpSync(resolve(__dirname, 'src/db/migrations'), `${distPath}/migrations`, { recursive: true })
-    }
-  }
 }

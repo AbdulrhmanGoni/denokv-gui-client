@@ -3,21 +3,22 @@ import { onWindowReady, settingsService } from "@app/preload"
 
 type SettingsState = Settings
 
-export const settingsState: SettingsState = $state(settingsService.getSettings() || {})
+export const settingsState: SettingsState = $state({})
 
-export function setAutoCheckForUpdate(value: boolean) {
-    settingsService.updateSettings({
+export async function setAutoCheckForUpdate(value: boolean) {
+    await settingsService.updateSettings({
         autoCheckForUpdate: value,
     });
 
-    reloadSettings()
+    await reloadSettings()
 }
 
-function reloadSettings() {
-    Object.assign(settingsState, settingsService.getSettings())
+async function reloadSettings() {
+    Object.assign(settingsState, await settingsService.getSettings())
 }
 
-onWindowReady(() => {
+onWindowReady(async () => {
+    await reloadSettings()
     if (settingsState.autoCheckForUpdate) {
         startCheckingForUpdates();
     }

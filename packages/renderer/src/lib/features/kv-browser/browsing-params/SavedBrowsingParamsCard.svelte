@@ -24,10 +24,10 @@
 
     const { browsingParamsRecord, closeList }: Props = $props();
 
-    function setSavedBrowsingParamsAsTheDefault(setAsDefault: boolean) {
+    async function setSavedBrowsingParamsAsTheDefault(setAsDefault: boolean) {
         if (kvStoresState.openedStore) {
             const { result, error } =
-                browsingParamsService.updateSavedBrowsingParams(
+                await browsingParamsService.updateSavedBrowsingParams(
                     kvStoresState.openedStore.id,
                     browsingParamsRecord.id,
                     { setAsDefault },

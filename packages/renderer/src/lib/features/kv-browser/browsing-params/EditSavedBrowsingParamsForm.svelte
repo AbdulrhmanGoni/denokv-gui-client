@@ -34,7 +34,7 @@
             kvEntriesStateDefaultValues.params.reverse,
     );
 
-    function saveUpdate() {
+    async function saveUpdate() {
         if (kvStoresState.openedStore) {
             const newBrowsingParams = {
                 end,
@@ -46,7 +46,7 @@
                 reverse,
             };
             const { result, error } =
-                browsingParamsService.updateSavedBrowsingParams(
+                await browsingParamsService.updateSavedBrowsingParams(
                     kvStoresState.openedStore.id,
                     savedBrowsingParamsRecord.id,
                     { newBrowsingParams },

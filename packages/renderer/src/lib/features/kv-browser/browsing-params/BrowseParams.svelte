@@ -95,9 +95,9 @@
     }
   });
 
-  function saveBrowsingParams() {
+  async function saveBrowsingParams() {
     if (kvStoresState.openedStore) {
-      const { result, error } = browsingParamsService.saveBrowsingParams(
+      const { result, error } = await browsingParamsService.saveBrowsingParams(
         kvStoresState.openedStore.id,
         {
           browsingParams: {

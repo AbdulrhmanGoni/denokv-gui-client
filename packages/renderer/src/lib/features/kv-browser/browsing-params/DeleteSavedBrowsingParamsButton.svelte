@@ -23,9 +23,9 @@
         openDialog = newOpen;
     }
 
-    function deleteSavedBrowsingParams() {
+    async function deleteSavedBrowsingParams() {
         const { result, error } =
-            browsingParamsService.deleteSavedBrowsingParams(
+            await browsingParamsService.deleteSavedBrowsingParams(
                 browsingParamsRecord.id,
             );
 

@@ -56,7 +56,7 @@ export async function openKvStore(kvStore: KvStore) {
 
 export async function closeKvStore() {
     kvStoresState.openedStore = null;
-    bridgeServer.closeServer();
+    await bridgeServer.closeServer();
 }
 
 async function startKvStoreServer(kvStore: KvStore) {
