@@ -2,6 +2,7 @@
     import { CodeJar } from "codejar";
     import { onMount } from "svelte";
     import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
+    import { dataTypes } from "../../utils/dataTypes";
 
     type ValueEditorProps = {
         value: string;
@@ -35,6 +36,17 @@
 
     $effect(() => {
         value = JSON.stringify(currentRegExp);
+    });
+
+    $effect(() => {
+        const current = JSON.parse(value);
+        if (current.source === "" && current.flags === "") {
+            const starterRegExp = JSON.parse(
+                dataTypes.find((dt) => "RegExp" == dt.type)!.starter,
+            );
+            regexpJar?.updateCode(starterRegExp.source);
+            flagsJar?.updateCode(starterRegExp.flags);
+        }
     });
 </script>
 
