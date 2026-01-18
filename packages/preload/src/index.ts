@@ -1,4 +1,3 @@
-import * as versions from './versions.js';
 import { ipcRenderer } from 'electron';
 import type { BrowseReturn, EnqueueRequestInput } from '@app/bridge-server';
 
@@ -14,9 +13,8 @@ function onWindowReady(cb: (event: Electron.IpcRendererEvent, ...args: any[]) =>
   return ipcRenderer.on('window-ready', cb)
 }
 
-const environment =
-  process.env.PLAYWRIGHT_TEST == 'true' ? 'testing' :
-    process.env.NODE_ENV == 'development' ? 'development' : 'production'
+const environment = await ipcRenderer.invoke('get-environment')
+const versions = await ipcRenderer.invoke('get-versions')
 
 const kvStoresService = {
   create: (input: CreateKvStoreInput): Promise<boolean> =>
