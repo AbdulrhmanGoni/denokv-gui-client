@@ -35,7 +35,14 @@
           />
         </a>
         <Separator orientation="vertical" />
-        <p class="font-bold text-lg text-foreground">v{versions.appVersion}</p>
+        <a
+          href={`${versions.appGithubRepo}/releases/tag/v${versions.appVersion}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-bold text-lg text-foreground"
+        >
+          v{versions.appVersion}
+        </a>
       </div>
     </Tooltip.Content>
   </Tooltip.Root>
