@@ -3,7 +3,6 @@ import { ModuleContext } from '../ModuleContext.js';
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
 import electronUpdater from 'electron-updater';
-const { CancellationToken } = electronUpdater;
 
 class WindowManager implements AppModule {
   readonly #preload: { path: string };
@@ -31,10 +30,10 @@ class WindowManager implements AppModule {
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
-        sandbox: false, // Sandbox disabled because the preload script depend on the Node.js api
+        sandbox: false,
         webviewTag: false,
         preload: this.#preload.path,
-        webSecurity: false,
+        webSecurity: true,
       },
     });
 
