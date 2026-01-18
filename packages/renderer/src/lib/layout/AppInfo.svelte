@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
-  import { versions } from "@app/preload";
+  import { metadata } from "@app/preload";
   import AppLogo from "$lib/ui/primitives/AppLogo.svelte";
 </script>
 
@@ -19,7 +19,7 @@
       <div class="flex gap-2 items-center h-8">
         <a
           class="cursor-pointer"
-          href={versions.appGithubRepo}
+          href={metadata.githubRepo}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -36,12 +36,12 @@
         </a>
         <Separator orientation="vertical" />
         <a
-          href={`${versions.appGithubRepo}/releases/tag/v${versions.appVersion}`}
+          href={`${metadata.githubRepo}/releases/tag/v${metadata.appVersion}`}
           target="_blank"
           rel="noopener noreferrer"
           class="font-bold text-lg text-foreground"
         >
-          v{versions.appVersion}
+          v{metadata.appVersion}
         </a>
       </div>
     </Tooltip.Content>

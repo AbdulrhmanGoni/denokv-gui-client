@@ -12,8 +12,7 @@ function onWindowReady(cb: (event: Electron.IpcRendererEvent, ...args: any[]) =>
   return ipcRenderer.on('window-ready', cb)
 }
 
-const environment = await ipcRenderer.invoke('get-environment')
-const versions = await ipcRenderer.invoke('get-versions')
+const metadata = await ipcRenderer.invoke('get-metadata')
 
 const kvStoresService = {
   create: (input: CreateKvStoreInput): Promise<boolean> =>
@@ -96,7 +95,7 @@ const appUpdater = {
 };
 
 export {
-  versions,
+  metadata,
   selectDirectory,
   openPath,
   kvStoresService,
@@ -107,5 +106,4 @@ export {
   onWindowReady,
   lastFetchedUpdateService,
   browsingParamsService,
-  environment
 };

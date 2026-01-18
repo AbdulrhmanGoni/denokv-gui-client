@@ -6,7 +6,7 @@
   import KvStoresManagement from "$lib/features/kv-stores/KvStoresManagement.svelte";
   import { Toaster } from "$lib/ui/shadcn/sonner";
   import LoadingOverlay from "$lib/ui/primitives/LoadingOverlay.svelte";
-  import { environment } from "@app/preload";
+  import { metadata } from "@app/preload";
   import {
     loadSettings,
     settingsState,
@@ -33,7 +33,10 @@
       <KvStoresManagement />
     {/if}
   </div>
-  <Toaster richColors duration={environment == "testing" ? 1 : undefined} />
+  <Toaster
+    richColors
+    duration={metadata.environment == "testing" ? 1 : undefined}
+  />
   <ModeWatcher />
   <LoadingOverlay />
 </main>

@@ -5,7 +5,7 @@ import {
     updateLastFetchedUpdateQuery,
 } from "../db/lastFetchedUpdateQueries.js";
 import { isGreaterVersion } from "../helpers.js";
-import * as versions from "../versions.js";
+import * as metadata from "../metadata.js";
 
 export function getLastFetchedUpdate(): UpdateCheckResult | null {
     const row = getLastFetchedUpdateQuery.get() as { updateInfoAsJson: string } | undefined
@@ -13,7 +13,7 @@ export function getLastFetchedUpdate(): UpdateCheckResult | null {
 
     const existingUpdate = JSON.parse(row.updateInfoAsJson) as UpdateCheckResult
 
-    if (isGreaterVersion(existingUpdate.updateInfo.version, versions.appVersion)) {
+    if (isGreaterVersion(existingUpdate.updateInfo.version, metadata.appVersion)) {
         return existingUpdate
     }
 

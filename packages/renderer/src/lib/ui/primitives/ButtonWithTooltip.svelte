@@ -7,7 +7,7 @@
   import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
   import { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
   import type { TooltipTriggerProps } from "bits-ui";
-  import { environment } from "@app/preload";
+  import { metadata } from "@app/preload";
 
   type Props = {
     children: Snippet;
@@ -29,7 +29,10 @@
   }: Props = $props();
 </script>
 
-<Tooltip.Provider delayDuration={0} disabled={environment == "testing"}>
+<Tooltip.Provider
+  delayDuration={0}
+  disabled={metadata.environment == "testing"}
+>
   <Tooltip.Root>
     <Tooltip.Trigger
       {...restProps}

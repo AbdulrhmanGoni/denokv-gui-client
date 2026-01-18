@@ -10,7 +10,7 @@
         setAutoCheckForUpdate,
         settingsState,
     } from "$lib/states/settingsState.svelte";
-    import { versions } from "@app/preload";
+    import { metadata } from "@app/preload";
     import Progress from "$lib/ui/shadcn/progress/progress.svelte";
     import Button from "$lib/ui/shadcn/button/button.svelte";
     import DownloadIcon from "@lucide/svelte/icons/download";
@@ -44,7 +44,7 @@
     {#if updateAppState.newUpdate?.isUpdateAvailable}
         <p>
             Current Version:
-            <span class="font-semibold">v{versions.appVersion}</span>
+            <span class="font-semibold">v{metadata.appVersion}</span>
             <br />
             New update is available:
             <span class="font-semibold">
@@ -96,7 +96,7 @@
     {:else}
         <p>
             Current Version:
-            <span class="font-semibold">v{versions.appVersion}</span>
+            <span class="font-semibold">v{metadata.appVersion}</span>
             <br />
             {#if updateAppState.checkingForUpdatesError}
                 {#if updateAppState.checkingForUpdatesError}

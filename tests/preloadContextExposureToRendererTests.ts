@@ -2,16 +2,17 @@ import { test } from "./e2e.spec";
 import { expect } from '@playwright/test';
 
 export function preloadContextExposureToRendererTests() {
-    test("'versions' should be exposed as an object", async ({ page }) => {
-        const versions = await page.evaluate(() => globalThis[btoa('versions') as keyof typeof globalThis]);
-        expect(typeof versions).toEqual('object');
+    test("'metadata' should be exposed as an object", async ({ page }) => {
+        const metadata = await page.evaluate(() => globalThis[btoa('metadata') as keyof typeof globalThis]);
+        expect(typeof metadata).toEqual('object');
 
         const versionMatching = /\d+.\d+.\d+/
-        expect(versions).toEqual({
-            appGithubRepo: expect.stringMatching(/https:\/\/github.com\/\w/),
+        expect(metadata).toEqual({
+            githubRepo: expect.stringMatching(/https:\/\/github.com\/\w/),
             appVersion: expect.stringMatching(versionMatching),
             electronVersion: expect.stringMatching(versionMatching),
             nodeVersion: expect.stringMatching(versionMatching),
+            environment: expect.stringMatching(/testing|development|production/),
         });
     });
 
