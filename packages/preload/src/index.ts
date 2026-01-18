@@ -1,27 +1,6 @@
 import * as versions from './versions.js';
 import { ipcRenderer } from 'electron';
-import type {
-  CreateKvStoreInput,
-  EditKvStoreInput,
-  TestKvStoreParams,
-  BrowsingParams,
-  SavedBrowsingParams,
-  SavedBrowsingParamsRecord,
-  Settings,
-  UpdateCheckResult,
-  EnqueueOptions,
-  DownloadUpdateProgressInfo,
-} from '../../main/src/types.js';
-import type {
-  SerializedKvKey,
-  SerializedKvValue,
-  SetKeyOptions,
-  SerializedKvEntry,
-  EnqueueRequestInput,
-  BrowseReturn
-} from '@app/bridge-server';
-
-type TrycatchResult<T> = { result: T; error: null } | { result: null; error: string };
+import type { BrowseReturn, EnqueueRequestInput } from '@app/bridge-server';
 
 function selectDirectory(): Promise<string> {
   return ipcRenderer.invoke('select-directory')

@@ -1,4 +1,4 @@
-import type { CancellationToken } from 'electron-updater';
+import type { CancellationToken, UpdateCheckResult } from 'electron-updater';
 import electronUpdater from 'electron-updater';
 const { autoUpdater, CancellationToken: CancellationTokenConstructor } = electronUpdater;
 import * as lastFetchedUpdateService from './services/lastFetchedUpdateService.js';

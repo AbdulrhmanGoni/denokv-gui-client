@@ -35,13 +35,17 @@ type SavedBrowsingParamsRecord<T> = {
 
 type SerializedKvKey = import("@app/bridge-server").SerializedKvKey
 
-type SetKeyOptions = import("@app/bridge-server").SetKeyOptions
-
 type SerializedKvValue = import("@app/bridge-server").SerializedKvValue
 
 type SerializedKvEntry = import("@app/bridge-server").SerializedKvEntry
 
+type SetKeyOptions = import("@app/bridge-server").SetKeyOptions
+
 type KvEntry = SerializedKvEntry
+
+type EnqueueOptions =
+    Omit<NonNullable<import("@app/bridge-server").EnqueueRequestInput["options"]>, "keysIfUndelivered"> &
+    { keysIfUndelivered: string }
 
 type DownloadUpdateProgressInfo = import("electron-updater").ProgressInfo
 
@@ -50,3 +54,5 @@ type UpdateCheckResult = import("electron-updater").UpdateCheckResult
 type Settings = Partial<{
     autoCheckForUpdate: boolean;
 }>
+
+type TrycatchResult<T> = { result: T; error: null } | { result: null; error: string };

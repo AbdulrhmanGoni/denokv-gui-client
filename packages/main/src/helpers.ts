@@ -10,8 +10,6 @@ export function isGreaterVersion(a: string, b: string) {
     return false;
 }
 
-type TrycatchResult<T> = { result: T, error: null } | { result: null, error: string }
-
 export function syncTrycatch<T>(fn: () => T): TrycatchResult<T> {
     try {
         const result = fn() as T

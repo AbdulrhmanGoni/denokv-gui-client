@@ -22,6 +22,7 @@
   "include": [
     "src/**/*.ts",
     "../../types/*.d.ts",
+    "../main/types.d.ts",
     "types.d.ts"
   ],
   "exclude": [

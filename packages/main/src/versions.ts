@@ -1,4 +1,4 @@
-import pkg from '../../../package.json' with {type: 'json'};
+import pkg from '../../../package.json' with { type: 'json' };
 import { versions } from 'node:process';
 
 export const appVersion = pkg.version;

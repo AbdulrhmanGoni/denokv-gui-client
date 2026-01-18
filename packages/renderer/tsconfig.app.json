@@ -31,6 +31,6 @@
     "src/**/*.js",
     "src/**/*.svelte",
     "../../types/types.d.ts",
-    "../preload/types.d.ts",
+    "../main/types.d.ts",
   ]
 }
