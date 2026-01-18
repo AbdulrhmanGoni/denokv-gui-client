@@ -2,7 +2,7 @@
   import { ModeWatcher } from "mode-watcher";
   import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import Header from "$lib/layout/Header.svelte";
-  import EntitiesBrowser from "$lib/features/kv-browser/EntitiesBrowser.svelte";
+  import KvEntriesBrowser from "$lib/features/kv-browser/KvEntriesBrowser.svelte";
   import KvStoresManagement from "$lib/features/kv-stores/KvStoresManagement.svelte";
   import { Toaster } from "$lib/ui/shadcn/sonner";
   import LoadingOverlay from "$lib/ui/primitives/LoadingOverlay.svelte";
@@ -28,7 +28,7 @@
   <Header />
   <div class="h-[600px]">
     {#if kvStoresState.openedStore}
-      <EntitiesBrowser />
+      <KvEntriesBrowser />
     {:else}
       <KvStoresManagement />
     {/if}
