@@ -24,7 +24,7 @@ export const updateAppState: UpdateAppState = $state({
 })
 
 export async function startCheckingForUpdates() {
-    const lastFetchedUpdate = lastFetchedUpdateService.getLastFetchedUpdate()
+    const lastFetchedUpdate = await lastFetchedUpdateService.getLastFetchedUpdate()
     if (lastFetchedUpdate) {
         updateAppState.newUpdate = lastFetchedUpdate
         updateAppState.checkingForUpdatesDone = true
@@ -67,7 +67,7 @@ export async function startDownloadingUpdate() {
 }
 
 export async function cancelDownloadingUpdate() {
-    appUpdater.cancelUpdate()
+    await appUpdater.cancelUpdate()
     updateAppState.downloadingUpdates = false;
     updateAppState.downloadingUpdatesError = "";
     updateAppState.downloadingUpdatesDone = false;

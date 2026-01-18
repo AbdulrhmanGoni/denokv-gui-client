@@ -1,25 +1,15 @@
-import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
-import { onWindowReady, settingsService } from "@app/preload"
+import { settingsService } from "@app/preload"
 
-type SettingsState = Settings
-
-export const settingsState: SettingsState = $state({})
+export const settingsState: Settings = $state({})
 
 export async function setAutoCheckForUpdate(value: boolean) {
     await settingsService.updateSettings({
         autoCheckForUpdate: value,
     });
 
-    await reloadSettings()
+    await loadSettings()
 }
 
-async function reloadSettings() {
-    Object.assign(settingsState, await settingsService.getSettings())
+export async function loadSettings() {
+    Object.assign(settingsState, await settingsService.getSettings() ?? {})
 }
-
-onWindowReady(async () => {
-    await reloadSettings()
-    if (settingsState.autoCheckForUpdate) {
-        startCheckingForUpdates();
-    }
-})

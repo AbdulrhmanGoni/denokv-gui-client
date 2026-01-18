@@ -6,6 +6,7 @@
     import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
     import { cn } from "$lib/shadcn-utils";
     import { buttonVariants } from "$lib/ui/shadcn/button";
+    import { updateAppState } from "$lib/states/appUpdate.svelte";
 </script>
 
 <Dialog.Root>
@@ -18,6 +19,11 @@
             }),
         )}
     >
+        {#if updateAppState.newUpdate?.isUpdateAvailable}
+            <div
+                class="size-2! bg-red-500 rounded-full absolute right-1 top-1"
+            ></div>
+        {/if}
         <SettingsIcon class="text-foreground size-6" />
     </Dialog.Trigger>
     <Dialog.Content class="max-h-[600px]! h-full max-w-6xl! w-full p-3">

@@ -7,6 +7,19 @@
   import { Toaster } from "$lib/ui/shadcn/sonner";
   import LoadingOverlay from "$lib/ui/primitives/LoadingOverlay.svelte";
   import { environment } from "@app/preload";
+  import {
+    loadSettings,
+    settingsState,
+  } from "$lib/states/settingsState.svelte";
+  import { onMount } from "svelte";
+  import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
+
+  onMount(async () => {
+    await loadSettings();
+    if (settingsState.autoCheckForUpdate) {
+      startCheckingForUpdates();
+    }
+  });
 </script>
 
 <main
