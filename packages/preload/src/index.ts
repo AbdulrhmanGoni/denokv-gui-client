@@ -1,5 +1,4 @@
 import { ipcRenderer } from 'electron';
-import type { BrowseReturn, EnqueueRequestInput } from '@app/bridge-server';
 
 function selectDirectory(): Promise<string> {
   return ipcRenderer.invoke('select-directory')
