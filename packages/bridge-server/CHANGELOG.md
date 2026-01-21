@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## 7.1.0 (2026-01-21)
+
+### Features
+
+* implement enqueue operation support ([0ff6aa2](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0ff6aa20ef5f776587ee25a2b35020d823a4a710))
+
+
+### Bug Fixes
+
+* throw on unexpected key parts in `serializeKvKey` function ([a23cf0e](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a23cf0e38a22cebf8d67ef543e628e5cef1107cd))
+* fix the return type of `BridgeServerClient`'s "set" and "delete" methods ([846a467](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/846a467d6cb2ee3b52c37f12651a1fe4a47c6dcf))
+
+### Security
+
+* update "hono" package to avoid a vulnerability ([69bd40c](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/69bd40c29df10d20803f425a1f0f6e88e503a321))
+
 ## 7.0.1 (2026-01-12)
 
 ### Bug Fixes
