@@ -106,6 +106,7 @@ async function takeScreenshots(page: Page, mode: Mode) {
         takeScreenshotOfLookupEntryDialog,
         takeScreenshotOfBrowsingParamsDialog,
         takeScreenshotOfSavedBrowsingParamsDialog,
+        takeScreenshotOfEnqueueMessageDialog,
     ]
 
     for (const step of steps) {
@@ -225,5 +226,12 @@ async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page, mode: Mode)
     await page.locator('button', { hasText: "Saved Filters List" }).click();
     await page.waitForTimeout(100);
     await page.screenshot({ path: `./screenshots/SavedBrowsingParamsDialog_${mode}.temp.png`, fullPage: true });
+    await page.keyboard.press('Escape');
+}
+
+async function takeScreenshotOfEnqueueMessageDialog(page: Page, mode: Mode) {
+    await page.locator('button', { hasText: "Enqueue Message" }).click();
+    await page.waitForTimeout(100);
+    await page.screenshot({ path: `./screenshots/EnqueueMessageDialog_${mode}.temp.png`, fullPage: true });
     await page.keyboard.press('Escape');
 }
