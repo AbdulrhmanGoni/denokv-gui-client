@@ -26,7 +26,7 @@
     "release": "commit-and-tag-version",
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
     "typecheck": "npm run typecheck -ws --if-present",
-    "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations",
+    "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations --no-dump-schema",
     "screenshots": "node scripts/takeScreenshots.ts"
   },
   "devDependencies": {
