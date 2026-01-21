@@ -1,4 +1,4 @@
-import type { CancellationToken, UpdateCheckResult } from 'electron-updater';
+import type { CancellationToken } from 'electron-updater';
 import electronUpdater from 'electron-updater';
 const { autoUpdater, CancellationToken: CancellationTokenConstructor } = electronUpdater;
 import * as lastFetchedUpdateService from './services/lastFetchedUpdateService.js';
@@ -8,7 +8,7 @@ import { isGreaterVersion } from './helpers.js';
 let cancellationToken: CancellationToken | null = null;
 
 export async function checkForUpdate() {
-    const newUpdate = await autoUpdater.checkForUpdatesAndNotify() as any as UpdateCheckResult | null;
+    const newUpdate = await autoUpdater.checkForUpdatesAndNotify();
     if (newUpdate && isGreaterVersion(newUpdate.updateInfo.version, metadata.appVersion)) {
         lastFetchedUpdateService.setLastFetchedUpdate(newUpdate)
         return newUpdate
