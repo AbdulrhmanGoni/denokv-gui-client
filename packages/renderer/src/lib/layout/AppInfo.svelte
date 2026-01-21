@@ -39,7 +39,7 @@
           href={`${metadata.githubRepo}/releases/tag/v${metadata.appVersion}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="font-bold text-lg text-foreground"
+          class="font-bold text-lg text-foreground hover:underline"
         >
           v{metadata.appVersion}
         </a>
