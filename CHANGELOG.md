@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.16.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.15.0...v1.16.0) (2026-01-21)
+
+
+### Features
+
+* make app's version a link takes to the release page when clicked ([813cda0](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/813cda0c99a6a1760ce59c2626933ffa308b9c92))
+* enable enqueuing messages into Deno KV Queue ([f048f14](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f048f14cad8594a8f6aaa066644aaf6bb82fcb30))
+
+
+### Bug Fixes
+
+* fix that "new update" indicator doesn't appear although a new update is available ([1ad0406](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/1ad0406067397064f591d31f98b3e97d0c3b5531))
+* correct copying all types of Kv Keys/Values into clipboard as js values ([60c7f3d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/60c7f3df6646825e0ee1d04379ddca141266cb1b))
+
+
+### User Interface Changes
+
+* limit the height of Kv value data type selector's dropdown menu ([408473f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/408473f1b749e5e30d8a414e8bc6320267296a6c))
+
 ## [1.15.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.14.0...v1.15.0) (2026-01-12)
 
 
