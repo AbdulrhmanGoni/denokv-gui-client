@@ -1,6 +1,6 @@
 # Screenshots
 
-Here are some screenshots of how `Denokv GUI Client` app looks like
+Here are some screenshots of how `Denokv GUI Client` app looks like:
 
 ### KV Stores Grid
 ![KV Stores Grid screenshot (Dark)](./KvStoresGrid_dark.png#gh-dark-mode-only)
@@ -33,6 +33,18 @@ Here are some screenshots of how `Denokv GUI Client` app looks like
 ### Saved Browsing Params Dialog
 ![Saved Browsing Params Dialog screenshot (Dark)](./SavedBrowsingParamsDialog_dark.png#gh-dark-mode-only)
 ![Saved Browsing Params Dialog screenshot (Light)](./SavedBrowsingParamsDialog_light.png#gh-light-mode-only)
+
+### Enqueue Message Dialog
+![Enqueue Message Dialog screenshot (Dark)](./EnqueueMessageDialog_dark.png#gh-dark-mode-only)
+![Enqueue Message Dialog screenshot (Light)](./EnqueueMessageDialog_light.png#gh-light-mode-only)
+
+### Enqueue Message Backoff Schedule Option
+![Enqueue Message Backoff Schedule Option screenshot (Dark)](./EnqueueMessageBackoffScheduleOption_dark.png#gh-dark-mode-only)
+![Enqueue Message Backoff Schedule Option screenshot (Light)](./EnqueueMessageBackoffScheduleOption_light.png#gh-light-mode-only)
+
+### Enqueue Message Keys If Undelivered Option
+![Enqueue Message Keys If Undelivered Option screenshot (Dark)](./EnqueueMessageKeysIfUndeliveredOption_dark.png#gh-dark-mode-only)
+![Enqueue Message Keys If Undelivered Option screenshot (Light)](./EnqueueMessageKeysIfUndeliveredOption_light.png#gh-light-mode-only)
 
 ### Settings Page
 ![Settings Page screenshot (Dark)](./SettingsPage_dark.png#gh-dark-mode-only)

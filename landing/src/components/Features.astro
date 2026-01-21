@@ -17,6 +17,12 @@ import EditKvEntryDialogScreenshot_light from "../../../screenshots/EditKvEntryD
 import EditKvEntryDialogScreenshot_dark from "../../../screenshots/EditKvEntryDialog_dark.png";
 import KvStoreFormScreenshot_light from "../../../screenshots/KvStoreForm_light.png";
 import KvStoreFormScreenshot_dark from "../../../screenshots/KvStoreForm_dark.png";
+import EnqueueMessageDialogScreenshot_light from "../../../screenshots/EnqueueMessageDialog_light.png";
+import EnqueueMessageDialogScreenshot_dark from "../../../screenshots/EnqueueMessageDialog_dark.png";
+import EnqueueMessageBackoffScheduleOptionScreenshot_light from "../../../screenshots/EnqueueMessageBackoffScheduleOption_light.png";
+import EnqueueMessageBackoffScheduleOptionScreenshot_dark from "../../../screenshots/EnqueueMessageBackoffScheduleOption_dark.png";
+import EnqueueMessageKeysIfUndeliveredOptionScreenshot_light from "../../../screenshots/EnqueueMessageKeysIfUndeliveredOption_light.png";
+import EnqueueMessageKeysIfUndeliveredOptionScreenshot_dark from "../../../screenshots/EnqueueMessageKeysIfUndeliveredOption_dark.png";
 import FeatureCarousel from "./FeatureCarousel.astro";
 import Wave from "../assets/wave.svg";
 ---
@@ -144,6 +150,45 @@ import Wave from "../assets/wave.svg";
         },
       ]}
     />
+  </div>
+</section>
+
+<section id="features-5" class="bg-surface">
+  <div
+    class="background-gradient-rtl"
+    style="display: flex; align-items: flex-end;"
+  >
+    <Wave style="transform: translateY(1px)" />
+  </div>
+  <div class="container">
+    <FeatureCarousel
+      images={[
+        {
+          lightSrc: EnqueueMessageDialogScreenshot_light.src,
+          darkSrc: EnqueueMessageDialogScreenshot_dark.src,
+          alt: "Enqueue Message Dialog screenshot",
+        },
+        {
+          lightSrc: EnqueueMessageBackoffScheduleOptionScreenshot_light.src,
+          darkSrc: EnqueueMessageBackoffScheduleOptionScreenshot_dark.src,
+          alt: "Enqueue Message Backoff Schedule Option screenshot",
+        },
+        {
+          lightSrc: EnqueueMessageKeysIfUndeliveredOptionScreenshot_light.src,
+          darkSrc: EnqueueMessageKeysIfUndeliveredOptionScreenshot_dark.src,
+          alt: "Enqueue Message Keys If Undelivered Option screenshot",
+        },
+      ]}
+    />
+    <div class="features-text">
+      <h2>Enqueueing Messages UI</h2>
+      <p>
+        You can enqueue messages into your Deno KV Database's
+        <strong>Queue</strong> via stright forward UI with
+        <strong>delay</strong>, <strong>backoffSchedules</strong>, and
+        <strong>keysIfUndelivered</strong> options supported.
+      </p>
+    </div>
   </div>
 </section>
 

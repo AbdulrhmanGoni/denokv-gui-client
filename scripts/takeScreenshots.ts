@@ -232,6 +232,37 @@ async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page, mode: Mode)
 async function takeScreenshotOfEnqueueMessageDialog(page: Page, mode: Mode) {
     await page.locator('button', { hasText: "Enqueue Message" }).click();
     await page.waitForTimeout(100);
+    const valueEditor = page.locator('div#value-editor')
+    await valueEditor.fill('{task: "delete-files-task", files: ["file-id-1", "file-id-2", "file-id-3"]}')
+    await valueEditor.press('Space')
+    await page.locator('button', { has: page.locator('svg.lucide-scan-text') }).click();
+    await page.waitForTimeout(100)
+
+    await page.locator('div', { has: page.locator('> p', { hasText: "Backoff Schedule" }) })
+        .locator("button")
+        .click();
+    await page.waitForTimeout(100);
+
+    const backoffScheduleEditor = page.locator('div#backoff-schedule-editor');
+    await backoffScheduleEditor.fill('[5000, 20000, 40000]');
+    await backoffScheduleEditor.press('Space');
+    await page.waitForTimeout(100)
+    await page.screenshot({ path: `./screenshots/EnqueueMessageBackoffScheduleOption_${mode}.temp.png`, fullPage: true });
+    await page.locator("button", { hasText: "Set Option" }).click();
+
+    await page.locator('div', { has: page.locator('> p', { hasText: "Keys If Undelivered" }) })
+        .locator("button")
+        .click();
+    await page.waitForTimeout(100);
+
+    const keysIfUndeliveredEditor = page.locator('div#keys-if-undelivered-editor');
+    await keysIfUndeliveredEditor.fill('[["undelivered", "delete-files-task"]]');
+    await keysIfUndeliveredEditor.press('Space');
+    await page.screenshot({ path: `./screenshots/EnqueueMessageKeysIfUndeliveredOption_${mode}.temp.png`, fullPage: true });
+    await page.locator("button", { hasText: "Set Option" }).click();
+    await page.waitForTimeout(100);
+
+    await page.waitForTimeout(125);
     await page.screenshot({ path: `./screenshots/EnqueueMessageDialog_${mode}.temp.png`, fullPage: true });
     await page.keyboard.press('Escape');
 }
