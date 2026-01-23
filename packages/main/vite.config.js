@@ -31,6 +31,9 @@ export default /**
       handleHotReload(),
       copyMigrations(),
     ],
+    ssr: {
+      noExternal: ['@std/async'],
+    },
   });
 
 

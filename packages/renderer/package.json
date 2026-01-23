@@ -37,6 +37,7 @@
     }
   },
   "dependencies": {
+    "@app/preload": "workspace:*",
     "codejar": "^4.2.0",
     "highlight.js": "^11.11.1",
     "js-beautify": "^1.15.4",

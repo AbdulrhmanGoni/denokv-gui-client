@@ -1,8 +1,8 @@
 import pkg from './package.json' with { type: 'json' };
-import mapWorkspaces from '@npmcli/map-workspaces';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import os from 'node:os';
+import { globSync } from 'node:fs';
 
 /** @type import('electron-builder').Configuration */
 const platformSpecificConfig = {}
@@ -51,43 +51,27 @@ export default /** @type import('electron-builder').Configuration */
     files: [
       'LICENSE*',
       pkg.main,
-      '!node_modules/@app/**',
       ...await getListOfFilesFromEachWorkspace(),
-      {
-        from: "node_modules/@deno",
-        to: "node_modules/@deno",
-      },
-      {
-        from: "node_modules/randombytes",
-        to: "node_modules/randombytes",
-      },
-      {
-        from: "node_modules/@dbmate",
-        to: "node_modules/@dbmate",
-      },
     ],
   });
 
 async function getListOfFilesFromEachWorkspace() {
-
-  /**
-   * @type {Map<string, string>}
-   */
-  const workspaces = await mapWorkspaces({
-    cwd: process.cwd(),
-    pkg,
-  });
-
+  const workspacePatterns = pkg.workspaces || [];
   const allFilesToInclude = [];
 
-  for (const [name, path] of workspaces) {
-    const pkgPath = join(path, 'package.json');
-    const { default: workspacePkg } = await import(pathToFileURL(pkgPath), { with: { type: 'json' } });
+  for (const pattern of workspacePatterns) {
+    const pkgJsonPaths = globSync(`${pattern}/package.json`, { cwd: process.cwd() });
 
-    let patterns = workspacePkg.files || ['dist/**', 'package.json'];
+    for (const pkgJsonPath of pkgJsonPaths) {
+      const { default: workspacePkg } = await import(
+        pathToFileURL(join(process.cwd(), pkgJsonPath)),
+        { with: { type: 'json' } }
+      );
 
-    patterns = patterns.map(p => join('node_modules', name, p));
-    allFilesToInclude.push(...patterns);
+      let patterns = workspacePkg.files || ['dist/**', 'package.json'];
+      patterns = patterns.map(p => join('node_modules', workspacePkg.name, p));
+      allFilesToInclude.push(...patterns);
+    }
   }
 
   return allFilesToInclude;

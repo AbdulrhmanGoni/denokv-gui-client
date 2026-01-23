@@ -16,12 +16,12 @@
     }
   },
   "devDependencies": {
-    "@app/electron-versions": "*",
+    "@app/electron-versions": "workspace:*",
     "mlly": "1.7.4",
     "typescript": "5.8.3",
     "vite": "6.3.5"
   },
   "dependencies": {
-    "@app/bridge-server": "*"
+    "@app/bridge-server": "workspace:*"
   }
 }

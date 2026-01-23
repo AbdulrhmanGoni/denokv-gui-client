@@ -12,17 +12,17 @@
     }
   },
   "dependencies": {
-    "@app/preload": "*",
-    "@app/renderer": "*",
-    "@app/bridge-server": "*",
+    "@app/preload": "workspace:*",
+    "@app/renderer": "workspace:*",
+    "@app/bridge-server": "workspace:*",
     "electron-updater": "6.6.2",
-    "@deno/kv": "0.13.0",
-    "@std/async": "npm:@jsr/std__async@^1.0.13"
+    "@deno/kv": "0.13.0"
   },
   "devDependencies": {
-    "@app/electron-versions": "*",
+    "@app/electron-versions": "workspace:*",
     "electron-devtools-installer": "3.2.0",
     "typescript": "5.8.3",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "@std/async": "npm:@jsr/std__async@1.1.0"
   }
 }
