@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "pnpm -r run build",
-    "compile": "pnpm run build && electron-builder build --config electron-builder.mjs",
+    "compile": "pnpm run build && electron-builder build --config electron-builder.mjs --publish never",
     "test": "pnpm exec playwright test ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",
