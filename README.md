@@ -105,7 +105,7 @@ On Windows, you just need to download the `denokv-gui-client-x.x.x-win-x64.exe` 
 2. Install dependencies
 
 ```bash
-  npm install
+  bun install
 ```
 
 ### Development Mode
@@ -113,7 +113,7 @@ On Windows, you just need to download the `denokv-gui-client-x.x.x-win-x64.exe` 
 You first need to run the migration to set up the development database:
 
 ```bash
-  npm run migration up
+  bun run migration up
 ```
 
 > [!NOTE]
@@ -123,7 +123,7 @@ You first need to run the migration to set up the development database:
 Then run the app in development mode with:
 
 ```bash
-  npm start
+  bun run start
 ```
 
 ### Compiling The App
@@ -131,7 +131,7 @@ Then run the app in development mode with:
 To compile or build the app for production use:
 
 ```bash
-  npm run compile
+  bun run compile
 ```
 
 > This command will create the build artifacts in `dist` directory
@@ -141,7 +141,7 @@ To compile or build the app for production use:
 To run the tests, compile the app first, and then run:
 
 ```bash
-  npm run test
+  bun run test
 ```
 
 > [!NOTE]

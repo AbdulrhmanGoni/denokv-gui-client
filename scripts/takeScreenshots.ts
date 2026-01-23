@@ -16,7 +16,7 @@ if (platform === 'darwin') {
 
 const [executablePath] = globSync(executablePattern);
 if (!executablePath) {
-    throw new Error('App Executable path not found. Please compile the app first using: npm run compile');
+    throw new Error('App Executable path not found. Please compile the app first using: bun run compile');
 }
 
 const electronApp = await electron.launch({
