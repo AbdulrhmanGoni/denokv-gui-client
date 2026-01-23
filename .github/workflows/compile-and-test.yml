@@ -38,7 +38,7 @@ jobs:
           node-version: ">=23.0.0"
 
       - name: Install dependencies
-        run: npm install
+        run: bun install
 
       - name: Download "denokv-x86_64-apple-darwin" binary for mac-x64 build
         if: matrix.os == 'macos-15-intel'
@@ -48,17 +48,17 @@ jobs:
 
       - name: Run bridge server tests
         working-directory: packages/bridge-server
-        run: npm run test
+        run: bun run test
 
       - name: Build the app
-        run: npm run compile -- -p never
+        run: bun run compile -- -p never
 
       - name: Run tests (Windows, Mac)
-        run: npm run test --if-present
+        run: bun run test --if-present
         if: matrix.os != 'ubuntu-latest'
 
       - name: Run tests (Linux)
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test --if-present
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- bun run test --if-present
         if: matrix.os == 'ubuntu-latest'
 
       - uses: actions/attest-build-provenance@v2
