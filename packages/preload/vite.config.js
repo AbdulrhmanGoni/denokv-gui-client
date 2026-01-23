@@ -1,7 +1,5 @@
-import { resolveModuleExportNames } from 'mlly';
 import { getChromeMajorVersion } from '@app/electron-versions';
-import { cpSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { resolveModuleExportNames } from 'mlly';
 
 export default /**
  * @type {import('vite').UserConfig}

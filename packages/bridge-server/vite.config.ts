@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 import dts from "vite-plugin-dts";
 
-export default defineConfig({
+export default defineConfig(({ }) => ({
     build: {
         outDir: 'dist',
         target: 'node18',
@@ -31,7 +31,6 @@ export default defineConfig({
     plugins: [
         dts({
             include: ['src/**/*'],
-            rollupTypes: true,
         }),
     ],
     resolve: {
@@ -39,4 +38,5 @@ export default defineConfig({
             '@': resolve(__dirname, 'src'),
         },
     },
-});
+}));
+

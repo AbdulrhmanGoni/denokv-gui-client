@@ -1,8 +1,8 @@
-import {execSync} from 'node:child_process';
+import { execSync } from 'node:child_process';
 
 function getElectronEnv() {
   return JSON.parse(execSync(
-    `npx electron -p "JSON.stringify(process.versions)"`,
+    `bunx electron -p "JSON.stringify(process.versions)"`,
     {
       encoding: 'utf-8',
       env: {

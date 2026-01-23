@@ -19,18 +19,17 @@
     "node": ">=23.0.0"
   },
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "compile": "npm run build && electron-builder build --config electron-builder.mjs",
-    "test": "npx playwright test ./tests/e2e.spec.ts",
-    "start": "node packages/dev-mode.js",
+    "build": "bun run --filter '*' build",
+    "compile": "bun run build && electron-builder build --config electron-builder.mjs",
+    "test": "bunx playwright test ./tests/e2e.spec.ts",
+    "start": "bun packages/dev-mode.js",
     "release": "commit-and-tag-version",
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "typecheck": "bun run --filter '*' typecheck",
     "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations --no-dump-schema",
-    "screenshots": "node scripts/takeScreenshots.ts"
+    "screenshots": "bun scripts/takeScreenshots.ts"
   },
   "devDependencies": {
-    "@npmcli/map-workspaces": "4.0.2",
     "@playwright/test": "^1.55.0",
     "@types/node": "24.0.3",
     "commit-and-tag-version": "^12.5.2",
@@ -38,10 +37,11 @@
     "electron-builder": "26.7.0",
     "glob": "11.1.0",
     "playwright": "^1.55.0",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "vite": "6.3.5"
   },
   "dependencies": {
     "dbmate": "^2.28.0",
-    "@app/main": "*"
+    "@app/main": "workspace:*"
   }
 }
