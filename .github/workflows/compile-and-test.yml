@@ -58,7 +58,7 @@ jobs:
         if: matrix.os != 'ubuntu-latest'
 
       - name: Run tests (Linux)
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- bun run test
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1280,960x24" -- bun run test
         if: matrix.os == 'ubuntu-latest'
 
       - uses: actions/attest-build-provenance@v2
