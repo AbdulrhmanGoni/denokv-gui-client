@@ -34,7 +34,6 @@
         "vitest": "^4.0.15"
     },
     "dependencies": {
-        "@deno/kv": "0.13.0",
         "@hono/node-server": "1.19.7",
         "hono": "4.11.7",
         "serialize-javascript": "6.0.2"

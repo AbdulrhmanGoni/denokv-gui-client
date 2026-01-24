@@ -6,6 +6,7 @@
       "name": "denokv-gui-client",
       "dependencies": {
         "@app/main": "workspace:*",
+        "@deno/kv": "0.13.0",
         "dbmate": "^2.28.0",
       },
       "devDependencies": {
@@ -24,7 +25,6 @@
       "name": "@app/bridge-server",
       "version": "7.1.0",
       "dependencies": {
-        "@deno/kv": "0.13.0",
         "@hono/node-server": "1.19.7",
         "hono": "4.11.4",
         "serialize-javascript": "6.0.2",
@@ -44,15 +44,14 @@
     "packages/main": {
       "name": "@app/main",
       "dependencies": {
-        "@app/bridge-server": "*",
-        "@app/preload": "*",
-        "@app/renderer": "*",
-        "@deno/kv": "0.13.0",
+        "@app/bridge-server": "workspace:*",
+        "@app/preload": "workspace:*",
+        "@app/renderer": "workspace:*",
         "@std/async": "npm:@jsr/std__async@^1.0.13",
         "electron-updater": "6.6.2",
       },
       "devDependencies": {
-        "@app/electron-versions": "*",
+        "@app/electron-versions": "workspace:*",
         "electron-devtools-installer": "3.2.0",
         "typescript": "5.8.3",
         "vite": "6.3.5",

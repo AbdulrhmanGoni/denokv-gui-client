@@ -16,7 +16,6 @@
     "@app/renderer": "workspace:*",
     "@app/bridge-server": "workspace:*",
     "electron-updater": "6.8.2",
-    "@deno/kv": "0.13.0",
     "@std/async": "npm:@jsr/std__async@^1.0.13"
   },
   "devDependencies": {
