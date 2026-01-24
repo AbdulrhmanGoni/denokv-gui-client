@@ -19,13 +19,13 @@
     "node": ">=23.0.0"
   },
   "scripts": {
-    "build": "npm run build -ws --if-present",
+    "build": "npm run build --workspaces --if-present",
     "compile": "npm run build && electron-builder build --config electron-builder.mjs",
     "test": "npx playwright test ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
-    "typecheck": "npm run typecheck -ws --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
     "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations --no-dump-schema",
     "screenshots": "node scripts/takeScreenshots.ts"
   },
