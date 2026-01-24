@@ -55,21 +55,28 @@ jobs:
           exit 1
           fi
 
-          # Extract the download URL of the first and only asset
+          # Extract the download URL and tag of the first and only asset
           download_url=$(jq -r '.assets[0].browser_download_url' release.json)
+          tag=$(jq -r '.tag_name' release.json)
+
           if [[ -z "$download_url" ]]; then
           echo "Failed to parse download_url from release.json"
           cat release.json
           exit 1
           fi
 
-          # Download "deno-kv-napi.darwin-x64.node" asset
-          moduleDir=node_modules/@deno/kv-darwin-x64
-          mainPackageModuleDir=packages/main/$moduleDir
-          bridgeServerPackageModuleDir=packages/bridge-server/$moduleDir
-          binaryDist=$mainPackageModuleDir/deno-kv-napi.darwin-x64.node
+          if [[ -z "$tag" ]]; then
+          echo "Failed to parse tag name from release.json"
+          cat release.json
+          exit 1
+          fi
+
+          # Download "deno-kv-napi.darwin-x64.node" native addon
+          pnpm patch @deno/kv-darwin-x64
+          binaryDistDir=./node_modules/.pnpm_patches/@deno/kv-darwin-x64@$tag
+          binaryDist=$binaryDistDir/deno-kv-napi.darwin-x64.node
           curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -L --retry 3 --retry-delay 3 -o $binaryDist $download_url
-          cp $binaryDist $bridgeServerPackageModuleDir/deno-kv-napi.darwin-x64.node
+          pnpm patch-commit $binaryDistDir
 
       - name: Run bridge server tests
         working-directory: packages/bridge-server
