@@ -51,20 +51,7 @@ export default /** @type import('electron-builder').Configuration */
     files: [
       'LICENSE*',
       pkg.main,
-      '!node_modules/@app/**',
       ...await getListOfFilesFromEachWorkspace(),
-      {
-        from: "node_modules/@deno",
-        to: "node_modules/@deno",
-      },
-      {
-        from: "node_modules/randombytes",
-        to: "node_modules/randombytes",
-      },
-      {
-        from: "node_modules/@dbmate",
-        to: "node_modules/@dbmate",
-      },
     ],
   });
 
