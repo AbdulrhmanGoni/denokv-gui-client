@@ -11,6 +11,9 @@ importers:
       '@app/main':
         specifier: workspace:*
         version: link:packages/main
+      '@deno/kv':
+        specifier: 0.13.0
+        version: 0.13.0
       dbmate:
         specifier: ^2.28.0
         version: 2.29.3
@@ -45,9 +48,6 @@ importers:
 
   packages/bridge-server:
     dependencies:
-      '@deno/kv':
-        specifier: 0.13.0
-        version: 0.13.0
       '@hono/node-server':
         specifier: 1.19.7
         version: 1.19.7(hono@4.11.4)
@@ -90,9 +90,6 @@ importers:
       '@app/renderer':
         specifier: workspace:*
         version: link:../renderer
-      '@deno/kv':
-        specifier: 0.13.0
-        version: 0.13.0
       electron-updater:
         specifier: 6.6.2
         version: 6.6.2

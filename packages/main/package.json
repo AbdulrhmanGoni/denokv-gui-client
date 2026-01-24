@@ -15,8 +15,7 @@
     "@app/preload": "workspace:*",
     "@app/renderer": "workspace:*",
     "@app/bridge-server": "workspace:*",
-    "electron-updater": "6.6.2",
-    "@deno/kv": "0.13.0"
+    "electron-updater": "6.6.2"
   },
   "devDependencies": {
     "@app/electron-versions": "workspace:*",

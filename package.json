@@ -38,6 +38,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
+    "@deno/kv": "0.13.0",
     "dbmate": "^2.28.0",
     "@app/main": "workspace:*"
   }
