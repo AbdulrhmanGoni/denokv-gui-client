@@ -26,6 +26,7 @@
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import type { CodeJar } from "codejar";
   import ButtonWithTooltip from "$lib/ui/primitives/ButtonWithTooltip.svelte";
+  import PLink from "$lib/ui/primitives/PLink.svelte";
 
   let prefixKeyEditorValue = $derived(kvEntriesState.params.prefix);
   let startKeyEditorValue = $derived(kvEntriesState.params.start);
@@ -193,16 +194,10 @@
       </h1>
       <p class="gap-1.5 text-foreground">
         See the
-        <a
-          class="hover:underline text-secondary"
-          href="https://docs.deno.com/deploy/kv/manual/operations/#list"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <PLink href="https://docs.deno.com/deploy/kv/manual/operations/#list">
           official manual
-        </a>
-        of <strong>Deno Kv database</strong> for more information about how filtering
-        entries works.
+        </PLink> of <strong>Deno Kv database</strong> for more information about
+        how filtering entries works.
       </p>
       <Separator />
       <BrowsingParamsForm

@@ -8,6 +8,7 @@
     import CheckIcon from "@lucide/svelte/icons/square-check-big";
     import UndoIcon from "@lucide/svelte/icons/undo-2";
     import type { CodeJar } from "codejar";
+    import PLink from "$lib/ui/primitives/PLink.svelte";
 
     let {
         value = $bindable(),
@@ -80,13 +81,11 @@
             <p class="text-sm text-muted-foreground">
                 An array of numbers (in milliseconds) that specify the retry
                 policy for failed message delivery.
-                <a
+                <PLink
                     href="https://docs.deno.com/api/deno/~/Deno.Kv.prototype.enqueue#:~:text=backoffSchedule%20option"
-                    target="_blank"
-                    class="text-foreground hover:underline"
                 >
                     See the API reference
-                </a> for further details and an example.
+                </PLink> for further details and an example.
             </p>
             <CodeEditor
                 editorId="backoff-schedule-editor"

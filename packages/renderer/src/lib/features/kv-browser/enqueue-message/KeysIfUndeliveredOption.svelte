@@ -8,6 +8,7 @@
     import UndoIcon from "@lucide/svelte/icons/undo-2";
     import type { CodeJar } from "codejar";
     import { toast } from "svelte-sonner";
+    import PLink from "$lib/ui/primitives/PLink.svelte";
 
     let {
         value = $bindable(),
@@ -80,13 +81,11 @@
             <p class="text-sm text-muted-foreground ms-1">
                 Set keys to save the message value with when failing to deliver
                 the message to the queue.
-                <a
+                <PLink
                     href="https://docs.deno.com/api/deno/~/Deno.Kv.prototype.enqueue#:~:text=keysIfUndelivered%20option"
-                    target="_blank"
-                    class="text-foreground hover:underline"
                 >
                     See the API reference
-                </a> for further details.
+                </PLink> for further details.
             </p>
             <CodeEditor
                 editorId="keys-if-undelivered-editor"

@@ -17,6 +17,7 @@
     import UndoIcon from "@lucide/svelte/icons/undo-2";
     import LoaderIcon from "@lucide/svelte/icons/loader";
     import { dataTypes } from "../utils/dataTypes";
+    import PLink from "$lib/ui/primitives/PLink.svelte";
 
     const defaultValue = { type: "Object", data: "{}" };
     let editorValue: KvEntry["value"] = $state(defaultValue);
@@ -97,14 +98,9 @@
                 <p>
                     Enqueue a message into your Deno KV Database's
                     <strong>Queue</strong>. <br /> See the official
-                    <a
-                        href="https://docs.deno.com/deploy/classic/queues/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="underline text-blue-500"
-                    >
+                    <PLink href="https://docs.deno.com/deploy/classic/queues/">
                         Deno KV Queues Documentation
-                    </a> for more information.
+                    </PLink> for more information.
                 </p>
             </div>
             <Separator />
