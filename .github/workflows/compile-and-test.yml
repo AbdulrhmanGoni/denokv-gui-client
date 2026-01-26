@@ -71,13 +71,9 @@ jobs:
           exit 1
           fi
 
-          # Download "deno-kv-napi.darwin-x64.node" native addon
-          pnpm patch @deno/kv-darwin-x64@$tag
-          binaryDistDir=./node_modules/.pnpm_patches/@deno/kv-darwin-x64@$tag
-          binaryDist=$binaryDistDir/deno-kv-napi.darwin-x64.node
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -sSL --retry 3 --retry-delay 3 -o $binaryDist $download_url
-          pnpm patch-commit $binaryDistDir
-          pnpm i
+          # Download "deno-kv-napi.darwin-x64.node" asset
+          binaryDist=node_modules/.pnpm/@deno+kv-darwin-x64@$tag/node_modules/@deno/kv-darwin-x64/deno-kv-napi.darwin-x64.node
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -L --retry 3 --retry-delay 3 -o $binaryDist $download_url
 
       - name: Run bridge server tests
         working-directory: packages/bridge-server
