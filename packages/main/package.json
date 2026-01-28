@@ -15,7 +15,7 @@
     "@app/preload": "*",
     "@app/renderer": "*",
     "@app/bridge-server": "*",
-    "electron-updater": "6.6.2",
+    "electron-updater": "6.7.3",
     "@deno/kv": "0.13.0",
     "@std/async": "npm:@jsr/std__async@^1.0.13"
   },
