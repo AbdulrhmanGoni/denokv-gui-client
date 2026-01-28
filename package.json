@@ -35,7 +35,7 @@
     "@types/node": "24.0.3",
     "commit-and-tag-version": "^12.5.2",
     "electron": "40.0.0",
-    "electron-builder": "26.4.1",
+    "electron-builder": "26.6.0",
     "glob": "11.1.0",
     "playwright": "^1.55.0",
     "sharp": "^0.34.5"
