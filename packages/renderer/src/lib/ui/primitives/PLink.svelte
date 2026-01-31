@@ -13,7 +13,10 @@
     {href}
     target="_blank"
     rel="noopener noreferrer"
-    class={cn("dark:text-blue-500 text-blue-600 hover:underline", className)}
+    class={cn(
+        "dark:text-blue-500 text-blue-600 hover:underline font-medium",
+        className,
+    )}
 >
     {@render children()}
 </a>
