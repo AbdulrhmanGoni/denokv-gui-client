@@ -49,7 +49,9 @@
             <FileIcon class="size-7" />
             Look Up KV Entry
         </h1>
-        <p class="py-1.5">Search for an entry by it's key</p>
+        <p class="py-1.5 text-muted-foreground">
+            Search for a Kv Entry by it's key
+        </p>
         <Separator class="my-3" />
         <KvKeyEditor bind:jar={kvKeyCodeEditor} />
         <Separator class="my-3" />
@@ -64,7 +66,7 @@
                 {#if isLoading}
                     <LoaderIcon class="animate-spin" />
                 {:else}
-                    <SearchIcon />
+                    <SearchIcon class="rotate-90" />
                 {/if}
             </Button>
             <Button
