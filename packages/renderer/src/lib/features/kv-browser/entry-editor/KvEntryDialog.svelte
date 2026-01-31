@@ -7,7 +7,7 @@
   import { kvEntryDialogState } from "$lib/states/kvEntryDialogState.svelte";
   import KvEntryValueUpdator from "$lib/features/kv-browser/entry-editor/KvEntryValueUpdator.svelte";
   import KvValueRenderer from "$lib/features/kv-browser/entry-renderer/KvValueRenderer.svelte";
-  import DataFileIcon from "@lucide/svelte/icons/file-json";
+  import DataFileIcon from "@lucide/svelte/icons/file-braces";
   import PencilIcon from "@lucide/svelte/icons/pencil-line";
   import TrashIcon from "@lucide/svelte/icons/trash";
   import Button, { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";

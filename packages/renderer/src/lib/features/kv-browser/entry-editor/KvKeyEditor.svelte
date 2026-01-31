@@ -11,7 +11,7 @@
   let editorValue = $state("[]");
 </script>
 
-<div class="space-y-3">
+<div class="space-y-1.5">
   <p class="flex gap-2 items-center font-bold text-lg">
     <KeyFileIcon /> Key
   </p>

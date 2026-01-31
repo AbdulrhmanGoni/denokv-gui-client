@@ -68,7 +68,7 @@
   }
 </script>
 
-<div class="space-y-3">
+<div class="space-y-1.5">
   <div class="flex gap-2 items-center">
     {@render titleIcon()}
     <p class="font-bold text-lg">{title ?? "Value"}</p>
@@ -90,7 +90,7 @@
       />
     </div>
   </div>
-  <div class="h-[270px]">
+  <div class="h-[250px]">
     {#if editorValue.type == "Number"}
       <KvValueNumberInputWithSpecials bind:value={editorValue.data as string} />
     {:else if editorValue.type == "BigInt" || editorValue.type == "KvU64"}
