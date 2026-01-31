@@ -87,7 +87,7 @@
         <MessageSquarePlusIcon class="size-4" />
     </Dialog.Trigger>
     <Dialog.Content
-        class="max-w-2xl! w-full max-h-[600px]! overflow-auto p-3 gap-2"
+        class="max-w-2xl w-full max-h-[600px] overflow-auto p-3 gap-2"
     >
         <div class="flex flex-col gap-3">
             <div class="space-y-1.5">

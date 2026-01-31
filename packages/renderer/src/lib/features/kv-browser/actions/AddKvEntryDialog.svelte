@@ -50,7 +50,7 @@
 {/snippet}
 
 <Dialog.Root bind:open={getOpen, setOpen}>
-  <Dialog.Content class="max-w-3xl! w-full gap-0 p-0">
+  <Dialog.Content class="max-w-3xl w-full gap-0 p-0">
     <KvEntryForm
       {header}
       onSubmit={addEntry}

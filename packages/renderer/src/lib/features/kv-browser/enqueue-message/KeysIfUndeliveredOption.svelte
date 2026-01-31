@@ -74,7 +74,7 @@
 
 <Dialog.Root bind:open={getOpen, setOpen}>
     <Dialog.Content
-        class="max-w-xl! w-full max-h-[600px]! overflow-auto p-4 gap-2"
+        class="max-w-xl w-full max-h-[600px] overflow-auto p-4 gap-2"
     >
         <div class="space-y-2">
             <p class="text-xl font-semibold">Keys If Undelivered</p>

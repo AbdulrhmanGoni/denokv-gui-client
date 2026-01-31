@@ -183,9 +183,7 @@
 </div>
 
 <Dialog.Root bind:open={getOpen, setOpen}>
-  <Dialog.Content
-    class="max-w-xl! w-full max-h-[600px]! overflow-auto p-3 gap-2"
-  >
+  <Dialog.Content class="max-w-xl w-full max-h-[600px] overflow-auto p-3 gap-2">
     {#if openSavedBrowsingParamsList}
       <SavedBrowsingParamsList closeList={closeSavedBrowsingParamsList} />
     {:else}

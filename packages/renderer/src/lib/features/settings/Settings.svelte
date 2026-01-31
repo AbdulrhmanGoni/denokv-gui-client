@@ -26,7 +26,7 @@
         {/if}
         <SettingsIcon class="text-foreground size-6" />
     </Dialog.Trigger>
-    <Dialog.Content class="max-h-[600px]! h-full max-w-6xl! w-full p-3">
+    <Dialog.Content class="max-h-[600px] h-full max-w-6xl w-full p-3">
         <div class="flex flex-col gap-3">
             <h1 class="text-3xl font-bold flex gap-2 items-center my-1">
                 <SettingsIcon class="size-7.5" />
