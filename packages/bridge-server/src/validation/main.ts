@@ -4,7 +4,7 @@ import {
     deserializeKvValue,
     type SerializedKvValue
 } from "../serialization/main.ts";
-import { toNumber } from "../helpers";
+import { isValidKvKey, toNumber } from "../helpers";
 
 const errorCause = { cause: "ValidationError" }
 
@@ -122,7 +122,7 @@ export type EnqueueRequestInput = {
     options?: {
         backoffSchedule?: number[],
         delay?: number,
-        keysIfUndelivered?: string[],
+        keysIfUndelivered?: string,
     }
 }
 
@@ -161,11 +161,23 @@ function validateEnqueueOptions(options: unknown): ValidEnqueueRequestBody["opti
     }
 
     if ("keysIfUndelivered" in options) {
-        if (!(options.keysIfUndelivered instanceof Array)) {
-            throw new Error("'keysIfUndelivered' option of 'enqueue' operation should be an array of valid Kv Keys in the serialized form as string");
+        let parsedKeysIfUndeliveredOption = null
+        try { parsedKeysIfUndeliveredOption = eval(String(options.keysIfUndelivered)) }
+        catch { }
+
+        if (!(parsedKeysIfUndeliveredOption instanceof Array)) {
+            throw new Error(
+                "'keysIfUndelivered' option of 'enqueue' operation should be an array of valid Kv Keys in the serialized form as string"
+            );
         }
 
-        ops.keysIfUndelivered = options.keysIfUndelivered.map((key) => deserializeKvKey(key))
+        if (parsedKeysIfUndeliveredOption.every(isValidKvKey)) {
+            ops.keysIfUndelivered = parsedKeysIfUndeliveredOption
+        } else {
+            throw new Error(
+                "'keysIfUndelivered' option of 'enqueue' operation contains at least one invalid Kv Key"
+            );
+        }
     }
 
     return ops

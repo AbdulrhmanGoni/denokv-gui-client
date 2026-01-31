@@ -37,6 +37,10 @@
             "section": "Bug Fixes"
         },
         {
+            "type": "bs_api",
+            "section": "API Changes"
+        },
+        {
             "type": "bs_secure",
             "section": "Security"
         }
