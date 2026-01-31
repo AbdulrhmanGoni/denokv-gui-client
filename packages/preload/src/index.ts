@@ -38,7 +38,7 @@ const kvClient = {
     ipcRenderer.invoke('kvClient:deleteKey', key),
   get: (key: string | SerializedKvKey): Promise<TrycatchResult<SerializedKvEntry>> =>
     ipcRenderer.invoke('kvClient:get', key),
-  enqueue: (value: EnqueueRequestInput["value"], options?: EnqueueOptions): Promise<TrycatchResult<boolean>> =>
+  enqueue: (value: EnqueueRequestInput["value"], options?: EnqueueRequestInput["options"]): Promise<TrycatchResult<boolean>> =>
     ipcRenderer.invoke('kvClient:enqueue', value, options),
 };
 
