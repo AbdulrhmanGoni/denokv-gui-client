@@ -22,13 +22,13 @@
   async function addEntry(
     key: string,
     value: KvEntry["value"],
-    expires?: number,
+    expires: number,
   ) {
     addingEntry = true;
     const res = await kvClient.set(
       key,
       value,
-      expires !== undefined ? { expires } : undefined,
+      isNaN(expires) ? undefined : { expires },
     );
 
     if (res.error) {

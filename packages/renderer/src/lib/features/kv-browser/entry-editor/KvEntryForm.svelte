@@ -18,7 +18,7 @@
         onSubmit: (
             key: string,
             value: KvEntry["value"],
-            expires?: number,
+            expires: number,
         ) => void;
         onClose?: () => void;
         valueEditorIcon?: () => void;
@@ -39,7 +39,7 @@
         data: "undefined",
     };
     let kvValueEditorValue: KvEntry["value"] = $state(defaultValue);
-    let kvEntryExpirationDateValue: number | undefined = $state();
+    let kvEntryExpirationDateValue: number = $state(NaN);
 
     async function submitEntry() {
         props.onSubmit(
