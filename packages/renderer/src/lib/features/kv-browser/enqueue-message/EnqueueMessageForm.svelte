@@ -9,7 +9,7 @@
     import KeysIfUndeliveredOption from "./KeysIfUndeliveredOption.svelte";
     import DelayOption from "./DelayOption.svelte";
     import type { CodeJar } from "codejar";
-    import UndoIcon from "@lucide/svelte/icons/undo-2";
+    import RotateCWIcon from "@lucide/svelte/icons/rotate-cw";
     import LoaderIcon from "@lucide/svelte/icons/loader";
     import { dataTypes } from "../utils/dataTypes";
     import PLink from "$lib/ui/primitives/PLink.svelte";
@@ -117,7 +117,7 @@
             onclick={reset}
         >
             Reset
-            <UndoIcon />
+            <RotateCWIcon />
         </Button>
         <DelayOption bind:value={delayOption} />
     </div>

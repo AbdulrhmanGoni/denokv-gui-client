@@ -5,7 +5,7 @@
     import EditIcon from "@lucide/svelte/icons/pencil-line";
     import Button from "$lib/ui/shadcn/button/button.svelte";
     import CheckIcon from "@lucide/svelte/icons/square-check-big";
-    import UndoIcon from "@lucide/svelte/icons/undo-2";
+    import RotateCWIcon from "@lucide/svelte/icons/rotate-cw";
     import type { CodeJar } from "codejar";
     import { toast } from "svelte-sonner";
     import PLink from "$lib/ui/primitives/PLink.svelte";
@@ -100,7 +100,7 @@
                 </Button>
                 <Button size="sm" variant="outline" onclick={clearEditor}>
                     Reset
-                    <UndoIcon />
+                    <RotateCWIcon />
                 </Button>
             </div>
         </div>
