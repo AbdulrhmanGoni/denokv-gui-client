@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.16.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.16.0...v1.16.1) (2026-02-05)
+
+
+### Bug Fixes
+
+* fix that kv stores are sometimes opened in unclean and confusing state ([a934a93](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a934a93fc755e4943bd095ac26a084a62482d973))
+
 ## [1.16.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.15.0...v1.16.0) (2026-01-21)
 
 
