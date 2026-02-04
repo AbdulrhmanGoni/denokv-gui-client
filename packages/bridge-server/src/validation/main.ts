@@ -93,7 +93,7 @@ type ValidSetRequestParams = {
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
- * @param url URL containing the query parameters validate
+ * @param url URL containing the query parameters to validate
  * @returns An object containing the validated key and optional expiration
  */
 export function validateSetRequestParams(url: URL): ValidSetRequestParams {
@@ -194,7 +194,8 @@ function validateEnqueueOptions(options: unknown): ValidEnqueueRequestBody["opti
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
- * @param url URL containing the query parameters validate
+ * @param body The request body containing the value to enqueue and optional options
+ * @param kv The Deno KV instance
  * @returns An object containing the validated value and optional options
  */
 export async function validateEnqueueRequest(body: unknown, kv: Deno.Kv | Kv): Promise<ValidEnqueueRequestBody> {

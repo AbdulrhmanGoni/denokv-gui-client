@@ -203,6 +203,7 @@ export function serializeKvValue(value: unknown): SerializedKvValue {
  * Throws an Error with cause "SerializationError" when the type/data are invalid.
  *
  * @param body The serialized Kv Entry value using `serializeKvValue` function
+ * @param kv Deno KV instance, used for deserializing KvU64 values
  * @returns The deserialized Kv Entry value which can be added into Deno KV Databases
  */
 export async function deserializeKvValue(body: unknown, kv: Kv | Deno.Kv): Promise<unknown> {

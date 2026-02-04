@@ -18,6 +18,8 @@ import type { BlankEnv, BlankSchema } from "hono/types";
  * a given Deno KV database.
  * 
  * @param kv An instance of the official Deno.Kv API class or compatible KV implementation
+ * @param options Optional configuration for the bridge server
+ * @param options.authToken Authentication token to protect the server
  * @returns An instance of the `Hono` class which represents the entry point of the bridge server
  *
  * @example

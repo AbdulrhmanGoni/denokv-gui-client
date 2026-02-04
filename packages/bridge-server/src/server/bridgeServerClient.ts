@@ -88,13 +88,24 @@ type BridgeServerClientOptions = {
     authToken?: string
 }
 
+/**
+ * A client to interact with a Denokv bridge server via HTTP.
+ */
 export class BridgeServerClient {
+    /**
+     * @param baseUrl The base URL of the bridge server (e.g., http://localhost:47168)
+     * @param options Optional configuration
+     */
     constructor(private baseUrl: string, options?: BridgeServerClientOptions) {
         if (options?.authToken) this.headers = { Authorization: options.authToken }
     }
 
     private headers?: Record<string, string>;
 
+    /**
+     * Lists KV entries based on the provided options.
+     * @param options Filtering and pagination options
+     */
     browse(options?: BrowsingOptions): CallBridgeServerReturn<BrowseReturn> {
         return callBridgeServerRequest<BrowseReturn>({
             url: `${this.baseUrl}/browse`,
@@ -104,6 +115,12 @@ export class BridgeServerClient {
         })
     }
 
+    /**
+     * Creates or updates a Deno KV entry.
+     * @param key The key to set
+     * @param value The value to set (must be in `SerializedKvValue` type)
+     * @param options Optional settings like expiration time
+     */
     set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<boolean> {
         return callBridgeServerRequest<boolean>({
             url: `${this.baseUrl}/set`,
@@ -117,6 +134,10 @@ export class BridgeServerClient {
         })
     }
 
+    /**
+     * Retrieves a single Deno KV entry by its key.
+     * @param key The key to retrieve
+     */
     get(key: SerializedKvKey): CallBridgeServerReturn<SerializedKvEntry> {
         return callBridgeServerRequest<SerializedKvEntry>({
             url: `${this.baseUrl}/get/${encodeURIComponent(JSON.stringify(key))}`,
@@ -125,6 +146,10 @@ export class BridgeServerClient {
         })
     }
 
+    /**
+     * Deletes a Deno KV entry by its key.
+     * @param key The key to delete
+     */
     delete(key: SerializedKvKey): CallBridgeServerReturn<true> {
         return callBridgeServerRequest<true>({
             url: `${this.baseUrl}/delete`,
@@ -134,6 +159,11 @@ export class BridgeServerClient {
         })
     }
 
+    /**
+     * Enqueues a message into Deno Kv Queue for later delivery.
+     * @param value The value to enqueue
+     * @param options Optional enqueue settings
+     */
     enqueue(value: EnqueueRequestInput["value"], options?: EnqueueRequestInput["options"]): CallBridgeServerReturn<boolean> {
         return callBridgeServerRequest<boolean>({
             url: `${this.baseUrl}/enqueue`,
