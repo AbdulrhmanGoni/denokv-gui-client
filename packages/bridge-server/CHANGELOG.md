@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## 8.0.0 (2026-02-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* "keysIfUndelivered" option of "enqueue" operation is now expected to be a JS code
+as string representing an "array of deno kv keys" instead of array of strings where
+each string is a deno kv key in the serialized form.
+
+### Bug Fixes
+
+* fix and improve documentation ([28da566](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/28da5664fc95a8cacd3b231a4f51cf172b77df18))
+
+
+### API Changes
+
+* change how "keysIfUndelivered" option of enqueue operation is parsed ([7ac38fd](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7ac38fd20d083dcb7b3fcf63439c7badc887601b))
+
 ## 7.1.0 (2026-01-21)
 
 ### Features
