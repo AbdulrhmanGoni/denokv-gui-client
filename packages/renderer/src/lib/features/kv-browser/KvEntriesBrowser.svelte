@@ -33,7 +33,10 @@
     closeKvStore();
   }
 
-  onDestroy(close);
+  onDestroy(() => {
+    close();
+    resetEntriesState();
+  });
 
   $effect(() => {
     if (kvStoresState.openedStore?.id) {
