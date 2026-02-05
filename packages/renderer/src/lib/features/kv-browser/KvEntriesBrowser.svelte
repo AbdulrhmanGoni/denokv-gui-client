@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { onDestroy, untrack } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import {
     openAddKvEntryDialog,
     openLookUpKeyDialog,
   } from "$lib/states/kvEntryDialogState.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
-  import {
-    closeKvStore,
-    kvStoresState,
-  } from "$lib/states/kvStoresState.svelte";
+  import { closeKvStore } from "$lib/states/kvStoresState.svelte";
   import KvEntriesTable from "$lib/features/kv-browser/table/KvEntriesTable.svelte";
   import KvEntryDialog from "$lib/features/kv-browser/entry-editor/KvEntryDialog.svelte";
   import PlusIcon from "@lucide/svelte/icons/plus";
@@ -38,14 +35,7 @@
     resetEntriesState();
   });
 
-  $effect(() => {
-    if (kvStoresState.openedStore?.id) {
-      untrack(() => {
-        resetEntriesState();
-        fetchEntries();
-      });
-    }
-  });
+  onMount(fetchEntries);
 </script>
 
 <div class="space-y-2 flex flex-col justify-center h-full">

@@ -6,6 +6,10 @@
   import FileIcon from "@lucide/svelte/icons/file";
   import LocalStorageIcon from "@lucide/svelte/icons/hard-drive";
   import type { Table } from "@tanstack/table-core";
+  import {
+    fetchEntries,
+    resetEntriesState,
+  } from "$lib/states/kvEntriesState.svelte";
 
   const { kvEntriesTable }: { kvEntriesTable: Table<SerializedKvEntry> } =
     $props();
@@ -18,10 +22,12 @@
     )!;
 
     const open = await openKvStore(chosenKvStore);
-    if (!open) {
-      openedKvStoreId = kvStoresState.openedStore!.id;
-    } else {
+    if (open) {
       kvEntriesTable.resetRowSelection();
+      await resetEntriesState();
+      await fetchEntries();
+    } else {
+      openedKvStoreId = kvStoresState.openedStore!.id;
     }
   }
 </script>
