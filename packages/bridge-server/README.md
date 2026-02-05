@@ -52,7 +52,7 @@ import { openBridgeServerInNode } from "@denokv-gui-client/bridge-server";
 import { type ServerType } from '@hono/node-server';
 
 const kv: Kv = await openKv();
-const server: ServerType = openBridgeServerInDeno(kv);
+const server: ServerType = openBridgeServerInNode(kv);
 // ...
 server.close(); // Later at some point if you want
 ```
@@ -147,6 +147,23 @@ curl http://localhost:47168/check
 > { "result": true }
 ```
 
+#### POST /enqueue
+
+Enqueue a message into the Deno KV Queue.
+
+**Request Body:**
+
+The request body must be a JSON object:
+```json
+{
+  "value": <SerializedKvValue>,
+  "options": {
+    "delay": <number>,
+    "backoffSchedule": <number[]>,
+    "keysIfUndelivered": <string> // A string containing a JavaScript array of Deno KV keys.
+  }
+}
+```
 #### Authentication
 
 If the server is configured with an `authToken`, all requests must include an `Authorization` header with the token value:
@@ -240,6 +257,14 @@ Delete an entry from the KV database.
 delete(key: SerializedKvKey): Promise<{ result: { result: true } | null; error: string | null }>
 ```
 
+#### `enqueue(value, options?)`
+
+Enqueue a message into the Deno KV database.
+
+```ts
+enqueue(value: SerializedKvValue, options?: EnqueueOptions): Promise<{ result: boolean | null; error: string | null }>
+```
+
 ### Type Definitions
 
 #### SerializedKvKey
@@ -264,3 +289,9 @@ A serialized KV entry is an object contains:
 - `key`: `SerializedKvKey`
 - `value`: `SerializedKvValue`
 - `versionstamp`: `string` - The version stamp of the entry
+
+#### EnqueueOptions
+
+- `delay`: `number` (optional) - Delay in milliseconds
+- `backoffSchedule`: `number[]` (optional) - Array of retry delays in milliseconds
+- `keysIfUndelivered`: `string` (optional) - A string containing a JavaScript array of valid Deno KV keys
