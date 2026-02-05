@@ -43,27 +43,9 @@ jobs:
 
       - name: Download "denokv-x86_64-apple-darwin" binary for mac-x64 build
         if: matrix.os == 'macos-15-intel'
-        run: | 
-          releaseUrl=https://api.github.com/repos/AbdulrhmanGoni/denokv-x86_64-apple-darwin-binary-build/releases/latest
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -sSL --retry 3 --retry-delay 3 $releaseUrl -o release.json
-
-          # Check release.json exists and is not empty
-          if [ ! -s release.json ]; then
-          echo "Failed to download release info into release.json"
-          exit 1
-          fi
-
-          # Extract the download URL of the first and only asset
-          download_url=$(jq -r '.assets[0].browser_download_url' release.json)
-          if [[ -z "$download_url" ]]; then
-          echo "Failed to parse download_url from release.json"
-          cat release.json
-          exit 1
-          fi
-
-          # Download "deno-kv-napi.darwin-x64.node" asset
-          binaryDist=./node_modules/@deno/kv-darwin-x64/deno-kv-napi.darwin-x64.node
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -L --retry 3 --retry-delay 3 -o $binaryDist $download_url
+        run: ./scripts/download-denokv-macos-intel-binary.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run bridge server tests
         working-directory: packages/bridge-server
