@@ -41,7 +41,7 @@ export const columns: ColumnDef<KvEntry>[] = [
         accessorKey: "value",
         header: "Value",
         cell: ({ row }) => (
-            renderComponent(KvValueRenderer, { entry: row.original, className: "max-w-80 md:max-w-[500px] xl:max-w-2xl" })
+            renderComponent(KvValueRenderer, { value: row.original.value, className: "max-w-80 md:max-w-[500px] xl:max-w-2xl" })
         ),
     },
     {

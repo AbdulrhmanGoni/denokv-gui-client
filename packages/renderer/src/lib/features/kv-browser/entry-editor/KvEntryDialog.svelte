@@ -62,7 +62,7 @@
     <div
       class="overflow-auto h-[270px] flex gap-2 justify-between bg-card p-3 rounded-md"
     >
-      <KvValueRenderer {entry} format />
+      <KvValueRenderer value={entry.value} format />
       <CopyKvEntry {entry} />
     </div>
     <div class="flex flex-row-reverse gap-2">
