@@ -6,6 +6,7 @@ import { browseEndpointSpec } from "./browse.spec.ts";
 import { setEndpointSpec } from "./set.spec.ts";
 import { getEndpointSpec } from "./get.spec.ts";
 import { deleteEndpointSpec } from "./delete.spec.ts";
+import { enqueueEndpointSpec } from "./enqueue.spec.ts";
 import { randomBytes } from "node:crypto";
 import { type Kv, openKv } from "@deno/kv";
 import type { AddressInfo } from "node:net";
@@ -39,4 +40,5 @@ describe("End-to-End tests for Deno server", () => {
   setEndpointSpec(testsDependencies);
   getEndpointSpec(testsDependencies);
   deleteEndpointSpec(testsDependencies);
+  enqueueEndpointSpec(testsDependencies);
 });
