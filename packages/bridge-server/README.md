@@ -164,6 +164,24 @@ The request body must be a JSON object:
   }
 }
 ```
+
+#### POST /atomic
+
+Perform multiple KV operations atomically.
+
+**Request Body:**
+
+The request body must be a JSON array of `AtomicOperationInput` objects.
+
+Example:
+```json
+[
+  { "name": "check", "key": "[\"users\", \"1\"]", "versionstamp": "00000000000000010000" },
+  { "name": "sum", "key": "[\"users\", \"1\", \"score\"]", "value": 10 },
+  { "name": "set", "key": "[\"users\", \"2\", 123n]", "value": { "type": "String", "data": "New User" } }
+]
+```
+
 #### Authentication
 
 If the server is configured with an `authToken`, all requests must include an `Authorization` header with the token value:
@@ -265,6 +283,14 @@ Enqueue a message into the Deno KV database.
 enqueue(value: SerializedKvValue, options?: EnqueueOptions): Promise<{ result: boolean | null; error: string | null }>
 ```
 
+#### `atomic(operations)`
+
+Perform multiple operations as a single atomic transaction.
+
+```ts
+atomic(operations: AtomicOperationInput[]): Promise<{ result: boolean | null; error: string | null }>
+```
+
 ### Type Definitions
 
 #### SerializedKvKey
@@ -289,6 +315,17 @@ A serialized KV entry is an object contains:
 - `key`: `SerializedKvKey`
 - `value`: `SerializedKvValue`
 - `versionstamp`: `string` - The version stamp of the entry
+
+#### AtomicOperationInput
+
+An object representing a single operation within an atomic transaction:
+
+- `name`: `"check" | "set" | "sum" | "min" | "max" | "delete" | "enqueue"`
+- `key`: `string` - A string containing a JavaScript expression representing a valid Deno KV key
+- `value`: `SerializedKvValue` or `number` (depending on operation)
+- `versionstamp`: `string | null` (required for `"check"`)
+- `expiresIn`: `number` (optional for `"set"`)
+- `options`: `EnqueueOptions` (optional for `"enqueue"`)
 
 #### EnqueueOptions
 

@@ -8,6 +8,7 @@ import {
     validateBrowseRequestParams,
     validateSetRequestParams,
     validateEnqueueRequest,
+    validateAtomicOperations,
 } from "../validation/main.ts";
 import type { Kv, KvEntry } from "@deno/kv";
 import { Hono } from 'hono/tiny';
@@ -119,6 +120,54 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         const { value, options } = await validateEnqueueRequest(await c.req.json(), kv)
         const result = await kv.enqueue(value, options)
         return c.json({ result: result.ok })
+    });
+
+    app.post("/atomic", async (c) => {
+        const atomicOperations = await validateAtomicOperations(await c.req.json(), kv)
+
+        let kvAtomicOperation = kv.atomic()
+
+        for (const operation of atomicOperations) {
+            switch (operation.name) {
+                case "check":
+                    kvAtomicOperation = kvAtomicOperation.check({
+                        key: operation.key,
+                        versionstamp: operation.versionstamp,
+                    })
+                    break;
+
+                case "sum":
+                    kvAtomicOperation = kvAtomicOperation.sum(operation.key, operation.value)
+                    break;
+
+                case "min":
+                    kvAtomicOperation = kvAtomicOperation.min(operation.key, operation.value)
+                    break;
+
+                case "max":
+                    kvAtomicOperation = kvAtomicOperation.max(operation.key, operation.value)
+                    break;
+
+                case "set":
+                    kvAtomicOperation = kvAtomicOperation.set(
+                        operation.key,
+                        operation.value,
+                        { expireIn: operation.expiresIn }
+                    )
+                    break;
+
+                case "delete":
+                    kvAtomicOperation = kvAtomicOperation.delete(operation.key)
+                    break
+
+                case "enqueue":
+                    kvAtomicOperation = kvAtomicOperation.enqueue(operation.value, operation.options)
+                    break
+            }
+        }
+
+        const { ok } = await kvAtomicOperation.commit()
+        return c.json({ result: ok })
     });
 
     app.get("/check", async (c) => {

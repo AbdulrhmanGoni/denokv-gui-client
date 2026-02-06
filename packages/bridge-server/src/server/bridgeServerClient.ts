@@ -1,4 +1,4 @@
-import { EnqueueRequestInput } from "../validation/main.ts";
+import { AtomicOperationInput, EnqueueRequestInput } from "../validation/main.ts";
 import type { SerializedKvEntry, SerializedKvKey, SerializedKvValue } from "../serialization/main.ts";
 
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
@@ -168,6 +168,19 @@ export class BridgeServerClient {
         return callBridgeServerRequest<boolean>({
             url: `${this.baseUrl}/enqueue`,
             body: { value, options },
+            method: "POST",
+            headers: this.headers,
+        })
+    }
+
+    /**
+     * Performs an atomic operation consisting of multiple checks and mutations.
+     * @param atomicOperations An array of atomic operations to perform
+     */
+    atomic(atomicOperations: AtomicOperationInput[]): CallBridgeServerReturn<boolean> {
+        return callBridgeServerRequest<boolean>({
+            url: `${this.baseUrl}/atomic`,
+            body: atomicOperations,
             method: "POST",
             headers: this.headers,
         })
