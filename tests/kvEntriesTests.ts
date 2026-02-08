@@ -8,7 +8,7 @@ export function kvEntriesTests() {
             hasText: testingKvStore.name
         }).dblclick({ position: { x: 10, y: 10 } })
 
-        await page.locator('button', { hasText: "Add Entry" }).click()
+        await page.locator('button', { hasText: "New" }).click()
 
         await page.locator("#key-editor").fill('["testing-kv-entry"]');
 
