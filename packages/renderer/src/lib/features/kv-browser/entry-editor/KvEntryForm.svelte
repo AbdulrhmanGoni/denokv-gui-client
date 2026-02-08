@@ -8,7 +8,7 @@
     import XIcon from "@lucide/svelte/icons/x";
     import ValueFileIcon from "@lucide/svelte/icons/file-braces";
     import KvEntryExpirationDate from "$lib/features/kv-browser/entry-editor/KvEntryExpirationDate.svelte";
-    import type { Snippet } from "svelte";
+    import type { Component, Snippet } from "svelte";
 
     type KvEntryFormProps = {
         defaultValue?: KvEntry["value"];
@@ -23,6 +23,8 @@
         onClose?: () => void;
         valueEditorIcon?: () => void;
         loading?: boolean;
+        submitButtonLabel?: string;
+        submitButtonIcon?: Component;
     };
 
     let {
@@ -73,9 +75,11 @@
             size="sm"
             onclick={submitEntry}
         >
-            Add
+            {props.submitButtonLabel ?? "Add"}
             {#if props.loading}
                 <LoaderIcon class="animate-spin" />
+            {:else if props.submitButtonIcon}
+                <props.submitButtonIcon />
             {:else}
                 <PlusIcon />
             {/if}
