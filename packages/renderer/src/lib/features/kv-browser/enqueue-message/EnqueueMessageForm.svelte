@@ -24,6 +24,7 @@
         keysIfUndeliveredEditorRef?: CodeJar;
         backoffScheduleEditorRef?: CodeJar;
         loading?: boolean;
+        submitButtonText?: string;
     };
 
     let {
@@ -102,7 +103,7 @@
             size="sm"
             onclick={enqueue}
         >
-            Enqueue
+            {props.submitButtonText ?? "Enqueue"}
             {#if props.loading}
                 <LoaderIcon class="size-4 animate-spin" />
             {:else}
