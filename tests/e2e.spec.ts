@@ -10,6 +10,7 @@ import path from 'node:path';
 import { kvStoresTests } from './kvStoresTests';
 import { kvEntriesTests } from './kvEntriesTests';
 import { filteringKvEntriesTests } from './filteringKvEntriesTests';
+import { atomicOperationsTests } from './atomicOperationsTests';
 
 process.env.PLAYWRIGHT_TEST = 'true';
 
@@ -89,3 +90,5 @@ test.describe('Kv Stores Tests', kvStoresTests)
 test.describe('Kv Entries Tests', kvEntriesTests)
 
 test.describe('Filtering Kv Entries Tests', filteringKvEntriesTests)
+
+test.describe('Atomic Operations Tests', atomicOperationsTests)
