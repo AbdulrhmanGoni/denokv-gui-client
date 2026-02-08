@@ -62,12 +62,17 @@
     </Button>
     <AtomicOperationsConstructor />
     <EnqueueMessage />
-    <Button size="sm" variant="secondary1" onclick={openLookUpKeyDialog}>
-      Look up Entry
+    <Button
+      class="gap-1"
+      size="sm"
+      variant="secondary1"
+      onclick={openLookUpKeyDialog}
+    >
+      Look Up
       <SearchIcon class="rotate-75" />
     </Button>
-    <Button size="sm" onclick={openAddKvEntryDialog}>
-      Add Entry
+    <Button class="gap-0.5" size="sm" onclick={openAddKvEntryDialog}>
+      New
       <PlusIcon />
     </Button>
   </div>

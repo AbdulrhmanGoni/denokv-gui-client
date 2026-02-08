@@ -44,7 +44,7 @@
             }),
         )}
     >
-        Enqueue Message
+        Enqueue
         <MessageSquarePlusIcon class="size-4" />
     </Dialog.Trigger>
     <Dialog.Content
