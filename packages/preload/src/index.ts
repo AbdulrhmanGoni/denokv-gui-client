@@ -40,6 +40,8 @@ const kvClient = {
     ipcRenderer.invoke('kvClient:get', key),
   enqueue: (value: EnqueueRequestInput["value"], options?: EnqueueRequestInput["options"]): Promise<TrycatchResult<boolean>> =>
     ipcRenderer.invoke('kvClient:enqueue', value, options),
+  atomic: (operations: AtomicOperationInput[]): Promise<TrycatchResult<boolean>> =>
+    ipcRenderer.invoke('kvClient:atomic', operations),
 };
 
 const bridgeServer = {

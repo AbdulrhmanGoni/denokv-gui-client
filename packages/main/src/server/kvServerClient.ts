@@ -78,6 +78,11 @@ export function enqueue(value: EnqueueRequestInput["value"], options?: EnqueueRe
     return serverClient.enqueue(value, options)
 }
 
+export function atomic(operations: AtomicOperationInput[]) {
+    const serverClient = getServerClient()
+    return serverClient.atomic(operations)
+}
+
 function kvKeyStringToSerializedForm(stringKvKey: string): { key: SerializedKvKey | null, error: string | null } {
     let key = null
     try {

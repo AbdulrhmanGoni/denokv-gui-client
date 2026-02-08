@@ -47,6 +47,8 @@ type BrowseReturn = import("@app/bridge-server").BrowseReturn;
 
 type EnqueueRequestInput = import("@app/bridge-server").EnqueueRequestInput;
 
+type AtomicOperationInput = import("@app/bridge-server").AtomicOperationInput;
+
 type DownloadUpdateProgressInfo = import("electron-updater").ProgressInfo
 
 type UpdateCheckResult = import("electron-updater").UpdateCheckResult
