@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [8.1.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.0.0...bridge-server@8.1.0) (2026-02-10)
+
+
+### Features
+
+* add support for Deno KV atomic transactions ([e2fbe4f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e2fbe4f6677d0309171e7ea0785002ece215aa1e))
+
+
+### Security
+
+* upgrade from a vulnerable "hono" version to "4.11.7" ([7360d35](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7360d359b30e379c13b8039e58f153dfc5ba9a0c))
+
 ## 8.0.0 (2026-02-05)
 
 
