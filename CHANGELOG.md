@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.17.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.16.1...v1.17.0) (2026-02-10)
+
+
+### Features
+
+* introduce atomic operations feature support ([35448aa](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/35448aa5343dc385cf1c459f44eb0f643ffa8385))
+
+
+### Bug Fixes
+
+* fix kv stores state conflict when switching between stores in kv entries browser ([4b9427b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/4b9427bb79abf029c0340043030f6a1abea05f5e))
+
+
+### User Interface Changes
+
+* simplify labels of action buttons in kv entries browser page ([4cc2b7a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/4cc2b7af71720b81f6c96ff7e9c72ad434ffa104))
+
 ## [1.16.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.16.0...v1.16.1) (2026-02-05)
 
 
