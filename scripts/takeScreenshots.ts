@@ -85,7 +85,7 @@ try {
     for (const file of readdirSync("./screenshots")) {
         if (file.endsWith(".temp.png")) {
             await sharp("./screenshots/" + file)
-                .png({ quality: 70 })
+                .png({ quality: 75 })
                 .toFile("./screenshots/" + file.replace(".temp", ""));
 
             rmSync("./screenshots/" + file)
@@ -107,6 +107,7 @@ async function takeScreenshots(page: Page, mode: Mode) {
         takeScreenshotOfBrowsingParamsDialog,
         takeScreenshotOfSavedBrowsingParamsDialog,
         takeScreenshotOfEnqueueMessageDialog,
+        takeScreenshotOfAtomicOperationsDialog,
     ]
 
     for (const step of steps) {
@@ -175,7 +176,7 @@ async function takeScreenshotOfEditKvEntryDialog(page: Page, mode: Mode) {
 }
 
 async function takeScreenshotOfAddKvEntryForm(page: Page, mode: Mode) {
-    await page.locator('button', { hasText: "Add Entry" }).click();
+    await page.locator('button', { hasText: "New" }).click();
     await page.waitForTimeout(100);
     await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
     await page.waitForTimeout(100);
@@ -185,7 +186,7 @@ async function takeScreenshotOfAddKvEntryForm(page: Page, mode: Mode) {
 }
 
 async function takeScreenshotOfLookupEntryDialog(page: Page, mode: Mode) {
-    await page.locator('button', { hasText: "Look up Entry" }).click();
+    await page.locator('button', { hasText: "Look Up" }).click();
     await page.waitForTimeout(100);
     await page.screenshot({ path: `./screenshots/LookupEntryDialog_${mode}.temp.png`, fullPage: true });
     await page.keyboard.press('Escape');
@@ -230,7 +231,7 @@ async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page, mode: Mode)
 }
 
 async function takeScreenshotOfEnqueueMessageDialog(page: Page, mode: Mode) {
-    await page.locator('button', { hasText: "Enqueue Message" }).click();
+    await page.locator('button', { hasText: "Enqueue" }).click();
     await page.waitForTimeout(100);
     const valueEditor = page.locator('div#value-editor')
     await valueEditor.fill('{task: "delete-files-task", files: ["file-id-1", "file-id-2", "file-id-3"]}')
@@ -264,5 +265,62 @@ async function takeScreenshotOfEnqueueMessageDialog(page: Page, mode: Mode) {
 
     await page.waitForTimeout(125);
     await page.screenshot({ path: `./screenshots/EnqueueMessageDialog_${mode}.temp.png`, fullPage: true });
+    await page.keyboard.press('Escape');
+}
+
+async function takeScreenshotOfAtomicOperationsDialog(page: Page, mode: Mode) {
+    await page.locator('button', { hasText: "Atomic" }).click();
+    await page.waitForTimeout(100);
+
+    // Add check operation
+    await page.locator('button', { hasText: "check" }).click();
+    const checkKeyEditor = page.locator('div#check-key-editor');
+    await checkKeyEditor.fill('["users", "abdulrhman"]');
+    await checkKeyEditor.press('Space');
+    await page.waitForTimeout(100);
+    await page.screenshot({ path: `./screenshots/CheckAtomicOperation_${mode}.temp.png`, fullPage: true });
+    await page.locator('button', { hasText: "Add Check" }).click();
+
+    // Add set operation
+    await page.locator('button', { hasText: /^set/ }).click();
+    await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
+    await page.locator('div[data-slot="select-item"]', { hasText: "Object" }).click();
+    const setKeyEditor = page.locator('div#key-editor');
+    await setKeyEditor.fill('["users", "abdulrhman"]');
+    await setKeyEditor.press('Space');
+    const setValueEditor = page.locator('div#value-editor');
+    await setValueEditor.fill('{name: "abdulrhman", title: "IM", rating: 2525}');
+    await setValueEditor.press('Space');
+    await page.waitForTimeout(100)
+    await page.locator('button', { hasText: "Add Set Operation" }).click();
+
+    // Add sum operation
+    await page.locator('button', { hasText: "sum" }).click();
+    const sumKeyEditor = page.locator('div#sum-key-editor');
+    await sumKeyEditor.fill('["users", "International Masters"]');
+    await sumKeyEditor.press('Space');
+    await page.locator('input#sum-value-input').fill('1');
+    await page.waitForTimeout(75);
+    await page.screenshot({ path: `./screenshots/SumAtomicOperation_${mode}.temp.png`, fullPage: true });
+    await page.locator('button', { hasText: "Add Sum" }).click();
+
+    // Add enqueue operation
+    await page.locator('button', { hasText: /^enqueue/ }).click();
+    const enqueueValueEditor = page.locator('div#value-editor');
+    await enqueueValueEditor.fill('{task: "register-fide-rating", value: {user: "abdulrhman", rating: 2525}}');
+    await enqueueValueEditor.press('Space');
+    await page.waitForTimeout(100)
+    await page.locator('button', { hasText: "Add Enqueue Operation" }).click();
+
+    // Add delete operation
+    await page.locator('button', { hasText: "delete" }).click();
+    const deleteKeyEditor = page.locator('div#delete-key-editor');
+    await deleteKeyEditor.fill('["users", "legacy", true]');
+    await deleteKeyEditor.press('Space');
+    await page.waitForTimeout(100)
+    await page.locator('button', { hasText: "Add Delete Operation" }).click();
+
+    await page.waitForTimeout(150)
+    await page.screenshot({ path: `./screenshots/AtomicOperationsDialog_${mode}.temp.png`, fullPage: true });
     await page.keyboard.press('Escape');
 }
