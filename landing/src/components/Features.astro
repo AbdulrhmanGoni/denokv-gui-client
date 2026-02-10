@@ -23,6 +23,12 @@ import EnqueueMessageBackoffScheduleOptionScreenshot_light from "../../../screen
 import EnqueueMessageBackoffScheduleOptionScreenshot_dark from "../../../screenshots/EnqueueMessageBackoffScheduleOption_dark.png";
 import EnqueueMessageKeysIfUndeliveredOptionScreenshot_light from "../../../screenshots/EnqueueMessageKeysIfUndeliveredOption_light.png";
 import EnqueueMessageKeysIfUndeliveredOptionScreenshot_dark from "../../../screenshots/EnqueueMessageKeysIfUndeliveredOption_dark.png";
+import AtomicOperationsDialogScreenshot_light from "../../../screenshots/AtomicOperationsDialog_light.png";
+import AtomicOperationsDialogScreenshot_dark from "../../../screenshots/AtomicOperationsDialog_dark.png";
+import CheckAtomicOperationScreenshot_light from "../../../screenshots/CheckAtomicOperation_light.png";
+import CheckAtomicOperationScreenshot_dark from "../../../screenshots/CheckAtomicOperation_dark.png";
+import SumAtomicOperationScreenshot_light from "../../../screenshots/SumAtomicOperation_light.png";
+import SumAtomicOperationScreenshot_dark from "../../../screenshots/SumAtomicOperation_dark.png";
 import FeatureCarousel from "./FeatureCarousel.astro";
 import Wave from "../assets/wave.svg";
 ---
@@ -189,6 +195,41 @@ import Wave from "../assets/wave.svg";
         <strong>keysIfUndelivered</strong> options supported.
       </p>
     </div>
+  </div>
+  <div class="background-gradient-ltr">
+    <Wave style="transform: translateY(-1px) rotate(180deg);" />
+  </div>
+</section>
+
+<section id="features-6" class="background-gradient-ltr">
+  <div class="container">
+    <div class="features-text">
+      <h2>Atomic Operations</h2>
+      <p>
+        Construct all <strong>atomic</strong> operations available in Deno KV API
+        right through the UI and perform transactions on your Deno KV databases with
+        ease.
+      </p>
+    </div>
+    <FeatureCarousel
+      images={[
+        {
+          lightSrc: AtomicOperationsDialogScreenshot_light.src,
+          darkSrc: AtomicOperationsDialogScreenshot_dark.src,
+          alt: "Atomic Operations Dialog screenshot",
+        },
+        {
+          lightSrc: CheckAtomicOperationScreenshot_light.src,
+          darkSrc: CheckAtomicOperationScreenshot_dark.src,
+          alt: "Check Atomic Operation screenshot",
+        },
+        {
+          lightSrc: SumAtomicOperationScreenshot_light.src,
+          darkSrc: SumAtomicOperationScreenshot_dark.src,
+          alt: "Sum Atomic Operation screenshot",
+        },
+      ]}
+    />
   </div>
 </section>
 
