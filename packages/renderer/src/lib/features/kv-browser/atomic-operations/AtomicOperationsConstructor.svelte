@@ -20,6 +20,8 @@
   import type { AtomicOperationInput } from "@app/bridge-server";
   import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
+  import { globalState } from "$lib/states/globalState.svelte";
+  import LoaderIcon from "@lucide/svelte/icons/loader";
 
   function getAtomicOperationsInOrder() {
     let orderedOperations: AtomicOperationInput[] = new Array(
@@ -39,6 +41,8 @@
       return;
     }
 
+    globalState.loadingOverlay.open = true;
+    globalState.loadingOverlay.text = "Committing Atomic Operations...";
     const orderedOperations = getAtomicOperationsInOrder();
     const response = await kvClient.atomic(orderedOperations);
     if (response.result) {
@@ -51,6 +55,8 @@
           : "The cause might be a failed 'check' operation",
       });
     }
+    globalState.loadingOverlay.open = false;
+    globalState.loadingOverlay.text = "";
   }
 
   let openAtomicOperationsFormState = $state(false);
@@ -122,19 +128,23 @@
           size="sm"
           variant="secondary2"
           onclick={commitAtomicOperations}
-          disabled={!$operations.length}
+          disabled={!$operations.length || globalState.loadingOverlay.open}
           class="gap-1 {$operations.length
             ? ''
             : 'cursor-not-allowed disabled:pointer-events-auto'}"
         >
           Commit
-          <CheckIcon class="size-4.5" />
+          {#if globalState.loadingOverlay.open}
+            <LoaderIcon class="size-4.5 animate-spin" />
+          {:else}
+            <CheckIcon class="size-4.5" />
+          {/if}
         </Button>
         <Button
           size="sm"
           variant="default"
           onclick={resetOperations}
-          disabled={!$operations.length}
+          disabled={!$operations.length || globalState.loadingOverlay.open}
           class="gap-1 {$operations.length
             ? ''
             : 'cursor-not-allowed disabled:pointer-events-auto'}"
