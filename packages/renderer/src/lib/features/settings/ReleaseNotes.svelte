@@ -1,5 +1,5 @@
 <script lang="ts">
-    import * as AlertDialog from "$lib/ui/shadcn/alert-dialog/index.js";
+    import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
     import Separator from "$lib/ui/shadcn/separator/separator.svelte";
     import NotesIcon from "@lucide/svelte/icons/notepad-text";
     import XIcon from "@lucide/svelte/icons/x";
@@ -9,50 +9,63 @@
 </script>
 
 {#if newUpdate.updateInfo.releaseNotes}
-    <AlertDialog.Root>
-        <AlertDialog.Trigger
+    <Dialog.Root>
+        <Dialog.Trigger
             class={buttonVariants({ size: "sm", variant: "outline" })}
         >
             See Release Notes
             <NotesIcon class="size-4" />
-        </AlertDialog.Trigger>
-        <AlertDialog.Content class="max-w-3xl! w-full p-3 gap-0">
+        </Dialog.Trigger>
+        <Dialog.Content class="max-w-3xl! w-full py-1.5 px-3 gap-0">
             <h1 class="flex items-center gap-2 text-2xl font-bold">
                 <NotesIcon class="size-6" />
                 Release Notes
-                <AlertDialog.Cancel
-                    class="ms-auto bg-transparent! w-fit border-0 p-1!"
-                >
-                    <XIcon class="size-5" />
-                </AlertDialog.Cancel>
             </h1>
-            <Separator class="my-3" />
-            <div id="release-notes" class="max-h-[600px] overflow-auto">
+            <p class="text-muted-foreground">
+                See that changes you are going to get with this update
+            </p>
+            <Separator class="my-2" />
+            <div id="release-notes" class="max-h-[500px] overflow-auto">
                 {#if typeof newUpdate.updateInfo.releaseNotes == "string"}
                     {@render ReleaseNotes(
                         newUpdate.updateInfo.version,
                         newUpdate.updateInfo.releaseNotes,
+                        true,
                     )}
                 {:else}
-                    <div class="space-y-6">
-                        {#each newUpdate.updateInfo.releaseNotes as release}
+                    <div>
+                        {#each newUpdate.updateInfo.releaseNotes as release, i}
                             <div>
                                 {@render ReleaseNotes(
                                     release.version,
                                     release.note,
+                                    newUpdate.updateInfo.version ==
+                                        release.version,
                                 )}
                             </div>
+                            {#if i < newUpdate.updateInfo.releaseNotes.length - 1}
+                                <Separator class="my-3" />
+                            {/if}
                         {/each}
                     </div>
                 {/if}
             </div>
-        </AlertDialog.Content>
-    </AlertDialog.Root>
+        </Dialog.Content>
+    </Dialog.Root>
 {/if}
 
-{#snippet ReleaseNotes(version: string, notes: string | null)}
+{#snippet ReleaseNotes(
+    version: string,
+    notes: string | null,
+    isLatest: boolean,
+)}
     <h2 class="flex gap-1.5 items-center text-2xl mb-2 font-extrabold">
         v{version}
+        {#if isLatest}
+            <span class="text-base text-blue-600 dark:text-blue-500 font-bold">
+                (latest)
+            </span>
+        {/if}
     </h2>
     {@html notes?.replaceAll("<a href=", '<a target="_blank" href=')}
 {/snippet}
