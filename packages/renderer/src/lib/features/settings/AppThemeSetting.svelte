@@ -2,18 +2,12 @@
   import SunIcon from "@lucide/svelte/icons/sun";
   import MoonIcon from "@lucide/svelte/icons/moon";
   import MonitorCogIcon from "@lucide/svelte/icons/monitor-cog";
-  import { setMode, userPrefersMode } from "mode-watcher";
+  import { setMode, userPrefersMode, type UserPrefersMode } from "mode-watcher";
   import * as Tabs from "$lib/ui/shadcn/tabs/index.js";
   import PaletteIcon from "@lucide/svelte/icons/palette";
 
-  function onThemeChange(mode: "dark" | "light" | "system") {
-    return function (
-      e: MouseEvent & {
-        currentTarget: EventTarget & HTMLButtonElement;
-      },
-    ) {
-      setMode(mode);
-    };
+  function onThemeChange(mode: UserPrefersMode["current"]) {
+    return () => setMode(mode);
   }
 </script>
 
