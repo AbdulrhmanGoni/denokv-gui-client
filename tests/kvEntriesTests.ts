@@ -20,6 +20,46 @@ export function kvEntriesTests() {
         await expect(page.locator('td', { hasText: "undefined" })).toBeVisible();
     })
 
+    test("Prevent Overwriting an already existing Kv Entry", async ({ page }) => {
+        const key = [`prevent-overwrite-${Date.now()}`];
+
+        await page.evaluate(async (key) => {
+            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            return await kvClient.set(key, { type: "String", data: "test" })
+        }, key);
+
+        await page.locator('button', { hasText: "New" }).click()
+        await page.locator("#key-editor").fill(JSON.stringify(key));
+        await page.locator('#overwrite').uncheck();
+        await page.locator('button[data-slot="select-trigger"]', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
+        await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
+        await page.locator('input[type="text"]').fill("will-not-be-set-because-overwrite-is-unchecked");
+        await page.locator('button', { hasText: "Add" }).click();
+        await page.keyboard.press("Escape");
+
+        const response = await page.evaluate(async (key) => {
+            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            return await kvClient.get(key)
+        }, key);
+
+        expect(response).toEqual({
+            result: {
+                key,
+                value: {
+                    type: "String",
+                    data: "test",
+                },
+                versionstamp: expect.any(String),
+            },
+            error: null,
+        });
+
+        await page.evaluate(async (key) => {
+            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            await kvClient.deleteKey(key)
+        }, key);
+    })
+
     test("Update a Kv Entry", async ({ page }) => {
         await page.locator('td', { hasText: "testing-kv-entry" }).dblclick()
 

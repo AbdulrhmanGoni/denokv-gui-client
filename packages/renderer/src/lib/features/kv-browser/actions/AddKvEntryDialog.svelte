@@ -23,19 +23,21 @@
     key: string,
     value: KvEntry["value"],
     expires: number,
+    overwrite: boolean,
   ) {
     addingEntry = true;
-    const res = await kvClient.set(
-      key,
-      value,
-      isNaN(expires) ? undefined : { expires },
-    );
 
-    if (res.error) {
-      toast.error("Failed to add the entry", { description: res.error });
-    } else {
+    const options: { expires?: number; overwrite?: boolean } = { overwrite };
+    if (!isNaN(expires)) options.expires = expires;
+
+    const res = await kvClient.set(key, value, options);
+    if (res.result) {
       toast.success("The entry was added successfully");
       closeAddKvEntryDialog();
+    } else {
+      toast.error("Failed to add the entry", {
+        description: res.error ?? undefined,
+      });
     }
 
     addingEntry = false;
@@ -56,6 +58,7 @@
       onSubmit={addEntry}
       loading={addingEntry}
       onClose={closeAddKvEntryDialog}
+      showOverwriteOption
     />
   </Dialog.Content>
 </Dialog.Root>

@@ -9,6 +9,8 @@
     import ValueFileIcon from "@lucide/svelte/icons/file-braces";
     import KvEntryExpirationDate from "$lib/features/kv-browser/entry-editor/KvEntryExpirationDate.svelte";
     import type { Component, Snippet } from "svelte";
+    import Checkbox from "$lib/ui/shadcn/checkbox/checkbox.svelte";
+    import Label from "$lib/ui/shadcn/label/label.svelte";
 
     type KvEntryFormProps = {
         defaultValue?: KvEntry["value"];
@@ -19,12 +21,14 @@
             key: string,
             value: KvEntry["value"],
             expires: number,
+            overwrite: boolean,
         ) => void;
         onClose?: () => void;
         valueEditorIcon?: () => void;
         loading?: boolean;
         submitButtonLabel?: string;
         submitButtonIcon?: Component;
+        showOverwriteOption?: boolean;
     };
 
     let {
@@ -42,12 +46,14 @@
     };
     let kvValueEditorValue: KvEntry["value"] = $state(defaultValue);
     let kvEntryExpirationDateValue: number = $state(NaN);
+    let overwrite = $state(true);
 
     async function submitEntry() {
         props.onSubmit(
             kvKeyCodeEditor!?.toString(),
             $state.snapshot(kvValueEditorValue),
             kvEntryExpirationDateValue,
+            overwrite,
         );
     }
 </script>
@@ -58,6 +64,17 @@
         <Separator class="my-2" />
     {/if}
     <KvKeyEditor bind:jar={kvKeyCodeEditor} />
+    {#if props.showOverwriteOption}
+        <div class="flex items-center space-x-2 mt-2 *:cursor-pointer">
+            <Checkbox id="overwrite" bind:checked={overwrite} />
+            <Label
+                for="overwrite"
+                class="text-base font-medium {overwrite ? '' : 'opacity-70'}"
+            >
+                Overwrite existing entry with this key?
+            </Label>
+        </div>
+    {/if}
     <Separator class="my-2" />
     <KvValueEditor
         bind:editorValue={kvValueEditorValue}
