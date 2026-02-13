@@ -84,12 +84,14 @@ export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams 
 type ValidSetRequestParams = {
     key: KvKey;
     expires?: number;
+    overwrite?: boolean;
 }
 /**
  * Parse and validate query parameters of `/set` endpoint which are:
  *
  * - `key`: required parameter (will be parsed using `deserializeKvKey`)
  * - `expires`: optional parameter which must be a number in milliseconds when provided.
+ * - `overwrite`: optional parameter which must be a boolean when provided.
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
@@ -114,7 +116,10 @@ export function validateSetRequestParams(url: URL): ValidSetRequestParams {
         );
     }
 
-    return { key, expires };
+    const overwriteOption = url.searchParams.get("overwrite");
+    const overwrite = overwriteOption ? overwriteOption !== "false" : undefined;
+
+    return { key, expires, overwrite };
 }
 
 export type EnqueueRequestInput = {

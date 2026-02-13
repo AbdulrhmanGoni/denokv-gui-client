@@ -77,6 +77,7 @@ export type BrowsingOptions = {
 
 export type SetKeyOptions = {
     expires?: number;
+    overwrite?: boolean;
 }
 
 export type BrowseReturn = {
@@ -119,7 +120,7 @@ export class BridgeServerClient {
      * Creates or updates a Deno KV entry.
      * @param key The key to set
      * @param value The value to set (must be in `SerializedKvValue` type)
-     * @param options Optional settings like expiration time
+     * @param options Optional settings like expiration time and overwrite behavior
      */
     set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<boolean> {
         return callBridgeServerRequest<boolean>({

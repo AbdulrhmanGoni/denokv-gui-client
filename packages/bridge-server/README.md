@@ -115,6 +115,7 @@ Create or update a KV entry.
 |-----------|------|----------|-------------|
 | `key`     | `string` | Yes | The serialized KV key (URL-encoded JSON array) |
 | `expires` | `number` | No | Expiration timestamp in milliseconds |
+| `overwrite` | `boolean` | No | Whether to overwrite the value of the key if it already exists. Defaults to `true` unless explicitly set to `false` |
 
 **Request Body:**
 
@@ -266,6 +267,7 @@ set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Pr
 | Option | Type | Description |
 |--------|------|-------------|
 | `expires` | `number` | Expiration timestamp in milliseconds |
+| `overwrite` | `boolean` | Whether to overwrite the value of the key if it already exists. Defaults to `true` unless explicitly set to `false` |
 
 #### `delete(key)`
 

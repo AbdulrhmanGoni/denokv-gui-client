@@ -96,11 +96,24 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
     });
 
     app.put("/set", async (c) => {
-        const { key, expires } = validateSetRequestParams(new URL(c.req.url))
-
+        const { key, expires, overwrite } = validateSetRequestParams(new URL(c.req.url))
         const validValue = await deserializeKvValue(await c.req.json(), kv)
-        const result = await kv.set(key, validValue, { expireIn: expires })
-        return c.json({ result: result.ok })
+
+        if (overwrite === false) {
+            const result = await kv.atomic()
+                .check({ key, versionstamp: null })
+                .set(key, validValue, { expireIn: expires })
+                .commit()
+
+            if (result.ok) {
+                return c.json({ result: result.ok })
+            } else {
+                return c.json({ error: "The Kv Entry is already existing." }, 400)
+            }
+        } else {
+            const result = await kv.set(key, validValue, { expireIn: expires })
+            return c.json({ result: result.ok })
+        }
     });
 
     app.delete("/delete", async (c) => {

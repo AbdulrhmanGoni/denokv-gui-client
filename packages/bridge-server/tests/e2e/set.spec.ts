@@ -38,6 +38,17 @@ export function setEndpointSpec({ bridgeServerClient, kv }: TestDependencies) {
 
             expect(Object.getPrototypeOf(getRes.value).constructor.name).toMatch(/KvU64/g)
         });
+
+        it("should not overwrite existing entry if overwrite is false", async () => {
+            const key = ["e2e", "set", "no-overwrite", `${Date.now()}`];
+            await bridgeServerClient.set(key, { type: "String", data: "initial" });
+
+            const res = await bridgeServerClient.set(key, { type: "String", data: "new" }, { overwrite: false });
+            expect(res.error).toBe("The Kv Entry is already existing.");
+            expect(res.result).toBeNull();
+            const getRes = await kv.get(key);
+            expect(getRes.value).toBe("initial");
+        });
     });
 }
 
