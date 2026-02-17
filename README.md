@@ -145,7 +145,7 @@ To run the tests, compile the app first, and then run:
 ```
 
 > [!NOTE]
-> A testing SQLite database file will be created in the root directory of the project once you run the migration command for the first time.
+> A testing SQLite database file will be created in the root directory of the project once you run the test command for the first time.
 
 [releases-page]: https://github.com/AbdulrhmanGoni/denokv-gui-client/releases
 
