@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [8.1.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.0.0...bridge-server@8.1.0) (2026-02-10)
+## 8.2.0 (2026-02-19)
+
+
+### Features
+
+* add "overwrite" option to `set` operation as `true` by default ([f267b34](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f267b343a450ffbb28adc31d1877ba76f0605503))
+
+## 8.1.0 (2026-02-10)
 
 
 ### Features
