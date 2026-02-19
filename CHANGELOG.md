@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.18.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.17.0...v1.18.0) (2026-02-19)
+
+
+### Features
+
+* enable preventing "Add Kv Entry" action from overwriting existing entries ([feccae2](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/feccae266c6cf9b8b680e6e57165cc2e1bb49893))
+
+
+### Enhancements
+
+* show loading state while Atomic Operations are being comitted ([f09fe71](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f09fe71ab4168ded29608c144d9566a38529c2bd))
+
+
+### User Interface Changes
+
+* make some text a bit darker in light mode for better readability ([33b55c3](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/33b55c3e516ec70efb49e1a37563527a2b917d97))
+* refine release notes presentation and layout ([f6b38db](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f6b38db806d6ab0f7108d9f303c4307ed353135a))
+
 ## [1.17.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.16.1...v1.17.0) (2026-02-10)
 
 
