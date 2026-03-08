@@ -27,12 +27,8 @@
 
   const table = createKvEntriesTable();
 
-  function close() {
-    closeKvStore();
-  }
-
   onDestroy(() => {
-    close();
+    closeKvStore();
     resetEntriesState();
   });
 
