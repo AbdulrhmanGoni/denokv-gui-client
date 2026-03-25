@@ -13,12 +13,15 @@
   } from "$lib/states/settingsState.svelte";
   import { onMount } from "svelte";
   import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
+  import { handleKeyboardShortcuts } from "$lib/helpers/keyboardShortcuts";
 
   onMount(async () => {
     await loadSettings();
     if (settingsState.autoCheckForUpdate) {
       startCheckingForUpdates();
     }
+
+    document.addEventListener("keydown", handleKeyboardShortcuts);
   });
 </script>
 
