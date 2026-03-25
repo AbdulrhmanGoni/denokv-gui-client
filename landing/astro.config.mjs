@@ -14,7 +14,9 @@ export default defineConfig({
     devToolbar: {
         enabled: false
     },
-    base: `/denokv-gui-client`
+    base: `/denokv-gui-client`,
+    site: `https://abdulrhmangoni.github.io`,
+    trailingSlash: `always`
 });
 
 function lastModificationDateAutoUpdator() {
