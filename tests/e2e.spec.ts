@@ -61,6 +61,7 @@ export const test = base.extend<TestFixtures>({
     });
 
     await page.waitForLoadState('load');
+    page.setDefaultTimeout(process.env.CI ? 9000 : 3000)
     await use(page);
   },
 });
