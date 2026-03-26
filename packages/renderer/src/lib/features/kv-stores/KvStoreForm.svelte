@@ -7,6 +7,7 @@
   import * as Select from "$lib/ui/shadcn/select";
   import type { Snippet } from "svelte";
   import { Checkbox } from "$lib/ui/shadcn/checkbox/index.js";
+  import * as InputGroup from "$lib/ui/shadcn/input-group";
 
   type KvStoreFormProps = {
     defaultValues?: Partial<CreateKvStoreInput>;
@@ -35,9 +36,20 @@
   }: KvStoreFormProps = $props();
 
   let localKvDirectory = $state(
-    defaultValues?.type == "local"
-      ? defaultValues?.url?.replace(/kv.sqlite3$/gi, "")
+    defaultValues?.type == "local" && defaultValues?.url
+      ? defaultValues.url.slice(
+          0,
+          defaultValues.url.lastIndexOf("/") + 1 || undefined,
+        )
       : "",
+  );
+  let localKvFileName = $state(
+    defaultValues?.type == "local" && defaultValues?.url
+      ? defaultValues.url.slice(defaultValues.url.lastIndexOf("/") + 1)
+      : "kv.sqlite3",
+  );
+  let localKvUrl = $derived(
+    localKvDirectory.replace(/\/+$/, "") + "/" + localKvFileName,
   );
   let replaceExisting = $state(defaultValues?.replaceExisting ?? false);
   let openedStoreType: KvStore["type"] | undefined = $state(
@@ -127,24 +139,52 @@
     </p>
   </div>
   {#if isLocalStore}
-    <div class="space-y-1.5">
-      <Label for="url">Kv Store Directory (absolute path)</Label>
-      <div class="flex gap-2 items-center">
+    <input type="hidden" name="url" value={localKvUrl} />
+    <div class="flex gap-2">
+      <div class="space-y-1.5 flex-2">
+        <Label for="localKvDirectory" class="gap-1">
+          Kv Store Directory
+          <span class="font-normal text-muted-foreground">(absolute path)</span>
+        </Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            type="text"
+            id="localKvDirectory"
+            required
+            disabled={isLoading}
+            placeholder="/path/to/directory/"
+            class="flex-1"
+            bind:value={localKvDirectory}
+          />
+          <InputGroup.Addon align="inline-end">
+            <InputGroup.Button
+              onclick={pickDirectory}
+              variant="default"
+              disabled={isLoading}
+            >
+              Pick
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup.Root>
+        <p class="text-muted-foreground text-sm">
+          The directory of your local Deno KV store database file.
+        </p>
+      </div>
+      <div class="space-y-1.5 flex-1">
+        <Label for="localKvFileName">DB File Name</Label>
         <Input
           type="text"
-          id="url"
-          name="url"
+          id="localKvFileName"
           required
           disabled={isLoading}
-          placeholder="/path/to/directory"
-          class="flex-1"
-          bind:value={localKvDirectory}
+          placeholder="kv.sqlite3"
+          bind:value={localKvFileName}
         />
-        <Button onclick={pickDirectory}>Pick Directory</Button>
+        <p class="text-muted-foreground text-sm">
+          Default is
+          <code class="font-mono bg-muted px-1 py-0.5 rounded">kv.sqlite3</code>
+        </p>
       </div>
-      <p class="text-muted-foreground text-sm">
-        Select the directory where you want to create your local Deno KV store.
-      </p>
     </div>
     <div class="items-top flex gap-x-2 my-2">
       <Checkbox
@@ -160,10 +200,9 @@
           Replace Existing?
         </Label>
         <p class="text-sm text-muted-foreground">
-          If there is already existing Deno kv database (<code
-            class="font-mono bg-muted px-1 py-0.5 rounded">kv.sqlite3</code
-          >
-          file) in the picked directory, replace it with a new empty database file.
+          If there is already an existing Deno kv database file with the same
+          name in the picked directory, replace it with a new empty database
+          file.
         </p>
       </div>
     </div>

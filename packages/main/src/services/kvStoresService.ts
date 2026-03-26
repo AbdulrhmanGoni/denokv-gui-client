@@ -8,11 +8,8 @@ import { deadline } from '@std/async';
 import { clearSavedParamsQuery } from '../db/browsingParamsQueries.js';
 
 export async function create(input: CreateKvStoreInput): Promise<boolean> {
-    if (input.type == "local") {
-        input.url = path.join(input.url, "kv.sqlite3")
-        if (input.replaceExisting || !existsSync(input.url)) {
-            await writeFile(input.url, "");
-        }
+    if (input.type == "local" && (input.replaceExisting || !existsSync(input.url))) {
+        await writeFile(input.url, "");
     }
 
     const result = insertQuery.run(
@@ -29,16 +26,14 @@ export async function create(input: CreateKvStoreInput): Promise<boolean> {
 
 export async function update(kvStore: KvStore, changes: EditKvStoreInput): Promise<boolean> {
     if (kvStore.type == "local" && changes.url && !changes.type) {
-        const newKvFilePath = await relocateLocalKvStore(kvStore, changes.url)
-        changes.url = newKvFilePath
+        await relocateLocalKvStore(kvStore, changes.url)
     }
 
     if (changes.type == "local" && changes.url) {
-        if (!existsSync(changes.url)) {
-            await mkdir(changes.url, { recursive: true })
+        const dir = path.dirname(changes.url)
+        if (!existsSync(dir)) {
+            await mkdir(dir, { recursive: true })
         }
-
-        changes.url = path.join(changes.url, "kv.sqlite3")
 
         if (!existsSync(changes.url)) {
             await writeFile(changes.url, "");
@@ -173,17 +168,16 @@ export async function testKvStoreConnection(kvStore: TestKvStoreParams): Promise
     }
 }
 
-async function relocateLocalKvStore(kvStore: KvStore, newDir: string) {
+async function relocateLocalKvStore(kvStore: KvStore, newFilePath: string) {
+    const newDir = path.dirname(newFilePath)
     await mkdir(newDir, { recursive: true })
 
-    const newKvFilePath = path.join(newDir, "kv.sqlite3")
-    await rename(kvStore.url, newKvFilePath)
+    await rename(kvStore.url, newFilePath)
 
-    const oldDir = kvStore.url.replace(/kv.sqlite3$/gi, "")
+    const oldDir = path.dirname(kvStore.url)
+    const oldFileName = path.basename(kvStore.url)
     await Promise.all([
-        rename(path.join(oldDir, "kv.sqlite3-wal"), path.join(newDir, "kv.sqlite3-wal")),
-        rename(path.join(oldDir, "kv.sqlite3-shm"), path.join(newDir, "kv.sqlite3-shm"))
+        rename(path.join(oldDir, `${oldFileName}-wal`), path.join(newDir, `${path.basename(newFilePath)}-wal`)),
+        rename(path.join(oldDir, `${oldFileName}-shm`), path.join(newDir, `${path.basename(newFilePath)}-shm`))
     ]).catch(() => null)
-
-    return newKvFilePath
 }
