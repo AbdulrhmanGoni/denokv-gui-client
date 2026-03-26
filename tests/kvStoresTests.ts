@@ -22,7 +22,7 @@ export function kvStoresTests() {
         const nameInput = page.locator("input#name");
         const typeSelectButton = page.locator('button', { hasText: "Select Type" })
         const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
-        const urlInput = page.locator("input#url");
+        const localKvDirectoryInput = page.locator("input#localKvDirectory");
         const submitButton = page.locator('button[type=submit]');
 
         // Create the first new kv store
@@ -30,7 +30,7 @@ export function kvStoresTests() {
         await nameInput.fill(testingKvStore.name);
         await typeSelectButton.click();
         await localTypeSelectItem.click();
-        await urlInput.fill(testingKvStore.path);
+        await localKvDirectoryInput.fill(testingKvStore.path);
         await submitButton.click();
 
         const iconLocator = page.locator("svg.lucide-hard-drive")
@@ -47,7 +47,7 @@ export function kvStoresTests() {
         await nameInput.fill(anotherNewKvStore.name);
         await typeSelectButton.click();
         await localTypeSelectItem.click();
-        await urlInput.fill(anotherNewKvStore.path);
+        await localKvDirectoryInput.fill(anotherNewKvStore.path);
         await submitButton.click();
 
         const anotherNewKvStoreCard = page.locator('#kv-stores-grid > div', {
