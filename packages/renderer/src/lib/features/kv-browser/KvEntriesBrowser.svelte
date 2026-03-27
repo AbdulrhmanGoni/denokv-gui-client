@@ -17,6 +17,7 @@
   import {
     createKvEntriesTable,
     fetchEntries,
+    fetchSavedDefaultBrowsingParams,
     kvEntriesState,
     resetEntriesState,
   } from "$lib/states/kvEntriesState.svelte";
@@ -36,7 +37,10 @@
     resetEntriesState();
   });
 
-  onMount(fetchEntries);
+  onMount(async () => {
+    await fetchSavedDefaultBrowsingParams();
+    await fetchEntries();
+  });
 </script>
 
 <div class="space-y-2 flex flex-col justify-center h-full">
