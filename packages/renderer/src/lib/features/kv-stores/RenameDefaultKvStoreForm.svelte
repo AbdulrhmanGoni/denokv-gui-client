@@ -46,7 +46,10 @@
   }
 </script>
 
-<Dialog.Root open>
+<Dialog.Root
+  open={!!kvStoresState.renameDefaultKvStore}
+  onOpenChange={(open) => !open && (kvStoresState.renameDefaultKvStore = null)}
+>
   <Dialog.Content class="max-w-2xl w-full p-3 gap-0">
     <form class="flex flex-col gap-4 overflow-hidden" onsubmit={submitHandler}>
       <h2 class="text-xl font-bold flex gap-2 items-center">
