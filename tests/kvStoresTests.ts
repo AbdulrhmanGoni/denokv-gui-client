@@ -217,4 +217,58 @@ export function kvStoresTests() {
         })
         await expect(trailingSlashStoreCard).toBeVisible();
     });
+
+    test('Create a local Kv Store with "replace existing" option', async ({ page }) => {
+        const hardDriveIcon = page.locator("svg.lucide-hard-drive")
+        await page.locator('#kv-stores-grid > div', {
+            has: hardDriveIcon,
+            hasText: customFileName
+        }).dblclick({ position: { x: 10, y: 10 } });
+
+        const testEntryKey = "should-be-deleted-after-replacing-the-kv-store"
+        await page.evaluate(async (key) => {
+            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            await kvClient.set([key], {
+                type: "String",
+                data: "Should be deleted after replacing the current kv store with a new fresh one",
+            })
+        }, testEntryKey);
+        const backButton = page.locator('button svg.lucide-arrow-left-from-line')
+        await backButton.click()
+
+        const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
+        const nameInput = page.locator("input#name");
+        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
+        const localKvDirectoryInput = page.locator("input#localKvDirectory");
+        const localKvFileNameInput = page.locator("input#localKvFileName");
+        const replaceExistingCheckbox = page.locator('#replaceExisting');
+        const submitButton = page.locator('button[type=submit]');
+
+        await addKvStoreButton.click();
+        await nameInput.fill("Replace Existing Store");
+        await typeSelectButton.click();
+        await localTypeSelectItem.click();
+        await localKvDirectoryInput.fill(testingKvStore.path);
+        await localKvFileNameInput.fill(customFileName);
+        await replaceExistingCheckbox.check();
+        await submitButton.click();
+
+        const replaceStoreCard = page.locator('#kv-stores-grid > div', {
+            has: hardDriveIcon,
+            hasText: "Replace Existing Store"
+        })
+        await expect(replaceStoreCard).toBeVisible();
+        await expect(replaceStoreCard).toHaveText(new RegExp(customFileName, "i"));
+
+        await replaceStoreCard.dblclick({ position: { x: 10, y: 10 } });
+
+        const deletedEntryResponse = await page.evaluate(async (key) => {
+            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            return await kvClient.get([key])
+        }, testEntryKey);
+        expect(deletedEntryResponse).toEqual({ result: null, error: 'Entry not found' });
+
+        await backButton.click()
+    });
 }
