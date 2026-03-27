@@ -14,6 +14,7 @@
   import { onMount } from "svelte";
   import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
   import { handleKeyboardShortcuts } from "$lib/helpers/keyboardShortcuts";
+  import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
 
   onMount(async () => {
     await loadSettings();
@@ -28,14 +29,19 @@
 <main
   class="max-w-7xl w-full mx-auto px-3 flex flex-col min-h-screen justify-center"
 >
-  <Header />
-  <div class="h-[600px]">
-    {#if kvStoresState.openedStore}
-      <KvEntriesBrowser />
-    {:else}
-      <KvStoresManagement />
-    {/if}
-  </div>
+  <Tooltip.Provider
+    delayDuration={0}
+    disabled={metadata.environment == "testing"}
+  >
+    <Header />
+    <div class="h-[600px]">
+      {#if kvStoresState.openedStore}
+        <KvEntriesBrowser />
+      {:else}
+        <KvStoresManagement />
+      {/if}
+    </div>
+  </Tooltip.Provider>
   <Toaster
     richColors
     duration={metadata.environment == "testing" ? 1 : undefined}

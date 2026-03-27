@@ -7,7 +7,6 @@
   import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
   import { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
   import type { TooltipTriggerProps } from "bits-ui";
-  import { metadata } from "@app/preload";
 
   type Props = {
     children: Snippet;
@@ -29,23 +28,18 @@
   }: Props = $props();
 </script>
 
-<Tooltip.Provider
-  delayDuration={0}
-  disabled={metadata.environment == "testing"}
->
-  <Tooltip.Root>
-    <Tooltip.Trigger
-      {...restProps}
-      class={buttonVariants({ variant, className, size })}
-    >
-      {@render children()}
-    </Tooltip.Trigger>
-    <Tooltip.Content class={tooltipContentClasses}>
-      {#if typeof tooltipContent === "string"}
-        {tooltipContent}
-      {:else}
-        {@render tooltipContent()}
-      {/if}
-    </Tooltip.Content>
-  </Tooltip.Root>
-</Tooltip.Provider>
+<Tooltip.Root>
+  <Tooltip.Trigger
+    {...restProps}
+    class={buttonVariants({ variant, className, size })}
+  >
+    {@render children()}
+  </Tooltip.Trigger>
+  <Tooltip.Content class={tooltipContentClasses}>
+    {#if typeof tooltipContent === "string"}
+      {tooltipContent}
+    {:else}
+      {@render tooltipContent()}
+    {/if}
+  </Tooltip.Content>
+</Tooltip.Root>
