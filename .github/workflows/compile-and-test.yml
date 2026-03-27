@@ -46,6 +46,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Run typecheck
+        run: npm run typecheck
+
       - name: Run bridge server tests
         working-directory: packages/bridge-server
         run: npm run test
