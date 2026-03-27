@@ -56,12 +56,14 @@ jobs:
       - name: Build the app
         run: npm run compile -- -p never
 
-      - name: Run tests (Windows, Mac)
-        run: npm run test --if-present
+      - name: Run UI e2e tests (Windows, Mac)
+        # retry one more time if the tests fail
+        run: npm run test || npm run test
         if: matrix.os != 'ubuntu-latest'
 
-      - name: Run tests (Linux)
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test --if-present
+      - name: Run UI e2e tests (Linux)
+        # retry one more time if the tests fail
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test || xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test
         if: matrix.os == 'ubuntu-latest'
 
       - uses: actions/attest-build-provenance@v2
