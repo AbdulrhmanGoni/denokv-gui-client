@@ -271,4 +271,65 @@ export function kvStoresTests() {
 
         await backButton.click()
     });
+
+    test('Filter Kv Stores by type', async ({ page }) => {
+        const remoteButton = page.getByRole('button', { name: 'Remote', exact: true });
+        const localButton = page.getByRole('button', { name: 'Local', exact: true });
+        const bridgeButton = page.getByRole('button', { name: 'Bridge', exact: true });
+        const defaultButton = page.getByRole('button', { name: 'Default', exact: true });
+
+        const remoteStore = page.locator('#kv-stores-grid > div', { hasText: 'Remote Test Store' });
+        const bridgeStore = page.locator('#kv-stores-grid > div', { hasText: 'Bridge Test Store' });
+        const localStore = page.locator('#kv-stores-grid > div', { hasText: 'Trailing Slash Store' });
+
+        // Select Remote filter
+        await remoteButton.click();
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).not.toBeVisible();
+
+        // Select Remote + Bridge filter
+        await bridgeButton.click();
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).toBeVisible();
+        await expect(localStore).not.toBeVisible();
+
+        // Unselect remote and bridge (0 filters selected)
+        await remoteButton.click();
+        await bridgeButton.click();
+
+        // All should be visible, because no filters are selected
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).toBeVisible();
+        await expect(localStore).toBeVisible();
+
+        // Select Local filter
+        await localButton.click();
+        await expect(remoteStore).not.toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).toBeVisible();
+
+        // Deselect local filter
+        await localButton.click();
+
+        // Select Default filter
+        await defaultButton.click();
+        await expect(remoteStore).not.toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).not.toBeVisible();
+
+        // Click Clear filters if "No matching" is displayed, else unselect default filter
+        const clearButton = page.locator('button', { hasText: 'Clear filters' });
+        if (await clearButton.isVisible()) {
+            await clearButton.click();
+        } else {
+            await defaultButton.click();
+        }
+
+        // All should be visible again after clearing filters 
+        // or after unselecting default filter (which was the only filter selected in the previous step)
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).toBeVisible();
+        await expect(localStore).toBeVisible();
+    });
 }
