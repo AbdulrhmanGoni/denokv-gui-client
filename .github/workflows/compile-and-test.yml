@@ -46,6 +46,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build app's packages
+        run: npm run build
+
       - name: Run typecheck
         run: npm run typecheck
 
