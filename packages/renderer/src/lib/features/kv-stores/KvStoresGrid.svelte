@@ -7,16 +7,68 @@
   import PlusIcon from "@lucide/svelte/icons/circle-plus";
   import AlertIcon from "@lucide/svelte/icons/octagon-alert";
   import CircleOff from "@lucide/svelte/icons/circle-off";
+  import GlobeIcon from "@lucide/svelte/icons/globe";
+  import ServerIcon from "@lucide/svelte/icons/server";
+  import HardDriveIcon from "@lucide/svelte/icons/hard-drive";
+  import FileIcon from "@lucide/svelte/icons/file";
+  import SearchXIcon from "@lucide/svelte/icons/search-x";
+  import FilterKvStoresChip from "./FilterKvStoresChip.svelte";
   import KvStoreCard from "./KvStoreCard.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import { onMount } from "svelte";
 
   onMount(loadKvStores);
+
+  const filterOptions = [
+    {
+      label: "Remote",
+      type: "remote" as const,
+      icon: GlobeIcon,
+      color: "secondary",
+    },
+    {
+      label: "Local",
+      type: "local" as const,
+      icon: HardDriveIcon,
+      color: "secondary-3",
+    },
+    {
+      label: "Default",
+      type: "default" as const,
+      icon: FileIcon,
+      color: "secondary-2",
+    },
+    {
+      label: "Bridge",
+      type: "bridge" as const,
+      icon: ServerIcon,
+      color: "secondary-1",
+    },
+  ];
+
+  function toggleFilter(type: (typeof filterOptions)[0]["type"]) {
+    if (kvStoresState.selectedTypes.includes(type)) {
+      kvStoresState.selectedTypes = kvStoresState.selectedTypes.filter(
+        (t) => t !== type,
+      );
+    } else {
+      kvStoresState.selectedTypes = [...kvStoresState.selectedTypes, type];
+    }
+  }
+
+  const filteredKvStores = $derived.by(() => {
+    if (kvStoresState.selectedTypes.length === 0) {
+      return kvStoresState.kvStores;
+    }
+    return kvStoresState.kvStores.filter((store) => {
+      return kvStoresState.selectedTypes.includes(store.type);
+    });
+  });
 </script>
 
 <div
-  class="text-card-foreground flex flex-col gap-3 rounded-md border p-3 shadow-sm h-full"
+  class="text-card-foreground flex flex-col gap-2 rounded-md border p-3 shadow-sm h-full"
 >
   <div class="flex items-end justify-between gap-3">
     <div>
@@ -33,6 +85,15 @@
     {/if}
   </div>
   <Separator />
+  <div class="flex flex-wrap gap-2">
+    {#each filterOptions as option}
+      <FilterKvStoresChip
+        {option}
+        isSelected={kvStoresState.selectedTypes.includes(option.type)}
+        onclick={() => toggleFilter(option.type)}
+      />
+    {/each}
+  </div>
   {#if kvStoresState.error}
     <div class="text-center flex-1 flex flex-col justify-center items-center">
       <AlertIcon class="text-destructive size-10 mb-2" />
@@ -56,12 +117,28 @@
       </div>
       {@render addKvStoreButton()}
     </div>
+  {:else if filteredKvStores.length === 0}
+    <div
+      class="text-center flex-1 gap-2 flex flex-col justify-center items-center"
+    >
+      <SearchXIcon class="text-muted-foreground size-10" />
+      <p class="text-foreground font-semibold text-xl">No matching Kv Stores</p>
+      <p class="text-muted-foreground">
+        No kv stores found matching the selected type filters.
+      </p>
+      <Button
+        variant="outline"
+        onclick={() => (kvStoresState.selectedTypes = [])}
+      >
+        Clear filters
+      </Button>
+    </div>
   {:else}
     <div
       id="kv-stores-grid"
       class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto pe-1.5"
     >
-      {#each kvStoresState.kvStores as kvStore (kvStore.id)}
+      {#each filteredKvStores as kvStore (kvStore.id)}
         <KvStoreCard {kvStore} />
       {/each}
     </div>
