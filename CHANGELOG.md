@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.19.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.18.0...v1.19.0) (2026-03-29)
+
+
+### Features
+
+* show toast notification when a new update comes out ([98dd6c5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/98dd6c583dec54dce465e31025554893cff02cd7))
+* add "filter based on kv store type" capability to kv stores list ([14e0d9f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/14e0d9fa3813a0b63ff31bd1a836d3a995d2042d))
+* allow custom file names for local Deno kv database files ([f3f38ed](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f3f38ed696959f4d2d639fc5c9c40c0fb0ab16ca))
+* add a keyboard shortcut for switching theme mode (alt+s) ([f599ad5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f599ad571c06bf9210c0f13eac6f1cc0ad3a8407))
+
+
+### Bug Fixes
+
+* fix that saved default filters won't be applied after refreshing the app ([d2d7176](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d2d71761f054180daec90e190b2eec63e571be35))
+* prevent re-opening "Rename Default KV Store" form randomly after closing it ([b0715eb](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b0715ebe09d03476404f91cfe27f03b7a97d2954))
+
 ## [1.18.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.17.0...v1.18.0) (2026-02-19)
 
 
