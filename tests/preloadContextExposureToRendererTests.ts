@@ -97,7 +97,12 @@ export function preloadContextExposureToRendererTests() {
         expect(typeof lastFetchedUpdateService).toEqual('object');
 
         const exposedMethods = Object.keys(lastFetchedUpdateService)
-        const targetMethods = ['getLastFetchedUpdate', 'setLastFetchedUpdate', 'deleteLastFetchedUpdate'];
+        const targetMethods = [
+            'getLastFetchedUpdate',
+            'setLastFetchedUpdate',
+            'deleteLastFetchedUpdate',
+            'doNotNotifyLastFetchedUpdate',
+        ];
 
         expect(exposedMethods.length).toBe(targetMethods.length);
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));

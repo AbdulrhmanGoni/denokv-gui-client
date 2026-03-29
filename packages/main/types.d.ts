@@ -53,6 +53,11 @@ type DownloadUpdateProgressInfo = import("electron-updater").ProgressInfo
 
 type UpdateCheckResult = import("electron-updater").UpdateCheckResult
 
+type LastFetchedUpdate = {
+    data: UpdateCheckResult,
+    doNotNotify: boolean,
+}
+
 type Settings = Partial<{
     autoCheckForUpdate: boolean;
 }>

@@ -7,9 +7,10 @@
     import { cn } from "$lib/shadcn-utils";
     import { buttonVariants } from "$lib/ui/shadcn/button";
     import { updateAppState } from "$lib/states/appUpdate.svelte";
+    import { settingsPageState } from "$lib/states/settingsState.svelte";
 </script>
 
-<Dialog.Root>
+<Dialog.Root bind:open={settingsPageState.open}>
     <Dialog.Trigger
         class={cn(
             buttonVariants({

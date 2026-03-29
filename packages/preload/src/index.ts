@@ -61,12 +61,14 @@ const settingsService = {
 };
 
 const lastFetchedUpdateService = {
-  getLastFetchedUpdate: (): Promise<UpdateCheckResult | null> =>
+  getLastFetchedUpdate: (): Promise<LastFetchedUpdate | null> =>
     ipcRenderer.invoke('lastFetchedUpdateService:getLastFetchedUpdate'),
   setLastFetchedUpdate: (updateInfo: UpdateCheckResult): Promise<boolean> =>
     ipcRenderer.invoke('lastFetchedUpdateService:setLastFetchedUpdate', updateInfo),
   deleteLastFetchedUpdate: (): Promise<boolean> =>
     ipcRenderer.invoke('lastFetchedUpdateService:deleteLastFetchedUpdate'),
+  doNotNotifyLastFetchedUpdate: (): Promise<boolean> =>
+    ipcRenderer.invoke('lastFetchedUpdateService:doNotNotifyLastFetchedUpdate'),
 };
 
 const browsingParamsService = {

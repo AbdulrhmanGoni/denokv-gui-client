@@ -2,14 +2,14 @@
     import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
     import Separator from "$lib/ui/shadcn/separator/separator.svelte";
     import NotesIcon from "@lucide/svelte/icons/notepad-text";
-    import XIcon from "@lucide/svelte/icons/x";
     import { buttonVariants } from "$lib/ui/shadcn/button";
+    import { updateAppState } from "$lib/states/appUpdate.svelte";
 
     const { newUpdate }: { newUpdate: UpdateCheckResult } = $props();
 </script>
 
 {#if newUpdate.updateInfo.releaseNotes}
-    <Dialog.Root>
+    <Dialog.Root bind:open={updateAppState.openReleaseNotes}>
         <Dialog.Trigger
             class={buttonVariants({ size: "sm", variant: "outline" })}
         >
