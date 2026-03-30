@@ -41,11 +41,11 @@ try {
     // Wait for the page to load
     await page.waitForLoadState('load');
 
-    await page.evaluate(async (path) => {
+    await page.evaluate(async (localKvStorePath) => {
         const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
         await kvStoresService.create({
             name: "Some Local KV Store",
-            url: path,
+            url: localKvStorePath,
             type: "local",
             accessToken: null,
             authToken: null,
@@ -66,7 +66,7 @@ try {
             accessToken: null,
             authToken: "some-auth-token",
         })
-    }, import.meta.dirname);
+    }, path.join(import.meta.dirname, "kv.sqlite3"));
 
     await takeScreenshots(page)
 } finally {
