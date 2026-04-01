@@ -67,7 +67,9 @@ jobs:
 
       - name: Run UI e2e tests (Linux)
         # retry one more time if the tests fail
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test || xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test
+        run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test || \
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test
         if: matrix.os == 'ubuntu-latest'
 
       - uses: actions/attest@v4
