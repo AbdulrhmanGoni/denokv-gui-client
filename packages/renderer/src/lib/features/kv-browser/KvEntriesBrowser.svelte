@@ -57,7 +57,7 @@
       class="me-auto"
       variant="outline"
       onclick={() => {
-        kvEntriesState.params.nextCursorIndex -= 1;
+        kvEntriesState.params.cursors.pop();
         fetchEntries();
       }}
     >

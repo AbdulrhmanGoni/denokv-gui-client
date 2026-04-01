@@ -8,7 +8,6 @@ import { sameKvKeys } from "$lib/helpers/compareKvKeys";
 type KvEntriesState = {
     entries: KvEntry[];
     params: BrowsingParams & {
-        nextCursorIndex: number;
         cursors: NonNullable<BrowseRouteOptions["cursor"]>[];
     };
     loading: boolean;
@@ -32,7 +31,6 @@ export const kvEntriesStateDefaultValues: KvEntriesState = {
     params: {
         ...defaultBrowsingParams,
         cursors: [],
-        nextCursorIndex: -1,
     },
     loading: false,
     fetched: false,
@@ -47,7 +45,7 @@ export async function fetchEntries() {
         kvEntriesState.loading = true;
         const { error, result } = await kvClient.browse(
             $state.snapshot(kvEntriesState.params),
-            kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex]
+            kvEntriesState.params.cursors.at(-1)
         );
 
         if (error) {
@@ -60,15 +58,11 @@ export async function fetchEntries() {
             kvEntriesState.fetched = true;
 
             if (result?.cursor) {
-                const nextCursorIndex = kvEntriesState.params.cursors.indexOf(result?.cursor)
-                if (nextCursorIndex == -1) {
-                    kvEntriesState.params.cursors.push(result?.cursor)
-                    kvEntriesState.params.nextCursorIndex++
-                } else {
-                    kvEntriesState.params.nextCursorIndex = nextCursorIndex
+                if (kvEntriesState.params.cursors.at(-1) !== result.cursor) {
+                    kvEntriesState.params.cursors.push(result.cursor)
                 }
             } else {
-                kvEntriesState.params.nextCursorIndex++
+                kvEntriesState.noMoreEntries = true
             }
 
             if (kvEntriesState.entries.length < kvEntriesState.params.limit) {
