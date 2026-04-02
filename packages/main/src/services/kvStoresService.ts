@@ -107,7 +107,7 @@ async function getDefaultLocalKvStores(exclude: KvStore["id"][]) {
                                 url: kvFile,
                                 type: "default",
                                 createdAt: fileStat.birthtime.toISOString(),
-                                updatedAt: fileStat.ctime.toISOString(),
+                                updatedAt: fileStat.mtime.toISOString(),
                                 accessToken: null,
                                 authToken: null,
                             })
