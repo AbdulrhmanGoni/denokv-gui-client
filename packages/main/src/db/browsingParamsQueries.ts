@@ -2,7 +2,7 @@ import { database } from './db.js';
 
 export const insertQuery = database.prepare(`
     INSERT INTO browsingParams(id, kvStoreId, paramsAsJson, isDefault, createdAt, updatedAt) 
-    VALUES($id, $kvStoreId, $paramsAsJson, $isDefault, datetime('now'), datetime('now'))
+    VALUES($id, $kvStoreId, $paramsAsJson, $isDefault, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 `);
 
 export const updateQuery = database.prepare(`
@@ -10,7 +10,7 @@ export const updateQuery = database.prepare(`
     SET 
         paramsAsJson = COALESCE($paramsAsJson, paramsAsJson),
         isDefault = COALESCE($isDefault, isDefault),
-        updatedAt = datetime('now')
+        updatedAt = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
     WHERE id = $id;
 `);
 
