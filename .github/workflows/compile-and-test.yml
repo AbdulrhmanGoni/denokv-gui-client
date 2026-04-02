@@ -39,7 +39,7 @@ jobs:
           node-version: ">=23.0.0"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Download "denokv-x86_64-apple-darwin" binary for mac-x64 build
         if: matrix.os == 'macos-15-intel'
