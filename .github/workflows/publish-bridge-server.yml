@@ -25,11 +25,9 @@ jobs:
           node-version: ">=23.0.0"
 
       - name: Extract package's version
-        working-directory: packages/bridge-server
-        run: echo "PACKAGE_VERSION=$(jq -r .version jsr.json)" >> $GITHUB_ENV
+        run: echo "PACKAGE_VERSION=$(jq -r .version packages/bridge-server/jsr.json)" >> $GITHUB_ENV
 
       - name: Check if a new release was prepared
-        working-directory: packages/bridge-server
         run: |
           packageVersionsUrl="https://api.jsr.io/scopes/denokv-gui-client/packages/bridge-server/versions/$PACKAGE_VERSION"
           statusCode=$(curl -sSL -o /dev/null -w "%{http_code}" "$packageVersionsUrl")
@@ -39,8 +37,7 @@ jobs:
 
       - name: Install dependencies
         if: ${{ env.isNewVersion == 'true' }}
-        working-directory: packages/bridge-server
-        run: npm install
+        run: npm ci --workspace=@app/bridge-server
 
       - name: Publish to JSR
         if: ${{ env.isNewVersion == 'true' }}
