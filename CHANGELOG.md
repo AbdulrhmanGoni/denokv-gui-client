@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.19.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.19.0...v1.19.1) (2026-04-03)
+
+
+### Bug Fixes
+
+* make the "Last Update" field in default KV stores cards more precise ([d7c9992](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d7c9992fe5f4301c2d4ed7da67313dd97b834c00))
+* fix incorrect kv stores creation and update dates ([8497c5a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8497c5ace630189ca6fd8606df7e5535e1c43677))
+
+
+### Security
+
+* update some dependencies to avoid some vulnerabilities ([0e75340](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0e75340b095adf4da9ef954f1c4bda2305e550f7))
+
+
+### User Interface Changes
+
+* display "just now" for very recent kv store creation & update time ([e03d4aa](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e03d4aa24fb073ac96301fe025808a0adb494ad0))
+
 ## [1.19.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.18.0...v1.19.0) (2026-03-29)
 
 
