@@ -4,9 +4,6 @@
         "commitsSort": false
     },
     "tagPrefix": "bridge-server@",
-    "skip": {
-        "tag": true
-    },
     "packageFiles": [
         {
             "filename": "package.json",
