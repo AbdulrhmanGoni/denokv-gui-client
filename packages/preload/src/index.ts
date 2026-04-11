@@ -4,6 +4,10 @@ function selectDirectory(): Promise<string> {
   return ipcRenderer.invoke('select-directory')
 }
 
+function selectFile(directory?: string): Promise<{ directory: string, fileName: string } | null> {
+  return ipcRenderer.invoke('select-file', directory)
+}
+
 function openPath(path: string): void {
   ipcRenderer.invoke('open-path', path)
 }
@@ -101,6 +105,7 @@ const appUpdater = {
 export {
   metadata,
   selectDirectory,
+  selectFile,
   openPath,
   kvStoresService,
   kvClient,

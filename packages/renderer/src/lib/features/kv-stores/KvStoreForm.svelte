@@ -2,7 +2,7 @@
   import { Input } from "$lib/ui/shadcn/input/index.js";
   import { Label } from "$lib/ui/shadcn/label/index.js";
   import { Button } from "$lib/ui/shadcn/button/index.js";
-  import { selectDirectory } from "@app/preload";
+  import { selectDirectory, selectFile } from "@app/preload";
   import Loader from "@lucide/svelte/icons/loader";
   import * as Select from "$lib/ui/shadcn/select";
   import type { Snippet } from "svelte";
@@ -90,6 +90,14 @@
   async function pickDirectory() {
     localKvDirectory = await selectDirectory();
   }
+
+  async function pickFile() {
+    const selectedFile = await selectFile(localKvDirectory);
+    if (selectedFile) {
+      localKvDirectory = selectedFile.directory;
+      localKvFileName = selectedFile.fileName;
+    }
+  }
 </script>
 
 <form
@@ -144,7 +152,7 @@
   </div>
   {#if isLocalStore}
     <input type="hidden" name="url" value={localKvUrl} />
-    <div class="flex gap-2">
+    <div class="flex flex-col sm:flex-row gap-2">
       <div class="space-y-1.5 flex-2">
         <Label for="localKvDirectory" class="gap-1">
           Kv Store Directory
@@ -174,19 +182,30 @@
           The directory of your local Deno KV store database file.
         </p>
       </div>
-      <div class="space-y-1.5 flex-1">
-        <Label for="localKvFileName">DB File Name</Label>
-        <Input
-          type="text"
-          id="localKvFileName"
-          required
-          disabled={isLoading}
-          placeholder="kv.sqlite3"
-          bind:value={localKvFileName}
-        />
+      <div class="space-y-1.5 flex-2">
+        <Label for="localKvFileName">Kv Store File Name</Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            type="text"
+            id="localKvFileName"
+            required
+            disabled={isLoading}
+            placeholder="kv.sqlite3"
+            class="flex-1"
+            bind:value={localKvFileName}
+          />
+          <InputGroup.Addon align="inline-end">
+            <InputGroup.Button
+              onclick={pickFile}
+              variant="default"
+              disabled={isLoading}
+            >
+              Pick
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup.Root>
         <p class="text-muted-foreground text-sm">
-          Default is
-          <code class="font-mono bg-muted px-1 py-0.5 rounded">kv.sqlite3</code>
+          The file the contains the kv store data.
         </p>
       </div>
     </div>
@@ -204,9 +223,8 @@
           Replace Existing?
         </Label>
         <p class="text-sm text-muted-foreground">
-          If there is already an existing Deno kv database file with the same
-          name in the picked directory, replace it with a new empty database
-          file.
+          If there is already an existing database file with the same name in
+          the picked directory, replace it with a new empty database file.
         </p>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { ModuleContext } from '../ModuleContext.js';
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
 import electronUpdater from 'electron-updater';
+import path from 'node:path';
 
 class WindowManager implements AppModule {
   readonly #preload: { path: string };
@@ -50,6 +51,19 @@ class WindowManager implements AppModule {
 
       if (result.canceled) return "";
       return result.filePaths[0];
+    });
+
+    ipcMain.handle('select-file', async (_, directory?: string) => {
+      const result = await dialog.showOpenDialog(browserWindow, {
+        properties: ['openFile'],
+        defaultPath: directory,
+      });
+
+      if (result.canceled) return null;
+      return {
+        directory: path.dirname(result.filePaths[0]),
+        fileName: path.basename(result.filePaths[0])
+      };
     });
 
     ipcMain.handle('open-path', async (_, path) => {
