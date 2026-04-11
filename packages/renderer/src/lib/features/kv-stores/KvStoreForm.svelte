@@ -154,6 +154,32 @@
     <input type="hidden" name="url" value={localKvUrl} />
     <div class="flex flex-col sm:flex-row gap-2">
       <div class="space-y-1.5 flex-2">
+        <Label for="localKvFileName">Kv Store File Name</Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            type="text"
+            id="localKvFileName"
+            required
+            disabled={isLoading}
+            placeholder="kv.sqlite3"
+            class="flex-1"
+            bind:value={localKvFileName}
+          />
+          <InputGroup.Addon align="inline-end">
+            <InputGroup.Button
+              onclick={pickFile}
+              variant="default"
+              disabled={isLoading}
+            >
+              Pick
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup.Root>
+        <p class="text-muted-foreground text-sm">
+          Name of the file that contains the kv store data.
+        </p>
+      </div>
+      <div class="space-y-1.5 flex-2">
         <Label for="localKvDirectory" class="gap-1">
           Kv Store Directory
           <span class="font-normal text-muted-foreground">(absolute path)</span>
@@ -180,32 +206,6 @@
         </InputGroup.Root>
         <p class="text-muted-foreground text-sm">
           The directory of your local Deno KV store database file.
-        </p>
-      </div>
-      <div class="space-y-1.5 flex-2">
-        <Label for="localKvFileName">Kv Store File Name</Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            type="text"
-            id="localKvFileName"
-            required
-            disabled={isLoading}
-            placeholder="kv.sqlite3"
-            class="flex-1"
-            bind:value={localKvFileName}
-          />
-          <InputGroup.Addon align="inline-end">
-            <InputGroup.Button
-              onclick={pickFile}
-              variant="default"
-              disabled={isLoading}
-            >
-              Pick
-            </InputGroup.Button>
-          </InputGroup.Addon>
-        </InputGroup.Root>
-        <p class="text-muted-foreground text-sm">
-          The file the contains the kv store data.
         </p>
       </div>
     </div>
