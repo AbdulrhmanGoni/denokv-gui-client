@@ -30,43 +30,63 @@ electronApp.on('console', (msg) => {
     }
 });
 
+const kvStores = [
+    {
+        name: "Some Local KV Store",
+        url: path.join(import.meta.dirname, "kv.sqlite3"),
+        type: "local",
+        accessToken: null,
+        authToken: null,
+    },
+    {
+        name: "Some Production KV Store",
+        url: "https://some-remote-database.com/kv",
+        type: "remote",
+        accessToken: "some-access-token",
+        authToken: null,
+    },
+    {
+        name: "Some KV Store Bridge Server",
+        url: "https://localhost:8704/kv/bridge-server",
+        type: "bridge",
+        accessToken: null,
+        authToken: "some-auth-token",
+    },
+    {
+        name: "Another local kv store",
+        url: path.join(import.meta.dirname, "another-kv.sqlite3"),
+        type: "local",
+        accessToken: null,
+        authToken: null,
+    },
+    {
+        name: "Another remote kv store",
+        url: "https://another-remote-database.com/kv",
+        type: "remote",
+        accessToken: "another-access-token",
+        authToken: null,
+    },
+    {
+        name: "Another bridge kv store",
+        url: "https://localhost:6519/kv",
+        type: "bridge",
+        accessToken: null,
+        authToken: null,
+    },
+]
+
 try {
     const page = await electronApp.firstWindow();
+    page.on('pageerror', (error) => console.error('Page error:', error));
 
-    // Capture errors
-    page.on('pageerror', (error) => {
-        console.error('Page error:', error);
-    });
-
-    // Wait for the page to load
     await page.waitForLoadState('load');
 
-    await page.evaluate(async (localKvStorePath) => {
+    await page.evaluate(async (kvStores) => {
         const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
-        await kvStoresService.create({
-            name: "Some Local KV Store",
-            url: localKvStorePath,
-            type: "local",
-            accessToken: null,
-            authToken: null,
-        })
-
-        await kvStoresService.create({
-            name: "Some Production KV Store",
-            url: "https://some-remote-database.com/kv",
-            type: "remote",
-            accessToken: "some-access-token",
-            authToken: null,
-        })
-
-        await kvStoresService.create({
-            name: "Some KV Store Bridge Server",
-            url: "https://localhost:8704/kv/bridge-server",
-            type: "bridge",
-            accessToken: null,
-            authToken: "some-auth-token",
-        })
-    }, path.join(import.meta.dirname, "kv.sqlite3"));
+        for (const kvStore of kvStores) {
+            await kvStoresService.create(kvStore)
+        }
+    }, kvStores);
 
     await takeScreenshots(page)
 } finally {
@@ -74,10 +94,13 @@ try {
 
     writeFileSync(path.resolve(import.meta.dirname, '../tests/database.test.sqlite'), "")
 
-    const testingKvStorePath = path.resolve(import.meta.dirname, 'kv.sqlite3')
-    rmSync(testingKvStorePath, { force: true })
-    rmSync(`${testingKvStorePath}-shm`, { force: true })
-    rmSync(`${testingKvStorePath}-wal`, { force: true })
+    for (const kvStore of kvStores) {
+        if (kvStore.type === "local") {
+            rmSync(kvStore.url, { force: true })
+            rmSync(`${kvStore.url}-shm`, { force: true })
+            rmSync(`${kvStore.url}-wal`, { force: true })
+        }
+    }
 
     for (const file of readdirSync("./screenshots")) {
         if (file.endsWith(".temp.png")) {
@@ -120,6 +143,7 @@ async function takeScreenshotOfTheme(page: Page, name: string) {
 
 async function takeScreenshotOfSettingsPage(page: Page) {
     await page.locator("button svg.lucide-settings").click();
+    await page.locator("button svg.lucide-sun").click();
     await page.waitForTimeout(100);
     await takeScreenshotOfTheme(page, "SettingsPage")
     await page.keyboard.press('Escape');
@@ -127,6 +151,10 @@ async function takeScreenshotOfSettingsPage(page: Page) {
 }
 
 async function takeScreenshotOfKvStoresGrid(page: Page) {
+    await page.reload()
+    await page.locator("button", { has: page.locator("svg.lucide-globe"), hasText: "Remote" }).click();
+    await page.locator("button", { has: page.locator("svg.lucide-server"), hasText: "Bridge" }).click();
+    await page.locator("button", { has: page.locator("svg.lucide-hard-drive"), hasText: "Local" }).click();
     await takeScreenshotOfTheme(page, "KvStoresGrid")
 }
 
