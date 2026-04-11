@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import path from 'node:path';
 
 function selectDirectory(): Promise<string> {
   return ipcRenderer.invoke('select-directory')
@@ -11,6 +12,12 @@ function selectFile(directory?: string): Promise<{ directory: string, fileName: 
 function openPath(path: string): void {
   ipcRenderer.invoke('open-path', path)
 }
+
+const pathUtils = {
+  dirname: (p: string): string => path.dirname(p),
+  basename: (p: string): string => path.basename(p),
+  join: (...paths: string[]): string => path.join(...paths),
+};
 
 function onWindowReady(cb: (event: Electron.IpcRendererEvent, ...args: any[]) => void) {
   return ipcRenderer.on('window-ready', cb)
@@ -115,4 +122,5 @@ export {
   onWindowReady,
   lastFetchedUpdateService,
   browsingParamsService,
+  pathUtils,
 };
