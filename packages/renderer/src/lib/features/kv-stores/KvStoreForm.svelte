@@ -52,12 +52,14 @@
     localKvDirectory.replace(/\/+$/, "") + "/" + localKvFileName,
   );
   let replaceExisting = $state(defaultValues?.replaceExisting ?? false);
-  let openedStoreType: KvStore["type"] | undefined = $state(
-    defaultValues?.type,
+  let selectedStoreType: KvStore["type"] | undefined = $state(
+    defaultValues?.type ||
+      (localStorage.getItem("default-kv-store-type") as KvStore["type"]) ||
+      undefined,
   );
-  let isRemoteStore = $derived(openedStoreType == "remote");
-  let isLocalStore = $derived(openedStoreType == "local");
-  let isBridgedStore = $derived(openedStoreType == "bridge");
+  let isRemoteStore = $derived(selectedStoreType == "remote");
+  let isLocalStore = $derived(selectedStoreType == "local");
+  let isBridgedStore = $derived(selectedStoreType == "bridge");
 
   async function handleSubmit(
     event: SubmitEvent & {
@@ -120,13 +122,15 @@
       required
       disabled={isLoading}
       name="type"
-      value={openedStoreType}
+      value={selectedStoreType}
       onValueChange={(value) => {
-        openedStoreType = value as KvStore["type"];
+        if (value === selectedStoreType) return;
+        selectedStoreType = value as KvStore["type"];
+        localStorage.setItem("default-kv-store-type", value);
       }}
     >
       <Select.Trigger class="w-full bg-background">
-        {openedStoreType ? openedStoreType : "Select Type"}
+        {selectedStoreType ? selectedStoreType : "Select Type"}
       </Select.Trigger>
       <Select.Content>
         <Select.Item value="remote">remote</Select.Item>
