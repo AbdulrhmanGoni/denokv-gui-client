@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.20.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.19.1...v1.20.0) (2026-04-15)
+
+
+### Features
+
+* add file picker to KV Store form for selecting existing local KV store files ([a626c30](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a626c3021c46c4c1f27514d45338f94a430f0efc))
+
+
+### Enhancements
+
+* making KV Store form remember last used KV store type ([1e22fb5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/1e22fb548aa2ccc3cfc04f4cfe0cfdf923ae9aea))
+
+
+### User Interface Changes
+
+* switch places of "Kv File Name" and "Kv Store Directory" fields in Kv Store Form ([fd2af00](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/fd2af008932d0f1e941f8b5d545681cd04e27806))
+
 ## [1.19.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.19.0...v1.19.1) (2026-04-03)
 
 
