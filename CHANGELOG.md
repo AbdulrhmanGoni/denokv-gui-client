@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.20.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.20.0...v1.20.1) (2026-04-24)
+
+
+### Security
+
+* perform security patches for some dependencies ([1675fa8](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/1675fa8d5918a4d8b241032cf030807fb0cc6312))
+
 ## [1.20.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.19.1...v1.20.0) (2026-04-15)
 
 
