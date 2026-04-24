@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [8.2.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.1...bridge-server@8.2.2) (2026-04-24)
+
+
+### Security
+
+* update dependencies for security reasons ([a524f72](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a524f72662b20ea0bea82bc14f63ce3f736d3018))
+
 ## [8.2.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.0...bridge-server@8.2.1) (2026-04-03)
 
 
