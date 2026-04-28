@@ -2,8 +2,7 @@ import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
 import { ipcMain } from 'electron';
 import * as kvStoresService from '../services/kvStoresService.js';
-import * as kvClient from '../server/kvServerClient.js';
-import * as bridgeServer from '../server/server.js';
+import * as bridgeServer from '../server.js';
 import * as settingsService from '../services/settingsService.js';
 import * as lastFetchedUpdateService from '../services/lastFetchedUpdateService.js';
 import * as browsingParamsService from '../services/browsingParamsService.js';
@@ -13,7 +12,6 @@ import * as metadata from '../metadata.js';
 class BusinessLogicModule implements AppModule {
     async enable({ }: ModuleContext): Promise<void> {
         this.registerHandlers('kvStoresService', kvStoresService);
-        this.registerHandlers('kvClient', kvClient);
         this.registerHandlers('bridgeServer', bridgeServer);
         this.registerHandlers('settingsService', settingsService);
         this.registerHandlers('lastFetchedUpdateService', lastFetchedUpdateService);

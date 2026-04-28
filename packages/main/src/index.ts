@@ -7,6 +7,7 @@ import { hardwareAccelerationMode } from './modules/HardwareAccelerationModule.j
 import { allowInternalOrigins } from './modules/BlockNotAllowdOrigins.js';
 import { allowExternalUrls } from './modules/ExternalUrls.js';
 import { createBusinessLogicModule } from './modules/BusinessLogicModule.js';
+import { KvServerClientModule } from './modules/kvServerClientModule.js';
 
 
 export async function initApp(initConfig: AppInitConfig) {
@@ -16,6 +17,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(terminateAppOnLastWindowClose())
     .init(hardwareAccelerationMode({ enable: false }))
     .init(createBusinessLogicModule())
+    .init(new KvServerClientModule())
 
     // Security
     .init(allowInternalOrigins(
