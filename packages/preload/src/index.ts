@@ -60,8 +60,6 @@ const bridgeServer = {
     ipcRenderer.invoke('bridgeServer:openServer', kvStore),
   closeServer: (): Promise<void> =>
     ipcRenderer.invoke('bridgeServer:closeServer'),
-  getServerClient: (): Promise<any> =>
-    ipcRenderer.invoke('bridgeServer:getServerClient'),
 };
 
 const settingsService = {

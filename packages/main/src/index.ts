@@ -6,7 +6,13 @@ import { terminateAppOnLastWindowClose } from './modules/ApplicationTerminatorOn
 import { hardwareAccelerationMode } from './modules/HardwareAccelerationModule.js';
 import { allowInternalOrigins } from './modules/BlockNotAllowdOrigins.js';
 import { allowExternalUrls } from './modules/ExternalUrls.js';
-import { createBusinessLogicModule } from './modules/BusinessLogicModule.js';
+import { BridgeServerModule } from './modules/bridgeServer.js';
+import { KvStoresServiceModule } from './modules/kvStoresService.js';
+import { SettingsServiceModule } from './modules/settingsService.js';
+import { LastFetchedUpdateServiceModule } from './modules/lastFetchedUpdateService.js';
+import { BrowsingParamsServiceModule } from './modules/browsingParamsService.js';
+import { AppUpdaterModule } from './modules/appUpdaterModule.js';
+import { MetadataModule } from './modules/metadataModule.js';
 import { KvServerClientModule } from './modules/kvServerClientModule.js';
 
 
@@ -16,7 +22,13 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())
     .init(hardwareAccelerationMode({ enable: false }))
-    .init(createBusinessLogicModule())
+    .init(new KvStoresServiceModule())
+    .init(new BridgeServerModule())
+    .init(new SettingsServiceModule())
+    .init(new LastFetchedUpdateServiceModule())
+    .init(new BrowsingParamsServiceModule())
+    .init(new AppUpdaterModule())
+    .init(new MetadataModule())
     .init(new KvServerClientModule())
 
     // Security

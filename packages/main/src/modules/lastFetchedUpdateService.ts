@@ -1,3 +1,6 @@
+import { ipcMain } from "electron";
+import { AppModule } from "../AppModule.js";
+import { ModuleContext } from "../ModuleContext.js";
 import {
     deleteLastFetchedUpdateQuery,
     getLastFetchedUpdateQuery,
@@ -6,16 +9,33 @@ import {
     updateLastFetchedUpdateQuery,
 } from "../db/lastFetchedUpdateQueries.js";
 import { isGreaterVersion } from "../helpers.js";
-import * as metadata from "../metadata.js";
+import { appVersion } from "./metadataModule.js";
 
-export function getLastFetchedUpdate(): LastFetchedUpdate | null {
+export class LastFetchedUpdateServiceModule implements AppModule {
+    enable(_context: ModuleContext): void {
+        ipcMain.handle("lastFetchedUpdateService:getLastFetchedUpdate", () => getLastFetchedUpdate());
+
+        ipcMain.handle("lastFetchedUpdateService:setLastFetchedUpdate", (_, updateInfo: UpdateCheckResult) => {
+            return setLastFetchedUpdate(updateInfo)
+        });
+
+        ipcMain.handle("lastFetchedUpdateService:deleteLastFetchedUpdate", () => deleteLastFetchedUpdate());
+
+        ipcMain.handle("lastFetchedUpdateService:doNotNotifyLastFetchedUpdate", () => {
+            const result = updateDoNotNotifyQuery.run(1)
+            return !!result.changes
+        });
+    }
+}
+
+function getLastFetchedUpdate(): LastFetchedUpdate | null {
     const row = getLastFetchedUpdateQuery.get() as { updateInfoAsJson: string, doNotNotify: number } | undefined
     if (!row) return null
 
     const existingUpdate = JSON.parse(row.updateInfoAsJson) as UpdateCheckResult
     const doNotNotify = !!row.doNotNotify
 
-    if (isGreaterVersion(existingUpdate.updateInfo.version, metadata.appVersion)) {
+    if (isGreaterVersion(existingUpdate.updateInfo.version, appVersion)) {
         return { data: existingUpdate, doNotNotify }
     }
 
@@ -31,12 +51,7 @@ export function setLastFetchedUpdate(updateInfo: UpdateCheckResult) {
     return !!result.changes
 }
 
-export function deleteLastFetchedUpdate() {
+function deleteLastFetchedUpdate() {
     const result = deleteLastFetchedUpdateQuery.run()
-    return !!result.changes
-}
-
-export function doNotNotifyLastFetchedUpdate() {
-    const result = updateDoNotNotifyQuery.run(1)
     return !!result.changes
 }
