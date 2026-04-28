@@ -18,8 +18,6 @@
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import { onMount } from "svelte";
 
-  onMount(loadKvStores);
-
   const filterOptions = [
     {
       label: "Remote",
@@ -46,6 +44,38 @@
       color: "secondary-1",
     },
   ];
+  const selectedTypesStorageKey = "kv-stores-selected-types";
+  const validFilterTypes = new Set(filterOptions.map((option) => option.type));
+  let filtersHydrated = $state(false);
+
+  onMount(() => {
+    const savedSelectedTypes = localStorage.getItem(selectedTypesStorageKey);
+
+    if (savedSelectedTypes) {
+      try {
+        const parsedSelectedTypes = JSON.parse(savedSelectedTypes);
+        if (Array.isArray(parsedSelectedTypes)) {
+          kvStoresState.selectedTypes = parsedSelectedTypes.filter((type) =>
+            validFilterTypes.has(type as (typeof filterOptions)[0]["type"]),
+          );
+        }
+      } catch {
+        localStorage.removeItem(selectedTypesStorageKey);
+      }
+    }
+
+    filtersHydrated = true;
+    loadKvStores();
+  });
+
+  $effect(() => {
+    if (!filtersHydrated) return;
+
+    localStorage.setItem(
+      selectedTypesStorageKey,
+      JSON.stringify(kvStoresState.selectedTypes),
+    );
+  });
 
   function toggleFilter(type: (typeof filterOptions)[0]["type"]) {
     if (kvStoresState.selectedTypes.includes(type)) {

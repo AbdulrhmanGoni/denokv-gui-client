@@ -309,6 +309,12 @@ export function kvStoresTests() {
         await expect(bridgeStore).not.toBeVisible();
         await expect(localStore).toBeVisible();
 
+        // Reload and ensure the selected filter persists
+        await page.reload();
+        await expect(remoteStore).not.toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).toBeVisible();
+
         // Deselect local filter
         await localButton.click();
 
