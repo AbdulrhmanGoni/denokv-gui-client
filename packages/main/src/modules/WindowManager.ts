@@ -16,11 +16,11 @@ class WindowManager implements AppModule {
     this.#openDevTools = openDevTools;
   }
 
-  async enable({ app }: ModuleContext): Promise<void> {
-    await app.whenReady();
-    await this.restoreOrCreateWindow(true);
-    app.on('second-instance', () => this.restoreOrCreateWindow(true));
-    app.on('activate', () => this.restoreOrCreateWindow(true));
+  async enable(context: ModuleContext): Promise<void> {
+    await context.app.whenReady();
+    context.browserWindow = await this.restoreOrCreateWindow(true);
+    context.app.on('second-instance', () => this.restoreOrCreateWindow(true));
+    context.app.on('activate', () => this.restoreOrCreateWindow(true));
   }
 
   async createWindow(): Promise<BrowserWindow> {
