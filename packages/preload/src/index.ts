@@ -19,10 +19,6 @@ const pathUtils = {
   join: (...paths: string[]): string => path.join(...paths),
 };
 
-function onWindowReady(cb: (event: Electron.IpcRendererEvent, ...args: any[]) => void) {
-  return ipcRenderer.on('window-ready', cb)
-}
-
 const metadata = await ipcRenderer.invoke('get-metadata')
 
 const kvStoresService = {
@@ -117,7 +113,6 @@ export {
   bridgeServer,
   appUpdater,
   settingsService,
-  onWindowReady,
   lastFetchedUpdateService,
   browsingParamsService,
   pathUtils,

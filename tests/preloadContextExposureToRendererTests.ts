@@ -128,7 +128,7 @@ export function preloadContextExposureToRendererTests() {
     });
 
     test.describe('Utility preload functions should be exposed', async () => {
-        const utilExports = ['selectDirectory', 'openPath', 'onWindowReady'];
+        const utilExports = ['selectDirectory', 'openPath'];
 
         utilExports.forEach((exportName) => {
             test(`'${exportName}' is exposed as a function`, async ({ page }) => {

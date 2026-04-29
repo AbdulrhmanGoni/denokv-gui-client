@@ -78,8 +78,6 @@ class WindowManager implements AppModule {
       browserWindow.webContents.send('downloading-update-progress', progressInfo)
     })
 
-    browserWindow.webContents.send('window-ready')
-
     return browserWindow;
   }
 
