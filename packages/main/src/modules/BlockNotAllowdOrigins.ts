@@ -11,20 +11,18 @@ import { URL } from 'node:url';
  * @see https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
  */
 export class BlockNotAllowedOrigins extends AbstractSecurityRule {
-  readonly #allowedOrigins: Set<string>;
+  readonly #allowedOrigin: string;
 
-  constructor(allowedOrigins: Set<string> = new Set) {
+  constructor(internalOrigin: string) {
     super();
-    this.#allowedOrigins = structuredClone(allowedOrigins)
+    this.#allowedOrigin = internalOrigin
   }
 
   applyRule(contents: Electron.WebContents): Promise<void> | void {
 
     contents.on('will-navigate', (event, url) => {
       const { origin } = new URL(url);
-      if (this.#allowedOrigins.has(origin)) {
-        return;
-      }
+      if (this.#allowedOrigin && origin === this.#allowedOrigin) return;
 
       // Prevent navigation
       event.preventDefault();
@@ -36,7 +34,6 @@ export class BlockNotAllowedOrigins extends AbstractSecurityRule {
   }
 }
 
-
-export function allowInternalOrigins(...args: ConstructorParameters<typeof BlockNotAllowedOrigins>): BlockNotAllowedOrigins {
-  return new BlockNotAllowedOrigins(...args);
+export function allowInternalOrigins(internalOrigin: string): BlockNotAllowedOrigins {
+  return new BlockNotAllowedOrigins(internalOrigin);
 }

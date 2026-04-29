@@ -5,7 +5,7 @@ import { createWindowManagerModule } from './modules/WindowManager.js';
 import { terminateAppOnLastWindowClose } from './modules/ApplicationTerminatorOnLastWindowClose.js';
 import { hardwareAccelerationMode } from './modules/HardwareAccelerationModule.js';
 import { allowInternalOrigins } from './modules/BlockNotAllowdOrigins.js';
-import { allowExternalUrls } from './modules/ExternalUrls.js';
+import { allowTrustedExternalUrls } from './modules/ExternalUrls.js';
 import { BridgeServerModule } from './modules/bridgeServer.js';
 import { KvStoresServiceModule } from './modules/kvStoresService.js';
 import { SettingsServiceModule } from './modules/settingsService.js';
@@ -17,7 +17,7 @@ import { KvServerClientModule } from './modules/kvServerClientModule.js';
 
 
 export async function initApp(initConfig: AppInitConfig) {
-  const moduleRunner = createModuleRunner()
+  await createModuleRunner()
     .init(createWindowManagerModule({ initConfig, openDevTools: import.meta.env.DEV }))
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())
@@ -30,14 +30,6 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(new AppUpdaterModule())
     .init(new MetadataModule())
     .init(new KvServerClientModule())
-
-    // Security
-    .init(allowInternalOrigins(
-      new Set(initConfig.renderer instanceof URL ? [initConfig.renderer.origin] : []),
-    ))
-    .init(allowExternalUrls(
-      new Set(['https://github.com', 'https://docs.deno.com'])),
-    );
-
-  await moduleRunner;
+    .init(allowInternalOrigins(initConfig.renderer instanceof URL ? initConfig.renderer.origin : ''))
+    .init(allowTrustedExternalUrls());
 }

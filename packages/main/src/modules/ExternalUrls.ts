@@ -30,6 +30,6 @@ export class ExternalUrls implements AppModule {
 }
 
 
-export function allowExternalUrls(...args: ConstructorParameters<typeof ExternalUrls>) {
-  return new ExternalUrls(...args);
+export function allowTrustedExternalUrls() {
+  return new ExternalUrls(new Set(['https://github.com', 'https://docs.deno.com']));
 }
