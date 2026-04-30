@@ -3,9 +3,22 @@
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
 
   const { entry, className }: { entry: KvEntry; className?: string } = $props();
+  function handleWheel(e: WheelEvent) {
+    if (e.deltaY === 0) return;
+    const container = e.currentTarget as HTMLDivElement;
+    if (container.scrollWidth > container.clientWidth) {
+      container.scrollBy({
+        left: e.deltaY,
+        behavior: "smooth",
+      });
+      e.preventDefault();
+    }
+  }
 </script>
 
 <div
+  onwheel={handleWheel}
+  role="presentation"
   class={cn(
     "flex gap-1 items-center font-semibold overflow-auto py-1",
     className,
