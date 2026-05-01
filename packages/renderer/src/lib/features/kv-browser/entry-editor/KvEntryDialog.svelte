@@ -48,7 +48,7 @@
     </p>
     <div class="flex gap-2 justify-between bg-card p-3 rounded-md">
       <KvKeyRenderer {entry} className="text-nowrap" />
-      <CopyKvEntry isKey {entry} />
+      <CopyKvEntry target="key" className="ml-auto" {entry} />
     </div>
   </div>
 {/snippet}
@@ -63,7 +63,7 @@
       class="overflow-auto h-[270px] flex gap-2 justify-between bg-card p-3 rounded-md"
     >
       <KvValueRenderer value={entry.value} format />
-      <CopyKvEntry {entry} />
+      <CopyKvEntry target="Value" {entry} />
     </div>
     <div class="flex flex-row-reverse gap-2">
       <Button
