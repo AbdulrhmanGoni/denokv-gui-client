@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.21.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.20.1...v1.21.0) (2026-05-01)
+
+
+### Features
+
+* enable horizontal wheel scroll for long keys in KV Entries table ([d4c7205](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d4c720577de0b13b48084144fcaba5876d0d73d0))
+* make kv stores list remember and load last used filters automatically ([0c3931f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0c3931fc2325b0f6a9eb587f5a720152a58bcfc3))
+
+
+### Bug Fixes
+
+* make sure the latest open bridge server is closed when reloading the page ([edd0201](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/edd0201e3124cc808bbeb9a9354c61a835b0803d))
+
 ## [1.20.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.20.0...v1.20.1) (2026-04-24)
 
 

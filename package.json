@@ -1,7 +1,7 @@
 {
   "name": "denokv-gui-client",
   "description": "An open source GUI client to browse the data inside a Deno KV database and perform CRUD operations",
-  "version": "1.20.1",
+  "version": "1.21.0",
   "private": true,
   "type": "module",
   "homepage": "https://github.com/AbdulrhmanGoni/denokv-gui-client",
@@ -23,6 +23,7 @@
     "compile": "npm run build && electron-builder build --config electron-builder.mjs",
     "test": "npx playwright test -x ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
+    "remote-kv": "docker run -d -it --init -p 4512:4512 -v ./data:/data ghcr.io/denoland/denokv --sqlite-path /data/denokv.sqlite serve --access-token \"0000000000000\"",
     "release": "commit-and-tag-version",
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
     "typecheck": "npm run typecheck --workspaces --if-present",
