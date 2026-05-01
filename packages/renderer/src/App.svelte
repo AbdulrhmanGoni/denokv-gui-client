@@ -1,6 +1,9 @@
 <script lang="ts">
   import { ModeWatcher } from "mode-watcher";
-  import { kvStoresState } from "$lib/states/kvStoresState.svelte";
+  import {
+    closeKvStore,
+    kvStoresState,
+  } from "$lib/states/kvStoresState.svelte";
   import Header from "$lib/layout/Header.svelte";
   import KvEntriesBrowser from "$lib/features/kv-browser/KvEntriesBrowser.svelte";
   import KvStoresManagement from "$lib/features/kv-stores/KvStoresManagement.svelte";
@@ -17,6 +20,7 @@
   import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
 
   onMount(async () => {
+    await closeKvStore();
     await loadSettings();
     if (settingsState.autoCheckForUpdate) {
       startCheckingForUpdates();
