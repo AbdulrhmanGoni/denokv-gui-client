@@ -10,6 +10,7 @@
   import DataFileIcon from "@lucide/svelte/icons/file-braces";
   import PencilIcon from "@lucide/svelte/icons/pencil-line";
   import TrashIcon from "@lucide/svelte/icons/trash";
+  import TagsIcon from "@lucide/svelte/icons/tags";
   import Button, { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
   import DeleteKvEntryButton from "$lib/features/kv-browser/actions/DeleteKvEntryButton.svelte";
   import { cn } from "$lib/shadcn-utils";
@@ -31,7 +32,9 @@
   <Dialog.Content class="max-w-3xl w-full p-3 gap-0">
     {#if kvEntryDialogState.entry}
       {@render keySection(kvEntryDialogState.entry)}
-      <Separator class="my-3" />
+      <Separator class="my-2" />
+      {@render versionstampSection(kvEntryDialogState.entry)}
+      <Separator class="my-2" />
       {#if kvEntryDialogState.openValueEditor}
         <KvEntryValueUpdator entry={kvEntryDialogState.entry} />
       {:else}
@@ -42,7 +45,7 @@
 </Dialog.Root>
 
 {#snippet keySection(entry: KvEntry)}
-  <div class="space-y-3">
+  <div class="space-y-2">
     <p class="flex gap-2 items-center font-bold text-lg">
       <KeyFileIcon /> Key
     </p>
@@ -54,7 +57,7 @@
 {/snippet}
 
 {#snippet valueSection(entry: KvEntry)}
-  <div class="space-y-3 overflow-auto">
+  <div class="space-y-2 overflow-auto">
     <div class="flex gap-2 items-center">
       <DataFileIcon />
       <p class="font-bold text-lg">Value</p>
@@ -84,6 +87,20 @@
         <TrashIcon />
         Delete Entry
       </DeleteKvEntryButton>
+    </div>
+  </div>
+{/snippet}
+
+{#snippet versionstampSection(entry: KvEntry)}
+  <div class="space-y-2">
+    <p class="flex gap-2 items-center font-bold text-lg">
+      <TagsIcon /> Versionstamp
+    </p>
+    <div
+      class="flex gap-2 items-center justify-between bg-card py-1.5 px-3 rounded-md"
+    >
+      <p class="text-nowrap">{entry.versionstamp}</p>
+      <CopyKvEntry target="Versionstamp" {entry} />
     </div>
   </div>
 {/snippet}
