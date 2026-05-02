@@ -8,13 +8,13 @@ type KvEntryDialogState = {
 export const kvEntryDialogState: KvEntryDialogState = $state({
     open: false,
     entry: null,
-    openValueEditor: true,
+    openValueEditor: false,
 })
 
-export function openKvEntryDialog(entry: KvEntry, edit?: boolean) {
+export function openKvEntryDialog(entry: KvEntry, openEditor?: boolean) {
     kvEntryDialogState.entry = entry
     kvEntryDialogState.open = true
-    kvEntryDialogState.openValueEditor = !!edit
+    kvEntryDialogState.openValueEditor = !!openEditor
 }
 
 export const openAddKvEntryFormState = $state({ open: false });
