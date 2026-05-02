@@ -10,7 +10,7 @@ import {
     validateEnqueueRequest,
     validateAtomicOperations,
 } from "../validation/main.ts";
-import type { Kv, KvEntry } from "@deno/kv";
+import type { Kv, KvEntry, KvEntryMaybe } from "@deno/kv";
 import { Hono } from 'hono/tiny';
 import type { BlankEnv, BlankSchema } from "hono/types";
 
@@ -188,6 +188,65 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         await kv.get([crypto.randomUUID()]);
         // If `kv.get` resolves, The database is reachable
         return c.json({ result: true })
+    });
+
+    let watchStreamReader: ReadableStreamDefaultReader<Deno.KvEntryMaybe<unknown>[] | KvEntryMaybe<unknown>[]> | null = null;
+    async function closeWatchStreamReader() {
+        if (watchStreamReader) {
+            await watchStreamReader.cancel().catch(() => { });
+            watchStreamReader = null
+        }
+    }
+    app.post("/watch", async (c) => {
+        const serializedKeys = await c.req.json() as string[]
+
+        if (!Array.isArray(serializedKeys)) {
+            return c.json({ error: "No keys provided to watch." }, 400)
+        }
+
+        const keys = serializedKeys.map((key) => deserializeKvKey(key))
+
+        await closeWatchStreamReader();
+
+        const watchStream = kv.watch(keys, { raw: true });
+        watchStreamReader = watchStream.getReader();
+
+        c.req.raw.signal.addEventListener('abort', closeWatchStreamReader);
+
+        const encoder = new TextEncoder();
+        const readableStream = new ReadableStream({
+            async start(controller) {
+                const pingTimerId = setInterval(() => {
+                    try { controller.enqueue(encoder.encode(": ping")) }
+                    catch { clearInterval(pingTimerId) }
+                }, 4 * 60_000)
+
+                try {
+                    while (true) {
+                        const { value: entries, done } = await watchStreamReader!.read();
+                        if (done) {
+                            clearInterval(pingTimerId)
+                            controller.close()
+                            break
+                        };
+                        const serializedEntries = serializeEntries(entries as KvEntry<unknown>[])
+                        controller.enqueue(encoder.encode(JSON.stringify(serializedEntries)))
+                    }
+                } catch (err) {
+                    clearInterval(pingTimerId)
+                    await closeWatchStreamReader();
+                    controller.error(err)
+                    try { controller.close() } catch { }
+                }
+            },
+            cancel() { closeWatchStreamReader() },
+        });
+
+        c.header("Content-Type", "text/event-stream; charset=utf-8");
+        c.header("Cache-Control", "no-cache");
+        c.header("Connection", "keep-alive");
+
+        return new Response(readableStream, { headers: c.res.headers });
     });
 
     app.all("*", (c) => {

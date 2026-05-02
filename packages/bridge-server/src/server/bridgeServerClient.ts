@@ -186,4 +186,47 @@ export class BridgeServerClient {
             headers: this.headers,
         })
     }
+
+    /**
+     * Watches a set of keys for updates.
+     * @param keys An array of KV keys to watch
+     * @param listener A callback function to be called when one of the watched keys is updated
+     */
+    async watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<(() => void) | void> {
+        try {
+            const controller = new AbortController()
+            const response = await fetch(`${this.baseUrl}/watch`, {
+                method: "POST",
+                headers: this.headers,
+                body: JSON.stringify(keys.map((key) => JSON.stringify(key))),
+                signal: controller.signal
+            })
+
+            if (!response.body) throw "No response body (stream) found."
+
+            this.watchReader = response.body.getReader();
+            const decoder = new TextDecoder();
+            while (true) {
+                const { done, value } = await this.watchReader.read();
+                if (done) break;
+                const data = decoder.decode(value)
+                if (data !== ": ping") listener(JSON.parse(data))
+            }
+        } catch { }
+    }
+
+    /**
+     * The reader of the stream of updates on the watched keys using `watch` method.
+    */
+    private watchReader: ReadableStreamDefaultReader<Uint8Array> | null = null
+
+    /**
+     * Cancels the reader (if exists) that listens for changes on the set of watched keys using `watch` method.
+    */
+    async cancelWatcher() {
+        if (this.watchReader) {
+            await this.watchReader.cancel().catch(() => { })
+            this.watchReader = null
+        }
+    }
 }
