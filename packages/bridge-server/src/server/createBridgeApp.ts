@@ -38,6 +38,9 @@ import type { BlankEnv, BlankSchema } from "hono/types";
  * - `GET /get/:key` - Retrieve a specific KV entry by key (mirroring `Deno.Kv.get()`)
  * - `PUT /set` - Create or update a KV entry (mirroring `Deno.Kv.set()`)
  * - `DELETE /delete` - Remove a KV entry (mirroring `Deno.Kv.delete()`)
+ * - `POST /enqueue` - Enqueue a message to a Deno Kv queue (mirroring `Deno.Kv.enqueue()`)
+ * - `POST /atomic` - Perform atomic operations on KV entries (mirroring `Deno.Kv.atomic()`)
+ * - `POST /watch` - Watch specific keys for updates (mirroring `Deno.Kv.watch()`)
  * - `GET /check` - Health check endpoint to verify KV connectivity
  *
  * All endpoints include CORS headers allowing cross-origin requests from any domain.

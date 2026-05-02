@@ -65,23 +65,37 @@ async function callBridgeServerRequest<ResultT = unknown>(
 };
 
 export type BrowsingOptions = {
+    /** Maximum number of entries to return */
     limit?: number;
+    /** Cursor for pagination (obtained from previous browse result) */
     cursor?: string;
+    /** The number of entries to fetch from the database at once */
     batchSize?: number;
+    /** The consistency level of the list operation: "strong" or "eventual" */
     consistency?: string;
+    /** Whether to return the entries in reverse order */
     reverse?: boolean;
+    /** Filter entries by key prefix */
     prefix?: SerializedKvKey;
+    /** Start key for range query (inclusive) */
     start?: SerializedKvKey;
+    /** End key for range query (exclusive) */
     end?: SerializedKvKey;
 }
 
+/** Options for setting a KV key */
 export type SetKeyOptions = {
+    /** Expiration timestamp in milliseconds */
     expires?: number;
+    /** Whether to overwrite the value if the key already exists (defaults to true) */
     overwrite?: boolean;
 }
 
+/** The result of a browse operation */
 export type BrowseReturn = {
+    /** The list of serialized KV entries */
     entries: SerializedKvEntry[];
+    /** The cursor for the next page of results */
     cursor: string;
 }
 
@@ -188,11 +202,16 @@ export class BridgeServerClient {
     }
 
     /**
-     * Watches a set of keys for updates.
+     * Watches a set of keys for updates via Server-Sent Events (SSE).
+     * 
+     * Whenever a watched key changes, the provided listener is called with the updated entries.
+     * Use `cancelWatcher()` to stop watching and close the connection.
+     * 
      * @param keys An array of KV keys to watch
      * @param listener A callback function to be called when one of the watched keys is updated
+     * @returns A promise that resolves when the watch connection is established
      */
-    async watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<(() => void) | void> {
+    async watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<void> {
         try {
             const controller = new AbortController()
             const response = await fetch(`${this.baseUrl}/watch`, {
