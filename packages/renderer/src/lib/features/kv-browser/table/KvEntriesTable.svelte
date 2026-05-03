@@ -10,10 +10,10 @@
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import RefreshIcon from "@lucide/svelte/icons/refresh-cw";
   import Loader from "@lucide/svelte/icons/loader";
-  import { openKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
   import { columns } from "$lib/features/kv-browser/table/columns";
   import KvEntriesNavigation from "$lib/features/kv-browser/entry-editor/KvEntriesNavigation.svelte";
   import DeleteMultipleEntries from "$lib/features/kv-browser/actions/DeleteMultipleEntries.svelte";
+  import KvEntriesTableRow from "./KvEntriesTableRow.svelte";
 
   const { table }: { table: TableType<SerializedKvEntry> } = $props();
 
@@ -65,19 +65,7 @@
           </tr>
         {:else if kvEntriesState.fetched}
           {#each table.getRowModel().rows as row (JSON.stringify(row.original.key))}
-            <Table.Row
-              data-state={row.getIsSelected() && "selected"}
-              ondblclick={() => openKvEntryDialog(row.original)}
-            >
-              {#each row.getVisibleCells() as cell (cell.id)}
-                <Table.Cell>
-                  <FlexRender
-                    content={cell.column.columnDef.cell}
-                    context={cell.getContext()}
-                  />
-                </Table.Cell>
-              {/each}
-            </Table.Row>
+            <KvEntriesTableRow {row} />
           {:else}
             <tr>
               <td
