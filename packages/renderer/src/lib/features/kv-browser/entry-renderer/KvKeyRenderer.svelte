@@ -51,7 +51,7 @@
 </div>
 
 {#snippet string(value: string)}
-  <span class={dataTypesColors.string}>{`"${value}"`}</span>
+  <pre><span class={dataTypesColors.string}>{`"${value}"`}</span></pre>
 {/snippet}
 
 {#snippet number(value: number | string)}

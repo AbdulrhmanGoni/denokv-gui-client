@@ -23,7 +23,7 @@
   )}
 >
   {#if value.type === "String"}
-    "{value.data}"
+    <pre>{`"${value.data}"`}</pre>
   {:else if value.type === "Number"}
     {value.data}
   {:else if value.type === "BigInt"}
