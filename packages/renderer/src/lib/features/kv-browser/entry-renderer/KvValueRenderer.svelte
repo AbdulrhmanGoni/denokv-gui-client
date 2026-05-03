@@ -4,6 +4,7 @@
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
   import KvValueRegExpRenderer from "$lib/features/kv-browser/entry-renderer/KvValueRegExpRenderer.svelte";
   import KvValueDateRenderer from "$lib/features/kv-browser/entry-renderer/KvValueDateRenderer.svelte";
+  import { wheelXScrollingHandler } from "./wheelXScrollingHandler";
 
   const {
     value,
@@ -16,6 +17,7 @@
 </script>
 
 <div
+  onwheel={wheelXScrollingHandler}
   class={cn(
     "font-semibold overflow-auto flex-1 py-1",
     dataTypeColor,
