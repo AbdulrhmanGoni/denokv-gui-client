@@ -45,7 +45,7 @@
 </Dialog.Root>
 
 {#snippet keySection(entry: KvEntry)}
-  <div class="space-y-2">
+  <div class="space-y-2 overflow-auto">
     <p class="flex gap-2 items-center font-bold text-lg">
       <KeyFileIcon /> Key
     </p>
