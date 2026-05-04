@@ -33,7 +33,7 @@ export const columns: ColumnDef<KvEntry>[] = [
         cell: ({ row }) => (
             renderComponent(
                 KvKeyRenderer,
-                { entry: row.original, className: "max-w-40 md:max-w-46 xl:max-w-52 2xl:max-w-60" }
+                { key: row.original.key, className: "max-w-40 md:max-w-46 xl:max-w-52 2xl:max-w-60" }
             )
         ),
     },

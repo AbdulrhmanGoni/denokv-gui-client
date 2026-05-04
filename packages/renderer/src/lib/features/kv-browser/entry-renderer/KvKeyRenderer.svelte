@@ -3,7 +3,8 @@
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
   import { wheelXScrollingHandler } from "./wheelXScrollingHandler";
 
-  const { entry, className }: { entry: KvEntry; className?: string } = $props();
+  const { key, className }: { key: KvEntry["key"]; className?: string } =
+    $props();
 </script>
 
 <div
@@ -15,7 +16,7 @@
   )}
 >
   {"["}
-  {#each entry.key as keyPart, i}
+  {#each key as keyPart, i}
     <span class="flex items-center">
       {#if typeof keyPart === "object"}
         {#if keyPart?.type === "BigInt"}
@@ -32,7 +33,7 @@
       {:else if typeof keyPart === "boolean"}
         {@render boolean(keyPart)}
       {/if}
-      {#if i != entry.key.length - 1}
+      {#if i != key.length - 1}
         <span class="me-0.5">,</span>
       {/if}
     </span>

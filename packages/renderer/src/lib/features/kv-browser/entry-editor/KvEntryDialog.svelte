@@ -50,7 +50,7 @@
       <KeyFileIcon /> Key
     </p>
     <div class="flex gap-2 justify-between bg-card p-3 rounded-md">
-      <KvKeyRenderer {entry} className="text-nowrap" />
+      <KvKeyRenderer key={entry.key} className="text-nowrap" />
       <CopyKvEntry target="key" className="ml-auto" {entry} />
     </div>
   </div>
