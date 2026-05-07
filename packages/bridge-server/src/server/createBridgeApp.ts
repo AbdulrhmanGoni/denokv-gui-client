@@ -3,6 +3,8 @@ import {
     deserializeKvKey,
     deserializeKvValue,
     serializeEntries,
+    SerializedKvKey,
+    SerializedKvEntry,
 } from "../serialization/main.ts";
 import {
     validateBrowseRequestParams,
@@ -10,9 +12,10 @@ import {
     validateEnqueueRequest,
     validateAtomicOperations,
 } from "../validation/main.ts";
-import type { Kv, KvEntry, KvEntryMaybe } from "@deno/kv";
+import type { Kv, KvEntry, KvEntryMaybe, KvKey } from "@deno/kv";
 import { Hono } from 'hono/tiny';
 import type { BlankEnv, BlankSchema } from "hono/types";
+import { isSameKey } from "../helpers.ts";
 
 /**
  * Creates the bridge server which is a Hono web application that provides HTTP endpoints to interact with
@@ -193,8 +196,10 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         return c.json({ result: true })
     });
 
+    let watchedEntries: { key: SerializedKvKey, versionstamp: string | null }[] = [];
     let watchStreamReader: ReadableStreamDefaultReader<Deno.KvEntryMaybe<unknown>[] | KvEntryMaybe<unknown>[]> | null = null;
     async function closeWatchStreamReader() {
+        if (watchedEntries.length) watchedEntries = []
         if (watchStreamReader) {
             await watchStreamReader.cancel().catch(() => { });
             watchStreamReader = null
@@ -232,8 +237,24 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
                             controller.close()
                             break
                         };
-                        const serializedEntries = serializeEntries(entries as KvEntry<unknown>[])
-                        controller.enqueue(encoder.encode(JSON.stringify(serializedEntries)))
+
+                        const serializedEntries = serializeEntries(entries as KvEntry<unknown>[]);
+                        let updatedEntries: SerializedKvEntry[] = []
+                        if (watchedEntries.length) {
+                            updatedEntries = serializedEntries.filter((entry) => (
+                                watchedEntries.some((wEntry) => (
+                                    isSameKey(wEntry.key, entry.key) && wEntry.versionstamp !== entry.versionstamp
+                                ))
+                            ))
+                        } else {
+                            updatedEntries = serializedEntries
+                        }
+
+                        controller.enqueue(encoder.encode(JSON.stringify(updatedEntries)))
+
+                        watchedEntries = serializedEntries.map((entry) => (
+                            { key: entry.key, versionstamp: entry.versionstamp }
+                        ))
                     }
                 } catch (err) {
                     clearInterval(pingTimerId)
