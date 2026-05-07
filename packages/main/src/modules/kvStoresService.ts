@@ -9,6 +9,7 @@ import path from 'node:path';
 import { openKv } from '@deno/kv';
 import { deadline } from '@std/async';
 import { clearSavedParamsQuery } from '../db/browsingParamsQueries.js';
+import { deleteWatchedKeysQuery } from "../db/watchedKvEntriesQueries.js";
 
 export class KvStoresServiceModule implements AppModule {
     enable(_context: ModuleContext): void {
@@ -79,6 +80,7 @@ export class KvStoresServiceModule implements AppModule {
                     const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined
                     if (!storedKvStore) {
                         clearSavedParamsQuery.run(kvStore.id)
+                        deleteWatchedKeysQuery.run(kvStore.id)
                         return true
                     }
                 }
@@ -88,6 +90,7 @@ export class KvStoresServiceModule implements AppModule {
 
             if (result.changes) {
                 clearSavedParamsQuery.run(kvStore.id)
+                deleteWatchedKeysQuery.run(kvStore.id)
             }
 
             return !!result.changes
