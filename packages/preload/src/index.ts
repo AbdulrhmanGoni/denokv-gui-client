@@ -49,6 +49,14 @@ const kvClient = {
     ipcRenderer.invoke('kvClient:enqueue', value, options),
   atomic: (operations: AtomicOperationInput[]): Promise<TrycatchResult<boolean>> =>
     ipcRenderer.invoke('kvClient:atomic', operations),
+  watch: async (keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<(() => void) | void> => {
+    ipcRenderer.removeAllListeners('kvClient:watch-listener')
+    ipcRenderer.invoke('kvClient:watch', keys)
+    ipcRenderer.on(
+      'kvClient:watch-listener',
+      (_event, updatedEntries: SerializedKvEntry[]) => listener(updatedEntries)
+    )
+  },
 };
 
 const bridgeServer = {
@@ -103,6 +111,13 @@ const appUpdater = {
     ipcRenderer.invoke('quit-and-install-update'),
 };
 
+const watchedKeysService = {
+  getWatchedKeys: (kvStoreId: string): Promise<SerializedKvKey[] | null> =>
+    ipcRenderer.invoke('watchedKeysService:getWatchedKeys', kvStoreId),
+  setWatchedKeys: (kvStoreId: string, keys: SerializedKvKey[]): Promise<boolean> =>
+    ipcRenderer.invoke('watchedKeysService:setWatchedKeys', kvStoreId, keys),
+};
+
 export {
   metadata,
   selectDirectory,
@@ -115,5 +130,6 @@ export {
   settingsService,
   lastFetchedUpdateService,
   browsingParamsService,
+  watchedKeysService,
   pathUtils,
 };

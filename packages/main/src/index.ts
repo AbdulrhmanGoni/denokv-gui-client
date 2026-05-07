@@ -14,6 +14,7 @@ import { BrowsingParamsServiceModule } from './modules/browsingParamsService.js'
 import { AppUpdaterModule } from './modules/appUpdaterModule.js';
 import { MetadataModule } from './modules/metadataModule.js';
 import { KvServerClientModule } from './modules/kvServerClientModule.js';
+import { WatchedKeysServiceModule } from './modules/watchedKeysService.js';
 
 
 export async function initApp(initConfig: AppInitConfig) {
@@ -30,6 +31,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(new AppUpdaterModule())
     .init(new MetadataModule())
     .init(new KvServerClientModule())
+    .init(new WatchedKeysServiceModule())
     .init(allowInternalOrigins(initConfig.renderer instanceof URL ? initConfig.renderer.origin : ''))
     .init(allowTrustedExternalUrls());
 }

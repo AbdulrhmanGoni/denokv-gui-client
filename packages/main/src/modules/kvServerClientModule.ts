@@ -5,7 +5,7 @@ import { getServerClient } from "./bridgeServer.js"
 import { serializeKvKey } from '@app/bridge-server';
 
 export class KvServerClientModule implements AppModule {
-    enable(_context: ModuleContext): void {
+    enable(context: ModuleContext): void {
         ipcMain.handle(`kvClient:browse`, (_, params: BrowsingParams, nextCursor?: string) => {
             const serverClient = getServerClient()
 
@@ -86,6 +86,16 @@ export class KvServerClientModule implements AppModule {
         ipcMain.handle(`kvClient:atomic`, (_, operations: AtomicOperationInput[]) => {
             const serverClient = getServerClient()
             return serverClient.atomic(operations)
+        });
+
+        ipcMain.handle(`kvClient:watch`, (_, keys: SerializedKvKey[]) => {
+            if (!context.browserWindow) {
+                throw new Error("Trying to call `kvClient:watch` before the browser window is created.")
+            }
+            const serverClient = getServerClient()
+            serverClient.watch(keys, (updatedEntries: SerializedKvEntry[]) => {
+                context.browserWindow?.webContents.send("kvClient:watch-listener", updatedEntries)
+            })
         });
     }
 }

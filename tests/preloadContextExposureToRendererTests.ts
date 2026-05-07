@@ -39,7 +39,7 @@ export function preloadContextExposureToRendererTests() {
         expect(typeof kvClient).toEqual('object');
 
         const exposedMethods = Object.keys(kvClient)
-        const targetMethods = ['browse', 'set', 'deleteKey', 'get', 'enqueue', 'atomic'];
+        const targetMethods = ['browse', 'set', 'deleteKey', 'get', 'enqueue', 'atomic', 'watch'];
 
         expect(exposedMethods.length).toBe(targetMethods.length);
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
@@ -122,6 +122,19 @@ export function preloadContextExposureToRendererTests() {
             'updateSavedBrowsingParams',
             'deleteSavedBrowsingParams',
         ];
+
+        expect(exposedMethods.length).toBe(targetMethods.length);
+        targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+
+    test(`'watchedKeysService' should be exposed as an object with its methods`, async ({ page }) => {
+        const watchedKeysService = await page.evaluate(
+            () => globalThis[btoa('watchedKeysService') as keyof typeof globalThis]
+        );
+        expect(typeof watchedKeysService).toEqual('object');
+
+        const exposedMethods = Object.keys(watchedKeysService)
+        const targetMethods = ['setWatchedKeys', 'getWatchedKeys'];
 
         expect(exposedMethods.length).toBe(targetMethods.length);
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));

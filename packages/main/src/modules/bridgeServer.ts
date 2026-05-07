@@ -38,7 +38,8 @@ export class BridgeServerModule implements AppModule {
     }
 }
 
-function closeServer(): void {
+async function closeServer(): Promise<void> {
+    await serverClient?.cancelWatcher()
     serverClient = null
     kv?.close();
     kv = null;
