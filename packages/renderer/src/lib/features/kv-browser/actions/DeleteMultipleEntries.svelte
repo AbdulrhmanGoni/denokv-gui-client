@@ -78,7 +78,11 @@
 <AlertDialog.Root bind:open={getOpen, setOpen}>
     <AlertDialog.Trigger
         onclick={(e) => e.stopPropagation()}
-        class={buttonVariants({ size: "sm", variant: "destructive" })}
+        class={buttonVariants({
+            size: "sm",
+            class: "h-fit px-2 py-1",
+            variant: "destructive",
+        })}
         disabled={isDeleting}
     >
         {#if isDeleting}
