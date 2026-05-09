@@ -40,7 +40,7 @@
   <Select.Trigger class="text-base">
     {@render item(kvStoresState.openedStore!)}
   </Select.Trigger>
-  <Select.Content>
+  <Select.Content class="max-h-[400px]">
     {#each kvStoresState.kvStores as kvStore (kvStore.id)}
       <Select.Item value={kvStore.id}>
         {@render item(kvStore)}
