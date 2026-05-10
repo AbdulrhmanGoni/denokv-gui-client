@@ -126,10 +126,18 @@ export function isWatchedEntry(entry: SerializedKvEntry): boolean {
     return watchedKvEntriesState.keys.some((key) => sameKvKeys(key, entry.key))
 }
 
-export function isUpdatedRecently(entry: SerializedKvEntry): boolean {
-    return watchedKvEntriesState.justUpdatedEntries.some((update) =>
-        update.entries.some((e) => sameKvKeys(e.key, entry.key))
-    )
+export function isUpdatedRecently(entry: SerializedKvEntry): "edited" | "deleted" | null {
+    let updatedEntry: SerializedKvEntry | undefined = undefined;
+    for (const update of watchedKvEntriesState.justUpdatedEntries) {
+        updatedEntry = update.entries.find((e) => sameKvKeys(e.key, entry.key))
+        if (updatedEntry) break
+    }
+
+    if (updatedEntry) {
+        return updatedEntry.versionstamp === null ? "deleted" : "edited"
+    }
+
+    return null
 }
 
 export function isSelectedKey(key: SerializedKvKey) {

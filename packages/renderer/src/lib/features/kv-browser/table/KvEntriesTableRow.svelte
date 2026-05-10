@@ -10,12 +10,21 @@
   } from "$lib/states/watchedKvEntriesState.svelte";
 
   const { row }: { row: Row<SerializedKvEntry> } = $props();
+
+  const updateType = $derived(isUpdatedRecently(row.original));
+  const rowBg = $derived(
+    updateType === "deleted"
+      ? "bg-red-500/15"
+      : updateType === "edited"
+        ? "bg-muted"
+        : "",
+  );
 </script>
 
 <Table.Row
   data-state={row.getIsSelected() && "selected"}
   ondblclick={() => openKvEntryDialog(row.original)}
-  class="transition-colors {isUpdatedRecently(row.original) ? 'bg-card' : ''}"
+  class=" transition-colors ease-out duration-800 {rowBg}"
 >
   {#each row.getVisibleCells() as cell (cell.id)}
     <Table.Cell class={cell.column.id === "key" ? "relative" : ""}>

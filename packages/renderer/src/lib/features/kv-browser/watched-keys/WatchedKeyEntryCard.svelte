@@ -15,18 +15,26 @@
     import KvValueRenderer from "../entry-renderer/KvValueRenderer.svelte";
     import Checkbox from "$lib/ui/shadcn/checkbox/checkbox.svelte";
     import Button from "$lib/ui/shadcn/button/button.svelte";
+    import dataTypesColors from "../utils/dataTypesColors";
 
     let { entry }: { entry: KvEntry } = $props();
 
     let checked = $derived.by(() => isSelectedKey(entry.key));
+
+    const updateType = $derived(isUpdatedRecently(entry));
+    const rowBg = $derived(
+        updateType === "deleted"
+            ? "bg-red-500/15"
+            : updateType === "edited"
+              ? "bg-muted"
+              : "bg-card",
+    );
 </script>
 
 <div
-    class="flex flex-col ease-in-out {isUpdatedRecently(entry)
-        ? 'bg-muted'
-        : 'bg-card'}
+    class="flex flex-col {rowBg}
     rounded-md border {checked ? 'border-foreground' : ''}
-    p-2 text-sm"
+    p-2 text-sm transition-colors ease-out duration-800"
 >
     <div class="flex flex-col gap-1 flex-1 overflow-hidden">
         <div class="flex items-center gap-2 rounded-t-sm">
@@ -38,7 +46,13 @@
         </div>
         <div class="flex gap-2 items-center font-bold">
             <TagsIcon class="size-4" /> Versionstamp:
-            <span class="font-normal flex-1">{entry.versionstamp}</span>
+            <span
+                class="font-normal flex-1 {entry.versionstamp
+                    ? ''
+                    : dataTypesColors.null + ' font-semibold'}"
+            >
+                {entry.versionstamp ?? "null"}
+            </span>
             <CopyKvEntry target="Versionstamp" {entry} />
         </div>
         <div class="flex items-center gap-2 rounded-b-sm">
