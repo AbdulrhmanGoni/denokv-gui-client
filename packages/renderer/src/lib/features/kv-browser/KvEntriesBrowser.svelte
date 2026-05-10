@@ -25,6 +25,12 @@
   import RotateCwIcon from "@lucide/svelte/icons/rotate-cw";
   import EnqueueMessage from "$lib/features/kv-browser/enqueue-message/EnqueueMessage.svelte";
   import AtomicOperationsConstructor from "./atomic-operations/AtomicOperationsConstructor.svelte";
+  import {
+    fetchWatchedKeysForOpenedKvStore,
+    resetWatchedKvEntriesState,
+    startWatchingKvEntries,
+  } from "$lib/states/watchedKvEntriesState.svelte";
+  import WatchedKeysDialog from "./watched-keys/WatchedKeysDialog.svelte";
 
   const table = createKvEntriesTable();
 
@@ -40,15 +46,21 @@
   onMount(async () => {
     await fetchSavedDefaultBrowsingParams();
     await fetchEntries();
+    resetWatchedKvEntriesState();
+    await fetchWatchedKeysForOpenedKvStore();
+    startWatchingKvEntries();
   });
 </script>
 
 <div class="space-y-2 flex flex-col justify-center h-full">
-  <div class="flex gap-2 items-center mb-4">
-    <Button size="default" variant="outline" onclick={close}>
-      <ArrowLeftFromLineIcon class="size-5" />
-    </Button>
-    <KvStorePicker kvEntriesTable={table} />
+  <div class="flex gap-2 items-center justify-between mb-4">
+    <div class="flex gap-2 items-center">
+      <Button size="default" variant="outline" onclick={close}>
+        <ArrowLeftFromLineIcon class="size-5" />
+      </Button>
+      <KvStorePicker kvEntriesTable={table} />
+    </div>
+    <WatchedKeysDialog />
   </div>
   <div class="flex gap-2 items-center justify-end">
     <BrowseParams />

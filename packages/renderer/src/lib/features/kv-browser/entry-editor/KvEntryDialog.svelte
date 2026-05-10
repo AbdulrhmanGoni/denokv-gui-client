@@ -10,10 +10,17 @@
   import DataFileIcon from "@lucide/svelte/icons/file-braces";
   import PencilIcon from "@lucide/svelte/icons/pencil-line";
   import TrashIcon from "@lucide/svelte/icons/trash";
+  import EyeIcon from "@lucide/svelte/icons/eye";
+  import EyeOffIcon from "@lucide/svelte/icons/eye-off";
   import TagsIcon from "@lucide/svelte/icons/tags";
   import Button, { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
   import DeleteKvEntryButton from "$lib/features/kv-browser/actions/DeleteKvEntryButton.svelte";
   import { cn } from "$lib/shadcn-utils";
+  import {
+    isWatchedEntry,
+    unwatchKvEntries,
+    watchKvEntries,
+  } from "$lib/states/watchedKvEntriesState.svelte";
 
   function getOpen() {
     return kvEntryDialogState.open;
@@ -24,6 +31,18 @@
     if (!newOpen) {
       kvEntryDialogState.entry = null;
       kvEntryDialogState.openValueEditor = false;
+    }
+  }
+
+  const isWatched = $derived(
+    kvEntryDialogState.entry ? isWatchedEntry(kvEntryDialogState.entry) : false,
+  );
+
+  function handleWatchAction() {
+    if (isWatched) {
+      unwatchKvEntries([kvEntryDialogState.entry!]);
+    } else {
+      watchKvEntries([kvEntryDialogState.entry!]);
     }
   }
 </script>
@@ -49,7 +68,10 @@
     <p class="flex gap-2 items-center font-bold text-lg">
       <KeyFileIcon /> Key
     </p>
-    <div class="flex gap-2 justify-between bg-card p-3 rounded-md">
+    <div class="flex gap-2 justify-between bg-card p-3 rounded-md relative">
+      {#if isWatched}
+        <EyeIcon class="size-4 absolute left-[5px] top-[5px]" />
+      {/if}
       <KvKeyRenderer key={entry.key} className="text-nowrap" />
       <CopyKvEntry target="key" className="ml-auto" {entry} />
     </div>
@@ -77,7 +99,7 @@
         }}
       >
         <PencilIcon />
-        Edit Entry
+        Edit
       </Button>
       <DeleteKvEntryButton
         {entry}
@@ -85,8 +107,17 @@
         onDeleteSuccess={() => setOpen(false)}
       >
         <TrashIcon />
-        Delete Entry
+        Delete
       </DeleteKvEntryButton>
+      <Button variant="secondary" size="sm" onclick={handleWatchAction}>
+        {#if isWatched}
+          <EyeOffIcon />
+          Unwatch
+        {:else}
+          <EyeIcon />
+          Watch
+        {/if}
+      </Button>
     </div>
   </div>
 {/snippet}

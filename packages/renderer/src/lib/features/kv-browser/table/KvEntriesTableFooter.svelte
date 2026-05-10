@@ -2,6 +2,7 @@
   import type { Table as TableType } from "@tanstack/table-core";
   import KvEntriesNavigation from "$lib/features/kv-browser/entry-editor/KvEntriesNavigation.svelte";
   import DeleteMultipleEntries from "$lib/features/kv-browser/actions/DeleteMultipleEntries.svelte";
+  import WatchMultipleEntries from "../actions/WatchMultipleEntries.svelte";
 
   const { table }: { table: TableType<SerializedKvEntry> } = $props();
 
@@ -16,6 +17,7 @@
     {displayedRows} row{selectedRowsCount > 1 ? "s" : ""} selected.
     {#if selectedRowsCount}
       <DeleteMultipleEntries {selectedRows} />
+      <WatchMultipleEntries {selectedRows} />
     {/if}
   </div>
   <KvEntriesNavigation />

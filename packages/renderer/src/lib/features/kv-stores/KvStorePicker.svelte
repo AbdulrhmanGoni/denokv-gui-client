@@ -10,6 +10,11 @@
     fetchEntries,
     resetEntriesState,
   } from "$lib/states/kvEntriesState.svelte";
+  import {
+    fetchWatchedKeysForOpenedKvStore,
+    resetWatchedKvEntriesState,
+    startWatchingKvEntries,
+  } from "$lib/states/watchedKvEntriesState.svelte";
 
   const { kvEntriesTable }: { kvEntriesTable: Table<SerializedKvEntry> } =
     $props();
@@ -26,6 +31,9 @@
       kvEntriesTable.resetRowSelection();
       await resetEntriesState();
       await fetchEntries();
+      resetWatchedKvEntriesState();
+      await fetchWatchedKeysForOpenedKvStore();
+      startWatchingKvEntries();
     } else {
       openedKvStoreId = kvStoresState.openedStore!.id;
     }

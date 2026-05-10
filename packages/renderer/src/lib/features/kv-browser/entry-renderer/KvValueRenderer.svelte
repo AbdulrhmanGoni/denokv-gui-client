@@ -13,7 +13,7 @@
   }: { value: KvEntry["value"]; format?: boolean; className?: string } =
     $props();
 
-  const dataTypeColor = dataTypesColors[value.type.toLowerCase()];
+  const dataTypeColor = $derived(dataTypesColors[value.type.toLowerCase()]);
 </script>
 
 <div

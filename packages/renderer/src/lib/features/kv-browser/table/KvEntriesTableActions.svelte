@@ -6,6 +6,8 @@
   import CopyValueIcon from "@lucide/svelte/icons/clipboard-copy";
   import TagsIcon from "@lucide/svelte/icons/tags";
   import TrashIcon from "@lucide/svelte/icons/trash";
+  import EyeIcon from "@lucide/svelte/icons/eye";
+  import EyeOffIcon from "@lucide/svelte/icons/eye-off";
   import { Button } from "$lib/ui/shadcn/button/index.js";
   import * as DropdownMenu from "$lib/ui/shadcn/dropdown-menu/index.js";
   import DeleteKvEntryButton from "$lib/features/kv-browser/actions/DeleteKvEntryButton.svelte";
@@ -15,6 +17,11 @@
     copyEntryValue,
     copyEntryVersionStamp,
   } from "../utils/copyKvEntry";
+  import {
+    isWatchedEntry,
+    unwatchKvEntries,
+    watchKvEntries,
+  } from "$lib/states/watchedKvEntriesState.svelte";
 
   const { entry }: { entry: KvEntry } = $props();
 
@@ -61,6 +68,15 @@
     <DropdownMenu.Item onclick={() => openKvEntryDialog(entry, true)}>
       <EditIcon /> Edit
     </DropdownMenu.Item>
+    {#if isWatchedEntry(entry)}
+      <DropdownMenu.Item onclick={() => unwatchKvEntries([entry])}>
+        <EyeOffIcon /> Unwatch
+      </DropdownMenu.Item>
+    {:else}
+      <DropdownMenu.Item onclick={() => watchKvEntries([entry])}>
+        <EyeIcon /> Watch
+      </DropdownMenu.Item>
+    {/if}
     <DropdownMenu.Separator />
     <DropdownMenu.Item>
       <DeleteKvEntryButton

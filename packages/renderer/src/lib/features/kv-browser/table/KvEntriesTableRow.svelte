@@ -3,6 +3,11 @@
   import * as Table from "$lib/ui/shadcn/table/index.js";
   import type { Row } from "@tanstack/table-core";
   import { openKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
+  import EyeIcon from "@lucide/svelte/icons/eye";
+  import {
+    isUpdatedRecently,
+    isWatchedEntry,
+  } from "$lib/states/watchedKvEntriesState.svelte";
 
   const { row }: { row: Row<SerializedKvEntry> } = $props();
 </script>
@@ -10,9 +15,13 @@
 <Table.Row
   data-state={row.getIsSelected() && "selected"}
   ondblclick={() => openKvEntryDialog(row.original)}
+  class="transition-colors {isUpdatedRecently(row.original) ? 'bg-card' : ''}"
 >
   {#each row.getVisibleCells() as cell (cell.id)}
-    <Table.Cell>
+    <Table.Cell class={cell.column.id === "key" ? "relative" : ""}>
+      {#if cell.column.id === "key" && isWatchedEntry(row.original)}
+        <EyeIcon class="size-3.5 absolute -left-0.5 top-[5px]" />
+      {/if}
       <FlexRender
         content={cell.column.columnDef.cell}
         context={cell.getContext()}
