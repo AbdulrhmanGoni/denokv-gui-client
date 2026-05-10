@@ -49,7 +49,7 @@
     titleIcon={editFileIcon}
   />
   <div class="flex flex-row-reverse gap-2">
-    <Button variant="secondary" size="sm" onclick={saveChanges}>
+    <Button variant="secondary2" size="sm" onclick={saveChanges}>
       Save
       <SaveIcon />
     </Button>
