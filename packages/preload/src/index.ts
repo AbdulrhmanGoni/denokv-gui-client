@@ -49,13 +49,17 @@ const kvClient = {
     ipcRenderer.invoke('kvClient:enqueue', value, options),
   atomic: (operations: AtomicOperationInput[]): Promise<TrycatchResult<boolean>> =>
     ipcRenderer.invoke('kvClient:atomic', operations),
-  watch: async (keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<(() => void) | void> => {
+  watch: (keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): void => {
     ipcRenderer.removeAllListeners('kvClient:watch-listener')
     ipcRenderer.invoke('kvClient:watch', keys)
     ipcRenderer.on(
       'kvClient:watch-listener',
       (_event, updatedEntries: SerializedKvEntry[]) => listener(updatedEntries)
     )
+  },
+  cancelWatcher: async (): Promise<void> => {
+    ipcRenderer.removeAllListeners('kvClient:watch-listener')
+    await ipcRenderer.invoke('kvClient:cancelWatcher')
   },
 };
 

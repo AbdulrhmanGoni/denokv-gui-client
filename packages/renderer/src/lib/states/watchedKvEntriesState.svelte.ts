@@ -39,6 +39,11 @@ export function resetWatchedKvEntriesState() {
 }
 
 export function startWatchingKvEntries(isReopen: boolean = false) {
+    if (!watchedKvEntriesState.keys.length) {
+        kvClient.cancelWatcher()
+        return
+    }
+
     kvClient.watch($state.snapshot(watchedKvEntriesState.keys), (updatedEntries) => {
         const isInitialCall = !watchedKvEntriesState.keysEntries.length
         if (updatedEntries.length === watchedKvEntriesState.keys.length) {

@@ -97,6 +97,14 @@ export class KvServerClientModule implements AppModule {
                 context.browserWindow?.webContents.send("kvClient:watch-listener", updatedEntries)
             })
         });
+
+        ipcMain.handle(`kvClient:cancelWatcher`, () => {
+            if (!context.browserWindow) {
+                throw new Error("Trying to call `kvClient:cancelWatcher` before the browser window is created.")
+            }
+            const serverClient = getServerClient()
+            serverClient.cancelWatcher()
+        });
     }
 }
 
