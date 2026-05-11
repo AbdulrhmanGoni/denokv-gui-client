@@ -61,6 +61,12 @@ export async function closeKvStore() {
     await bridgeServer.closeServer();
 }
 
+export function removeKvStore(kvStore: KvStore) {
+    const filteredKvStores = kvStoresState.kvStores.filter((c) => c.id != kvStore.id)
+    if (kvStoresState.kvStores.length === filteredKvStores.length) return
+    kvStoresState.kvStores = filteredKvStores
+}
+
 async function startKvStoreServer(kvStore: KvStore) {
     let isOpened = false;
     let error = "";
