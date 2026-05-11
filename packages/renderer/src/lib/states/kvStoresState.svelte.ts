@@ -4,6 +4,7 @@ import { toast } from "svelte-sonner";
 
 type StoresState = {
     kvStores: KvStore[];
+    kvStoreTypeCounts: Record<KvStore["type"], number>;
     loaded: boolean;
     error: string;
     openedStore: KvStore | null;
@@ -15,6 +16,12 @@ type StoresState = {
 
 export let kvStoresState: StoresState = $state({
     kvStores: [],
+    kvStoreTypeCounts: {
+        remote: 0,
+        local: 0,
+        default: 0,
+        bridge: 0,
+    },
     loaded: false,
     error: "",
     openedStore: null,
@@ -24,9 +31,25 @@ export let kvStoresState: StoresState = $state({
     selectedTypes: [],
 });
 
+function calculateKvStoreTypeCounts() {
+    kvStoresState.kvStoreTypeCounts = kvStoresState.kvStores.reduce(
+        (counts, kvStore) => {
+            counts[kvStore.type] += 1;
+            return counts;
+        },
+        {
+            remote: 0,
+            local: 0,
+            default: 0,
+            bridge: 0,
+        } satisfies Record<KvStore["type"], number>,
+    );
+}
+
 export async function loadKvStores() {
     try {
         kvStoresState.kvStores = await kvStoresService.getAll()
+        calculateKvStoreTypeCounts()
         kvStoresState.loaded = true
         kvStoresState.error = ""
     } catch (error) {
@@ -65,6 +88,7 @@ export function removeKvStore(kvStore: KvStore) {
     const filteredKvStores = kvStoresState.kvStores.filter((c) => c.id != kvStore.id)
     if (kvStoresState.kvStores.length === filteredKvStores.length) return
     kvStoresState.kvStores = filteredKvStores
+    kvStoresState.kvStoreTypeCounts[kvStore.type] -= 1
 }
 
 async function startKvStoreServer(kvStore: KvStore) {

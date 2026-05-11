@@ -119,6 +119,7 @@
     {#each filterOptions as option}
       <FilterKvStoresChip
         {option}
+        count={kvStoresState.kvStoreTypeCounts[option.type]}
         isSelected={kvStoresState.selectedTypes.includes(option.type)}
         onclick={() => toggleFilter(option.type)}
       />

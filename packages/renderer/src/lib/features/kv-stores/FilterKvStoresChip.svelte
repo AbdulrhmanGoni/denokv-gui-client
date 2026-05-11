@@ -1,8 +1,9 @@
 <script lang="ts">
     import type { Component } from "svelte";
 
-    const { option, isSelected, onclick } = $props<{
+    const { option, count, isSelected, onclick } = $props<{
         option: { label: string; icon: Component<any>; color: string };
+        count: number;
         isSelected: boolean;
         onclick: () => void;
     }>();
@@ -37,5 +38,6 @@
         : 'bg-background border-input text-muted-foreground'}"
 >
     <option.icon class="size-4 {iconColor}" />
-    {option.label}
+    <span>{option.label}</span>
+    ({count})
 </button>
