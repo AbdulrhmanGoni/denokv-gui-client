@@ -32,12 +32,12 @@
 </script>
 
 <button
+    id="filter-{option.label}"
     {onclick}
     class="flex items-center gap-1.5 px-2 py-1 cursor-pointer rounded-md border text-sm font-medium transition-all hover:bg-accent/50 {isSelected
         ? `bg-accent ${borderColor} shadow-sm text-foreground`
         : 'bg-background border-input text-muted-foreground'}"
 >
     <option.icon class="size-4 {iconColor}" />
-    <span>{option.label}</span>
-    ({count})
+    {option.label} ({count})
 </button>

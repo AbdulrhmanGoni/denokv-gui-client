@@ -273,10 +273,10 @@ export function kvStoresTests() {
     });
 
     test('Filter Kv Stores by type', async ({ page }) => {
-        const remoteButton = page.getByRole('button', { name: 'Remote', exact: true });
-        const localButton = page.getByRole('button', { name: 'Local', exact: true });
-        const bridgeButton = page.getByRole('button', { name: 'Bridge', exact: true });
-        const defaultButton = page.getByRole('button', { name: 'Default', exact: true });
+        const remoteButton = page.locator('#filter-Remote');
+        const localButton = page.locator('#filter-Local');
+        const bridgeButton = page.locator('#filter-Bridge');
+        const defaultButton = page.locator('#filter-Default');
 
         const remoteStore = page.locator('#kv-stores-grid > div', { hasText: 'Remote Test Store' });
         const bridgeStore = page.locator('#kv-stores-grid > div', { hasText: 'Bridge Test Store' });
