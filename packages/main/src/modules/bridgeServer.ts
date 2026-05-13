@@ -21,7 +21,7 @@ export class BridgeServerModule implements AppModule {
             } else {
                 bridgeServerAuthToken = randomBytes(30).toString("base64")
                 if (kv || serverRef) {
-                    closeServer()
+                    await closeServer()
                 }
                 kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken })
                 const server = openBridgeServerInNode(kv, { port: 0, authToken: bridgeServerAuthToken });
