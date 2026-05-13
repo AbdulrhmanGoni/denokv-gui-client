@@ -16,6 +16,9 @@ export class BridgeServerModule implements AppModule {
         ipcMain.handle("bridgeServer:openServer", async (_, kvStore: KvStore) => {
             let bridgeServerUrl = "";
             if (kvStore.type == "bridge") {
+                if (kv || serverRef) {
+                    await closeServer()
+                }
                 bridgeServerUrl = kvStore.url
                 bridgeServerAuthToken = kvStore.authToken
             } else {
