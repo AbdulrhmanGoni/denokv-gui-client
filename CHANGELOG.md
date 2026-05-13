@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.22.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.21.0...v1.22.0) (2026-05-13)
+
+
+### Features
+
+* add support for `Deno.Kv.watch` feature to watch updates on specific keys ([91940d0](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/91940d0d8a318dd9abda1d8181072e96f6c6488f))
+* enable horizontal wheel scroll for long values in KV Entries table ([7d90f7a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7d90f7a3cfc4171186dc5dde4152d51a54404d95))
+* add "Versionstamp" section to KV Entry Display Window ([adf4e5c](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/adf4e5c60c13fcdbc16791c7595814a5e54e002d))
+* add count indicator to KV store filter buttons ([931fb6f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/931fb6f11b1024a9873d3648110a9cc3174709dd))
+
+
+### Bug Fixes
+
+* ensure in-app bridge server is closed before connecting to external bridge servers ([f9811b1](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f9811b1a778082c8133c14a386795c59d6167f30))
+* await previous in-app bridge server to close before opening a new one ([b538ecc](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b538eccb9e03a67aaaf50416392707ee3fc237c1))
+* prevent KvStorePicker dropdown menu overflow with a large number of stores ([f239392](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f2393924e817866e81b3ed3e38455ae90baab805))
+* fix overflow issue for long keys in Kv Entry display window ([5f2e20c](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5f2e20c2eebb1105bac701040392c6377b435380))
+* fix spaces collapsing issue in rendering keys and values ([9d97901](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/9d97901a85a49aca2a759b9eedc7b0df8fff3014))
+
+
+### Security
+
+* apply security patches for a couple of dependencies ([5fd61bf](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5fd61bf1b989c034fccff81cc7532e2e5ac08a91))
+
 ## [1.21.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.20.1...v1.21.0) (2026-05-01)
 
 
