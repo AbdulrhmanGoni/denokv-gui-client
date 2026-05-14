@@ -11,6 +11,7 @@ import { kvStoresTests } from './kvStoresTests';
 import { kvEntriesTests } from './kvEntriesTests';
 import { filteringKvEntriesTests } from './filteringKvEntriesTests';
 import { atomicOperationsTests } from './atomicOperationsTests';
+import { watchedKeysTests } from './watchedKeysTests';
 
 process.env.PLAYWRIGHT_TEST = 'true';
 
@@ -91,5 +92,7 @@ test.describe('Kv Stores Tests', kvStoresTests)
 test.describe('Kv Entries Tests', kvEntriesTests)
 
 test.describe('Filtering Kv Entries Tests', filteringKvEntriesTests)
+
+test.describe('Watched Keys Tests', watchedKeysTests)
 
 test.describe('Atomic Operations Tests', atomicOperationsTests)
