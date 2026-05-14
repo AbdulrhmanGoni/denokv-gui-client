@@ -127,6 +127,7 @@ async function takeScreenshots(page: Page) {
         takeScreenshotOfSavedBrowsingParamsDialog,
         takeScreenshotOfEnqueueMessageDialog,
         takeScreenshotOfAtomicOperationsDialog,
+        takeScreenshotOfWatchedKeysDialog,
     ]
 
     for (const step of steps) {
@@ -194,7 +195,7 @@ async function takeScreenshotOfDisplayKvEntryDialog(page: Page) {
 }
 
 async function takeScreenshotOfEditKvEntryDialog(page: Page) {
-    await page.locator('button', { hasText: "Edit Entry" }).click();
+    await page.locator('button', { hasText: "Edit" }).click();
     await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Object" }).click();
     await page.waitForTimeout(100);
     await takeScreenshotOfTheme(page, "EditKvEntryDialog")
@@ -349,5 +350,43 @@ async function takeScreenshotOfAtomicOperationsDialog(page: Page) {
 
     await page.waitForTimeout(150)
     await takeScreenshotOfTheme(page, "AtomicOperationsDialog")
+    await page.keyboard.press('Escape');
+}
+
+async function takeScreenshotOfWatchedKeysDialog(page: Page) {
+    const watchedEntries = [
+        {
+            key: ["A", "watched", "Object"],
+            value: { type: "Object", data: '{"name": "abdulrhman", "title": "IM", "rating": 2525}' },
+        },
+        {
+            key: ["A", "watched", "Set"],
+            value: { type: "Set", data: "new Set([4757, 5853, 43777])" },
+        },
+        {
+            key: ["A", "watched", "Map"],
+            value: { type: "Map", data: "new Map([['dhme', 1], ['hymo', 2]])" },
+        },
+    ];
+
+    await page.evaluate(async (entries) => {
+        const kvClient = globalThis[btoa("kvClient") as keyof typeof globalThis];
+        for (const entry of entries) {
+            await kvClient.set(entry.key, entry.value);
+        }
+    }, watchedEntries);
+
+    await page.locator("button", { hasText: "Reload" }).click();
+
+    const watchedRows = page.locator("tr", { hasText: `"watched"` });
+    for await (const row of await watchedRows.all()) {
+        await row.locator('[data-slot="checkbox"]').click();
+    }
+
+    await page.getByRole("button", { name: "Watch", exact: true }).click();
+    await takeScreenshotOfTheme(page, "WatchedEntries")
+    await page.locator('button', { hasText: /Watched Keys \(\d+\)/ }).click();
+    await page.waitForTimeout(100);
+    await takeScreenshotOfTheme(page, "WatchedKeysDialog")
     await page.keyboard.press('Escape');
 }
