@@ -13,7 +13,7 @@
     import PLink from "$lib/ui/primitives/PLink.svelte";
     import EyeOffIcon from "@lucide/svelte/icons/eye-off";
     import WatchedKeyEntryCard from "./WatchedKeyEntryCard.svelte";
-    import { sameKvKeys } from "$lib/helpers/compareKvKeys";
+    import { isSameKvKey } from "@app/bridge-server/kv-utils";
 </script>
 
 <Dialog.Root bind:open={watchedKvEntriesState.openDialog}>
@@ -75,7 +75,7 @@
                         unwatchKvEntries(
                             watchedKvEntriesState.keysEntries.filter((entry) =>
                                 watchedKvEntriesState.selectedKeys.some((key) =>
-                                    sameKvKeys(entry.key, key),
+                                    isSameKvKey(entry.key, key),
                                 ),
                             ),
                         )}

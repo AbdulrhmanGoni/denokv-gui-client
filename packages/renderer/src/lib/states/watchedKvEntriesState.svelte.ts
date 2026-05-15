@@ -1,4 +1,4 @@
-import { sameKvKeys } from "$lib/helpers/compareKvKeys";
+import { isSameKvKey } from "@app/bridge-server/kv-utils";
 import { kvClient, watchedKeysService } from "@app/preload";
 import { kvEntriesState } from "./kvEntriesState.svelte";
 import { kvEntryDialogState } from "./kvEntryDialogState.svelte";
@@ -50,17 +50,17 @@ export function startWatchingKvEntries(isReopen: boolean = false) {
             watchedKvEntriesState.keysEntries = updatedEntries
         } else {
             watchedKvEntriesState.keysEntries = watchedKvEntriesState.keysEntries.map((entry) => (
-                updatedEntries.find((ue) => sameKvKeys(entry.key, ue.key)) ?? entry
+                updatedEntries.find((ue) => isSameKvKey(entry.key, ue.key)) ?? entry
             ))
         }
 
         kvEntriesState.entries = kvEntriesState.entries.map((entry) => {
-            const updatedEntry = updatedEntries.find((ue) => sameKvKeys(entry.key, ue.key))
+            const updatedEntry = updatedEntries.find((ue) => isSameKvKey(entry.key, ue.key))
             return updatedEntry ? updatedEntry : entry
         })
 
         if (kvEntryDialogState.entry && kvEntryDialogState.open) {
-            const updatedEntry = updatedEntries.find((ue) => sameKvKeys(kvEntryDialogState.entry!.key, ue.key))
+            const updatedEntry = updatedEntries.find((ue) => isSameKvKey(kvEntryDialogState.entry!.key, ue.key))
             if (updatedEntry) kvEntryDialogState.entry = updatedEntry
         }
 
@@ -90,10 +90,10 @@ export async function syncWatchedKeys(updatedWatchedKeys: SerializedKvKey[]) {
         if (success) {
             await fetchWatchedKeysForOpenedKvStore()
             watchedKvEntriesState.keysEntries = watchedKvEntriesState.keysEntries.filter(
-                (entry) => updatedWatchedKeys.some((key) => sameKvKeys(entry.key, key))
+                (entry) => updatedWatchedKeys.some((key) => isSameKvKey(entry.key, key))
             )
             watchedKvEntriesState.selectedKeys = watchedKvEntriesState.selectedKeys.filter(
-                (key) => updatedWatchedKeys.some((k) => sameKvKeys(key, k))
+                (key) => updatedWatchedKeys.some((k) => isSameKvKey(key, k))
             )
             startWatchingKvEntries(true)
         } else toast.error("Failed to sync watched keys.")
@@ -106,7 +106,7 @@ export async function watchKvEntries(entries: SerializedKvEntry[]) {
     const updatedWatchedKeys: SerializedKvKey[] = [...watchedKvEntriesState.keys]
 
     for (const entry of entries) {
-        const exists = watchedKvEntriesState.keys.some((key) => sameKvKeys(key, entry.key))
+        const exists = watchedKvEntriesState.keys.some((key) => isSameKvKey(key, entry.key))
         !exists && updatedWatchedKeys.push(entry.key)
     }
 
@@ -116,20 +116,20 @@ export async function watchKvEntries(entries: SerializedKvEntry[]) {
 
 export async function unwatchKvEntries(entries: SerializedKvEntry[]) {
     const updatedWatchedKeys: SerializedKvKey[] = watchedKvEntriesState.keys.filter(
-        (key) => !entries.some((e) => sameKvKeys(key, e.key))
+        (key) => !entries.some((e) => isSameKvKey(key, e.key))
     )
     if (watchedKvEntriesState.keys.length === updatedWatchedKeys.length) return
     await syncWatchedKeys(updatedWatchedKeys)
 }
 
 export function isWatchedEntry(entry: SerializedKvEntry): boolean {
-    return watchedKvEntriesState.keys.some((key) => sameKvKeys(key, entry.key))
+    return watchedKvEntriesState.keys.some((key) => isSameKvKey(key, entry.key))
 }
 
 export function isUpdatedRecently(entry: SerializedKvEntry): "edited" | "deleted" | null {
     let updatedEntry: SerializedKvEntry | undefined = undefined;
     for (const update of watchedKvEntriesState.justUpdatedEntries) {
-        updatedEntry = update.entries.find((e) => sameKvKeys(e.key, entry.key))
+        updatedEntry = update.entries.find((e) => isSameKvKey(e.key, entry.key))
         if (updatedEntry) break
     }
 
@@ -141,12 +141,12 @@ export function isUpdatedRecently(entry: SerializedKvEntry): "edited" | "deleted
 }
 
 export function isSelectedKey(key: SerializedKvKey) {
-    return watchedKvEntriesState.selectedKeys.some((k) => sameKvKeys(k, key))
+    return watchedKvEntriesState.selectedKeys.some((k) => isSameKvKey(k, key))
 }
 
 export function toggleSelectedKey(key: SerializedKvKey, isSelected?: boolean) {
     if (isSelected ?? isSelectedKey(key)) {
-        watchedKvEntriesState.selectedKeys = watchedKvEntriesState.selectedKeys.filter((k) => !sameKvKeys(k, key))
+        watchedKvEntriesState.selectedKeys = watchedKvEntriesState.selectedKeys.filter((k) => !isSameKvKey(k, key))
     } else {
         watchedKvEntriesState.selectedKeys.push(key)
     }
