@@ -6,55 +6,65 @@ import { BridgeServerClient, openBridgeServerInNode } from '@app/bridge-server';
 import { type AddressInfo } from "node:net";
 import { randomBytes } from "node:crypto";
 
-let serverRef: { close: () => void } | null = null;
-let kv: Kv | null = null;
-let serverClient: BridgeServerClient | null = null;
-let bridgeServerAuthToken: string | null = null;
+class BridgeServerController {
+    private serverRef: ReturnType<typeof openBridgeServerInNode> | null = null;
+    private kv: Kv | null = null;
+    private serverClient: BridgeServerClient | null = null;
+    private bridgeServerAuthToken: string | null = null;
+
+    async open(kvStore: KvStore): Promise<void> {
+        await this.close()
+
+        if (kvStore.type == "bridge") {
+            this.bridgeServerAuthToken = kvStore.authToken
+            this.serverClient = new BridgeServerClient(kvStore.url, {
+                authToken: this.bridgeServerAuthToken ?? ""
+            })
+            return
+        }
+
+        this.bridgeServerAuthToken = randomBytes(30).toString("base64")
+        this.kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken })
+        this.serverRef = openBridgeServerInNode(this.kv, { port: 0, authToken: this.bridgeServerAuthToken });
+
+        const address = this.serverRef.address() as AddressInfo
+        this.serverClient = new BridgeServerClient(`http://localhost:${address.port}`, {
+            authToken: this.bridgeServerAuthToken
+        })
+    }
+
+    async close(): Promise<void> {
+        await this.serverClient?.cancelWatcher()
+        this.serverClient = null
+        this.kv?.close();
+        this.kv = null;
+        this.serverRef?.close();
+        this.serverRef = null;
+        this.bridgeServerAuthToken = null
+    }
+
+    getClient(): BridgeServerClient {
+        if (!this.serverClient) {
+            throw new Error("Trying to use the bridge server client before it gets initialized!")
+        }
+
+        return this.serverClient
+    }
+}
+
+const bridgeServerController = new BridgeServerController()
 
 export class BridgeServerModule implements AppModule {
     enable(_context: ModuleContext): void {
         ipcMain.handle("bridgeServer:openServer", async (_, kvStore: KvStore) => {
-            let bridgeServerUrl = "";
-            if (kvStore.type == "bridge") {
-                if (kv || serverRef) {
-                    await closeServer()
-                }
-                bridgeServerUrl = kvStore.url
-                bridgeServerAuthToken = kvStore.authToken
-            } else {
-                bridgeServerAuthToken = randomBytes(30).toString("base64")
-                if (kv || serverRef) {
-                    await closeServer()
-                }
-                kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken })
-                const server = openBridgeServerInNode(kv, { port: 0, authToken: bridgeServerAuthToken });
-                const address = server.address() as AddressInfo
-                bridgeServerUrl = `http://localhost:${address.port}`;
-                serverRef = server
-            }
-
-            serverClient = new BridgeServerClient(bridgeServerUrl, { authToken: bridgeServerAuthToken ?? "" })
+            await bridgeServerController.open(kvStore)
             return true
         });
 
-        ipcMain.handle("bridgeServer:closeServer", () => closeServer());
+        ipcMain.handle("bridgeServer:closeServer", () => bridgeServerController.close());
     }
-}
-
-async function closeServer(): Promise<void> {
-    await serverClient?.cancelWatcher()
-    serverClient = null
-    kv?.close();
-    kv = null;
-    serverRef?.close();
-    serverRef = null;
-    bridgeServerAuthToken = null
 }
 
 export function getServerClient(): BridgeServerClient {
-    if (!serverClient) {
-        throw "Trying to use the bridge server client before it gets initialized!"
-    }
-
-    return serverClient
+    return bridgeServerController.getClient()
 }
