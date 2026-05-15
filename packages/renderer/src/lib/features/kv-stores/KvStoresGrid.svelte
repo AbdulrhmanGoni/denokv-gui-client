@@ -167,7 +167,7 @@
   {:else}
     <div
       id="kv-stores-grid"
-      class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto pe-1.5"
+      class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto flex-1 pe-1.5 content-start"
     >
       {#each filteredKvStores as kvStore (kvStore.id)}
         <KvStoreCard {kvStore} />

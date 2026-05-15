@@ -1,6 +1,6 @@
 import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
-import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { BrowserWindow, dialog, ipcMain, screen, shell } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
 import electronUpdater from 'electron-updater';
 import path from 'node:path';
@@ -24,10 +24,11 @@ class WindowManager implements AppModule {
   }
 
   async createWindow(): Promise<BrowserWindow> {
+    const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
     const browserWindow = new BrowserWindow({
       show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
-      height: 800,
-      width: 1400,
+      height: Math.min(800, workAreaSize.height),
+      width: Math.min(1400, workAreaSize.width),
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,

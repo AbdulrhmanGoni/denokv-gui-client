@@ -30,15 +30,13 @@
   });
 </script>
 
-<main
-  class="max-w-7xl w-full mx-auto px-3 flex flex-col min-h-screen justify-center"
->
+<main class="w-full mx-auto p-3 flex flex-col h-screen overflow-hidden">
   <Tooltip.Provider
     delayDuration={0}
     disabled={metadata.environment == "testing"}
   >
     <Header />
-    <div class="h-[600px]">
+    <div class="flex-1 min-h-0">
       {#if kvStoresState.openedStore}
         <KvEntriesBrowser />
       {:else}

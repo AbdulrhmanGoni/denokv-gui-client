@@ -52,7 +52,7 @@
   });
 </script>
 
-<div class="space-y-2 flex flex-col justify-center h-full">
+<div class="space-y-2 flex flex-col h-full">
   <div class="flex gap-2 items-center justify-between mb-4">
     <div class="flex gap-2 items-center">
       <Button size="default" variant="outline" onclick={close}>

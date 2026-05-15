@@ -17,8 +17,8 @@
   const { table }: { table: TableType<SerializedKvEntry> } = $props();
 </script>
 
-<div class="rounded-md border">
-  <div class="overflow-auto h-[450px]">
+<div class="rounded-md border flex-1 flex flex-col min-h-0">
+  <div class="overflow-auto flex-1">
     <Table.Root>
       <Table.Header class="bg-muted">
         {#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
