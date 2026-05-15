@@ -14,6 +14,11 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
             "default": "./dist/index.mjs"
+        },
+        "./kv-utils": {
+            "types": "./dist/kv-utils.d.ts",
+            "import": "./dist/kv-utils.mjs",
+            "default": "./dist/kv-utils.mjs"
         }
     },
     "module": "./dist/index.mjs",

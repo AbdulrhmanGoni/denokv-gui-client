@@ -12,10 +12,10 @@ import {
     validateEnqueueRequest,
     validateAtomicOperations,
 } from "../validation/main.ts";
-import type { Kv, KvEntry, KvEntryMaybe, KvKey } from "@deno/kv";
+import type { Kv, KvEntry, KvEntryMaybe } from "@deno/kv";
 import { Hono } from 'hono/tiny';
 import type { BlankEnv, BlankSchema } from "hono/types";
-import { isSameKey } from "../helpers.ts";
+import { isSameKvKey } from "../kv-utils.ts";
 
 /**
  * Creates the bridge server which is a Hono web application that provides HTTP endpoints to interact with
@@ -243,7 +243,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
                         if (watchedEntries.length) {
                             updatedEntries = serializedEntries.filter((entry) => (
                                 watchedEntries.some((wEntry) => (
-                                    isSameKey(wEntry.key, entry.key) && wEntry.versionstamp !== entry.versionstamp
+                                    isSameKvKey(wEntry.key, entry.key) && wEntry.versionstamp !== entry.versionstamp
                                 ))
                             ))
                         } else {

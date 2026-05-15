@@ -7,9 +7,12 @@ export default defineConfig({
         outDir: 'dist',
         target: 'node18',
         lib: {
-            entry: resolve(__dirname, 'src/index.ts'),
+            entry: {
+                index: resolve(__dirname, 'src/index.ts'),
+                "kv-utils": resolve(__dirname, 'src/kv-utils.ts'),
+            },
             formats: ['es'],
-            fileName: 'index.mjs',
+            fileName: (_format, entryName) => `${entryName}.mjs`,
         },
         rollupOptions: {
             external: [

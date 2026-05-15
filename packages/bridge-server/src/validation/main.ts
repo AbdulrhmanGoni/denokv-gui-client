@@ -4,7 +4,8 @@ import {
     deserializeKvValue,
     type SerializedKvValue
 } from "../serialization/main.ts";
-import { isValidKvKey, toNumber } from "../helpers";
+import { toNumber } from "../helpers";
+import { isValidKvKey } from "../kv-utils.ts";
 
 const errorCause = { cause: "ValidationError" }
 
