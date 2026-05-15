@@ -1,6 +1,6 @@
 import path from "node:path";
 import { test, testingKvStore } from "./e2e.spec";
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { mkdirSync, rmSync } from "node:fs";
 
 export function kvStoresTests() {
@@ -26,7 +26,7 @@ export function kvStoresTests() {
     test('Create local Kv Stores', async ({ page }) => {
         const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
         const nameInput = page.locator("input#name");
-        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const typeSelectButton = getTypeSelectButton(page)
         const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
         const localKvDirectoryInput = page.locator("input#localKvDirectory");
         const submitButton = page.locator('button[type=submit]');
@@ -107,7 +107,7 @@ export function kvStoresTests() {
 
         const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
         const nameInput = page.locator("input#name");
-        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const typeSelectButton = getTypeSelectButton(page)
         const remoteTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "remote" })
         const urlInput = page.locator("input#url");
         const accessTokenInput = page.locator("input#accessToken");
@@ -142,7 +142,7 @@ export function kvStoresTests() {
 
         const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
         const nameInput = page.locator("input#name");
-        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const typeSelectButton = getTypeSelectButton(page)
         const bridgeTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "bridge" })
         const urlInput = page.locator("input#url");
         const authTokenInput = page.locator("input#authToken");
@@ -169,7 +169,7 @@ export function kvStoresTests() {
     test('Create a local Kv Store with custom filename', async ({ page }) => {
         const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
         const nameInput = page.locator("input#name");
-        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const typeSelectButton = getTypeSelectButton(page)
         const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
         const localKvDirectoryInput = page.locator("input#localKvDirectory");
         const localKvFileNameInput = page.locator("input#localKvFileName");
@@ -199,7 +199,7 @@ export function kvStoresTests() {
     test('Create a local Kv Store with trailing slash in directory', async ({ page }) => {
         const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
         const nameInput = page.locator("input#name");
-        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const typeSelectButton = getTypeSelectButton(page)
         const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
         const localKvDirectoryInput = page.locator("input#localKvDirectory");
         const submitButton = page.locator('button[type=submit]');
@@ -238,7 +238,7 @@ export function kvStoresTests() {
 
         const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
         const nameInput = page.locator("input#name");
-        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const typeSelectButton = getTypeSelectButton(page)
         const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
         const localKvDirectoryInput = page.locator("input#localKvDirectory");
         const localKvFileNameInput = page.locator("input#localKvFileName");
@@ -338,4 +338,11 @@ export function kvStoresTests() {
         await expect(bridgeStore).toBeVisible();
         await expect(localStore).toBeVisible();
     });
+}
+
+function getTypeSelectButton(page: Page) {
+    return page.locator(
+        'button[data-slot="select-trigger"]',
+        { hasText: /(remote|bridge|local|Select Type)/ },
+    )
 }
