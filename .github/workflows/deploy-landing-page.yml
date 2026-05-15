@@ -37,11 +37,14 @@ jobs:
       - name: Extract App's version
         run: echo "APP_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      - name: Install dependencies and build the landing page
+      - name: Install dependencies
         run: |
           npm install -g pnpm@latest-10
           pnpm install
-          pnpm build
+        working-directory: landing
+
+      - name: Build the landing page
+        run: pnpm build
         working-directory: landing
         env:
           PUBLIC_APP_VERSION: ${{ env.APP_VERSION }}
