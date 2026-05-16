@@ -4,8 +4,7 @@ import { disallowMultipleAppInstance } from './modules/SingleInstanceApp.js';
 import { createWindowManagerModule } from './modules/WindowManager.js';
 import { terminateAppOnLastWindowClose } from './modules/ApplicationTerminatorOnLastWindowClose.js';
 import { hardwareAccelerationMode } from './modules/HardwareAccelerationModule.js';
-import { allowInternalOrigins } from './modules/BlockNotAllowdOrigins.js';
-import { allowTrustedExternalUrls } from './modules/ExternalUrls.js';
+import { createWebContentsUrlPolicy } from './modules/WebContentsUrlPolicy.js';
 import { BridgeServerModule } from './modules/bridgeServer.js';
 import { KvStoresServiceModule } from './modules/kvStoresService.js';
 import { SettingsServiceModule } from './modules/settingsService.js';
@@ -32,6 +31,5 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(new MetadataModule())
     .init(new KvServerClientModule())
     .init(new WatchedKeysServiceModule())
-    .init(allowInternalOrigins(initConfig.renderer instanceof URL ? initConfig.renderer.origin : ''))
-    .init(allowTrustedExternalUrls());
+    .init(createWebContentsUrlPolicy(initConfig.renderer instanceof URL ? initConfig.renderer.origin : ''));
 }
