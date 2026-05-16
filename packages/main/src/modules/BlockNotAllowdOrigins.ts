@@ -1,6 +1,6 @@
-import { AbstractSecurityRule } from './AbstractSecurityModule.js';
-import * as Electron from 'electron';
 import { URL } from 'node:url';
+import { AppModule } from '../AppModule.js';
+import { ModuleContext } from '../ModuleContext.js';
 
 /**
  * Block navigation to origins not on the allowlist.
@@ -10,26 +10,26 @@ import { URL } from 'node:url';
  *
  * @see https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
  */
-export class BlockNotAllowedOrigins extends AbstractSecurityRule {
+export class BlockNotAllowedOrigins implements AppModule {
   readonly #allowedOrigin: string;
 
   constructor(internalOrigin: string) {
-    super();
     this.#allowedOrigin = internalOrigin
   }
 
-  applyRule(contents: Electron.WebContents): Promise<void> | void {
+  enable({ app }: ModuleContext): Promise<void> | void {
+    app.on('web-contents-created', (_, contents) => {
+      contents.on('will-navigate', (event, url) => {
+        const { origin } = new URL(url);
+        if (this.#allowedOrigin && origin === this.#allowedOrigin) return;
 
-    contents.on('will-navigate', (event, url) => {
-      const { origin } = new URL(url);
-      if (this.#allowedOrigin && origin === this.#allowedOrigin) return;
+        // Prevent navigation
+        event.preventDefault();
 
-      // Prevent navigation
-      event.preventDefault();
-
-      if (import.meta.env.DEV) {
-        console.warn(`Blocked navigating to disallowed origin: ${origin}`);
-      }
+        if (import.meta.env.DEV) {
+          console.warn(`[Security] Blocked navigating to disallowed origin: ${origin}`);
+        }
+      });
     });
   }
 }
