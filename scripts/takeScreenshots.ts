@@ -82,7 +82,7 @@ try {
     await page.waitForLoadState('load');
 
     await page.evaluate(async (kvStores) => {
-        const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
+        const kvStoresService = globalThis['kvStoresService' as keyof typeof globalThis]
         for (const kvStore of kvStores) {
             await kvStoresService.create(kvStore)
         }
@@ -174,7 +174,7 @@ async function takeScreenshotOfKvEntriesTable(page: Page) {
     ).dblclick({ position: { x: 5, y: 5 } });
 
     await page.evaluate(async (entries) => {
-        const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+        const kvClient = globalThis['kvClient' as keyof typeof globalThis]
 
         if (!(await kvClient.get(entries[0].key))?.result) {
             for (const entry of entries) {
@@ -228,10 +228,10 @@ async function takeScreenshotOfBrowsingParamsDialog(page: Page) {
 
 async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page) {
     await page.evaluate(async () => {
-        const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
+        const kvStoresService = globalThis['kvStoresService' as keyof typeof globalThis]
         const store = (await kvStoresService.getAll()).find((store: any) => store.type === "local")
 
-        const browsingParamsService = globalThis[btoa('browsingParamsService') as keyof typeof globalThis]
+        const browsingParamsService = globalThis['browsingParamsService' as keyof typeof globalThis]
 
         const res = await browsingParamsService.getSavedBrowsingParamsRecords(store.id)
         if (res.result.length) {
@@ -370,7 +370,7 @@ async function takeScreenshotOfWatchedKeysDialog(page: Page) {
     ];
 
     await page.evaluate(async (entries) => {
-        const kvClient = globalThis[btoa("kvClient") as keyof typeof globalThis];
+        const kvClient = globalThis['kvClient' as keyof typeof globalThis];
         for (const entry of entries) {
             await kvClient.set(entry.key, entry.value);
         }

@@ -24,7 +24,7 @@ export function kvEntriesTests() {
         const key = [`prevent-overwrite-${Date.now()}`];
 
         await page.evaluate(async (key) => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             return await kvClient.set(key, { type: "String", data: "test" })
         }, key);
 
@@ -38,7 +38,7 @@ export function kvEntriesTests() {
         await page.keyboard.press("Escape");
 
         const response = await page.evaluate(async (key) => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             return await kvClient.get(key)
         }, key);
 
@@ -55,7 +55,7 @@ export function kvEntriesTests() {
         });
 
         await page.evaluate(async (key) => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             await kvClient.deleteKey(key)
         }, key);
     })

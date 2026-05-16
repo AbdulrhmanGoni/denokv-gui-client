@@ -20,7 +20,7 @@ export function atomicOperationsTests() {
         await page.locator('button', { hasText: "Commit" }).click()
 
         const response = await page.evaluate(async () => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             return await kvClient.get(["new-kv-that-did-not-exist"])
         });
 
@@ -54,7 +54,7 @@ export function atomicOperationsTests() {
         await page.locator('button', { hasText: "Commit" }).click()
 
         const response = await page.evaluate(async () => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             return await kvClient.get(["new-kv-that-did-not-exist"])
         });
 
@@ -73,7 +73,7 @@ export function atomicOperationsTests() {
 
     test("Add, Delete, and Update entries in one atomic transaction", async ({ page }) => {
         await page.evaluate(async () => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             await kvClient.set(["new-kv", "should-be-updated-in-atomic-transaction", true], {
                 type: "String",
                 data: "should-be-updated",
@@ -114,7 +114,7 @@ export function atomicOperationsTests() {
         await page.locator('button', { hasText: "Commit" }).click()
 
         const responses = await page.evaluate(async () => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             return {
                 newKvResponse: await kvClient.get(["new-kv", "added-in-atomic-transaction"]),
                 deletedKvResponse: await kvClient.get(["new-kv-that-did-not-exist"]),
@@ -152,7 +152,7 @@ export function atomicOperationsTests() {
 
     test("All operations fail due to one failed operation in the transaction", async ({ page }) => {
         await page.evaluate(async () => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             await kvClient.set(["new-kv", "should-not-be-updated-in-atomic-transaction", true], {
                 type: "String",
                 data: "should-not-be-updated",
@@ -193,7 +193,7 @@ export function atomicOperationsTests() {
         await page.locator('button', { hasText: "Commit" }).click()
 
         const responses = await page.evaluate(async () => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             return {
                 newKvResponse: await kvClient.get(["new-kv", "should-not-be-added"]),
                 deletedKvResponse: await kvClient.get(["new-kv", "added-in-atomic-transaction"]),
@@ -241,7 +241,7 @@ export function atomicOperationsTests() {
         ]
 
         await page.evaluate(async (operations: TestOperation[]) => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             for (const operation of operations) {
                 await kvClient.set(["operations", operation.name], {
                     type: "KvU64",
@@ -264,7 +264,7 @@ export function atomicOperationsTests() {
 
         const responses: { operation: TestOperation; response: any }[] =
             await page.evaluate(async (operations: TestOperation[]) => {
-                const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+                const kvClient = globalThis['kvClient' as keyof typeof globalThis]
                 const responses: { operation: TestOperation; response: any }[] = []
                 for (const operation of operations) {
                     responses.push({
