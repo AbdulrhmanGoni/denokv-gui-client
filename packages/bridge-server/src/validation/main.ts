@@ -12,6 +12,7 @@ const errorCause = { cause: "ValidationError" }
 type ValidBrowseRequestParams = {
     listSelector: KvListSelector;
     options?: KvListOptions;
+    xssSafe: boolean;
 }
 /**
  * Parse and validate query parameters of `/browse` endpoint.
@@ -20,6 +21,7 @@ type ValidBrowseRequestParams = {
  * - `limit` and `batchSize`: optional positive integers.
  * - `consistency`, `cursor`: passed through as-is.
  * - `reverse`: boolean flag. (set to "true" for `true`, otherwise `false`).
+ * - `xssSafe`: optional boolean flag to toggle XSS escaping from string values (defaults to true unless set to "false").
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
@@ -32,6 +34,7 @@ export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams 
     const consistency = url.searchParams.get("consistency")?.toString() as KvListOptions["consistency"];
     const reverseOption = url.searchParams.get("reverse");
     const cursor = url.searchParams.get("cursor")?.toString();
+    const xssSafe = url.searchParams.get("xssSafe") === "false" ? false : true;
 
     const defaultLimit = 40;
     const limit = limitOption ? toNumber(limitOption) : defaultLimit;
@@ -79,6 +82,7 @@ export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams 
     return {
         listSelector,
         options,
+        xssSafe,
     };
 }
 

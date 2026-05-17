@@ -81,6 +81,8 @@ export type BrowsingOptions = {
     start?: SerializedKvKey;
     /** End key for range query (exclusive) */
     end?: SerializedKvKey;
+    /** Whether to escape HTML characters and JS line terminators from strings (defaults to true) */
+    xssSafe?: boolean;
 }
 
 /** Options for setting a KV key */
@@ -152,10 +154,13 @@ export class BridgeServerClient {
     /**
      * Retrieves a single Deno KV entry by its key.
      * @param key The key to retrieve
+     * @param options Optional settings like xssSafe
+     * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true). Set to false to disable.
      */
-    get(key: SerializedKvKey): CallBridgeServerReturn<SerializedKvEntry> {
+    get(key: SerializedKvKey, options?: { xssSafe?: boolean }): CallBridgeServerReturn<SerializedKvEntry> {
         return callBridgeServerRequest<SerializedKvEntry>({
             url: `${this.baseUrl}/get/${encodeURIComponent(JSON.stringify(key))}`,
+            options,
             headers: this.headers,
             method: "GET"
         })

@@ -95,6 +95,7 @@ List KV entries with optional filtering and pagination.
 | `batchSize`   | `number`  | The number of entries to fetch from the database at once. |
 | `consistency` | `string`  | The consistency level of the list operation. either `"strong"` or `"eventual"`. |
 | `reverse`     | `boolean` | Whether to return the entries in reverse order. |
+| `xssSafe`     | `boolean` | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
 
 > **None of the above query parameters is required**
 
@@ -107,6 +108,12 @@ Retrieve a specific KV entry by its key.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `key` | `string` | Yes | The serialized KV key (URL-encoded JSON array) |
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `xssSafe` | `boolean` | No | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
 
 #### PUT /set
 
@@ -266,14 +273,21 @@ browse(options?: BrowsingOptions): Promise<{ result: BrowseReturn | null; error:
 | `batchSize`   | `number`                      | The number of entries to fetch from the database at once |
 | `consistency` | `"strong"` or `"eventual"`    | The consistency level of the list operation |
 | `reverse`     | `boolean`                     | Whether to return the entries in reverse order |
+| `xssSafe`     | `boolean`                     | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
 
-#### `get(key)`
+#### `get(key, options?)`
 
 Retrieve a specific entry by its key.
 
 ```ts
-get(key: SerializedKvKey): Promise<{ result: SerializedKvEntry | null; error: string | null }>
+get(key: SerializedKvKey, options?: { xssSafe?: boolean }): Promise<{ result: SerializedKvEntry | null; error: string | null }>
 ```
+
+**Options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `xssSafe` | `boolean` | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
 
 #### `set(key, value, options?)`
 

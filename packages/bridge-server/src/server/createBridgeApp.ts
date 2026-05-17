@@ -63,7 +63,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
     })
 
     app.get("/browse", async (c) => {
-        const { listSelector, options } = validateBrowseRequestParams(new URL(c.req.url))
+        const { listSelector, options, xssSafe } = validateBrowseRequestParams(new URL(c.req.url))
 
         const iterator = kv.list(listSelector, options);
         const records: KvEntry<unknown>[] = []
@@ -74,7 +74,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         return c.json(
             {
                 result: {
-                    entries: serializeEntries(records),
+                    entries: serializeEntries(records, xssSafe),
                     cursor: records.length ? iterator.cursor : ""
                 }
             },
@@ -84,6 +84,8 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
 
     app.get("/get/:key", async (c) => {
         const targetKey = c.req.param("key")
+        const xssSafe = c.req.query("xssSafe") === "false" ? false : true;
+
         const key = deserializeKvKey(targetKey)
 
         const entry = await kv.get(key)
@@ -94,7 +96,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
             return c.json({
                 result: {
                     key: JSON.parse(targetKey),
-                    value: serializeKvValue(entry.value),
+                    value: serializeKvValue(entry.value, xssSafe),
                     versionstamp: entry.versionstamp,
                 }
             })
