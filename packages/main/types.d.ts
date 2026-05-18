@@ -41,6 +41,8 @@ type SerializedKvEntry = import("@app/bridge-server").SerializedKvEntry
 
 type SetKeyOptions = import("@app/bridge-server").SetKeyOptions
 
+type SetKeyReturn = import("@app/bridge-server").SetKeyReturn
+
 type KvEntry = SerializedKvEntry
 
 type BrowseReturn = import("@app/bridge-server").BrowseReturn;

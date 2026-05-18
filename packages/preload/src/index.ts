@@ -39,7 +39,7 @@ const kvStoresService = {
 const kvClient = {
   browse: (params: BrowsingParams, nextCursor?: string): Promise<TrycatchResult<BrowseReturn>> =>
     ipcRenderer.invoke('kvClient:browse', params, nextCursor),
-  set: (kvKey: string | SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Promise<TrycatchResult<boolean>> =>
+  set: (kvKey: string | SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Promise<TrycatchResult<SetKeyReturn>> =>
     ipcRenderer.invoke('kvClient:set', kvKey, value, options),
   deleteKey: (key: SerializedKvKey): Promise<TrycatchResult<true>> =>
     ipcRenderer.invoke('kvClient:deleteKey', key),
