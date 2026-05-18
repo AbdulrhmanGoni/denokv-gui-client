@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
-import { ModuleContext } from "src/ModuleContext.js";
-import { AppModule } from "src/AppModule.js";
+import { ModuleContext } from "../ModuleContext.js";
+import { AppModule } from "../AppModule.js";
 import { getServerClient } from "./bridgeServer.js"
 import { serializeKvKey } from '@app/bridge-server';
 
