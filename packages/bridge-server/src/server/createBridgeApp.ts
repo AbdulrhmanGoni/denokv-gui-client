@@ -114,13 +114,23 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
                 .commit()
 
             if (result.ok) {
-                return c.json({ result: result.ok })
+                return c.json({
+                    result: {
+                        ok: result.ok,
+                        versionstamp: result.versionstamp,
+                    }
+                })
             } else {
                 return c.json({ error: "The Kv Entry is already existing." }, 400)
             }
         } else {
             const result = await kv.set(key, validValue, { expireIn: expires })
-            return c.json({ result: result.ok })
+            return c.json({
+                result: {
+                    ok: result.ok,
+                    versionstamp: result.versionstamp,
+                }
+            })
         }
     });
 
