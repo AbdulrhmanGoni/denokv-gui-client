@@ -2,7 +2,10 @@
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
-  import { kvEntryDialogState } from "$lib/states/kvEntryDialogState.svelte";
+  import {
+    kvEntryDialogState,
+    updateOpenKvEntry,
+  } from "$lib/states/kvEntryDialogState.svelte";
   import KvValueEditor from "$lib/features/kv-browser/entry-editor/KvValueEditor.svelte";
   import SaveIcon from "@lucide/svelte/icons/save";
   import XIcon from "@lucide/svelte/icons/x";
@@ -38,12 +41,7 @@
           versionstamp: result.versionstamp,
         };
 
-        if (
-          kvEntryDialogState.entry &&
-          isSameKvKey(kvEntryDialogState.entry.key, updatedEntry.key)
-        ) {
-          kvEntryDialogState.entry = updatedEntry;
-        }
+        updateOpenKvEntry(updatedEntry);
 
         kvEntriesState.entries = kvEntriesState.entries.map((existingEntry) =>
           isSameKvKey(existingEntry.key, updatedEntry.key)

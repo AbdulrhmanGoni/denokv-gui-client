@@ -54,10 +54,9 @@ export function startWatchingKvEntries(isReopen: boolean = false) {
             ))
         }
 
-        kvEntriesState.entries = kvEntriesState.entries.map((entry) => {
-            const updatedEntry = updatedEntries.find((ue) => isSameKvKey(entry.key, ue.key))
-            return updatedEntry ? updatedEntry : entry
-        })
+        kvEntriesState.entries = kvEntriesState.entries.map((entry) => (
+            updatedEntries.find((ue) => isSameKvKey(entry.key, ue.key)) ?? entry
+        ))
 
         if (kvEntryDialogState.entry && kvEntryDialogState.open) {
             const updatedEntry = updatedEntries.find((ue) => isSameKvKey(kvEntryDialogState.entry!.key, ue.key))
