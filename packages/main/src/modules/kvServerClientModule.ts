@@ -14,6 +14,7 @@ export class KvServerClientModule implements AppModule {
                 batchSize: params.batchSize,
                 consistency: params.consistency,
                 reverse: params.reverse,
+                xssSafe: false,
             }
 
             if (nextCursor) {
@@ -63,10 +64,11 @@ export class KvServerClientModule implements AppModule {
         ipcMain.handle(`kvClient:get`, (_, key: string | SerializedKvKey) => {
             const serverClient = getServerClient()
 
+            const options = { xssSafe: false }
             if (typeof key == "string") {
                 const result = kvKeyStringToSerializedForm(key)
                 if (result.key) {
-                    return serverClient.get(result.key)
+                    return serverClient.get(result.key, options)
                 }
 
                 return {
@@ -75,7 +77,7 @@ export class KvServerClientModule implements AppModule {
                 }
             }
 
-            return serverClient.get(key)
+            return serverClient.get(key, options)
         });
 
         ipcMain.handle(`kvClient:enqueue`, (_, value: EnqueueRequestInput["value"], options?: EnqueueRequestInput["options"]) => {
@@ -95,7 +97,7 @@ export class KvServerClientModule implements AppModule {
             const serverClient = getServerClient()
             serverClient.watch(keys, (updatedEntries: SerializedKvEntry[]) => {
                 context.browserWindow?.webContents.send("kvClient:watch-listener", updatedEntries)
-            })
+            }, { xssSafe: false })
         });
 
         ipcMain.handle(`kvClient:cancelWatcher`, () => {
