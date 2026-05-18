@@ -214,12 +214,18 @@ export class BridgeServerClient {
      * 
      * @param keys An array of KV keys to watch
      * @param listener A callback function to be called when one of the watched keys is updated
-     * @returns A promise that resolves when the watch connection is established
+     * @param options Optional configuration settings
+     * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
+     * @returns A promise that resolves when the watch stream is closed or cancelled
      */
-    async watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<void> {
+    async watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void, options?: { xssSafe?: boolean }): Promise<void> {
         try {
             const controller = new AbortController()
-            const response = await fetch(`${this.baseUrl}/watch`, {
+            const queryParams = new URLSearchParams()
+            if (options?.xssSafe !== undefined) {
+                queryParams.append("xssSafe", options.xssSafe.toString())
+            }
+            const response = await fetch(`${this.baseUrl}/watch?${queryParams}`, {
                 method: "POST",
                 headers: this.headers,
                 body: JSON.stringify(keys.map((key) => JSON.stringify(key))),

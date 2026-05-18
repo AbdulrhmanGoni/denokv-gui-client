@@ -223,6 +223,8 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
 
         c.req.raw.signal.addEventListener('abort', closeWatchStreamReader);
 
+        const xssSafe = c.req.query("xssSafe") === "false" ? false : true;
+
         const encoder = new TextEncoder();
         const readableStream = new ReadableStream({
             async start(controller) {
@@ -240,7 +242,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
                             break
                         };
 
-                        const serializedEntries = serializeEntries(entries as KvEntry<unknown>[]);
+                        const serializedEntries = serializeEntries(entries as KvEntry<unknown>[], xssSafe);
                         let updatedEntries: SerializedKvEntry[] = []
                         if (watchedEntries.length) {
                             updatedEntries = serializedEntries.filter((entry) => (
