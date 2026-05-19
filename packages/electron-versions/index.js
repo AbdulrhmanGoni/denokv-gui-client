@@ -1,8 +1,10 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
+import electronPath from 'electron';
 
 function getElectronEnv() {
-  return JSON.parse(execSync(
-    `pnpm dlx electron -p "JSON.stringify(process.versions)"`,
+  return JSON.parse(execFileSync(
+    electronPath,
+    ['-p', 'JSON.stringify(process.versions)'],
     {
       encoding: 'utf-8',
       env: {
