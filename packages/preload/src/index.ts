@@ -1,16 +1,23 @@
 import { ipcRenderer } from 'electron';
+import path from 'node:path';
 
 function selectDirectory(): Promise<string> {
   return ipcRenderer.invoke('select-directory')
+}
+
+function selectFile(directory?: string): Promise<{ directory: string, fileName: string } | null> {
+  return ipcRenderer.invoke('select-file', directory)
 }
 
 function openPath(path: string): void {
   ipcRenderer.invoke('open-path', path)
 }
 
-function onWindowReady(cb: (event: Electron.IpcRendererEvent, ...args: any[]) => void) {
-  return ipcRenderer.on('window-ready', cb)
-}
+const pathUtils = {
+  dirname: (p: string): string => path.dirname(p),
+  basename: (p: string): string => path.basename(p),
+  join: (...paths: string[]): string => path.join(...paths),
+};
 
 const metadata = await ipcRenderer.invoke('get-metadata')
 
@@ -32,14 +39,28 @@ const kvStoresService = {
 const kvClient = {
   browse: (params: BrowsingParams, nextCursor?: string): Promise<TrycatchResult<BrowseReturn>> =>
     ipcRenderer.invoke('kvClient:browse', params, nextCursor),
-  set: (kvKey: string | SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Promise<TrycatchResult<boolean>> =>
+  set: (kvKey: string | SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Promise<TrycatchResult<SetKeyReturn>> =>
     ipcRenderer.invoke('kvClient:set', kvKey, value, options),
   deleteKey: (key: SerializedKvKey): Promise<TrycatchResult<true>> =>
     ipcRenderer.invoke('kvClient:deleteKey', key),
   get: (key: string | SerializedKvKey): Promise<TrycatchResult<SerializedKvEntry>> =>
     ipcRenderer.invoke('kvClient:get', key),
-  enqueue: (value: EnqueueRequestInput["value"], options?: EnqueueOptions): Promise<TrycatchResult<boolean>> =>
+  enqueue: (value: EnqueueRequestInput["value"], options?: EnqueueRequestInput["options"]): Promise<TrycatchResult<boolean>> =>
     ipcRenderer.invoke('kvClient:enqueue', value, options),
+  atomic: (operations: AtomicOperationInput[]): Promise<TrycatchResult<boolean>> =>
+    ipcRenderer.invoke('kvClient:atomic', operations),
+  watch: (keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): void => {
+    ipcRenderer.removeAllListeners('kvClient:watch-listener')
+    ipcRenderer.invoke('kvClient:watch', keys)
+    ipcRenderer.on(
+      'kvClient:watch-listener',
+      (_event, updatedEntries: SerializedKvEntry[]) => listener(updatedEntries)
+    )
+  },
+  cancelWatcher: async (): Promise<void> => {
+    ipcRenderer.removeAllListeners('kvClient:watch-listener')
+    await ipcRenderer.invoke('kvClient:cancelWatcher')
+  },
 };
 
 const bridgeServer = {
@@ -47,8 +68,6 @@ const bridgeServer = {
     ipcRenderer.invoke('bridgeServer:openServer', kvStore),
   closeServer: (): Promise<void> =>
     ipcRenderer.invoke('bridgeServer:closeServer'),
-  getServerClient: (): Promise<any> =>
-    ipcRenderer.invoke('bridgeServer:getServerClient'),
 };
 
 const settingsService = {
@@ -59,12 +78,14 @@ const settingsService = {
 };
 
 const lastFetchedUpdateService = {
-  getLastFetchedUpdate: (): Promise<UpdateCheckResult | null> =>
+  getLastFetchedUpdate: (): Promise<LastFetchedUpdate | null> =>
     ipcRenderer.invoke('lastFetchedUpdateService:getLastFetchedUpdate'),
   setLastFetchedUpdate: (updateInfo: UpdateCheckResult): Promise<boolean> =>
     ipcRenderer.invoke('lastFetchedUpdateService:setLastFetchedUpdate', updateInfo),
   deleteLastFetchedUpdate: (): Promise<boolean> =>
     ipcRenderer.invoke('lastFetchedUpdateService:deleteLastFetchedUpdate'),
+  doNotNotifyLastFetchedUpdate: (): Promise<boolean> =>
+    ipcRenderer.invoke('lastFetchedUpdateService:doNotNotifyLastFetchedUpdate'),
 };
 
 const browsingParamsService = {
@@ -94,16 +115,25 @@ const appUpdater = {
     ipcRenderer.invoke('quit-and-install-update'),
 };
 
+const watchedKeysService = {
+  getWatchedKeys: (kvStoreId: string): Promise<SerializedKvKey[] | null> =>
+    ipcRenderer.invoke('watchedKeysService:getWatchedKeys', kvStoreId),
+  setWatchedKeys: (kvStoreId: string, keys: SerializedKvKey[]): Promise<boolean> =>
+    ipcRenderer.invoke('watchedKeysService:setWatchedKeys', kvStoreId, keys),
+};
+
 export {
   metadata,
   selectDirectory,
+  selectFile,
   openPath,
   kvStoresService,
   kvClient,
   bridgeServer,
   appUpdater,
   settingsService,
-  onWindowReady,
   lastFetchedUpdateService,
   browsingParamsService,
+  watchedKeysService,
+  pathUtils,
 };

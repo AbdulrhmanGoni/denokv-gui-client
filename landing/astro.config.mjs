@@ -5,33 +5,44 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 // https://astro.build/config
 export default defineConfig({
+    integrations: [
+        lastModificationDateAutoUpdator()
+    ],
     vite: {
         plugins: [
-            tailwindcss(),
-            lastModificationDateAutoUpdator()
+            tailwindcss()
         ],
     },
     devToolbar: {
         enabled: false
     },
-    base: `/denokv-gui-client`
+    base: `/denokv-gui-client`,
+    site: `https://abdulrhmangoni.github.io`,
+    trailingSlash: `always`
 });
 
+/**
+ * 
+ * @returns {import('astro').AstroIntegration}
+ */
 function lastModificationDateAutoUpdator() {
     return {
         name: "Last Modification Date auto updator",
-        closeBundle: () => {
-            const stimapFilePath = "./dist/sitemap.xml"
-            const xmlFile = readFileSync(stimapFilePath, { encoding: "utf-8" })
-            const currentDate = new Date()
-            writeFileSync(
-                stimapFilePath,
-                xmlFile.replace(
-                    "{{Current Date}}",
-                    `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`
-                ),
-                { encoding: "utf-8" }
-            )
+        hooks: {
+            "astro:build:done": ({ dir }) => {
+                const sitemapFileUrl = new URL("sitemap.xml", dir);
+                const xmlFile = readFileSync(sitemapFileUrl, { encoding: "utf-8" });
+                const currentDate = new Date();
+
+                writeFileSync(
+                    sitemapFileUrl,
+                    xmlFile.replace(
+                        "{{Current Date}}",
+                        `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`
+                    ),
+                    { encoding: "utf-8" }
+                );
+            }
         }
     }
 }

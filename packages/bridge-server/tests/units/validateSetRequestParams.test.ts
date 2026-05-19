@@ -39,4 +39,30 @@ describe("Test 'validateSetRequestParams' function", () => {
       "Invalid expiration time option: It must be a number in milliseconds. Got: not-a-number",
     );
   });
+
+  it("should parse a URL with different overwrite option values", () => {
+    const url1 = new URL(
+      `${fakeUrl}/set?key=["users", 6]&overwrite=false`,
+    );
+    const expected1 = { key: ["users", 6], overwrite: false, expires: undefined };
+    expect(validateSetRequestParams(url1)).toEqual(expected1);
+
+    const url2 = new URL(
+      `${fakeUrl}/set?key=["users", 6]&overwrite=true`,
+    );
+    const expected2 = { key: ["users", 6], overwrite: true, expires: undefined };
+    expect(validateSetRequestParams(url2)).toEqual(expected2);
+
+    const url3 = new URL(
+      `${fakeUrl}/set?key=["users", 6]`,
+    );
+    const expected3 = { key: ["users", 6], overwrite: undefined, expires: undefined };
+    expect(validateSetRequestParams(url3)).toEqual(expected3);
+
+    const url4 = new URL(
+      `${fakeUrl}/set?key=["users", 6]&overwrite=randomString`,
+    );
+    const expected4 = { key: ["users", 6], overwrite: true, expires: undefined };
+    expect(validateSetRequestParams(url4)).toEqual(expected4);
+  });
 });

@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [8.3.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.2...bridge-server@8.3.0) (2026-05-13)
+
+
+### Features
+
+* add `POST /watch` endpoint for `Deno.Kv.watch` method support ([d7089e9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d7089e94b837c767c4909c7cdc84f2b1b9cd8e6a))
+
+
+### Security
+
+* apply a security patch for `hono` package ([b5ecd47](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b5ecd47720840872982f6af090fb6ae7701a9129))
+
+## [8.2.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.1...bridge-server@8.2.2) (2026-04-24)
+
+
+### Security
+
+* update dependencies for security reasons ([a524f72](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a524f72662b20ea0bea82bc14f63ce3f736d3018))
+
+## [8.2.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.0...bridge-server@8.2.1) (2026-04-03)
+
+
+### Security
+
+* update dependencies to avoid some vulnerabilities ([a066e7f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a066e7f706e67894216eaf816a8fc99753bcbef2))
+
+## 8.2.0 (2026-02-19)
+
+
+### Features
+
+* add "overwrite" option to `set` operation as `true` by default ([f267b34](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f267b343a450ffbb28adc31d1877ba76f0605503))
+
+## 8.1.0 (2026-02-10)
+
+
+### Features
+
+* add support for Deno KV atomic transactions ([e2fbe4f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e2fbe4f6677d0309171e7ea0785002ece215aa1e))
+
+
+### Security
+
+* upgrade from a vulnerable "hono" version to "4.11.7" ([7360d35](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7360d359b30e379c13b8039e58f153dfc5ba9a0c))
+
+## 8.0.0 (2026-02-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* "keysIfUndelivered" option of "enqueue" operation is now expected to be a JS code
+as string representing an "array of deno kv keys" instead of array of strings where
+each string is a deno kv key in the serialized form.
+
+### Bug Fixes
+
+* fix and improve documentation ([28da566](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/28da5664fc95a8cacd3b231a4f51cf172b77df18))
+
+
+### API Changes
+
+* change how "keysIfUndelivered" option of enqueue operation is parsed ([7ac38fd](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7ac38fd20d083dcb7b3fcf63439c7badc887601b))
+
 ## 7.1.0 (2026-01-21)
 
 ### Features

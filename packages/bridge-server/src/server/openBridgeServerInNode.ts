@@ -13,13 +13,13 @@ import process from "node:process";
  * @param options.authToken Authentication token to protect the server, if not set, the server will be publicly accessable. 
  * Defaults to `DENOKV_BRIDGE_SERVER_AUTH_TOKEN` environment variable.
  * 
- * @returns Promise resolving to `ServerType` from `@hono/node-server`
+ * @returns An instance of `ServerType` from `@hono/node-server`
  *
  * @example
  * ```typescript
  * import { openKv } from "@deno/kv";
  * const kv = await openKv()
- * await openBridgeServerInNode(kv, { port: 3626 });
+ * openBridgeServerInNode(kv, { port: 3626 });
  * // Now the bridge server is listening on port 3626
  * ```
  *
@@ -27,7 +27,7 @@ import process from "node:process";
  * ```typescript
  * import { openKv } from "@deno/kv";
  * const kv = await openKv()
- * await openBridgeServerInNode(kv, { port: 3626, authToken: "my-secret-token" });
+ * openBridgeServerInNode(kv, { port: 3626, authToken: "my-secret-token" });
  * // now the bridge server can only be accessed with "my-secret-token" authentication token passed as "Authorization" header
  * ```
  */

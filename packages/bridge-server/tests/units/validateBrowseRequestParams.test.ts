@@ -15,6 +15,7 @@ describe("Test 'validateBrowseRequestParams' function", () => {
       reverse: false,
       cursor: undefined,
     });
+    expect(result.xssSafe).toBe(true);
   });
 
   it("should parse a URL with a valid limit option value", () => {
@@ -93,9 +94,23 @@ describe("Test 'validateBrowseRequestParams' function", () => {
     expect(result.listSelector).toEqual({ end: ["users", "charlie"] });
   });
 
+  it("should parse a URL with xssSafe option", () => {
+    const url = new URL(fakeUrl + "/list?xssSafe=true");
+    const result = validateBrowseRequestParams(url);
+    expect(result.xssSafe).toBe(true);
+
+    const url2 = new URL(fakeUrl + "/list?xssSafe");
+    const result2 = validateBrowseRequestParams(url2);
+    expect(result2.xssSafe).toBe(true);
+
+    const url3 = new URL(fakeUrl + "/list?xssSafe=false");
+    const result3 = validateBrowseRequestParams(url3);
+    expect(result3.xssSafe).toBe(false);
+  });
+
   it("should parse a URL with all parameters", () => {
     const url = new URL(
-      fakeUrl + '/list?limit=5&prefix=["posts"]&start=["posts", "2024"]&end=["posts", "2025"]&cursor=another-cursor&reverse=true&batchSize=20&consistency=strong',
+      fakeUrl + '/list?limit=5&prefix=["posts"]&start=["posts", "2024"]&end=["posts", "2025"]&cursor=another-cursor&reverse=true&batchSize=20&consistency=strong&xssSafe=false',
     );
     const result = validateBrowseRequestParams(url);
     expect(result).toEqual({
@@ -110,7 +125,8 @@ describe("Test 'validateBrowseRequestParams' function", () => {
         consistency: "strong",
         reverse: true,
         cursor: "another-cursor",
-      }
+      },
+      xssSafe: false
     });
   });
 });

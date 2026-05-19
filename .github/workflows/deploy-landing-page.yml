@@ -14,6 +14,9 @@ on:
       - "landing/pnpm-lock.yaml"
       - "screenshots/*.png"
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: "landing-page-deployment"
   cancel-in-progress: true
@@ -24,16 +27,24 @@ jobs:
     env:
       APP_VERSION: ""
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: latest
 
       - name: Extract App's version
         run: echo "APP_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      - name: Install dependencies and build the landing page
+      - name: Install dependencies
         run: |
           npm install -g pnpm@latest-10
           pnpm install
-          pnpm build
+        working-directory: landing
+
+      - name: Build the landing page
+        run: pnpm build
         working-directory: landing
         env:
           PUBLIC_APP_VERSION: ${{ env.APP_VERSION }}

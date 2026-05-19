@@ -2,6 +2,143 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.22.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.21.0...v1.22.0) (2026-05-13)
+
+
+### Features
+
+* add support for `Deno.Kv.watch` feature to watch updates on specific keys ([91940d0](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/91940d0d8a318dd9abda1d8181072e96f6c6488f))
+* enable horizontal wheel scroll for long values in KV Entries table ([7d90f7a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7d90f7a3cfc4171186dc5dde4152d51a54404d95))
+* add "Versionstamp" section to KV Entry Display Window ([adf4e5c](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/adf4e5c60c13fcdbc16791c7595814a5e54e002d))
+* add count indicator to KV store filter buttons ([931fb6f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/931fb6f11b1024a9873d3648110a9cc3174709dd))
+
+
+### Bug Fixes
+
+* ensure in-app bridge server is closed before connecting to external bridge servers ([f9811b1](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f9811b1a778082c8133c14a386795c59d6167f30))
+* await previous in-app bridge server to close before opening a new one ([b538ecc](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b538eccb9e03a67aaaf50416392707ee3fc237c1))
+* prevent KvStorePicker dropdown menu overflow with a large number of stores ([f239392](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f2393924e817866e81b3ed3e38455ae90baab805))
+* fix overflow issue for long keys in Kv Entry display window ([5f2e20c](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5f2e20c2eebb1105bac701040392c6377b435380))
+* fix spaces collapsing issue in rendering keys and values ([9d97901](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/9d97901a85a49aca2a759b9eedc7b0df8fff3014))
+
+
+### Security
+
+* apply security patches for a couple of dependencies ([5fd61bf](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5fd61bf1b989c034fccff81cc7532e2e5ac08a91))
+
+## [1.21.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.20.1...v1.21.0) (2026-05-01)
+
+
+### Features
+
+* enable horizontal wheel scroll for long keys in KV Entries table ([d4c7205](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d4c720577de0b13b48084144fcaba5876d0d73d0))
+* make kv stores list remember and load last used filters automatically ([0c3931f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0c3931fc2325b0f6a9eb587f5a720152a58bcfc3))
+
+
+### Bug Fixes
+
+* make sure the latest open bridge server is closed when reloading the page ([edd0201](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/edd0201e3124cc808bbeb9a9354c61a835b0803d))
+
+## [1.20.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.20.0...v1.20.1) (2026-04-24)
+
+
+### Security
+
+* perform security patches for some dependencies ([1675fa8](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/1675fa8d5918a4d8b241032cf030807fb0cc6312))
+
+## [1.20.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.19.1...v1.20.0) (2026-04-15)
+
+
+### Features
+
+* add file picker to KV Store form for selecting existing local KV store files ([a626c30](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a626c3021c46c4c1f27514d45338f94a430f0efc))
+
+
+### Enhancements
+
+* making KV Store form remember last used KV store type ([1e22fb5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/1e22fb548aa2ccc3cfc04f4cfe0cfdf923ae9aea))
+
+
+### User Interface Changes
+
+* switch places of "Kv File Name" and "Kv Store Directory" fields in Kv Store Form ([fd2af00](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/fd2af008932d0f1e941f8b5d545681cd04e27806))
+
+## [1.19.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.19.0...v1.19.1) (2026-04-03)
+
+
+### Bug Fixes
+
+* make the "Last Update" field in default KV stores cards more precise ([d7c9992](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d7c9992fe5f4301c2d4ed7da67313dd97b834c00))
+* fix incorrect kv stores creation and update dates ([8497c5a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8497c5ace630189ca6fd8606df7e5535e1c43677))
+
+
+### Security
+
+* update some dependencies to avoid some vulnerabilities ([0e75340](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/0e75340b095adf4da9ef954f1c4bda2305e550f7))
+
+
+### User Interface Changes
+
+* display "just now" for very recent kv store creation & update time ([e03d4aa](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e03d4aa24fb073ac96301fe025808a0adb494ad0))
+
+## [1.19.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.18.0...v1.19.0) (2026-03-29)
+
+
+### Features
+
+* show toast notification when a new update comes out ([98dd6c5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/98dd6c583dec54dce465e31025554893cff02cd7))
+* add "filter based on kv store type" capability to kv stores list ([14e0d9f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/14e0d9fa3813a0b63ff31bd1a836d3a995d2042d))
+* allow custom file names for local Deno kv database files ([f3f38ed](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f3f38ed696959f4d2d639fc5c9c40c0fb0ab16ca))
+* add a keyboard shortcut for switching theme mode (alt+s) ([f599ad5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f599ad571c06bf9210c0f13eac6f1cc0ad3a8407))
+
+
+### Bug Fixes
+
+* fix that saved default filters won't be applied after refreshing the app ([d2d7176](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d2d71761f054180daec90e190b2eec63e571be35))
+* prevent re-opening "Rename Default KV Store" form randomly after closing it ([b0715eb](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b0715ebe09d03476404f91cfe27f03b7a97d2954))
+
+## [1.18.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.17.0...v1.18.0) (2026-02-19)
+
+
+### Features
+
+* enable preventing "Add Kv Entry" action from overwriting existing entries ([feccae2](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/feccae266c6cf9b8b680e6e57165cc2e1bb49893))
+
+
+### Enhancements
+
+* show loading state while Atomic Operations are being comitted ([f09fe71](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f09fe71ab4168ded29608c144d9566a38529c2bd))
+
+
+### User Interface Changes
+
+* make some text a bit darker in light mode for better readability ([33b55c3](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/33b55c3e516ec70efb49e1a37563527a2b917d97))
+* refine release notes presentation and layout ([f6b38db](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f6b38db806d6ab0f7108d9f303c4307ed353135a))
+
+## [1.17.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.16.1...v1.17.0) (2026-02-10)
+
+
+### Features
+
+* introduce atomic operations feature support ([35448aa](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/35448aa5343dc385cf1c459f44eb0f643ffa8385))
+
+
+### Bug Fixes
+
+* fix kv stores state conflict when switching between stores in kv entries browser ([4b9427b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/4b9427bb79abf029c0340043030f6a1abea05f5e))
+
+
+### User Interface Changes
+
+* simplify labels of action buttons in kv entries browser page ([4cc2b7a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/4cc2b7af71720b81f6c96ff7e9c72ad434ffa104))
+
+## [1.16.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.16.0...v1.16.1) (2026-02-05)
+
+
+### Bug Fixes
+
+* fix that kv stores are sometimes opened in unclean and confusing state ([a934a93](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a934a93fc755e4943bd095ac26a084a62482d973))
+
 ## [1.16.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.15.0...v1.16.0) (2026-01-21)
 
 

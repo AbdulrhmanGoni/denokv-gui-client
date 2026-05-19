@@ -1,4 +1,6 @@
 import { appUpdater, lastFetchedUpdateService } from "@app/preload"
+import { toast } from "svelte-sonner"
+import newUpdateNotificationActions from "$lib/features/settings/newUpdateNotificationActions.svelte";
 
 type UpdateAppState = {
     downloadUpdateProgress: DownloadUpdateProgressInfo | null;
@@ -9,6 +11,7 @@ type UpdateAppState = {
     downloadingUpdates: boolean;
     downloadingUpdatesError: string;
     downloadingUpdatesDone: boolean;
+    openReleaseNotes: boolean;
 }
 
 export const updateAppState: UpdateAppState = $state({
@@ -21,14 +24,56 @@ export const updateAppState: UpdateAppState = $state({
     downloadingUpdates: false,
     downloadingUpdatesError: "",
     downloadingUpdatesDone: false,
+    openReleaseNotes: false,
 })
+
+function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
+    if (update.isUpdateAvailable) {
+        const toastId = "new-update-notification:" + update.updateInfo.version
+        const dismiss = () => toast.dismiss(toastId)
+        toast.info(message, {
+            class: "px-2.5!",
+            classes: {
+                title: "text-[15px]",
+                actionButton:
+                    "bg-transparent! border! transition-colors border-border! text-muted-foreground! hover:text-foreground!",
+            },
+            duration: 60000,
+            closeButton: true,
+            action: {
+                label: "Ignore",
+                onClick: () => {
+                    dismiss();
+                    lastFetchedUpdateService.doNotNotifyLastFetchedUpdate();
+                }
+            },
+            description: (internals) => (
+                newUpdateNotificationActions(internals, { dismiss })
+            ),
+            id: toastId
+        })
+    }
+}
 
 export async function startCheckingForUpdates() {
     const lastFetchedUpdate = await lastFetchedUpdateService.getLastFetchedUpdate()
     if (lastFetchedUpdate) {
-        updateAppState.newUpdate = lastFetchedUpdate
+        !lastFetchedUpdate.doNotNotify && notifyUserForNewUpdate(
+            lastFetchedUpdate.data,
+            `A new update is available (v${lastFetchedUpdate.data.updateInfo.version})`
+        )
+        updateAppState.newUpdate = lastFetchedUpdate.data
         updateAppState.checkingForUpdatesDone = true
         updateAppState.newUpdate = await appUpdater.checkForUpdate()
+        if (updateAppState.newUpdate) {
+            const isNewerVersion = lastFetchedUpdate.data.updateInfo.version !== updateAppState.newUpdate.updateInfo.version
+            if (isNewerVersion && !lastFetchedUpdate.doNotNotify) {
+                notifyUserForNewUpdate(
+                    updateAppState.newUpdate,
+                    `A newer update is available (v${updateAppState.newUpdate.updateInfo.version})`
+                )
+            }
+        }
         return
     }
 
@@ -37,6 +82,12 @@ export async function startCheckingForUpdates() {
         updateAppState.newUpdate = await appUpdater.checkForUpdate();
         updateAppState.checkingForUpdatesDone = true
         updateAppState.checkingForUpdatesError = "";
+        if (updateAppState.newUpdate) {
+            notifyUserForNewUpdate(
+                updateAppState.newUpdate,
+                `A new update is available (v${updateAppState.newUpdate.updateInfo.version})`
+            )
+        }
     } catch (error) {
         updateAppState.checkingForUpdatesError = String(error);
         updateAppState.checkingForUpdatesDone = false

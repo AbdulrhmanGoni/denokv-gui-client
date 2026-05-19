@@ -6,8 +6,9 @@
     import EditIcon from "@lucide/svelte/icons/pencil-line";
     import Button from "$lib/ui/shadcn/button/button.svelte";
     import CheckIcon from "@lucide/svelte/icons/square-check-big";
-    import UndoIcon from "@lucide/svelte/icons/undo-2";
+    import RotateCWIcon from "@lucide/svelte/icons/rotate-cw";
     import type { CodeJar } from "codejar";
+    import PLink from "$lib/ui/primitives/PLink.svelte";
 
     let {
         value = $bindable(),
@@ -73,20 +74,18 @@
 
 <Dialog.Root bind:open={getOpen, setOpen}>
     <Dialog.Content
-        class="max-w-xl! w-full max-h-[600px]! overflow-auto p-4 gap-2"
+        class="max-w-xl w-full max-h-[600px] overflow-auto p-4 gap-2"
     >
         <div class="space-y-2 overflow-auto">
             <p class="text-xl font-semibold">Backoff Schedule</p>
             <p class="text-sm text-muted-foreground">
                 An array of numbers (in milliseconds) that specify the retry
                 policy for failed message delivery.
-                <a
+                <PLink
                     href="https://docs.deno.com/api/deno/~/Deno.Kv.prototype.enqueue#:~:text=backoffSchedule%20option"
-                    target="_blank"
-                    class="text-foreground hover:underline"
                 >
                     See the API reference
-                </a> for further details and an example.
+                </PLink> for further details and an example.
             </p>
             <CodeEditor
                 editorId="backoff-schedule-editor"
@@ -101,7 +100,7 @@
                 </Button>
                 <Button size="sm" variant="outline" onclick={clearEditor}>
                     Reset
-                    <UndoIcon />
+                    <RotateCWIcon />
                 </Button>
             </div>
         </div>

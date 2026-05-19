@@ -30,62 +30,82 @@ electronApp.on('console', (msg) => {
     }
 });
 
+const kvStores = [
+    {
+        name: "Some Local KV Store",
+        url: path.join(import.meta.dirname, "kv.sqlite3"),
+        type: "local",
+        accessToken: null,
+        authToken: null,
+    },
+    {
+        name: "Some Production KV Store",
+        url: "https://some-remote-database.com/kv",
+        type: "remote",
+        accessToken: "some-access-token",
+        authToken: null,
+    },
+    {
+        name: "Some KV Store Bridge Server",
+        url: "https://localhost:8704/kv/bridge-server",
+        type: "bridge",
+        accessToken: null,
+        authToken: "some-auth-token",
+    },
+    {
+        name: "Another local kv store",
+        url: path.join(import.meta.dirname, "another-kv.sqlite3"),
+        type: "local",
+        accessToken: null,
+        authToken: null,
+    },
+    {
+        name: "Another remote kv store",
+        url: "https://another-remote-database.com/kv",
+        type: "remote",
+        accessToken: "another-access-token",
+        authToken: null,
+    },
+    {
+        name: "Another bridge kv store",
+        url: "https://localhost:6519/kv",
+        type: "bridge",
+        accessToken: null,
+        authToken: null,
+    },
+]
+
 try {
     const page = await electronApp.firstWindow();
+    page.on('pageerror', (error) => console.error('Page error:', error));
 
-    // Capture errors
-    page.on('pageerror', (error) => {
-        console.error('Page error:', error);
-    });
-
-    // Wait for the page to load
     await page.waitForLoadState('load');
 
-    await page.evaluate(async (path) => {
-        const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
-        await kvStoresService.create({
-            name: "Some Local KV Store",
-            url: path,
-            type: "local",
-            accessToken: null,
-            authToken: null,
-        })
+    await page.evaluate(async (kvStores) => {
+        const kvStoresService = globalThis['kvStoresService' as keyof typeof globalThis]
+        for (const kvStore of kvStores) {
+            await kvStoresService.create(kvStore)
+        }
+    }, kvStores);
 
-        await kvStoresService.create({
-            name: "Some Production KV Store",
-            url: "https://some-remote-database.com/kv",
-            type: "remote",
-            accessToken: "some-access-token",
-            authToken: null,
-        })
-
-        await kvStoresService.create({
-            name: "Some KV Store Bridge Server",
-            url: "https://localhost:8704/kv/bridge-server",
-            type: "bridge",
-            accessToken: null,
-            authToken: "some-auth-token",
-        })
-    }, import.meta.dirname);
-
-    await switchMode(page, 'dark')
-    await takeScreenshots(page, 'dark')
-    await switchMode(page, 'light')
-    await takeScreenshots(page, 'light')
+    await takeScreenshots(page)
 } finally {
     await electronApp.close();
 
     writeFileSync(path.resolve(import.meta.dirname, '../tests/database.test.sqlite'), "")
 
-    const testingKvStorePath = path.resolve(import.meta.dirname, 'kv.sqlite3')
-    rmSync(testingKvStorePath, { force: true })
-    rmSync(`${testingKvStorePath}-shm`, { force: true })
-    rmSync(`${testingKvStorePath}-wal`, { force: true })
+    for (const kvStore of kvStores) {
+        if (kvStore.type === "local") {
+            rmSync(kvStore.url, { force: true })
+            rmSync(`${kvStore.url}-shm`, { force: true })
+            rmSync(`${kvStore.url}-wal`, { force: true })
+        }
+    }
 
     for (const file of readdirSync("./screenshots")) {
         if (file.endsWith(".temp.png")) {
             await sharp("./screenshots/" + file)
-                .png({ quality: 70 })
+                .png({ quality: 75 })
                 .toFile("./screenshots/" + file.replace(".temp", ""));
 
             rmSync("./screenshots/" + file)
@@ -93,10 +113,9 @@ try {
     }
 }
 
-type Mode = "dark" | "light";
-
-async function takeScreenshots(page: Page, mode: Mode) {
+async function takeScreenshots(page: Page) {
     const steps = [
+        takeScreenshotOfSettingsPage,
         takeScreenshotOfKvStoresGrid,
         takeScreenshotOfKvStoreForm,
         takeScreenshotOfKvEntriesTable,
@@ -107,45 +126,55 @@ async function takeScreenshots(page: Page, mode: Mode) {
         takeScreenshotOfBrowsingParamsDialog,
         takeScreenshotOfSavedBrowsingParamsDialog,
         takeScreenshotOfEnqueueMessageDialog,
+        takeScreenshotOfAtomicOperationsDialog,
+        takeScreenshotOfWatchedKeysDialog,
     ]
 
     for (const step of steps) {
-        await step(page, mode)
+        await step(page)
     }
 }
 
-async function switchMode(page: Page, mode: Mode) {
-    const settingsButton = page.locator("button svg.lucide-settings");
-    await settingsButton.click()
-
-    const lightModeButton = page.locator(`button svg.lucide-${mode == "dark" ? "moon" : "sun"}`);
-    await lightModeButton.click()
-
-    await page.screenshot({ path: `./screenshots/SettingsPage_${mode}.temp.png`, fullPage: true });
-
-    await page.reload();
+async function takeScreenshotOfTheme(page: Page, name: string) {
+    await page.screenshot({ path: `./screenshots/${name}_light.temp.png`, fullPage: true });
+    await page.keyboard.press('Alt+s'); // toggle to dark mode
+    await page.screenshot({ path: `./screenshots/${name}_dark.temp.png`, fullPage: true });
+    await page.keyboard.press('Alt+s'); // toggle back to light mode
 }
 
-async function takeScreenshotOfKvStoresGrid(page: Page, mode: Mode) {
-    await page.screenshot({ path: `./screenshots/KvStoresGrid_${mode}.temp.png`, fullPage: true });
+async function takeScreenshotOfSettingsPage(page: Page) {
+    await page.locator("button svg.lucide-settings").click();
+    await page.locator("button svg.lucide-sun").click();
+    await page.waitForTimeout(100);
+    await takeScreenshotOfTheme(page, "SettingsPage")
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
 }
 
-async function takeScreenshotOfKvStoreForm(page: Page, mode: Mode) {
+async function takeScreenshotOfKvStoresGrid(page: Page) {
+    await page.reload()
+    await page.locator("button", { has: page.locator("svg.lucide-globe"), hasText: "Remote" }).click();
+    await page.locator("button", { has: page.locator("svg.lucide-server"), hasText: "Bridge" }).click();
+    await page.locator("button", { has: page.locator("svg.lucide-hard-drive"), hasText: "Local" }).click();
+    await takeScreenshotOfTheme(page, "KvStoresGrid")
+}
+
+async function takeScreenshotOfKvStoreForm(page: Page) {
     const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" });
     await addKvStoreButton.click();
-    await page.screenshot({ path: `./screenshots/KvStoreForm_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "KvStoreForm")
     const backButton = page.locator("button", { hasText: "Back" });
     await backButton.click()
 }
 
-async function takeScreenshotOfKvEntriesTable(page: Page, mode: Mode) {
+async function takeScreenshotOfKvEntriesTable(page: Page) {
     await page.locator(
         '#kv-stores-grid > div',
         { hasText: "Some Local KV Store" }
     ).dblclick({ position: { x: 5, y: 5 } });
 
     await page.evaluate(async (entries) => {
-        const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+        const kvClient = globalThis['kvClient' as keyof typeof globalThis]
 
         if (!(await kvClient.get(entries[0].key))?.result) {
             for (const entry of entries) {
@@ -156,53 +185,53 @@ async function takeScreenshotOfKvEntriesTable(page: Page, mode: Mode) {
 
     await page.locator("button", { hasText: "Reload" }).click();
     await page.waitForTimeout(100)
-    await page.screenshot({ path: `./screenshots/KvEntriesTable_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "KvEntriesTable")
 }
 
-async function takeScreenshotOfDisplayKvEntryDialog(page: Page, mode: Mode) {
+async function takeScreenshotOfDisplayKvEntryDialog(page: Page) {
     await page.locator('td', { hasText: /"admins"/ }).dblclick({ position: { x: 5, y: 5 } });
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `./screenshots/DisplayKvEntryDialog_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "DisplayKvEntryDialog")
 }
 
-async function takeScreenshotOfEditKvEntryDialog(page: Page, mode: Mode) {
-    await page.locator('button', { hasText: "Edit Entry" }).click();
+async function takeScreenshotOfEditKvEntryDialog(page: Page) {
+    await page.locator('button', { hasText: "Edit" }).click();
     await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Object" }).click();
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `./screenshots/EditKvEntryDialog_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "EditKvEntryDialog")
     await page.keyboard.press('Escape');
     await page.keyboard.press('Escape');
 }
 
-async function takeScreenshotOfAddKvEntryForm(page: Page, mode: Mode) {
-    await page.locator('button', { hasText: "Add Entry" }).click();
+async function takeScreenshotOfAddKvEntryForm(page: Page) {
+    await page.locator('button', { hasText: "New" }).click();
     await page.waitForTimeout(100);
     await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `./screenshots/AddKvEntryForm_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "AddKvEntryForm")
     await page.keyboard.press('Escape');
     await page.keyboard.press('Escape');
 }
 
-async function takeScreenshotOfLookupEntryDialog(page: Page, mode: Mode) {
-    await page.locator('button', { hasText: "Look up Entry" }).click();
+async function takeScreenshotOfLookupEntryDialog(page: Page) {
+    await page.locator('button', { hasText: "Look Up" }).click();
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `./screenshots/LookupEntryDialog_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "LookupEntryDialog")
     await page.keyboard.press('Escape');
 }
 
-async function takeScreenshotOfBrowsingParamsDialog(page: Page, mode: Mode) {
+async function takeScreenshotOfBrowsingParamsDialog(page: Page) {
     await page.locator('button', { has: page.locator("svg.lucide-pencil-line") }).click();
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `./screenshots/BrowsingParamsDialog_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "BrowsingParamsDialog")
 }
 
-async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page, mode: Mode) {
+async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page) {
     await page.evaluate(async () => {
-        const kvStoresService = globalThis[btoa('kvStoresService') as keyof typeof globalThis]
+        const kvStoresService = globalThis['kvStoresService' as keyof typeof globalThis]
         const store = (await kvStoresService.getAll()).find((store: any) => store.type === "local")
 
-        const browsingParamsService = globalThis[btoa('browsingParamsService') as keyof typeof globalThis]
+        const browsingParamsService = globalThis['browsingParamsService' as keyof typeof globalThis]
 
         const res = await browsingParamsService.getSavedBrowsingParamsRecords(store.id)
         if (res.result.length) {
@@ -225,12 +254,12 @@ async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page, mode: Mode)
 
     await page.locator('button', { hasText: "Saved Filters List" }).click();
     await page.waitForTimeout(100);
-    await page.screenshot({ path: `./screenshots/SavedBrowsingParamsDialog_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "SavedBrowsingParamsDialog")
     await page.keyboard.press('Escape');
 }
 
-async function takeScreenshotOfEnqueueMessageDialog(page: Page, mode: Mode) {
-    await page.locator('button', { hasText: "Enqueue Message" }).click();
+async function takeScreenshotOfEnqueueMessageDialog(page: Page) {
+    await page.locator('button', { hasText: "Enqueue" }).click();
     await page.waitForTimeout(100);
     const valueEditor = page.locator('div#value-editor')
     await valueEditor.fill('{task: "delete-files-task", files: ["file-id-1", "file-id-2", "file-id-3"]}')
@@ -247,7 +276,7 @@ async function takeScreenshotOfEnqueueMessageDialog(page: Page, mode: Mode) {
     await backoffScheduleEditor.fill('[5000, 20000, 40000]');
     await backoffScheduleEditor.press('Space');
     await page.waitForTimeout(100)
-    await page.screenshot({ path: `./screenshots/EnqueueMessageBackoffScheduleOption_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "EnqueueMessageBackoffScheduleOption")
     await page.locator("button", { hasText: "Set Option" }).click();
 
     await page.locator('div', { has: page.locator('> p', { hasText: "Keys If Undelivered" }) })
@@ -258,11 +287,106 @@ async function takeScreenshotOfEnqueueMessageDialog(page: Page, mode: Mode) {
     const keysIfUndeliveredEditor = page.locator('div#keys-if-undelivered-editor');
     await keysIfUndeliveredEditor.fill('[["undelivered", "delete-files-task"]]');
     await keysIfUndeliveredEditor.press('Space');
-    await page.screenshot({ path: `./screenshots/EnqueueMessageKeysIfUndeliveredOption_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "EnqueueMessageKeysIfUndeliveredOption")
     await page.locator("button", { hasText: "Set Option" }).click();
     await page.waitForTimeout(100);
 
     await page.waitForTimeout(125);
-    await page.screenshot({ path: `./screenshots/EnqueueMessageDialog_${mode}.temp.png`, fullPage: true });
+    await takeScreenshotOfTheme(page, "EnqueueMessageDialog")
+    await page.keyboard.press('Escape');
+}
+
+async function takeScreenshotOfAtomicOperationsDialog(page: Page) {
+    await page.locator('button', { hasText: "Atomic" }).click();
+    await page.waitForTimeout(100);
+
+    // Add check operation
+    await page.locator('button', { hasText: "check" }).click();
+    const checkKeyEditor = page.locator('div#check-key-editor');
+    await checkKeyEditor.fill('["users", "abdulrhman"]');
+    await checkKeyEditor.press('Space');
+    await page.waitForTimeout(100);
+    await takeScreenshotOfTheme(page, "CheckAtomicOperation")
+    await page.locator('button', { hasText: "Add Check" }).click();
+
+    // Add set operation
+    await page.locator('button', { hasText: /^set/ }).click();
+    await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
+    await page.locator('div[data-slot="select-item"]', { hasText: "Object" }).click();
+    const setKeyEditor = page.locator('div#key-editor');
+    await setKeyEditor.fill('["users", "abdulrhman"]');
+    await setKeyEditor.press('Space');
+    const setValueEditor = page.locator('div#value-editor');
+    await setValueEditor.fill('{name: "abdulrhman", title: "IM", rating: 2525}');
+    await setValueEditor.press('Space');
+    await page.waitForTimeout(100)
+    await page.locator('button', { hasText: "Add Set Operation" }).click();
+
+    // Add sum operation
+    await page.locator('button', { hasText: "sum" }).click();
+    const sumKeyEditor = page.locator('div#sum-key-editor');
+    await sumKeyEditor.fill('["users", "International Masters"]');
+    await sumKeyEditor.press('Space');
+    await page.locator('input#sum-value-input').fill('1');
+    await page.waitForTimeout(75);
+    await takeScreenshotOfTheme(page, "SumAtomicOperation")
+    await page.locator('button', { hasText: "Add Sum" }).click();
+
+    // Add enqueue operation
+    await page.locator('button', { hasText: /^enqueue/ }).click();
+    const enqueueValueEditor = page.locator('div#value-editor');
+    await enqueueValueEditor.fill('{task: "register-fide-rating", value: {user: "abdulrhman", rating: 2525}}');
+    await enqueueValueEditor.press('Space');
+    await page.waitForTimeout(100)
+    await page.locator('button', { hasText: "Add Enqueue Operation" }).click();
+
+    // Add delete operation
+    await page.locator('button', { hasText: "delete" }).click();
+    const deleteKeyEditor = page.locator('div#delete-key-editor');
+    await deleteKeyEditor.fill('["users", "legacy", true]');
+    await deleteKeyEditor.press('Space');
+    await page.waitForTimeout(100)
+    await page.locator('button', { hasText: "Add Delete Operation" }).click();
+
+    await page.waitForTimeout(150)
+    await takeScreenshotOfTheme(page, "AtomicOperationsDialog")
+    await page.keyboard.press('Escape');
+}
+
+async function takeScreenshotOfWatchedKeysDialog(page: Page) {
+    const watchedEntries = [
+        {
+            key: ["A", "watched", "Object"],
+            value: { type: "Object", data: '{"name": "abdulrhman", "title": "IM", "rating": 2525}' },
+        },
+        {
+            key: ["A", "watched", "Set"],
+            value: { type: "Set", data: "new Set([4757, 5853, 43777])" },
+        },
+        {
+            key: ["A", "watched", "Map"],
+            value: { type: "Map", data: "new Map([['dhme', 1], ['hymo', 2]])" },
+        },
+    ];
+
+    await page.evaluate(async (entries) => {
+        const kvClient = globalThis['kvClient' as keyof typeof globalThis];
+        for (const entry of entries) {
+            await kvClient.set(entry.key, entry.value);
+        }
+    }, watchedEntries);
+
+    await page.locator("button", { hasText: "Reload" }).click();
+
+    const watchedRows = page.locator("tr", { hasText: `"watched"` });
+    for await (const row of await watchedRows.all()) {
+        await row.locator('[data-slot="checkbox"]').click();
+    }
+
+    await page.getByRole("button", { name: "Watch", exact: true }).click();
+    await takeScreenshotOfTheme(page, "WatchedEntries")
+    await page.locator('button', { hasText: /Watched Keys \(\d+\)/ }).click();
+    await page.waitForTimeout(100);
+    await takeScreenshotOfTheme(page, "WatchedKeysDialog")
     await page.keyboard.press('Escape');
 }

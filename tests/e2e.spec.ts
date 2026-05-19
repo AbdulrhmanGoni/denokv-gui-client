@@ -10,6 +10,8 @@ import path from 'node:path';
 import { kvStoresTests } from './kvStoresTests';
 import { kvEntriesTests } from './kvEntriesTests';
 import { filteringKvEntriesTests } from './filteringKvEntriesTests';
+import { atomicOperationsTests } from './atomicOperationsTests';
+import { watchedKeysTests } from './watchedKeysTests';
 
 process.env.PLAYWRIGHT_TEST = 'true';
 
@@ -60,6 +62,7 @@ export const test = base.extend<TestFixtures>({
     });
 
     await page.waitForLoadState('load');
+    page.setDefaultTimeout(process.env.CI ? 9000 : 3000)
     await use(page);
   },
 });
@@ -89,3 +92,7 @@ test.describe('Kv Stores Tests', kvStoresTests)
 test.describe('Kv Entries Tests', kvEntriesTests)
 
 test.describe('Filtering Kv Entries Tests', filteringKvEntriesTests)
+
+test.describe('Watched Keys Tests', watchedKeysTests)
+
+test.describe('Atomic Operations Tests', atomicOperationsTests)

@@ -15,7 +15,7 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-  class="bg-card rounded-md shadow-md text-muted-foreground p-4 space-y-2 transition w-full h-full"
+  class="bg-card rounded-md shadow-md text-muted-foreground p-4 space-y-2 transition w-full h-fit"
   ondblclick={() => {
     openKvStore(kvStore);
   }}

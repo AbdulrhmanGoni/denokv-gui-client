@@ -74,7 +74,7 @@ describe("Test 'validateEnqueueRequest' function", () => {
         const body = {
             value: { type: "String", data: "test" },
             options: {
-                keysIfUndelivered: ['["failed","messages",1]', '["failed","messages",2]'],
+                keysIfUndelivered: '[["failed","messages",1], ["failed","messages",2]]',
             },
         };
         const result = await validateEnqueueRequest(body, kv);
@@ -95,7 +95,7 @@ describe("Test 'validateEnqueueRequest' function", () => {
             options: {
                 delay: 1000,
                 backoffSchedule: [100, 500, 1000],
-                keysIfUndelivered: ['["dlq","task",123]'],
+                keysIfUndelivered: '[["dlq","task",123]]',
             },
         };
         const result = await validateEnqueueRequest(body, kv);
@@ -173,6 +173,18 @@ describe("Test 'validateEnqueueRequest' function", () => {
         };
         await expect(validateEnqueueRequest(body, kv)).rejects.toThrow(
             "'keysIfUndelivered' option of 'enqueue' operation should be an array of valid Kv Keys in the serialized form as string",
+        );
+    });
+
+    it("should throw an error for invalid KvKey in keysIfUndelivered", async () => {
+        const body = {
+            value: { type: "String", data: "test" },
+            options: {
+                keysIfUndelivered: '[["valid"], ["invalid", {}]]',
+            },
+        };
+        await expect(validateEnqueueRequest(body, kv)).rejects.toThrow(
+            "'keysIfUndelivered' option of 'enqueue' operation contains at least one invalid Kv Key",
         );
     });
 

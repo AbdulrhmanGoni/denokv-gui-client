@@ -6,7 +6,7 @@
         $props();
 </script>
 
-<span class={`flex gap-2 items-center ${dataTypesColors.date} ` + className}>
+<span class={`flex gap-1.5 items-center ${dataTypesColors.date} ` + className}>
     <DateIcon class="size-4" />
     {value || "No Value"}
 </span>

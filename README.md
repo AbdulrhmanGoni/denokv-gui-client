@@ -134,18 +134,19 @@ To compile or build the app for production use:
   pnpm run compile
 ```
 
-> This command will create the build artifacts in `dist` directory
+> This command will create the build artifacts in `dist` directory,
+> The path to the compiled app would be like `dist/denokv-gui-client-x.x.x-{os}-{arch}.{ext}`
 
 ### Tests
 
-To run the tests, compile the app first, and then run:
+To run the tests, make sure you have compiled the app first because the tests run on the compiled app in `dist` directory, and then run:
 
 ```bash
   pnpm run test
 ```
 
 > [!NOTE]
-> A testing SQLite database file will be created in the root directory of the project once you run the migration command for the first time.
+> A testing SQLite database file will be created in the root directory of the project once you run the test command for the first time.
 
 [releases-page]: https://github.com/AbdulrhmanGoni/denokv-gui-client/releases
 

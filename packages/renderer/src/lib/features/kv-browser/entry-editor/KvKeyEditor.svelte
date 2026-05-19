@@ -4,16 +4,17 @@
 
   type KeyEditorProps = {
     jar?: KvKeyCodeEditor;
+    editorId?: string;
   };
 
-  let { jar = $bindable() }: KeyEditorProps = $props();
+  let { jar = $bindable(), editorId = "key-editor" }: KeyEditorProps = $props();
 
   let editorValue = $state("[]");
 </script>
 
-<div class="space-y-3">
+<div class="space-y-1.5">
   <p class="flex gap-2 items-center font-bold text-lg">
     <KeyFileIcon /> Key
   </p>
-  <CodeEditor editorId="key-editor" bind:editorValue bind:jar />
+  <CodeEditor {editorId} bind:editorValue bind:jar />
 </div>

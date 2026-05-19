@@ -38,6 +38,14 @@ Here are some screenshots of how `Denokv GUI Client` app looks like:
 ![Enqueue Message Dialog screenshot (Dark)](./EnqueueMessageDialog_dark.png#gh-dark-mode-only)
 ![Enqueue Message Dialog screenshot (Light)](./EnqueueMessageDialog_light.png#gh-light-mode-only)
 
+### Watched Entries in Kv Entries Table
+![Watched entries in Kv Entries Table screenshot (Dark)](./WatchedEntries_dark.png#gh-dark-mode-only)
+![Watched entries in Kv Entries Table screenshot (Light)](./WatchedEntries_light.png#gh-light-mode-only)
+
+### Watched Keys Dialog
+![Watched Keys Dialog screenshot (Dark)](./WatchedKeysDialog_dark.png#gh-dark-mode-only)
+![Watched Keys Dialog screenshot (Light)](./WatchedKeysDialog_light.png#gh-light-mode-only)
+
 ### Enqueue Message Backoff Schedule Option
 ![Enqueue Message Backoff Schedule Option screenshot (Dark)](./EnqueueMessageBackoffScheduleOption_dark.png#gh-dark-mode-only)
 ![Enqueue Message Backoff Schedule Option screenshot (Light)](./EnqueueMessageBackoffScheduleOption_light.png#gh-light-mode-only)
@@ -45,6 +53,18 @@ Here are some screenshots of how `Denokv GUI Client` app looks like:
 ### Enqueue Message Keys If Undelivered Option
 ![Enqueue Message Keys If Undelivered Option screenshot (Dark)](./EnqueueMessageKeysIfUndeliveredOption_dark.png#gh-dark-mode-only)
 ![Enqueue Message Keys If Undelivered Option screenshot (Light)](./EnqueueMessageKeysIfUndeliveredOption_light.png#gh-light-mode-only)
+
+### Atomic Operations Dialog
+![Atomic Operations Dialog screenshot (Dark)](./AtomicOperationsDialog_dark.png#gh-dark-mode-only)
+![Atomic Operations Dialog screenshot (Light)](./AtomicOperationsDialog_light.png#gh-light-mode-only)
+
+### Check Atomic Operation
+![Check Atomic Operation screenshot (Dark)](./CheckAtomicOperation_dark.png#gh-dark-mode-only)
+![Check Atomic Operation screenshot (Light)](./CheckAtomicOperation_light.png#gh-light-mode-only)
+
+### Sum Atomic Operation
+![Sum Atomic Operation screenshot (Dark)](./SumAtomicOperation_dark.png#gh-dark-mode-only)
+![Sum Atomic Operation screenshot (Light)](./SumAtomicOperation_light.png#gh-light-mode-only)
 
 ### Settings Page
 ![Settings Page screenshot (Dark)](./SettingsPage_dark.png#gh-dark-mode-only)

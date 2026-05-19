@@ -15,13 +15,12 @@
     "@app/preload": "workspace:*",
     "@app/renderer": "workspace:*",
     "@app/bridge-server": "workspace:*",
-    "electron-updater": "6.6.2"
+    "electron-updater": "6.8.2"
   },
   "devDependencies": {
     "@app/electron-versions": "workspace:*",
     "electron-devtools-installer": "3.2.0",
     "typescript": "5.8.3",
-    "vite": "6.3.5",
-    "@std/async": "npm:@jsr/std__async@1.1.0"
+    "vite": "6.4.2"
   }
 }

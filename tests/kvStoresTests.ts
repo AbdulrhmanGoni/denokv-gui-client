@@ -1,6 +1,6 @@
 import path from "node:path";
 import { test, testingKvStore } from "./e2e.spec";
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { mkdirSync, rmSync } from "node:fs";
 
 export function kvStoresTests() {
@@ -9,20 +9,26 @@ export function kvStoresTests() {
         path: path.join(import.meta.dirname, "another-kv"),
     }
 
+    const customFileName = "custom-test.db";
+
     test.beforeAll(() => {
         mkdirSync(anotherNewKvStore.path)
     });
 
     test.afterAll(() => {
         rmSync(anotherNewKvStore.path, { recursive: true, force: true })
+        const customFilePath = path.resolve(testingKvStore.path, customFileName);
+        rmSync(customFilePath, { force: true });
+        rmSync(`${customFilePath}-shm`, { force: true });
+        rmSync(`${customFilePath}-wal`, { force: true });
     });
 
-    test('Create new Kv Stores', async ({ page }) => {
+    test('Create local Kv Stores', async ({ page }) => {
         const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
         const nameInput = page.locator("input#name");
-        const typeSelectButton = page.locator('button', { hasText: "Select Type" })
+        const typeSelectButton = getTypeSelectButton(page)
         const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
-        const urlInput = page.locator("input#url");
+        const localKvDirectoryInput = page.locator("input#localKvDirectory");
         const submitButton = page.locator('button[type=submit]');
 
         // Create the first new kv store
@@ -30,7 +36,7 @@ export function kvStoresTests() {
         await nameInput.fill(testingKvStore.name);
         await typeSelectButton.click();
         await localTypeSelectItem.click();
-        await urlInput.fill(testingKvStore.path);
+        await localKvDirectoryInput.fill(testingKvStore.path);
         await submitButton.click();
 
         const iconLocator = page.locator("svg.lucide-hard-drive")
@@ -47,7 +53,7 @@ export function kvStoresTests() {
         await nameInput.fill(anotherNewKvStore.name);
         await typeSelectButton.click();
         await localTypeSelectItem.click();
-        await urlInput.fill(anotherNewKvStore.path);
+        await localKvDirectoryInput.fill(anotherNewKvStore.path);
         await submitButton.click();
 
         const anotherNewKvStoreCard = page.locator('#kv-stores-grid > div', {
@@ -91,4 +97,252 @@ export function kvStoresTests() {
 
         await expect(anotherNewKvStoreCard).not.toBeVisible();
     });
+
+    test('Create a remote Kv Store', async ({ page }) => {
+        const remoteKvStore = {
+            name: "Remote Test Store",
+            url: "https://remote-test.example.com",
+            accessToken: "test-access-token"
+        }
+
+        const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
+        const nameInput = page.locator("input#name");
+        const typeSelectButton = getTypeSelectButton(page)
+        const remoteTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "remote" })
+        const urlInput = page.locator("input#url");
+        const accessTokenInput = page.locator("input#accessToken");
+        const submitButton = page.locator('button[type=submit]');
+
+        await addKvStoreButton.click();
+        await nameInput.fill(remoteKvStore.name);
+        await typeSelectButton.click();
+        await remoteTypeSelectItem.click();
+        await urlInput.fill(remoteKvStore.url);
+        await accessTokenInput.fill(remoteKvStore.accessToken);
+        await submitButton.click();
+
+        const globeIcon = page.locator("svg.lucide-globe")
+
+        await expect(page.locator('#kv-stores-grid > div', {
+            has: globeIcon,
+            hasText: remoteKvStore.name
+        })).toBeVisible();
+        await expect(page.locator('#kv-stores-grid > div', {
+            has: globeIcon,
+            hasText: remoteKvStore.url
+        })).toBeVisible();
+    });
+
+    test('Create a bridge Kv Store', async ({ page }) => {
+        const bridgeKvStore = {
+            name: "Bridge Test Store",
+            url: "http://localhost:9999",
+            authToken: "bridge-test-token"
+        }
+
+        const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
+        const nameInput = page.locator("input#name");
+        const typeSelectButton = getTypeSelectButton(page)
+        const bridgeTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "bridge" })
+        const urlInput = page.locator("input#url");
+        const authTokenInput = page.locator("input#authToken");
+        const submitButton = page.locator('button[type=submit]');
+
+        await addKvStoreButton.click();
+        await nameInput.fill(bridgeKvStore.name);
+        await typeSelectButton.click();
+        await bridgeTypeSelectItem.click();
+        await urlInput.fill(bridgeKvStore.url);
+        await authTokenInput.fill(bridgeKvStore.authToken);
+        await submitButton.click();
+
+        await expect(page.locator('#kv-stores-grid > div', {
+            has: page.locator("svg.lucide-server"),
+            hasText: bridgeKvStore.name
+        })).toBeVisible();
+        await expect(page.locator('#kv-stores-grid > div', {
+            has: page.locator("svg.lucide-server"),
+            hasText: bridgeKvStore.url
+        })).toBeVisible();
+    });
+
+    test('Create a local Kv Store with custom filename', async ({ page }) => {
+        const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
+        const nameInput = page.locator("input#name");
+        const typeSelectButton = getTypeSelectButton(page)
+        const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
+        const localKvDirectoryInput = page.locator("input#localKvDirectory");
+        const localKvFileNameInput = page.locator("input#localKvFileName");
+        const submitButton = page.locator('button[type=submit]');
+
+        await addKvStoreButton.click();
+        await nameInput.fill("Custom Filename Store");
+        await typeSelectButton.click();
+        await localTypeSelectItem.click();
+        await localKvDirectoryInput.fill(testingKvStore.path);
+        await localKvFileNameInput.fill(customFileName);
+        await submitButton.click();
+
+        const hardDriveIcon = page.locator("svg.lucide-hard-drive")
+
+        await expect(page.locator('#kv-stores-grid > div', {
+            has: hardDriveIcon,
+            hasText: "Custom Filename Store"
+        })).toBeVisible();
+
+        await expect(page.locator('#kv-stores-grid > div', {
+            has: hardDriveIcon,
+            hasText: customFileName
+        })).toBeVisible();
+    });
+
+    test('Create a local Kv Store with trailing slash in directory', async ({ page }) => {
+        const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
+        const nameInput = page.locator("input#name");
+        const typeSelectButton = getTypeSelectButton(page)
+        const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
+        const localKvDirectoryInput = page.locator("input#localKvDirectory");
+        const submitButton = page.locator('button[type=submit]');
+
+        await addKvStoreButton.click();
+        await nameInput.fill("Trailing Slash Store");
+        await typeSelectButton.click();
+        await localTypeSelectItem.click();
+        await localKvDirectoryInput.fill(testingKvStore.path + "/");
+        await submitButton.click();
+
+        const trailingSlashStoreCard = page.locator('#kv-stores-grid > div', {
+            has: page.locator("svg.lucide-hard-drive"),
+            hasText: "Trailing Slash Store"
+        })
+        await expect(trailingSlashStoreCard).toBeVisible();
+    });
+
+    test('Create a local Kv Store with "replace existing" option', async ({ page }) => {
+        const hardDriveIcon = page.locator("svg.lucide-hard-drive")
+        await page.locator('#kv-stores-grid > div', {
+            has: hardDriveIcon,
+            hasText: customFileName
+        }).dblclick({ position: { x: 10, y: 10 } });
+
+        const testEntryKey = "should-be-deleted-after-replacing-the-kv-store"
+        await page.evaluate(async (key) => {
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
+            await kvClient.set([key], {
+                type: "String",
+                data: "Should be deleted after replacing the current kv store with a new fresh one",
+            })
+        }, testEntryKey);
+        const backButton = page.locator('button svg.lucide-arrow-left-from-line')
+        await backButton.click()
+
+        const addKvStoreButton = page.locator('button', { hasText: "Add Kv Store" })
+        const nameInput = page.locator("input#name");
+        const typeSelectButton = getTypeSelectButton(page)
+        const localTypeSelectItem = page.locator('div[data-slot="select-item"]', { hasText: "local" })
+        const localKvDirectoryInput = page.locator("input#localKvDirectory");
+        const localKvFileNameInput = page.locator("input#localKvFileName");
+        const replaceExistingCheckbox = page.locator('#replaceExisting');
+        const submitButton = page.locator('button[type=submit]');
+
+        await addKvStoreButton.click();
+        await nameInput.fill("Replace Existing Store");
+        await typeSelectButton.click();
+        await localTypeSelectItem.click();
+        await localKvDirectoryInput.fill(testingKvStore.path);
+        await localKvFileNameInput.fill(customFileName);
+        await replaceExistingCheckbox.check();
+        await submitButton.click();
+
+        const replaceStoreCard = page.locator('#kv-stores-grid > div', {
+            has: hardDriveIcon,
+            hasText: "Replace Existing Store"
+        })
+        await expect(replaceStoreCard).toBeVisible();
+        await expect(replaceStoreCard).toHaveText(new RegExp(customFileName, "i"));
+
+        await replaceStoreCard.dblclick({ position: { x: 10, y: 10 } });
+
+        const deletedEntryResponse = await page.evaluate(async (key) => {
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
+            return await kvClient.get([key])
+        }, testEntryKey);
+        expect(deletedEntryResponse).toEqual({ result: null, error: 'Entry not found' });
+
+        await backButton.click()
+    });
+
+    test('Filter Kv Stores by type', async ({ page }) => {
+        const remoteButton = page.locator('#filter-Remote');
+        const localButton = page.locator('#filter-Local');
+        const bridgeButton = page.locator('#filter-Bridge');
+        const defaultButton = page.locator('#filter-Default');
+
+        const remoteStore = page.locator('#kv-stores-grid > div', { hasText: 'Remote Test Store' });
+        const bridgeStore = page.locator('#kv-stores-grid > div', { hasText: 'Bridge Test Store' });
+        const localStore = page.locator('#kv-stores-grid > div', { hasText: 'Trailing Slash Store' });
+
+        // Select Remote filter
+        await remoteButton.click();
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).not.toBeVisible();
+
+        // Select Remote + Bridge filter
+        await bridgeButton.click();
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).toBeVisible();
+        await expect(localStore).not.toBeVisible();
+
+        // Unselect remote and bridge (0 filters selected)
+        await remoteButton.click();
+        await bridgeButton.click();
+
+        // All should be visible, because no filters are selected
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).toBeVisible();
+        await expect(localStore).toBeVisible();
+
+        // Select Local filter
+        await localButton.click();
+        await expect(remoteStore).not.toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).toBeVisible();
+
+        // Reload and ensure the selected filter persists
+        await page.reload();
+        await expect(remoteStore).not.toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).toBeVisible();
+
+        // Deselect local filter
+        await localButton.click();
+
+        // Select Default filter
+        await defaultButton.click();
+        await expect(remoteStore).not.toBeVisible();
+        await expect(bridgeStore).not.toBeVisible();
+        await expect(localStore).not.toBeVisible();
+
+        // Click Clear filters if "No matching" is displayed, else unselect default filter
+        const clearButton = page.locator('button', { hasText: 'Clear filters' });
+        if (await clearButton.isVisible()) {
+            await clearButton.click();
+        } else {
+            await defaultButton.click();
+        }
+
+        // All should be visible again after clearing filters 
+        // or after unselecting default filter (which was the only filter selected in the previous step)
+        await expect(remoteStore).toBeVisible();
+        await expect(bridgeStore).toBeVisible();
+        await expect(localStore).toBeVisible();
+    });
+}
+
+function getTypeSelectButton(page: Page) {
+    return page.locator(
+        'button[data-slot="select-trigger"]',
+        { hasText: /(remote|bridge|local|Select Type)/ },
+    )
 }

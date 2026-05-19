@@ -10,15 +10,17 @@ Of course in order to be able to contribute to the project, you should be famili
 
 - Node.js + Electron
 - SQLite Database 
-- [dbmate](https://github.com/amacneil/dbmate) (database migration tool)
+- [@deno/kv](https://www.npmjs.com/package/@deno/kv): npm package to deal with Deno KV databases
+- [Hono](https://hono.dev/): to create the HTTP server that serves data from Deno KV database to the front end
+- [dbmate](https://github.com/amacneil/dbmate): database migration tool
 
 ### Front End side
 
 - Svelte
 - Tailwind CSS
-- [Shadcn Svelte](https://shadcn-svelte.com/) 
-- [Lucide](https://lucide.dev/icons/) (for ui icons)
-- [CodeJar](https://github.com/antonmedv/codejar)
+- [Shadcn Svelte](https://shadcn-svelte.com/): for ui components
+- [Lucide](https://lucide.dev/icons/): for ui icons
+- [CodeJar](https://github.com/antonmedv/codejar): code editor for constrasting js values to store in Deno KV
 
 ## Issues
 
@@ -32,6 +34,11 @@ Of course in order to be able to contribute to the project, you should be famili
 Follow these steps to make the pull request: 👇
 
 1. Follow the [Install and Run instructions](README.md#install-and-run-localy) in the `README.md` file to set up dev environment.
+
 2. Create a new branch for the change you are willing to introduce.
-3. Follow the conventional commits [specification](https://www.conventionalcommits.org/en/v1.0.0/#specification) when writing your commit messages
-4. Create your pull request once you are ready 👍
+
+3. Run the tests locally and make sure all tests pass and nothing broke. follow [Tests](README.md#tests) guide for how to run tests.
+
+4. Follow the conventional commits [specification](https://www.conventionalcommits.org/en/v1.0.0/#specification) when writing your commit messages.
+
+5. Create your pull request once you are ready 👍

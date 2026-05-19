@@ -3,6 +3,7 @@
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import { metadata } from "@app/preload";
   import AppLogo from "$lib/ui/primitives/AppLogo.svelte";
+  import PLink from "$lib/ui/primitives/PLink.svelte";
 </script>
 
 <Tooltip.Provider delayDuration={0}>
@@ -35,14 +36,12 @@
           />
         </a>
         <Separator orientation="vertical" />
-        <a
+        <PLink
           href={`${metadata.githubRepo}/releases/tag/v${metadata.appVersion}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="font-bold text-lg text-foreground hover:underline"
+          className="font-bold text-lg text-foreground!"
         >
           v{metadata.appVersion}
-        </a>
+        </PLink>
       </div>
     </Tooltip.Content>
   </Tooltip.Root>

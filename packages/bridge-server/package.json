@@ -1,6 +1,6 @@
 {
     "name": "@app/bridge-server",
-    "version": "7.1.0",
+    "version": "8.3.0",
     "description": "A tiny HTTP server to expose Deno KV database over HTTP",
     "type": "module",
     "sideEffects": false,
@@ -14,6 +14,11 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
             "default": "./dist/index.mjs"
+        },
+        "./kv-utils": {
+            "types": "./dist/kv-utils.d.ts",
+            "import": "./dist/kv-utils.mjs",
+            "default": "./dist/kv-utils.mjs"
         }
     },
     "module": "./dist/index.mjs",
@@ -30,13 +35,14 @@
         "@types/serialize-javascript": "^5.0.4",
         "typescript": "5.8.2",
         "vite-plugin-dts": "^4.5.4",
-        "vite": "6.3.5",
+        "vite": "6.4.2",
         "vitest": "^4.0.15"
     },
     "dependencies": {
-        "@hono/node-server": "1.19.7",
-        "hono": "4.11.4",
-        "serialize-javascript": "6.0.2"
+        "@deno/kv": "0.13.0",
+        "@hono/node-server": "1.19.14",
+        "hono": "4.12.18",
+        "serialize-javascript": "7.0.5"
     },
     "publish": {
         "include": [

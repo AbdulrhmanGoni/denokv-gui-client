@@ -1,7 +1,7 @@
 ---
 const description = "Modern desktop app to browse and manage Deno KV databases";
 const title = "Deno KV GUI Client";
-const url = "https://abdulrhmangoni.github.io/denokv-gui-client/";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -14,37 +14,44 @@ const url = "https://abdulrhmangoni.github.io/denokv-gui-client/";
     <meta property="og:description" content={description} />
     <meta
       property="og:image"
-      content="https://abdulrhmangoni.github.io/denokv-gui-client/apple-touch-icon-180x180.png"
+      content={new URL(
+        `${import.meta.env.BASE_URL}apple-touch-icon-180x180.png`,
+        Astro.site,
+      )}
     />
     <meta property="og:image:width" content="180" />
     <meta property="og:image:height" content="180" />
-    <meta property="og:url" content={url} />
-    <link rel="canonical" href={url} />
-    <link rel="icon" type="image/png" href="/denokv-gui-client/favicon.png" />
+    <meta property="og:url" content={canonicalURL} />
+    <link rel="canonical" href={canonicalURL} />
+    <link
+      rel="icon"
+      type="image/png"
+      href={`${import.meta.env.BASE_URL}favicon.png`}
+    />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="/denokv-gui-client/apple-touch-icon-180x180.png"
+      href={`${import.meta.env.BASE_URL}apple-touch-icon-180x180.png`}
     />
     <link
       rel="apple-touch-icon"
       sizes="152x152"
-      href="/denokv-gui-client/apple-touch-icon-ipad-retina-152x152.png"
+      href={`${import.meta.env.BASE_URL}apple-touch-icon-ipad-retina-152x152.png`}
     />
     <link
       rel="apple-touch-icon"
       sizes="120x120"
-      href="/denokv-gui-client/apple-touch-icon-iphone-retina-120x120.png"
+      href={`${import.meta.env.BASE_URL}apple-touch-icon-iphone-retina-120x120.png`}
     />
     <link
       rel="apple-touch-icon"
       sizes="76x76"
-      href="/denokv-gui-client/apple-touch-icon-ipad-76x76.png"
+      href={`${import.meta.env.BASE_URL}apple-touch-icon-ipad-76x76.png`}
     />
     <link
       rel="apple-touch-icon"
       sizes="60x60"
-      href="/denokv-gui-client/apple-touch-icon-iphone-60x60.png"
+      href={`${import.meta.env.BASE_URL}apple-touch-icon-iphone-60x60.png`}
     />
     <meta name="generator" content={Astro.generator} />
     <title>

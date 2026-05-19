@@ -2,42 +2,54 @@
   import CopyIcon from "@lucide/svelte/icons/copy";
   import CheckIcon from "@lucide/svelte/icons/check";
   import ButtonWithTooltip from "$lib/ui/primitives/ButtonWithTooltip.svelte";
-  import { copyEntryKey, copyEntryValue } from "../utils/copyKvEntry";
+  import {
+    copyEntryKey,
+    copyEntryValue,
+    copyEntryVersionStamp,
+  } from "../utils/copyKvEntry";
 
-  const { entry, isKey }: { entry: KvEntry; isKey?: boolean } = $props();
+  const {
+    entry,
+    target,
+    className,
+  }: {
+    entry: KvEntry;
+    target: "key" | "Versionstamp" | "Value";
+    className?: string;
+  } = $props();
 
-  let keyCoppied = $state(false);
-  let valueCoppied = $state(false);
+  let isCoppied = $state(false);
 
-  function copyKey() {
-    keyCoppied = true;
+  function handleCopy() {
+    isCoppied = true;
     setTimeout(() => {
-      keyCoppied = false;
+      isCoppied = false;
     }, 5000);
 
-    copyEntryKey(entry);
-  }
+    switch (target) {
+      case "key":
+        copyEntryKey(entry);
+        break;
 
-  function copyValue() {
-    valueCoppied = true;
-    setTimeout(() => {
-      valueCoppied = false;
-    }, 5000);
+      case "Versionstamp":
+        copyEntryVersionStamp(entry);
+        break;
 
-    copyEntryValue(entry);
+      case "Value":
+        copyEntryValue(entry);
+        break;
+    }
   }
 </script>
 
 <ButtonWithTooltip
-  onclick={isKey ? copyKey : copyValue}
-  tooltipContent={(isKey ? keyCoppied : valueCoppied)
-    ? `${isKey ? "Key" : "Value"} Coppied`
-    : `Copy ${isKey ? "Key" : "Value"} `}
+  onclick={handleCopy}
+  tooltipContent={isCoppied ? `${target} Coppied` : `Copy ${target}`}
   size="icon"
   variant="ghost"
-  className={isKey ? "ml-auto" : ""}
+  {className}
 >
-  {#if isKey ? keyCoppied : valueCoppied}
+  {#if isCoppied}
     <CheckIcon />
   {:else}
     <CopyIcon />

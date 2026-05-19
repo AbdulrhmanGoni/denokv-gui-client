@@ -6,6 +6,15 @@
   import FileIcon from "@lucide/svelte/icons/file";
   import LocalStorageIcon from "@lucide/svelte/icons/hard-drive";
   import type { Table } from "@tanstack/table-core";
+  import {
+    fetchEntries,
+    resetEntriesState,
+  } from "$lib/states/kvEntriesState.svelte";
+  import {
+    fetchWatchedKeysForOpenedKvStore,
+    resetWatchedKvEntriesState,
+    startWatchingKvEntries,
+  } from "$lib/states/watchedKvEntriesState.svelte";
 
   const { kvEntriesTable }: { kvEntriesTable: Table<SerializedKvEntry> } =
     $props();
@@ -18,10 +27,15 @@
     )!;
 
     const open = await openKvStore(chosenKvStore);
-    if (!open) {
-      openedKvStoreId = kvStoresState.openedStore!.id;
-    } else {
+    if (open) {
       kvEntriesTable.resetRowSelection();
+      await resetEntriesState();
+      await fetchEntries();
+      resetWatchedKvEntriesState();
+      await fetchWatchedKeysForOpenedKvStore();
+      startWatchingKvEntries();
+    } else {
+      openedKvStoreId = kvStoresState.openedStore!.id;
     }
   }
 </script>
@@ -34,7 +48,7 @@
   <Select.Trigger class="text-base">
     {@render item(kvStoresState.openedStore!)}
   </Select.Trigger>
-  <Select.Content>
+  <Select.Content class="max-h-[400px]">
     {#each kvStoresState.kvStores as kvStore (kvStore.id)}
       <Select.Item value={kvStore.id}>
         {@render item(kvStore)}

@@ -3,7 +3,7 @@
   import Input from "$lib/ui/shadcn/input/input.svelte";
   import * as Select from "$lib/ui/shadcn/select/index.js";
 
-  let { value = $bindable() }: { value?: number } = $props();
+  let { value = $bindable() }: { value: number } = $props();
 
   let inputValue: number = $state(NaN);
   let mesurementUnit = $state("milliseconds");

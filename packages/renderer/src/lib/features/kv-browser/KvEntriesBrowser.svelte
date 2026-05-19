@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { onDestroy, untrack } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import {
     openAddKvEntryDialog,
     openLookUpKeyDialog,
   } from "$lib/states/kvEntryDialogState.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
-  import {
-    closeKvStore,
-    kvStoresState,
-  } from "$lib/states/kvStoresState.svelte";
+  import { closeKvStore } from "$lib/states/kvStoresState.svelte";
   import KvEntriesTable from "$lib/features/kv-browser/table/KvEntriesTable.svelte";
   import KvEntryDialog from "$lib/features/kv-browser/entry-editor/KvEntryDialog.svelte";
   import PlusIcon from "@lucide/svelte/icons/plus";
@@ -20,12 +17,20 @@
   import {
     createKvEntriesTable,
     fetchEntries,
+    fetchSavedDefaultBrowsingParams,
     kvEntriesState,
     resetEntriesState,
   } from "$lib/states/kvEntriesState.svelte";
   import LookUpKvEntryDialog from "$lib/features/kv-browser/actions/LookUpKvEntryDialog.svelte";
   import RotateCwIcon from "@lucide/svelte/icons/rotate-cw";
   import EnqueueMessage from "$lib/features/kv-browser/enqueue-message/EnqueueMessage.svelte";
+  import AtomicOperationsConstructor from "./atomic-operations/AtomicOperationsConstructor.svelte";
+  import {
+    fetchWatchedKeysForOpenedKvStore,
+    resetWatchedKvEntriesState,
+    startWatchingKvEntries,
+  } from "$lib/states/watchedKvEntriesState.svelte";
+  import WatchedKeysDialog from "./watched-keys/WatchedKeysDialog.svelte";
 
   const table = createKvEntriesTable();
 
@@ -33,24 +38,29 @@
     closeKvStore();
   }
 
-  onDestroy(close);
+  onDestroy(() => {
+    close();
+    resetEntriesState();
+  });
 
-  $effect(() => {
-    if (kvStoresState.openedStore?.id) {
-      untrack(() => {
-        resetEntriesState();
-        fetchEntries();
-      });
-    }
+  onMount(async () => {
+    await fetchSavedDefaultBrowsingParams();
+    await fetchEntries();
+    resetWatchedKvEntriesState();
+    await fetchWatchedKeysForOpenedKvStore();
+    startWatchingKvEntries();
   });
 </script>
 
-<div class="space-y-2 flex flex-col justify-center h-full">
-  <div class="flex gap-2 items-center mb-4">
-    <Button size="default" variant="outline" onclick={close}>
-      <ArrowLeftFromLineIcon class="size-5" />
-    </Button>
-    <KvStorePicker kvEntriesTable={table} />
+<div class="space-y-2 flex flex-col h-full">
+  <div class="flex gap-2 items-center justify-between mb-4">
+    <div class="flex gap-2 items-center">
+      <Button size="default" variant="outline" onclick={close}>
+        <ArrowLeftFromLineIcon class="size-5" />
+      </Button>
+      <KvStorePicker kvEntriesTable={table} />
+    </div>
+    <WatchedKeysDialog />
   </div>
   <div class="flex gap-2 items-center justify-end">
     <BrowseParams />
@@ -59,20 +69,26 @@
       class="me-auto"
       variant="outline"
       onclick={() => {
-        kvEntriesState.params.nextCursorIndex -= 1;
+        kvEntriesState.params.cursors.pop();
         fetchEntries();
       }}
     >
       Reload
       <RotateCwIcon />
     </Button>
+    <AtomicOperationsConstructor />
     <EnqueueMessage />
-    <Button size="sm" variant="secondary1" onclick={openLookUpKeyDialog}>
-      Look up Entry
+    <Button
+      class="gap-1"
+      size="sm"
+      variant="secondary1"
+      onclick={openLookUpKeyDialog}
+    >
+      Look Up
       <SearchIcon class="rotate-75" />
     </Button>
-    <Button size="sm" onclick={openAddKvEntryDialog}>
-      Add Entry
+    <Button class="gap-0.5" size="sm" onclick={openAddKvEntryDialog}>
+      New
       <PlusIcon />
     </Button>
   </div>
