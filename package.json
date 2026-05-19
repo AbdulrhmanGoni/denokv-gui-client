@@ -40,6 +40,9 @@
   },
   "dependencies": {
     "dbmate": "^2.28.0",
-    "@app/main": "workspace:*"
+    "@app/main": "workspace:*",
+    "@app/preload": "workspace:*",
+    "@app/renderer": "workspace:*",
+    "@app/bridge-server": "workspace:*"
   }
 }

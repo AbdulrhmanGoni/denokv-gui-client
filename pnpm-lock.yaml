@@ -8,9 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@app/bridge-server':
+        specifier: workspace:*
+        version: link:packages/bridge-server
       '@app/main':
         specifier: workspace:*
         version: link:packages/main
+      '@app/preload':
+        specifier: workspace:*
+        version: link:packages/preload
+      '@app/renderer':
+        specifier: workspace:*
+        version: link:packages/renderer
       dbmate:
         specifier: ^2.28.0
         version: 2.29.3
@@ -81,15 +90,6 @@ importers:
 
   packages/main:
     dependencies:
-      '@app/bridge-server':
-        specifier: workspace:*
-        version: link:../bridge-server
-      '@app/preload':
-        specifier: workspace:*
-        version: link:../preload
-      '@app/renderer':
-        specifier: workspace:*
-        version: link:../renderer
       '@deno/kv':
         specifier: 0.13.0
         version: 0.13.0
