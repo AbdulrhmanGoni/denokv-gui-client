@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         if: ${{ env.isNewVersion == 'true' }}
         run: |
-          npm install -g pnpm@latest
+          npm install -g pnpm@latest-10
           pnpm install --filter=@app/bridge-server
 
       - name: Publish to JSR
