@@ -25,6 +25,6 @@ export function formatTimeAgo(date: Date): string {
     } else if (minutes > 0) {
         return formatter.format(-minutes, "minute");
     } else {
-        return formatter.format(-seconds, "second");
+        return "just now"
     }
 }

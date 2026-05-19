@@ -2,7 +2,7 @@ import { database } from './db.js';
 
 export const insertQuery = database.prepare(`
     INSERT INTO kvStores(id, name, url, type, accessToken, authToken, createdAt, updatedAt) 
-    VALUES(?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+    VALUES(?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 `);
 
 export const updateQuery = database.prepare(`
@@ -12,7 +12,7 @@ export const updateQuery = database.prepare(`
         accessToken = $accessToken,
         authToken = $authToken,
         type = COALESCE($type, type), 
-        updatedAt = datetime('now') 
+        updatedAt = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') 
     WHERE id = $id
 `);
 

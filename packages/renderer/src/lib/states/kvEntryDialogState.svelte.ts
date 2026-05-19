@@ -1,3 +1,4 @@
+import { isSameKvKey } from "@app/bridge-server/kv-utils";
 
 type KvEntryDialogState = {
     entry: KvEntry | null;
@@ -8,13 +9,22 @@ type KvEntryDialogState = {
 export const kvEntryDialogState: KvEntryDialogState = $state({
     open: false,
     entry: null,
-    openValueEditor: true,
+    openValueEditor: false,
 })
 
-export function openKvEntryDialog(entry: KvEntry, edit?: boolean) {
+export function openKvEntryDialog(entry: KvEntry, openEditor?: boolean) {
     kvEntryDialogState.entry = entry
     kvEntryDialogState.open = true
-    kvEntryDialogState.openValueEditor = !!edit
+    kvEntryDialogState.openValueEditor = !!openEditor
+}
+
+export function updateOpenKvEntry(updatedEntry: KvEntry) {
+    if (
+        kvEntryDialogState.entry &&
+        isSameKvKey(kvEntryDialogState.entry.key, updatedEntry.key)
+    ) {
+        kvEntryDialogState.entry = updatedEntry;
+    }
 }
 
 export const openAddKvEntryFormState = $state({ open: false });

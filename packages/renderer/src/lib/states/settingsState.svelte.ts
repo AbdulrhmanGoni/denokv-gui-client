@@ -13,3 +13,9 @@ export async function setAutoCheckForUpdate(value: boolean) {
 export async function loadSettings() {
     Object.assign(settingsState, await settingsService.getSettings() ?? {})
 }
+
+export const settingsPageState: { open: boolean } = $state({ open: false })
+
+export function openSettingsPage() {
+    settingsPageState.open = true
+}

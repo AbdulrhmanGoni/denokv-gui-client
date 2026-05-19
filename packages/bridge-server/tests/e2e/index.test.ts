@@ -8,13 +8,16 @@ import { getEndpointSpec } from "./get.spec.ts";
 import { deleteEndpointSpec } from "./delete.spec.ts";
 import { enqueueEndpointSpec } from "./enqueue.spec.ts";
 import { atomicEndpointSpec } from "./atomic.spec.ts";
+import { watchEndpointSpec } from "./watch.spec.ts";
 import { randomBytes } from "node:crypto";
 import { type Kv, openKv } from "@deno/kv";
 import type { AddressInfo } from "node:net";
 
 export type TestDependencies = {
   kv: Kv;
-  bridgeServerClient: BridgeServerClient
+  bridgeServerClient: BridgeServerClient;
+  bridgeServerUrl: string;
+  authToken: string;
 };
 
 const kv = await openKv(":memory:");
@@ -27,13 +30,13 @@ const authToken = randomBytes(30).toString("base64")
 const server = openBridgeServerInNode(kv, { port: 7963, authToken });
 
 const addressInfo = server.address() as AddressInfo
+const bridgeServerUrl = `http://localhost:${addressInfo.port}`;
 
 const testsDependencies = {
   kv,
-  bridgeServerClient: new BridgeServerClient(
-    `http://localhost:${addressInfo.port}`,
-    { authToken }
-  ),
+  bridgeServerClient: new BridgeServerClient(bridgeServerUrl, { authToken }),
+  bridgeServerUrl,
+  authToken,
 };
 
 describe("End-to-End tests for Deno server", () => {
@@ -43,4 +46,5 @@ describe("End-to-End tests for Deno server", () => {
   deleteEndpointSpec(testsDependencies);
   enqueueEndpointSpec(testsDependencies);
   atomicEndpointSpec(testsDependencies);
+  watchEndpointSpec(testsDependencies);
 });

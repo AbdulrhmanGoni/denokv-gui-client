@@ -4,26 +4,32 @@ import { disallowMultipleAppInstance } from './modules/SingleInstanceApp.js';
 import { createWindowManagerModule } from './modules/WindowManager.js';
 import { terminateAppOnLastWindowClose } from './modules/ApplicationTerminatorOnLastWindowClose.js';
 import { hardwareAccelerationMode } from './modules/HardwareAccelerationModule.js';
-import { allowInternalOrigins } from './modules/BlockNotAllowdOrigins.js';
-import { allowExternalUrls } from './modules/ExternalUrls.js';
-import { createBusinessLogicModule } from './modules/BusinessLogicModule.js';
+import { createWebContentsUrlPolicy } from './modules/WebContentsUrlPolicy.js';
+import { BridgeServerModule } from './modules/bridgeServer.js';
+import { KvStoresServiceModule } from './modules/kvStoresService.js';
+import { SettingsServiceModule } from './modules/settingsService.js';
+import { LastFetchedUpdateServiceModule } from './modules/lastFetchedUpdateService.js';
+import { BrowsingParamsServiceModule } from './modules/browsingParamsService.js';
+import { AppUpdaterModule } from './modules/appUpdaterModule.js';
+import { MetadataModule } from './modules/metadataModule.js';
+import { KvServerClientModule } from './modules/kvServerClientModule.js';
+import { WatchedKeysServiceModule } from './modules/watchedKeysService.js';
 
 
 export async function initApp(initConfig: AppInitConfig) {
-  const moduleRunner = createModuleRunner()
+  await createModuleRunner()
     .init(createWindowManagerModule({ initConfig, openDevTools: import.meta.env.DEV }))
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())
     .init(hardwareAccelerationMode({ enable: false }))
-    .init(createBusinessLogicModule())
-
-    // Security
-    .init(allowInternalOrigins(
-      new Set(initConfig.renderer instanceof URL ? [initConfig.renderer.origin] : []),
-    ))
-    .init(allowExternalUrls(
-      new Set(['https://github.com', 'https://docs.deno.com'])),
-    );
-
-  await moduleRunner;
+    .init(new KvStoresServiceModule())
+    .init(new BridgeServerModule())
+    .init(new SettingsServiceModule())
+    .init(new LastFetchedUpdateServiceModule())
+    .init(new BrowsingParamsServiceModule())
+    .init(new AppUpdaterModule())
+    .init(new MetadataModule())
+    .init(new KvServerClientModule())
+    .init(new WatchedKeysServiceModule())
+    .init(createWebContentsUrlPolicy(initConfig.renderer instanceof URL ? initConfig.renderer.origin : ''));
 }

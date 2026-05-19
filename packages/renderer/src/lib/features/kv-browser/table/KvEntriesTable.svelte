@@ -10,20 +10,15 @@
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import RefreshIcon from "@lucide/svelte/icons/refresh-cw";
   import Loader from "@lucide/svelte/icons/loader";
-  import { openKvEntryDialog } from "$lib/states/kvEntryDialogState.svelte";
   import { columns } from "$lib/features/kv-browser/table/columns";
-  import KvEntriesNavigation from "$lib/features/kv-browser/entry-editor/KvEntriesNavigation.svelte";
-  import DeleteMultipleEntries from "$lib/features/kv-browser/actions/DeleteMultipleEntries.svelte";
+  import KvEntriesTableRow from "./KvEntriesTableRow.svelte";
+  import KvEntriesTableFooter from "./KvEntriesTableFooter.svelte";
 
   const { table }: { table: TableType<SerializedKvEntry> } = $props();
-
-  const selectedRows = $derived(table.getFilteredSelectedRowModel().rows);
-  const selectedRowsCount = $derived(selectedRows.length);
-  const displayedRows = $derived(table.getFilteredRowModel().rows.length);
 </script>
 
-<div class="rounded-md border">
-  <div class="overflow-auto h-[450px]">
+<div class="rounded-md border flex-1 flex flex-col min-h-0">
+  <div class="overflow-auto flex-1">
     <Table.Root>
       <Table.Header class="bg-muted">
         {#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
@@ -65,19 +60,7 @@
           </tr>
         {:else if kvEntriesState.fetched}
           {#each table.getRowModel().rows as row (JSON.stringify(row.original.key))}
-            <Table.Row
-              data-state={row.getIsSelected() && "selected"}
-              ondblclick={() => openKvEntryDialog(row.original)}
-            >
-              {#each row.getVisibleCells() as cell (cell.id)}
-                <Table.Cell>
-                  <FlexRender
-                    content={cell.column.columnDef.cell}
-                    context={cell.getContext()}
-                  />
-                </Table.Cell>
-              {/each}
-            </Table.Row>
+            <KvEntriesTableRow {row} />
           {:else}
             <tr>
               <td
@@ -97,14 +80,5 @@
     </Table.Root>
   </div>
   <Separator />
-  <div class="flex gap-2 p-2 bg-muted">
-    <div class="flex gap-2 items-center text-foreground text-sm">
-      {selectedRowsCount} of {" "}
-      {displayedRows} row{selectedRowsCount > 1 ? "s" : ""} selected.
-      {#if selectedRowsCount}
-        <DeleteMultipleEntries {selectedRows} />
-      {/if}
-    </div>
-    <KvEntriesNavigation />
-  </div>
+  <KvEntriesTableFooter {table} />
 </div>

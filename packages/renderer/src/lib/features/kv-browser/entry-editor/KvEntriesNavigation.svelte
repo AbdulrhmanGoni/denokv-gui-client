@@ -8,23 +8,23 @@
   } from "$lib/states/kvEntriesState.svelte";
 
   let thereIsNextCursor = $derived(
-    !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex] &&
-      !kvEntriesState.noMoreEntries,
+    !!kvEntriesState.params.cursors.at(-1) && !kvEntriesState.noMoreEntries,
   );
 
   let thereIsPreviousCursor = $derived(
-    !!kvEntriesState.params.cursors[kvEntriesState.params.nextCursorIndex - 1],
+    kvEntriesState.params.cursors.length > 1,
   );
 
   function next() {
-    if (thereIsNextCursor) {
-      fetchEntries();
-    }
+    thereIsNextCursor && fetchEntries();
   }
 
   function prev() {
     if (thereIsPreviousCursor) {
-      kvEntriesState.params.nextCursorIndex -= 2;
+      kvEntriesState.params.cursors.pop();
+      if (kvEntriesState.entries.length > 0) {
+        kvEntriesState.params.cursors.pop();
+      }
       if (kvEntriesState.noMoreEntries) {
         kvEntriesState.noMoreEntries = false;
       }

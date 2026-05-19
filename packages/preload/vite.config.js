@@ -33,20 +33,7 @@ export default /**
 
 /**
  * This plugin creates a browser (renderer) version of `preload` package.
- * Basically, it just read all nominals you exported from package and define it as globalThis properties
- * expecting that real values were exposed by `electron.contextBridge.exposeInMainWorld()`
- *
- * Example:
- * ```ts
- * // index.ts
- * export const someVar = 'my-value';
- * ```
- *
- * Output
- * ```js
- * // _virtual_browser.mjs
- * export const someVar = globalThis[<hash>] // 'my-value'
- * ```
+ * Basically, it just reads all exported nominals from `preload` package and defines them as globalThis properties.
  */
 function mockExposed() {
   const virtualModuleId = 'virtual:browser.js';
@@ -68,8 +55,8 @@ function mockExposed() {
           return (
             s +
             (key === 'default'
-              ? `export default globalThis['${btoa(key)}'];\n`
-              : `export const ${key} = globalThis['${btoa(key)}'];\n`)
+              ? `export default globalThis['${key}'];\n`
+              : `export const ${key} = globalThis['${key}'];\n`)
           );
         }, '');
       }

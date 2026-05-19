@@ -85,13 +85,17 @@ List KV entries with optional filtering and pagination.
 
 **Query Parameters:**
 
-| Parameter | Type     | Description |
-|-----------|----------|-------------|
-| `limit`   | `number` | Maximum number of entries to return (must be a positive integer). Defaults to 40 if not provided. |
-| `cursor`  | `string` | Cursor for pagination (obtained from previous browse response) |
-| `prefix`  | `string` | Filter entries by key prefix. must be a URL-encoded JSON array (SerializedKvKey type) |
-| `start`   | `string` | Start key for range query (inclusive). must be a URL-encoded JSON array (SerializedKvKey type) |
-| `end`     | `string` | End key for range query (exclusive). must be a URL-encoded JSON array (SerializedKvKey type) |
+| Parameter     | Type      | Description |
+|---------------|-----------|-------------|
+| `limit`       | `number`  | Maximum number of entries to return (must be a positive integer). Defaults to 40 |
+| `cursor`      | `string`  | Cursor for pagination (obtained from previous browse response) |
+| `prefix`      | `string`  | Filter entries by key prefix. must be a URL-encoded JSON array (SerializedKvKey type) |
+| `start`       | `string`  | Start key for range query (inclusive). must be a URL-encoded JSON array (SerializedKvKey type) |
+| `end`         | `string`  | End key for range query (exclusive). must be a URL-encoded JSON array (SerializedKvKey type) |
+| `batchSize`   | `number`  | The number of entries to fetch from the database at once. |
+| `consistency` | `string`  | The consistency level of the list operation. either `"strong"` or `"eventual"`. |
+| `reverse`     | `boolean` | Whether to return the entries in reverse order. |
+| `xssSafe`     | `boolean` | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
 
 > **None of the above query parameters is required**
 
@@ -104,6 +108,12 @@ Retrieve a specific KV entry by its key.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `key` | `string` | Yes | The serialized KV key (URL-encoded JSON array) |
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `xssSafe` | `boolean` | No | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
 
 #### PUT /set
 
@@ -179,9 +189,24 @@ Example:
 [
   { "name": "check", "key": "[\"users\", \"1\"]", "versionstamp": "00000000000000010000" },
   { "name": "sum", "key": "[\"users\", \"1\", \"score\"]", "value": 10 },
-  { "name": "set", "key": "[\"users\", \"2\", 123n]", "value": { "type": "String", "data": "New User" } }
+  { "name": "set", "key": "[\"users\", \"2\", 123n]", "value": { "type": "String", "data": "New User" }, "expiresIn": 3600000 }
 ]
 ```
+
+#### POST /watch
+
+Watch specific keys for updates via Server-Sent Events (SSE).
+
+**Request Body:**
+
+The request body must be a JSON array of serialized keys:
+```json
+["[\"key1\"]", "[\"key2\"]"]
+```
+
+**Response:**
+
+Returns a `text/event-stream` that emits serialized entries whenever a watched key changes.
 
 #### Authentication
 
@@ -238,28 +263,38 @@ browse(options?: BrowsingOptions): Promise<{ result: BrowseReturn | null; error:
 
 **BrowsingOptions:**
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `limit` | `number` | Maximum number of entries to return |
-| `cursor` | `string` | Cursor for pagination (from previous browse result) |
-| `prefix` | `SerializedKvKey` | Filter entries by key prefix |
-| `start` | `SerializedKvKey` | Start key for range query (inclusive) |
-| `end` | `SerializedKvKey` | End key for range query (exclusive) |
+| Option        | Type                          | Description |
+|---------------|-------------------------------|-------------|
+| `limit`       | `number`                      | Maximum number of entries to return |
+| `cursor`      | `string`                      | Cursor for pagination (from previous browse result) |
+| `prefix`      | `SerializedKvKey` (as string) | Filter entries by key prefix |
+| `start`       | `SerializedKvKey` (as string) | Start key for range query (inclusive) |
+| `end`         | `SerializedKvKey` (as string) | End key for range query (exclusive) |
+| `batchSize`   | `number`                      | The number of entries to fetch from the database at once |
+| `consistency` | `"strong"` or `"eventual"`    | The consistency level of the list operation |
+| `reverse`     | `boolean`                     | Whether to return the entries in reverse order |
+| `xssSafe`     | `boolean`                     | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
 
-#### `get(key)`
+#### `get(key, options?)`
 
 Retrieve a specific entry by its key.
 
 ```ts
-get(key: SerializedKvKey): Promise<{ result: SerializedKvEntry | null; error: string | null }>
+get(key: SerializedKvKey, options?: { xssSafe?: boolean }): Promise<{ result: SerializedKvEntry | null; error: string | null }>
 ```
+
+**Options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `xssSafe` | `boolean` | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
 
 #### `set(key, value, options?)`
 
 Set or update a key-value pair in the KV database.
 
 ```ts
-set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Promise<{ result: { result: true } | null; error: string | null }>
+set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Promise<{ result: boolean | null; error: string | null }>
 ```
 
 **SetKeyOptions:**
@@ -274,7 +309,7 @@ set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Pr
 Delete an entry from the KV database.
 
 ```ts
-delete(key: SerializedKvKey): Promise<{ result: { result: true } | null; error: string | null }>
+delete(key: SerializedKvKey): Promise<{ result: true | null; error: string | null }>
 ```
 
 #### `enqueue(value, options?)`
@@ -291,6 +326,22 @@ Perform multiple operations as a single atomic transaction.
 
 ```ts
 atomic(operations: AtomicOperationInput[]): Promise<{ result: boolean | null; error: string | null }>
+```
+
+#### `watch(keys, listener)`
+
+Watches a set of keys for updates.
+
+```ts
+watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<(() => void) | void>
+```
+
+#### `cancelWatcher()`
+
+Cancels the active watcher if there is one.
+
+```ts
+cancelWatcher(): Promise<void>
 ```
 
 ### Type Definitions
@@ -323,11 +374,11 @@ A serialized KV entry is an object contains:
 An object representing a single operation within an atomic transaction:
 
 - `name`: `"check" | "set" | "sum" | "min" | "max" | "delete" | "enqueue"`
-- `key`: `string` - A string containing a JavaScript expression representing a valid Deno KV key
+- `key`: `string` - A string containing a JavaScript expression representing a valid Deno KV key (required for all operations except `"enqueue"`)
 - `value`: `SerializedKvValue` or `number` (depending on operation)
-- `versionstamp`: `string | null` (required for `"check"`)
-- `expiresIn`: `number` (optional for `"set"`)
-- `options`: `EnqueueOptions` (optional for `"enqueue"`)
+- `versionstamp`: `string | null` (required only for `"check"`)
+- `expiresIn`: `number` (optional only for `"set"`)
+- `options`: `EnqueueOptions` (optional only for `"enqueue"`)
 
 #### EnqueueOptions
 

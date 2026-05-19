@@ -5,7 +5,7 @@ import { randomTestingKvEntries, usersTestingKvEntries } from "./testingKvEntrie
 export function filteringKvEntriesTests() {
     test.beforeAll(async ({ page }) => {
         await page.evaluate(async (entries) => {
-            const kvClient = globalThis[btoa('kvClient') as keyof typeof globalThis]
+            const kvClient = globalThis['kvClient' as keyof typeof globalThis]
             for (const entry of entries) {
                 await kvClient.set(entry.key, entry.value)
             }

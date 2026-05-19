@@ -1,8 +1,9 @@
 import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
-import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { BrowserWindow, dialog, ipcMain, screen, shell } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
 import electronUpdater from 'electron-updater';
+import path from 'node:path';
 
 class WindowManager implements AppModule {
   readonly #preload: { path: string };
@@ -15,18 +16,19 @@ class WindowManager implements AppModule {
     this.#openDevTools = openDevTools;
   }
 
-  async enable({ app }: ModuleContext): Promise<void> {
-    await app.whenReady();
-    await this.restoreOrCreateWindow(true);
-    app.on('second-instance', () => this.restoreOrCreateWindow(true));
-    app.on('activate', () => this.restoreOrCreateWindow(true));
+  async enable(context: ModuleContext): Promise<void> {
+    await context.app.whenReady();
+    context.browserWindow = await this.restoreOrCreateWindow(true);
+    context.app.on('second-instance', () => this.restoreOrCreateWindow(true));
+    context.app.on('activate', () => this.restoreOrCreateWindow(true));
   }
 
   async createWindow(): Promise<BrowserWindow> {
+    const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
     const browserWindow = new BrowserWindow({
       show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
-      height: 800,
-      width: 1400,
+      height: Math.min(800, workAreaSize.height),
+      width: Math.min(1400, workAreaSize.width),
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
@@ -52,6 +54,19 @@ class WindowManager implements AppModule {
       return result.filePaths[0];
     });
 
+    ipcMain.handle('select-file', async (_, directory?: string) => {
+      const result = await dialog.showOpenDialog(browserWindow, {
+        properties: ['openFile'],
+        defaultPath: directory,
+      });
+
+      if (result.canceled) return null;
+      return {
+        directory: path.dirname(result.filePaths[0]),
+        fileName: path.basename(result.filePaths[0])
+      };
+    });
+
     ipcMain.handle('open-path', async (_, path) => {
       return shell.showItemInFolder(path);
     });
@@ -63,8 +78,6 @@ class WindowManager implements AppModule {
     autoUpdater.on('download-progress', (progressInfo) => {
       browserWindow.webContents.send('downloading-update-progress', progressInfo)
     })
-
-    browserWindow.webContents.send('window-ready')
 
     return browserWindow;
   }

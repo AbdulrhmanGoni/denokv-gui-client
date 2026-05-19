@@ -69,7 +69,7 @@
             <MessageSquarePlusIcon class="size-6" />
             Enqueue Message
         </h1>
-        <p>
+        <p class="text-muted-foreground">
             Enqueue a message into your Deno KV Database's
             <strong>Queue</strong>. <br /> See the official
             <PLink href="https://docs.deno.com/deploy/classic/queues/">

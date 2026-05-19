@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 
 export function preloadContextExposureToRendererTests() {
     test("'metadata' should be exposed as an object", async ({ page }) => {
-        const metadata = await page.evaluate(() => globalThis[btoa('metadata') as keyof typeof globalThis]);
+        const metadata = await page.evaluate(() => globalThis['metadata' as keyof typeof globalThis]);
         expect(typeof metadata).toEqual('object');
 
         const versionMatching = /\d+.\d+.\d+/
@@ -17,7 +17,7 @@ export function preloadContextExposureToRendererTests() {
     });
 
     test(`'kvStoresService' should be exposed as an object with its methods`, async ({ page }) => {
-        const kvStoresService = await page.evaluate(() => globalThis[btoa('kvStoresService') as keyof typeof globalThis]);
+        const kvStoresService = await page.evaluate(() => globalThis['kvStoresService' as keyof typeof globalThis]);
         expect(typeof kvStoresService).toEqual('object');
 
         const exposedMethods = Object.keys(kvStoresService)
@@ -35,11 +35,11 @@ export function preloadContextExposureToRendererTests() {
     });
 
     test(`'kvClient' should be exposed as an object with its methods`, async ({ page }) => {
-        const kvClient = await page.evaluate(() => globalThis[btoa('kvClient') as keyof typeof globalThis]);
+        const kvClient = await page.evaluate(() => globalThis['kvClient' as keyof typeof globalThis]);
         expect(typeof kvClient).toEqual('object');
 
         const exposedMethods = Object.keys(kvClient)
-        const targetMethods = ['browse', 'set', 'deleteKey', 'get', 'enqueue', 'atomic'];
+        const targetMethods = ['browse', 'set', 'deleteKey', 'get', 'enqueue', 'atomic', 'watch', 'cancelWatcher'];
 
         expect(exposedMethods.length).toBe(targetMethods.length);
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
@@ -47,12 +47,12 @@ export function preloadContextExposureToRendererTests() {
 
     test(`'bridgeServer' should be exposed as an object with its methods`, async ({ page }) => {
         const bridgeServer = await page.evaluate(
-            () => globalThis[btoa('bridgeServer') as keyof typeof globalThis]
+            () => globalThis['bridgeServer' as keyof typeof globalThis]
         );
         expect(typeof bridgeServer).toEqual('object');
 
         const exposedMethods = Object.keys(bridgeServer)
-        const targetMethods = ['openServer', 'closeServer', 'getServerClient'];
+        const targetMethods = ['openServer', 'closeServer'];
 
         expect(exposedMethods.length).toBe(targetMethods.length);
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
@@ -60,7 +60,7 @@ export function preloadContextExposureToRendererTests() {
 
     test(`'appUpdater' should be exposed as an object with its methods`, async ({ page }) => {
         const appUpdater = await page.evaluate(
-            () => globalThis[btoa('appUpdater') as keyof typeof globalThis]
+            () => globalThis['appUpdater' as keyof typeof globalThis]
         );
         expect(typeof appUpdater).toEqual('object');
 
@@ -79,7 +79,7 @@ export function preloadContextExposureToRendererTests() {
 
     test(`'settingsService' should be exposed as an object with its methods`, async ({ page }) => {
         const settingsService = await page.evaluate(
-            () => globalThis[btoa('settingsService') as keyof typeof globalThis]
+            () => globalThis['settingsService' as keyof typeof globalThis]
         );
         expect(typeof settingsService).toEqual('object');
 
@@ -92,12 +92,17 @@ export function preloadContextExposureToRendererTests() {
 
     test(`'lastFetchedUpdateService' should be exposed as an object with its methods`, async ({ page }) => {
         const lastFetchedUpdateService = await page.evaluate(
-            () => globalThis[btoa('lastFetchedUpdateService') as keyof typeof globalThis]
+            () => globalThis['lastFetchedUpdateService' as keyof typeof globalThis]
         );
         expect(typeof lastFetchedUpdateService).toEqual('object');
 
         const exposedMethods = Object.keys(lastFetchedUpdateService)
-        const targetMethods = ['getLastFetchedUpdate', 'setLastFetchedUpdate', 'deleteLastFetchedUpdate'];
+        const targetMethods = [
+            'getLastFetchedUpdate',
+            'setLastFetchedUpdate',
+            'deleteLastFetchedUpdate',
+            'doNotNotifyLastFetchedUpdate',
+        ];
 
         expect(exposedMethods.length).toBe(targetMethods.length);
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
@@ -105,7 +110,7 @@ export function preloadContextExposureToRendererTests() {
 
     test(`'browsingParamsService' should be exposed as an object with its methods`, async ({ page }) => {
         const browsingParamsService = await page.evaluate(
-            () => globalThis[btoa('browsingParamsService') as keyof typeof globalThis]
+            () => globalThis['browsingParamsService' as keyof typeof globalThis]
         );
         expect(typeof browsingParamsService).toEqual('object');
 
@@ -122,13 +127,26 @@ export function preloadContextExposureToRendererTests() {
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
     });
 
+    test(`'watchedKeysService' should be exposed as an object with its methods`, async ({ page }) => {
+        const watchedKeysService = await page.evaluate(
+            () => globalThis['watchedKeysService' as keyof typeof globalThis]
+        );
+        expect(typeof watchedKeysService).toEqual('object');
+
+        const exposedMethods = Object.keys(watchedKeysService)
+        const targetMethods = ['setWatchedKeys', 'getWatchedKeys'];
+
+        expect(exposedMethods.length).toBe(targetMethods.length);
+        targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+    });
+
     test.describe('Utility preload functions should be exposed', async () => {
-        const utilExports = ['selectDirectory', 'openPath', 'onWindowReady'];
+        const utilExports = ['selectDirectory', 'openPath'];
 
         utilExports.forEach((exportName) => {
             test(`'${exportName}' is exposed as a function`, async ({ page }) => {
                 const type = await page.evaluate(
-                    (key) => typeof globalThis[btoa(key) as keyof typeof globalThis],
+                    (key) => typeof globalThis[key as keyof typeof globalThis],
                     exportName,
                 );
                 expect(type).toEqual('function');

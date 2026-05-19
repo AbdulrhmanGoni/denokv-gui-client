@@ -3,6 +3,8 @@ import {
     deserializeKvKey,
     deserializeKvValue,
     serializeEntries,
+    SerializedKvKey,
+    SerializedKvEntry,
 } from "../serialization/main.ts";
 import {
     validateBrowseRequestParams,
@@ -10,9 +12,10 @@ import {
     validateEnqueueRequest,
     validateAtomicOperations,
 } from "../validation/main.ts";
-import type { Kv, KvEntry } from "@deno/kv";
+import type { Kv, KvEntry, KvEntryMaybe } from "@deno/kv";
 import { Hono } from 'hono/tiny';
 import type { BlankEnv, BlankSchema } from "hono/types";
+import { isSameKvKey } from "../kv-utils.ts";
 
 /**
  * Creates the bridge server which is a Hono web application that provides HTTP endpoints to interact with
@@ -38,6 +41,9 @@ import type { BlankEnv, BlankSchema } from "hono/types";
  * - `GET /get/:key` - Retrieve a specific KV entry by key (mirroring `Deno.Kv.get()`)
  * - `PUT /set` - Create or update a KV entry (mirroring `Deno.Kv.set()`)
  * - `DELETE /delete` - Remove a KV entry (mirroring `Deno.Kv.delete()`)
+ * - `POST /enqueue` - Enqueue a message to a Deno Kv queue (mirroring `Deno.Kv.enqueue()`)
+ * - `POST /atomic` - Perform atomic operations on KV entries (mirroring `Deno.Kv.atomic()`)
+ * - `POST /watch` - Watch specific keys for updates (mirroring `Deno.Kv.watch()`)
  * - `GET /check` - Health check endpoint to verify KV connectivity
  *
  * All endpoints include CORS headers allowing cross-origin requests from any domain.
@@ -57,7 +63,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
     })
 
     app.get("/browse", async (c) => {
-        const { listSelector, options } = validateBrowseRequestParams(new URL(c.req.url))
+        const { listSelector, options, xssSafe } = validateBrowseRequestParams(new URL(c.req.url))
 
         const iterator = kv.list(listSelector, options);
         const records: KvEntry<unknown>[] = []
@@ -68,7 +74,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         return c.json(
             {
                 result: {
-                    entries: serializeEntries(records),
+                    entries: serializeEntries(records, xssSafe),
                     cursor: records.length ? iterator.cursor : ""
                 }
             },
@@ -78,6 +84,8 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
 
     app.get("/get/:key", async (c) => {
         const targetKey = c.req.param("key")
+        const xssSafe = c.req.query("xssSafe") === "false" ? false : true;
+
         const key = deserializeKvKey(targetKey)
 
         const entry = await kv.get(key)
@@ -88,7 +96,7 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
             return c.json({
                 result: {
                     key: JSON.parse(targetKey),
-                    value: serializeKvValue(entry.value),
+                    value: serializeKvValue(entry.value, xssSafe),
                     versionstamp: entry.versionstamp,
                 }
             })
@@ -106,13 +114,23 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
                 .commit()
 
             if (result.ok) {
-                return c.json({ result: result.ok })
+                return c.json({
+                    result: {
+                        ok: result.ok,
+                        versionstamp: result.versionstamp,
+                    }
+                })
             } else {
                 return c.json({ error: "The Kv Entry is already existing." }, 400)
             }
         } else {
             const result = await kv.set(key, validValue, { expireIn: expires })
-            return c.json({ result: result.ok })
+            return c.json({
+                result: {
+                    ok: result.ok,
+                    versionstamp: result.versionstamp,
+                }
+            })
         }
     });
 
@@ -188,6 +206,85 @@ export function createBridgeApp(kv: Kv | Deno.Kv, options?: { authToken?: string
         await kv.get([crypto.randomUUID()]);
         // If `kv.get` resolves, The database is reachable
         return c.json({ result: true })
+    });
+
+    let watchedEntries: { key: SerializedKvKey, versionstamp: string | null }[] = [];
+    let watchStreamReader: ReadableStreamDefaultReader<Deno.KvEntryMaybe<unknown>[] | KvEntryMaybe<unknown>[]> | null = null;
+    async function closeWatchStreamReader() {
+        if (watchedEntries.length) watchedEntries = []
+        if (watchStreamReader) {
+            await watchStreamReader.cancel().catch(() => { });
+            watchStreamReader = null
+        }
+    }
+    app.post("/watch", async (c) => {
+        const serializedKeys = await c.req.json() as string[]
+
+        if (!Array.isArray(serializedKeys)) {
+            return c.json({ error: "No keys provided to watch." }, 400)
+        }
+
+        const keys = serializedKeys.map((key) => deserializeKvKey(key))
+
+        await closeWatchStreamReader();
+
+        const watchStream = kv.watch(keys, { raw: true });
+        watchStreamReader = watchStream.getReader();
+
+        c.req.raw.signal.addEventListener('abort', closeWatchStreamReader);
+
+        const xssSafe = c.req.query("xssSafe") === "false" ? false : true;
+
+        const encoder = new TextEncoder();
+        const readableStream = new ReadableStream({
+            async start(controller) {
+                const pingTimerId = setInterval(() => {
+                    try { controller.enqueue(encoder.encode(": ping")) }
+                    catch { clearInterval(pingTimerId) }
+                }, 4 * 60_000)
+
+                try {
+                    while (true) {
+                        const { value: entries, done } = await watchStreamReader!.read();
+                        if (done) {
+                            clearInterval(pingTimerId)
+                            controller.close()
+                            break
+                        };
+
+                        const serializedEntries = serializeEntries(entries as KvEntry<unknown>[], xssSafe);
+                        let updatedEntries: SerializedKvEntry[] = []
+                        if (watchedEntries.length) {
+                            updatedEntries = serializedEntries.filter((entry) => (
+                                watchedEntries.some((wEntry) => (
+                                    isSameKvKey(wEntry.key, entry.key) && wEntry.versionstamp !== entry.versionstamp
+                                ))
+                            ))
+                        } else {
+                            updatedEntries = serializedEntries
+                        }
+
+                        controller.enqueue(encoder.encode(JSON.stringify(updatedEntries)))
+
+                        watchedEntries = serializedEntries.map((entry) => (
+                            { key: entry.key, versionstamp: entry.versionstamp }
+                        ))
+                    }
+                } catch (err) {
+                    clearInterval(pingTimerId)
+                    await closeWatchStreamReader();
+                    controller.error(err)
+                    try { controller.close() } catch { }
+                }
+            },
+            cancel() { closeWatchStreamReader() },
+        });
+
+        c.header("Content-Type", "text/event-stream; charset=utf-8");
+        c.header("Cache-Control", "no-cache");
+        c.header("Connection", "keep-alive");
+
+        return new Response(readableStream, { headers: c.res.headers });
     });
 
     app.all("*", (c) => {

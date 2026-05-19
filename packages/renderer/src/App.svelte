@@ -1,6 +1,9 @@
 <script lang="ts">
   import { ModeWatcher } from "mode-watcher";
-  import { kvStoresState } from "$lib/states/kvStoresState.svelte";
+  import {
+    closeKvStore,
+    kvStoresState,
+  } from "$lib/states/kvStoresState.svelte";
   import Header from "$lib/layout/Header.svelte";
   import KvEntriesBrowser from "$lib/features/kv-browser/KvEntriesBrowser.svelte";
   import KvStoresManagement from "$lib/features/kv-stores/KvStoresManagement.svelte";
@@ -13,26 +16,34 @@
   } from "$lib/states/settingsState.svelte";
   import { onMount } from "svelte";
   import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
+  import { handleKeyboardShortcuts } from "$lib/helpers/keyboardShortcuts";
+  import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
 
   onMount(async () => {
+    await closeKvStore();
     await loadSettings();
     if (settingsState.autoCheckForUpdate) {
       startCheckingForUpdates();
     }
+
+    document.addEventListener("keydown", handleKeyboardShortcuts);
   });
 </script>
 
-<main
-  class="max-w-7xl w-full mx-auto px-3 flex flex-col min-h-screen justify-center"
->
-  <Header />
-  <div class="h-[600px]">
-    {#if kvStoresState.openedStore}
-      <KvEntriesBrowser />
-    {:else}
-      <KvStoresManagement />
-    {/if}
-  </div>
+<main class="w-full mx-auto p-3 flex flex-col h-screen overflow-hidden">
+  <Tooltip.Provider
+    delayDuration={0}
+    disabled={metadata.environment == "testing"}
+  >
+    <Header />
+    <div class="flex-1 min-h-0">
+      {#if kvStoresState.openedStore}
+        <KvEntriesBrowser />
+      {:else}
+        <KvStoresManagement />
+      {/if}
+    </div>
+  </Tooltip.Provider>
   <Toaster
     richColors
     duration={metadata.environment == "testing" ? 1 : undefined}

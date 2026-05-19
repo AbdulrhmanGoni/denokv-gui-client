@@ -41,5 +41,21 @@ export function browseEndpointSpec({ bridgeServerClient }: TestDependencies) {
         expect(entry.key[0]).toBe(options.prefix[0]);
       })
     });
+
+    it("should respect the xssSafe option when returning entries", async () => {
+      const key = ["xss", "browse_test"];
+      await bridgeServerClient.set(key, {
+        type: "Object",
+        data: '{ data: "<script>alert(1)</script>" }',
+      });
+
+      const resSafe = await bridgeServerClient.browse({ prefix: ["xss"] });
+      const resUnsafe = await bridgeServerClient.browse({ prefix: ["xss"], xssSafe: false });
+
+      expect(resSafe.result?.entries[0].value.data).toContain("\\u003Cscript\\u003E");
+      expect(resUnsafe.result?.entries[0].value.data).toContain("<script>");
+
+      await bridgeServerClient.delete(key);
+    });
   });
 }

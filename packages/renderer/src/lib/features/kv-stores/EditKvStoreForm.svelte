@@ -59,12 +59,7 @@
       }
     });
 
-    const urlChanged = kvStore.type != "local" && kvStore.url !== url;
-    const localKvPathChanged =
-      kvStore.type == "local" &&
-      kvStore.url?.replace(/kv.sqlite3$/gi, "") !== url;
-
-    if (localKvPathChanged || urlChanged) {
+    if (kvStore.url !== url) {
       Object.assign(changes, { url });
       if (!isChanged) {
         isChanged = true;

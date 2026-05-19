@@ -4,6 +4,7 @@
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
   import KvValueRegExpRenderer from "$lib/features/kv-browser/entry-renderer/KvValueRegExpRenderer.svelte";
   import KvValueDateRenderer from "$lib/features/kv-browser/entry-renderer/KvValueDateRenderer.svelte";
+  import { wheelXScrollingHandler } from "./wheelXScrollingHandler";
 
   const {
     value,
@@ -12,10 +13,11 @@
   }: { value: KvEntry["value"]; format?: boolean; className?: string } =
     $props();
 
-  const dataTypeColor = dataTypesColors[value.type.toLowerCase()];
+  const dataTypeColor = $derived(dataTypesColors[value.type.toLowerCase()]);
 </script>
 
 <div
+  onwheel={wheelXScrollingHandler}
   class={cn(
     "font-semibold overflow-auto flex-1 py-1",
     dataTypeColor,
@@ -23,7 +25,7 @@
   )}
 >
   {#if value.type === "String"}
-    "{value.data}"
+    <pre>{`"${value.data}"`}</pre>
   {:else if value.type === "Number"}
     {value.data}
   {:else if value.type === "BigInt"}

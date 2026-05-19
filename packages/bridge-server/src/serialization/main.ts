@@ -1,9 +1,11 @@
 import type { Kv, KvEntry, KvKey } from "@deno/kv";
-import sJs from "serialize-javascript";
+import sJs, { type SerializeJSOptions } from "serialize-javascript";
 import { toNumber } from "../helpers";
 
-function serializeJs(jsValue: any) {
-    return sJs(jsValue, { ignoreFunction: true })
+function serializeJs(jsValue: any, xssSafe: boolean = true) {
+    const options: SerializeJSOptions = { ignoreFunction: true };
+    if (!xssSafe) options.unsafe = true;
+    return sJs(jsValue, options);
 }
 
 export type SerializedKvKey = (string | number | boolean | {
@@ -149,11 +151,15 @@ export function deserializeKvKey(key: string, options?: { allowEmptyKey?: boolea
  * Serializes a Deno Kv value into a JSON-compatible object.
  *
  * @param value any valid Deno Kv value to serialize
+ * @param xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
  * @returns A `{ type, data }` JSON object
  */
-export function serializeKvValue(value: unknown): SerializedKvValue {
+export function serializeKvValue(value: unknown, xssSafe: boolean = true): SerializedKvValue {
     switch (typeof value) {
-        case "string": return { type: "String", data: value };
+        case "string": return {
+            type: "String",
+            data: xssSafe ? serializeJs(value, xssSafe).slice(1, -1) : value
+        };
         case "number": {
             if (value == Infinity || value == -Infinity || isNaN(value)) {
                 return { type: "Number", data: value.toString() }
@@ -177,13 +183,13 @@ export function serializeKvValue(value: unknown): SerializedKvValue {
         }
     }
 
-    if (value instanceof Array) return { type: "Array", data: serializeJs(value) }
+    if (value instanceof Array) return { type: "Array", data: serializeJs(value, xssSafe) }
 
     if (value instanceof Date) return { type: "Date", data: value.toISOString() }
 
-    if (value instanceof Map) return { type: "Map", data: serializeJs(value) }
+    if (value instanceof Map) return { type: "Map", data: serializeJs(value, xssSafe) }
 
-    if (value instanceof Set) return { type: "Set", data: serializeJs(value) }
+    if (value instanceof Set) return { type: "Set", data: serializeJs(value, xssSafe) }
 
     if (value instanceof RegExp) {
         return {
@@ -194,7 +200,7 @@ export function serializeKvValue(value: unknown): SerializedKvValue {
 
     if (value instanceof Uint8Array) return { type: "Uint8Array", data: serializeUint8Array(value) }
 
-    return { type: "Object", data: serializeJs(value) };
+    return { type: "Object", data: serializeJs(value, xssSafe) };
 }
 
 /**
@@ -351,13 +357,14 @@ export async function deserializeKvValue(body: unknown, kv: Kv | Deno.Kv): Promi
  * Serializes an array of Deno KV entries to a JSON-compatible array.
  *
  * @param entries Array of Deno KV entries
+ * @param xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
  * @returns Array of serialized Deno KV entries
  */
-export function serializeEntries(entries: KvEntry<unknown>[]): SerializedKvEntry[] {
+export function serializeEntries(entries: KvEntry<unknown>[], xssSafe: boolean = true): SerializedKvEntry[] {
     return entries.map<SerializedKvEntry>((entry) => {
         return {
             key: serializeKvKey(entry.key),
-            value: serializeKvValue(entry.value),
+            value: serializeKvValue(entry.value, xssSafe),
             versionstamp: entry.versionstamp
         }
     })

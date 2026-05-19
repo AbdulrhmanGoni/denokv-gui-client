@@ -2,11 +2,12 @@
   import { Input } from "$lib/ui/shadcn/input/index.js";
   import { Label } from "$lib/ui/shadcn/label/index.js";
   import { Button } from "$lib/ui/shadcn/button/index.js";
-  import { selectDirectory } from "@app/preload";
+  import { selectDirectory, selectFile, pathUtils } from "@app/preload";
   import Loader from "@lucide/svelte/icons/loader";
   import * as Select from "$lib/ui/shadcn/select";
   import type { Snippet } from "svelte";
   import { Checkbox } from "$lib/ui/shadcn/checkbox/index.js";
+  import * as InputGroup from "$lib/ui/shadcn/input-group";
 
   type KvStoreFormProps = {
     defaultValues?: Partial<CreateKvStoreInput>;
@@ -35,17 +36,25 @@
   }: KvStoreFormProps = $props();
 
   let localKvDirectory = $state(
-    defaultValues?.type == "local"
-      ? defaultValues?.url?.replace(/kv.sqlite3$/gi, "")
+    defaultValues?.type == "local" && defaultValues?.url
+      ? pathUtils.dirname(defaultValues.url)
       : "",
   );
-  let replaceExisting = $state(defaultValues?.replaceExisting ?? false);
-  let openedStoreType: KvStore["type"] | undefined = $state(
-    defaultValues?.type,
+  let localKvFileName = $state(
+    defaultValues?.type == "local" && defaultValues?.url
+      ? pathUtils.basename(defaultValues.url)
+      : "kv.sqlite3",
   );
-  let isRemoteStore = $derived(openedStoreType == "remote");
-  let isLocalStore = $derived(openedStoreType == "local");
-  let isBridgedStore = $derived(openedStoreType == "bridge");
+  let localKvUrl = $derived(pathUtils.join(localKvDirectory, localKvFileName));
+  let replaceExisting = $state(defaultValues?.replaceExisting ?? false);
+  let selectedStoreType: KvStore["type"] | undefined = $state(
+    defaultValues?.type ||
+      (localStorage.getItem("default-kv-store-type") as KvStore["type"]) ||
+      undefined,
+  );
+  let isRemoteStore = $derived(selectedStoreType == "remote");
+  let isLocalStore = $derived(selectedStoreType == "local");
+  let isBridgedStore = $derived(selectedStoreType == "bridge");
 
   async function handleSubmit(
     event: SubmitEvent & {
@@ -75,6 +84,14 @@
 
   async function pickDirectory() {
     localKvDirectory = await selectDirectory();
+  }
+
+  async function pickFile() {
+    const selectedFile = await selectFile(localKvDirectory);
+    if (selectedFile) {
+      localKvDirectory = selectedFile.directory;
+      localKvFileName = selectedFile.fileName;
+    }
   }
 </script>
 
@@ -108,13 +125,15 @@
       required
       disabled={isLoading}
       name="type"
-      value={openedStoreType}
+      value={selectedStoreType}
       onValueChange={(value) => {
-        openedStoreType = value as KvStore["type"];
+        if (value === selectedStoreType) return;
+        selectedStoreType = value as KvStore["type"];
+        localStorage.setItem("default-kv-store-type", value);
       }}
     >
       <Select.Trigger class="w-full bg-background">
-        {openedStoreType ? openedStoreType : "Select Type"}
+        {selectedStoreType ? selectedStoreType : "Select Type"}
       </Select.Trigger>
       <Select.Content>
         <Select.Item value="remote">remote</Select.Item>
@@ -127,24 +146,63 @@
     </p>
   </div>
   {#if isLocalStore}
-    <div class="space-y-1.5">
-      <Label for="url">Kv Store Directory (absolute path)</Label>
-      <div class="flex gap-2 items-center">
-        <Input
-          type="text"
-          id="url"
-          name="url"
-          required
-          disabled={isLoading}
-          placeholder="/path/to/directory"
-          class="flex-1"
-          bind:value={localKvDirectory}
-        />
-        <Button onclick={pickDirectory}>Pick Directory</Button>
+    <input type="hidden" name="url" value={localKvUrl} />
+    <div class="flex flex-col sm:flex-row gap-2">
+      <div class="space-y-1.5 flex-2">
+        <Label for="localKvFileName">Kv Store File Name</Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            type="text"
+            id="localKvFileName"
+            required
+            disabled={isLoading}
+            placeholder="kv.sqlite3"
+            class="flex-1"
+            bind:value={localKvFileName}
+          />
+          <InputGroup.Addon align="inline-end">
+            <InputGroup.Button
+              onclick={pickFile}
+              variant="default"
+              disabled={isLoading}
+            >
+              Pick
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup.Root>
+        <p class="text-muted-foreground text-sm">
+          Name of the file that contains the kv store data.
+        </p>
       </div>
-      <p class="text-muted-foreground text-sm">
-        Select the directory where you want to create your local Deno KV store.
-      </p>
+      <div class="space-y-1.5 flex-2">
+        <Label for="localKvDirectory" class="gap-1">
+          Kv Store Directory
+          <span class="font-normal text-muted-foreground">(absolute path)</span>
+        </Label>
+        <InputGroup.Root>
+          <InputGroup.Input
+            type="text"
+            id="localKvDirectory"
+            required
+            disabled={isLoading}
+            placeholder="/path/to/directory/"
+            class="flex-1"
+            bind:value={localKvDirectory}
+          />
+          <InputGroup.Addon align="inline-end">
+            <InputGroup.Button
+              onclick={pickDirectory}
+              variant="default"
+              disabled={isLoading}
+            >
+              Pick
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup.Root>
+        <p class="text-muted-foreground text-sm">
+          The directory of your local Deno KV store database file.
+        </p>
+      </div>
     </div>
     <div class="items-top flex gap-x-2 my-2">
       <Checkbox
@@ -160,10 +218,8 @@
           Replace Existing?
         </Label>
         <p class="text-sm text-muted-foreground">
-          If there is already existing Deno kv database (<code
-            class="font-mono bg-muted px-1 py-0.5 rounded">kv.sqlite3</code
-          >
-          file) in the picked directory, replace it with a new empty database file.
+          If there is already an existing database file with the same name in
+          the picked directory, replace it with a new empty database file.
         </p>
       </div>
     </div>

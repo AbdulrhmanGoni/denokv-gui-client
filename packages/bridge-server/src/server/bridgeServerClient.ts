@@ -65,23 +65,47 @@ async function callBridgeServerRequest<ResultT = unknown>(
 };
 
 export type BrowsingOptions = {
+    /** Maximum number of entries to return */
     limit?: number;
+    /** Cursor for pagination (obtained from previous browse result) */
     cursor?: string;
+    /** The number of entries to fetch from the database at once */
     batchSize?: number;
+    /** The consistency level of the list operation: "strong" or "eventual" */
     consistency?: string;
+    /** Whether to return the entries in reverse order */
     reverse?: boolean;
+    /** Filter entries by key prefix */
     prefix?: SerializedKvKey;
+    /** Start key for range query (inclusive) */
     start?: SerializedKvKey;
+    /** End key for range query (exclusive) */
     end?: SerializedKvKey;
+    /** Whether to escape HTML characters and JS line terminators from strings (defaults to true) */
+    xssSafe?: boolean;
 }
 
+/** Options for setting a KV key */
 export type SetKeyOptions = {
+    /** Expiration timestamp in milliseconds */
     expires?: number;
+    /** Whether to overwrite the value if the key already exists (defaults to true) */
     overwrite?: boolean;
 }
 
+/** The result of a set operation */
+export type SetKeyReturn = {
+    /** Whether the set operation was committed */
+    ok: boolean;
+    /** The new versionstamp of the created or updated entry */
+    versionstamp: string;
+}
+
+/** The result of a browse operation */
 export type BrowseReturn = {
+    /** The list of serialized KV entries */
     entries: SerializedKvEntry[];
+    /** The cursor for the next page of results */
     cursor: string;
 }
 
@@ -122,8 +146,8 @@ export class BridgeServerClient {
      * @param value The value to set (must be in `SerializedKvValue` type)
      * @param options Optional settings like expiration time and overwrite behavior
      */
-    set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<boolean> {
-        return callBridgeServerRequest<boolean>({
+    set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): CallBridgeServerReturn<SetKeyReturn> {
+        return callBridgeServerRequest<SetKeyReturn>({
             url: `${this.baseUrl}/set`,
             options: {
                 key,
@@ -138,10 +162,13 @@ export class BridgeServerClient {
     /**
      * Retrieves a single Deno KV entry by its key.
      * @param key The key to retrieve
+     * @param options Optional settings like xssSafe
+     * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true). Set to false to disable.
      */
-    get(key: SerializedKvKey): CallBridgeServerReturn<SerializedKvEntry> {
+    get(key: SerializedKvKey, options?: { xssSafe?: boolean }): CallBridgeServerReturn<SerializedKvEntry> {
         return callBridgeServerRequest<SerializedKvEntry>({
             url: `${this.baseUrl}/get/${encodeURIComponent(JSON.stringify(key))}`,
+            options,
             headers: this.headers,
             method: "GET"
         })
@@ -185,5 +212,59 @@ export class BridgeServerClient {
             method: "POST",
             headers: this.headers,
         })
+    }
+
+    /**
+     * Watches a set of keys for updates via Server-Sent Events (SSE).
+     * 
+     * Whenever a watched key changes, the provided listener is called with the updated entries.
+     * Use `cancelWatcher()` to stop watching and close the connection.
+     * 
+     * @param keys An array of KV keys to watch
+     * @param listener A callback function to be called when one of the watched keys is updated
+     * @param options Optional configuration settings
+     * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
+     * @returns A promise that resolves when the watch stream is closed or cancelled
+     */
+    async watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void, options?: { xssSafe?: boolean }): Promise<void> {
+        try {
+            const controller = new AbortController()
+            const queryParams = new URLSearchParams()
+            if (options?.xssSafe !== undefined) {
+                queryParams.append("xssSafe", options.xssSafe.toString())
+            }
+            const response = await fetch(`${this.baseUrl}/watch?${queryParams}`, {
+                method: "POST",
+                headers: this.headers,
+                body: JSON.stringify(keys.map((key) => JSON.stringify(key))),
+                signal: controller.signal
+            })
+
+            if (!response.body) throw "No response body (stream) found."
+
+            this.watchReader = response.body.getReader();
+            const decoder = new TextDecoder();
+            while (true) {
+                const { done, value } = await this.watchReader.read();
+                if (done) break;
+                const data = decoder.decode(value)
+                if (data !== ": ping") listener(JSON.parse(data))
+            }
+        } catch { }
+    }
+
+    /**
+     * The reader of the stream of updates on the watched keys using `watch` method.
+    */
+    private watchReader: ReadableStreamDefaultReader<Uint8Array> | null = null
+
+    /**
+     * Cancels the reader (if exists) that listens for changes on the set of watched keys using `watch` method.
+    */
+    async cancelWatcher() {
+        if (this.watchReader) {
+            await this.watchReader.cancel().catch(() => { })
+            this.watchReader = null
+        }
     }
 }

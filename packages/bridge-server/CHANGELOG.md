@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [8.3.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.2...bridge-server@8.3.0) (2026-05-13)
+
+
+### Features
+
+* add `POST /watch` endpoint for `Deno.Kv.watch` method support ([d7089e9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d7089e94b837c767c4909c7cdc84f2b1b9cd8e6a))
+
+
+### Security
+
+* apply a security patch for `hono` package ([b5ecd47](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b5ecd47720840872982f6af090fb6ae7701a9129))
+
+## [8.2.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.1...bridge-server@8.2.2) (2026-04-24)
+
+
+### Security
+
+* update dependencies for security reasons ([a524f72](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a524f72662b20ea0bea82bc14f63ce3f736d3018))
+
+## [8.2.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.0...bridge-server@8.2.1) (2026-04-03)
+
+
+### Security
+
+* update dependencies to avoid some vulnerabilities ([a066e7f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a066e7f706e67894216eaf816a8fc99753bcbef2))
+
 ## 8.2.0 (2026-02-19)
 
 
