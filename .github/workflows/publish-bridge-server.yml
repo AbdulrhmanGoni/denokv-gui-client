@@ -37,9 +37,11 @@ jobs:
 
       - name: Install dependencies
         if: ${{ env.isNewVersion == 'true' }}
-        run: npm ci --workspace=@app/bridge-server
+        run: |
+          npm install -g pnpm@latest
+          pnpm install --filter=@app/bridge-server
 
       - name: Publish to JSR
         if: ${{ env.isNewVersion == 'true' }}
         working-directory: packages/bridge-server
-        run: npx jsr publish --allow-dirty
+        run: pnpm dlx jsr publish --allow-dirty
