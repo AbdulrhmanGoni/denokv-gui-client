@@ -1,7 +1,8 @@
 packages:
   - packages/*
-onlyBuiltDependencies:
-  - electron
-  - electron-winstaller
-  - esbuild
-  - sharp
+
+allowBuilds:
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  sharp: true
