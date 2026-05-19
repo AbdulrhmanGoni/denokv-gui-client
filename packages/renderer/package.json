@@ -20,7 +20,7 @@
     "@types/js-beautify": "^1.14.3",
     "bits-ui": "^2.11.2",
     "clsx": "^2.1.1",
-    "svelte": "^5.55.7",
+    "svelte": "5.55.7",
     "svelte-check": "^4.4.8",
     "svelte-sonner": "^1.1.1",
     "tailwind-merge": "^3.3.1",
