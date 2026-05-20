@@ -25,7 +25,7 @@ export const test = base.extend<TestFixtures>({
     /**
      * Executable path depends on root package name!
      */
-    let executablePattern = 'dist/*/denokv-gui-client{,.*}';
+    let executablePattern = 'dist/*/denokv-gui-client*.AppImage';
     if (platform === 'darwin') {
       executablePattern += '/Contents/*/denokv-gui-client';
     }
