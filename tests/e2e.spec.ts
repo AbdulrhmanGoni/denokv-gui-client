@@ -31,7 +31,7 @@ export const test = base.extend<TestFixtures>({
     }
 
     if (platform === 'linux') {
-      executablePattern = 'dist/*/denokv-gui-client*.AppImage';
+      executablePattern = 'dist/denokv-gui-client*.AppImage';
     }
 
     const [executablePath] = globSync(executablePattern);
