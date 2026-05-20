@@ -77,7 +77,7 @@ export const testingKvStore = {
 }
 
 test.afterAll(async ({ electronApp }) => {
-  await electronApp.close();
+  await electronApp?.close();
 
   writeFileSync(path.resolve(import.meta.dirname, './database.test.sqlite'), "")
 
