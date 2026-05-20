@@ -1,2 +1,5 @@
 [install.scopes]
 "@jsr" = "https://npm.jsr.io"
+
+[install]
+minimumReleaseAge = 172800
