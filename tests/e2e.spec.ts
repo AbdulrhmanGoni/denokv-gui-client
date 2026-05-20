@@ -25,9 +25,13 @@ export const test = base.extend<TestFixtures>({
     /**
      * Executable path depends on root package name!
      */
-    let executablePattern = 'dist/*/denokv-gui-client*.AppImage';
+    let executablePattern = 'dist/*/denokv-gui-client{,.*}';
     if (platform === 'darwin') {
       executablePattern += '/Contents/*/denokv-gui-client';
+    }
+
+    if (platform === 'linux') {
+      executablePattern = 'dist/*/denokv-gui-client*.AppImage';
     }
 
     const [executablePath] = globSync(executablePattern);
