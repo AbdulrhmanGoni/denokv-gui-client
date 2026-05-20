@@ -20,6 +20,14 @@ if [ ! -s release.json ]; then
   exit 1
 fi
 
+# Extract the tag version of the release
+tag=$(jq -r .tag_name release.json)
+if [[ -z "$tag" || "$tag" == "null" ]]; then
+  echo "Failed to extract 'tag_name' from 'release.json' file"
+  cat release.json
+  exit 1
+fi
+
 # Extract the download URL of the first and only asset
 download_url=$(jq -r '.assets[0].browser_download_url' release.json)
 if [[ -z "$download_url" || "$download_url" == "null" ]]; then
@@ -29,8 +37,11 @@ if [[ -z "$download_url" || "$download_url" == "null" ]]; then
 fi
 
 # Download "deno-kv-napi.darwin-x64.node" asset
-binaryDist="./node_modules/@deno/kv-darwin-x64/deno-kv-napi.darwin-x64.node"
+binaryDist=node_modules/.bun/@deno+kv-darwin-x64@$tag/node_modules/@deno/kv-darwin-x64/deno-kv-napi.darwin-x64.node
 echo "Downloading binary from $download_url to $binaryDist..."
 curl -H "Authorization: Bearer $GITHUB_TOKEN" -L --retry 3 --retry-delay 3 -o "$binaryDist" "$download_url"
+
+# Clean up release.json file
+rm release.json
 
 echo "Successfully downloaded 'denokv-x86_64-apple-darwin' binary."

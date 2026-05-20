@@ -39,7 +39,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install
+        run: bun ci
 
       - name: Download "denokv-x86_64-apple-darwin" binary for mac-x64 build
         if: matrix.os == 'macos-15-intel'
@@ -48,10 +48,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build app's packages
-        run: npm run build
+        run: bun run build
 
       - name: Run typecheck
-        run: npm run typecheck
+        run: bun run typecheck
 
       - name: Run bridge server tests
         working-directory: packages/bridge-server
