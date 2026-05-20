@@ -26,8 +26,10 @@
   hljs.registerLanguage("javascript", javascript);
 
   function highlight(editor: HTMLElement) {
-    editorValue = editor.textContent;
-    editor.innerHTML = hljs.highlight(editor.textContent, {
+    const textContent = editor.textContent ?? "";
+
+    editorValue = textContent;
+    editor.innerHTML = hljs.highlight(textContent, {
       language: "javascript",
     }).value;
   }
