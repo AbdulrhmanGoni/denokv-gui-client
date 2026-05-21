@@ -10,7 +10,7 @@
   import CodeEditor from "$lib/features/kv-browser/entry-editor/CodeEditor.svelte";
   import codeFormatter from "$lib/helpers/codeFormatter";
   import { type Snippet } from "svelte";
-  import { Input } from "$lib/ui/shadcn/input";
+  import { Textarea } from "$lib/ui/shadcn/textarea";
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
   import KvValueNumberInput from "$lib/features/kv-browser/entry-editor/inputs/KvValueNumberInput.svelte";
   import KvValueBooleanInput from "$lib/features/kv-browser/entry-editor/inputs/KvValueBooleanInput.svelte";
@@ -99,10 +99,10 @@
         type={editorValue.type}
       />
     {:else if editorValue.type == "String"}
-      <Input
-        type="text"
-        bind:value={editorValue.data}
+      <Textarea
+        bind:value={editorValue.data as string}
         placeholder="String..."
+        class="bg-card max-h-full {dataTypesColors[editorValue.type.toLowerCase()]} font-semibold text-sm"
       />
     {:else if editorValue.type == "Boolean"}
       <KvValueBooleanInput bind:value={editorValue.data as boolean} />

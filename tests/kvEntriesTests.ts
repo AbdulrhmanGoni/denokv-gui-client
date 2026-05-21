@@ -33,7 +33,7 @@ export function kvEntriesTests() {
         await page.locator('#overwrite').uncheck();
         await page.locator('button[data-slot="select-trigger"]', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
         await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
-        await page.locator('input[type="text"]').fill("will-not-be-set-because-overwrite-is-unchecked");
+        await page.locator('textarea').fill("will-not-be-set-because-overwrite-is-unchecked");
         await page.locator('button', { hasText: "Add" }).click();
         await page.keyboard.press("Escape");
 
@@ -70,7 +70,7 @@ export function kvEntriesTests() {
 
         await page.locator('button[data-slot="select-trigger"]', { hasText: "Undefined" }).click()
         await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click()
-        await page.locator('input[data-slot="input"]').fill("new-test-value")
+        await page.locator('textarea').fill("new-test-value")
         await page.locator('button', { hasText: "Save", has: page.locator("svg.lucide-save") }).click()
         await page.keyboard.press("Escape")
         await page.locator('button', { hasText: "Reload" }).click()
