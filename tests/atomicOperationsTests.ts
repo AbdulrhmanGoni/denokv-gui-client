@@ -107,7 +107,7 @@ export function atomicOperationsTests() {
         await updateKeyEditor.press('Space');
         await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
         await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
-        await page.locator('input[type="text"]').fill("was-updated");
+        await page.locator('textarea').fill("was-updated");
         await page.locator('button', { hasText: "Add Set Operation" }).click();
 
         // Commit the transaction
@@ -180,7 +180,7 @@ export function atomicOperationsTests() {
         await updateKeyEditor.press('Space');
         await page.locator('button', { has: page.locator("svg.lucide-chevron-down"), hasText: "Undefined" }).click();
         await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
-        await page.locator('input[type="text"]').fill("update-that-wont-take-effect");
+        await page.locator('textarea').fill("update-that-wont-take-effect");
         await page.locator('button', { hasText: "Add Set Operation" }).click();
 
         // Invalid Key to cause the transaction to fail
