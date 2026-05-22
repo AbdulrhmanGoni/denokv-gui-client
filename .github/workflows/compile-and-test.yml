@@ -49,6 +49,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install Electron
+        run: pnpm dlx install-electron --no
+
       - name: Run bridge server tests
         working-directory: packages/bridge-server
         run: pnpm run test
