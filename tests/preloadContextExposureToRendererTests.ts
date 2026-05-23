@@ -11,6 +11,7 @@ export function preloadContextExposureToRendererTests() {
             githubRepo: expect.stringMatching(/https:\/\/github.com\/\w/),
             appVersion: expect.stringMatching(versionMatching),
             electronVersion: expect.stringMatching(versionMatching),
+            chromiumVersion: expect.stringMatching(versionMatching),
             nodeVersion: expect.stringMatching(versionMatching),
             environment: expect.stringMatching(/testing|development|production/),
         });
