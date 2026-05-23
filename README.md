@@ -135,7 +135,6 @@ To compile or build the app for production use:
 ```
 
 > This command will create the build artifacts in `dist` directory,
-> The path to the compiled app would be like `dist/denokv-gui-client-x.x.x-{os}-{arch}.{ext}`
 
 ### Tests
 
