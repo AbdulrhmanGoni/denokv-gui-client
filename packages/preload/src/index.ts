@@ -19,7 +19,7 @@ const pathUtils = {
   join: (...paths: string[]): string => path.join(...paths),
 };
 
-const metadata = await ipcRenderer.invoke('get-metadata')
+const metadata = await ipcRenderer.invoke('get-metadata') as AppMetadata
 
 const kvStoresService = {
   create: (input: CreateKvStoreInput): Promise<boolean> =>

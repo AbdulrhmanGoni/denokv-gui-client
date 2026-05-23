@@ -1,3 +1,12 @@
+type AppMetadata = {
+    appVersion: string;
+    nodeVersion: string;
+    electronVersion: string;
+    chromiumVersion: string;
+    githubRepo: string;
+    environment: string;
+}
+
 type CreateKvStoreInput =
     Pick<KvStore, "name" | "url" | "type" | "accessToken" | "authToken">
     & { replaceExisting?: boolean }
