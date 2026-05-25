@@ -13,7 +13,8 @@
   },
   "main": "packages/entry-point.mjs",
   "engines": {
-    "node": ">=23.0.0"
+    "node": ">=23.0.0",
+    "npm": ">=11.10.0"
   },
   "scripts": {
     "build": "pnpm -r run build",

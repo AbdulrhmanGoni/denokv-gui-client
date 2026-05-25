@@ -8,6 +8,7 @@
     import { buttonVariants } from "$lib/ui/shadcn/button";
     import { updateAppState } from "$lib/states/appUpdate.svelte";
     import { settingsPageState } from "$lib/states/settingsState.svelte";
+    import { metadata } from "@app/preload";
 </script>
 
 <Dialog.Root bind:open={settingsPageState.open}>
@@ -34,10 +35,32 @@
                 Settings
             </h1>
             <Separator />
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 flex-1">
                 <UpdateAppSetting />
                 <AppThemeSetting />
+            </div>
+            <Separator />
+            <div class="flex gap-2 text-xs text-muted-foreground items-center justify-center">
+                {@render displayVersion("Electron", metadata.electronVersion, "electron-logo.png")}
+                <Separator orientation="vertical" />
+                {@render displayVersion("Node", metadata.nodeVersion, "node-logo.png")}
+                <Separator orientation="vertical" />
+                {@render displayVersion("Chromium", metadata.chromiumVersion, "chromium-logo.png")}
             </div>
         </div>
     </Dialog.Content>
 </Dialog.Root>
+
+{#snippet displayVersion(name: string, version: string, logo: string)}
+    <span class="flex items-center gap-1">
+        <span class="font-bold flex items-center gap-1">
+            <img
+                class="size-0 dark:size-4 object-fill"
+                src={logo}
+                alt="Logo"
+            />
+            {name}:
+        </span>
+        v{version}
+    </span>
+{/snippet}
