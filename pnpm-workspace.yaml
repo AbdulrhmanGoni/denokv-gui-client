@@ -5,5 +5,3 @@ onlyBuiltDependencies:
   - electron-winstaller
   - esbuild
   - sharp
-overrides:
-  yauzl: '^3.3.1'
