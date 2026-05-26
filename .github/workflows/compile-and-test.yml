@@ -52,8 +52,7 @@ jobs:
         run: npm run typecheck
 
       - name: Run bridge server tests
-        working-directory: packages/bridge-server
-        run: npm run test
+        run: npm run test --workspace=@app/bridge-server
 
       - name: Build the app
         run: npm run compile -- -p never
