@@ -17,9 +17,7 @@ env:
 jobs:
   compile-and-test:
     permissions:
-      contents: write
-      id-token: write
-      attestations: write
+      contents: read
 
     strategy:
       fail-fast: false
@@ -71,10 +69,6 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test || \
           xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test
         if: matrix.os == 'ubuntu-latest'
-
-      - uses: actions/attest@v4
-        with:
-          subject-path: "dist/denokv-gui-client*, dist/latest*.yml"
 
       - name: Upload compiled app
         uses: actions/upload-artifact@v7
