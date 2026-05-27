@@ -40,6 +40,10 @@ jobs:
         if: ${{ env.isNewVersion == 'true' }}
         run: npm ci --workspace=@app/bridge-server
 
+      - name: Audit package's dependencies
+        if: ${{ env.isNewVersion == 'true' }}
+        run: npm audit --workspace=@app/bridge-server
+
       # Runs only if it's a manual dispatch. "ci-cd" workflow runs bridge server tests before calling this workflow
       - name: Run tests
         if: ${{ env.isNewVersion == 'true' && github.event_name == 'workflow_dispatch' }}
