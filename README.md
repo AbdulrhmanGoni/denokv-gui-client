@@ -136,16 +136,8 @@ To compile or build the app for production use:
 
 > This command will create the build artifacts in `dist` directory,
 
-### Tests
-
-To run the tests, make sure you have compiled the app first because the tests run on the compiled app in `dist` directory, and then run:
-
-```bash
-  npm run test
-```
-
 [releases-page]: https://github.com/AbdulrhmanGoni/denokv-gui-client/releases
 
 ## Contribution
 
-Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.
+Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) document for contribution guidelines.
