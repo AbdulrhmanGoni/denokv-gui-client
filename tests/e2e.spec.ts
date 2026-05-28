@@ -72,10 +72,12 @@ export const testingKvStore = {
   path: import.meta.dirname,
 }
 
+const testDatabaseFilePath = path.resolve(import.meta.dirname, './database.test.sqlite')
+
 test.afterAll(async ({ electronApp }) => {
   await electronApp.close();
 
-  writeFileSync(path.resolve(import.meta.dirname, './database.test.sqlite'), "")
+  rmSync(testDatabaseFilePath, { force: true })
 
   const testingKvStorePath = path.resolve(testingKvStore.path, 'kv.sqlite3')
   rmSync(testingKvStorePath, { force: true })
