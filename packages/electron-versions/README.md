@@ -6,7 +6,7 @@ A set of helper functions to get the versions of internal components bundled wit
 
 ## Installation
 
-To install this package, use the following command:
+To install this package from another package in the workspace, use:
 
 ```bash
 npm install -D @app/electron-versions
@@ -60,7 +60,3 @@ export default {
 ### Explanation of `target`
 
 The `target` parameter in Vite specifies the browser or environment versions that the output should be compatible with. In the provided example, `target: chrome${getChromeMajorVersion()}` ensures that the build output is compatible with the specific major version of Chromium that is bundled with your Electron application. This can help optimize the final bundle and ensure compatibility within the Electron environment.
-
-## License
-
-MIT
