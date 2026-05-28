@@ -144,9 +144,6 @@ To run the tests, make sure you have compiled the app first because the tests ru
   npm run test
 ```
 
-> [!NOTE]
-> A testing SQLite database file will be created in the root directory of the project once you run the test command for the first time.
-
 [releases-page]: https://github.com/AbdulrhmanGoni/denokv-gui-client/releases
 
 ## Contribution
