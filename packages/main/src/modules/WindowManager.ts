@@ -2,7 +2,6 @@ import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
 import { BrowserWindow, dialog, ipcMain, screen, shell } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
-import electronUpdater from 'electron-updater';
 import path from 'node:path';
 
 class WindowManager implements AppModule {
@@ -70,14 +69,6 @@ class WindowManager implements AppModule {
     ipcMain.handle('open-path', async (_, path) => {
       return shell.showItemInFolder(path);
     });
-
-    const { autoUpdater } = electronUpdater;
-    autoUpdater.autoDownload = false;
-    autoUpdater.fullChangelog = true;
-
-    autoUpdater.on('download-progress', (progressInfo) => {
-      browserWindow.webContents.send('downloading-update-progress', progressInfo)
-    })
 
     return browserWindow;
   }
