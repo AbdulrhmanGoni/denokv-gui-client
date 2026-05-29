@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [9.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.3.0...bridge-server@9.0.0) (2026-05-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* convert set operation's result to an object with ok status and versionstamp
+
+### Features
+
+* convert `set` operation's result to an object with ok status and versionstamp ([f46eacd](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f46eacd5e6f1fc12b74ebf2bdf1cc0ba424b582d))
+* enable turning off escaping HTML characters and JS line terminators for `GET /watch` endpoint ([10d7015](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/10d7015f528929c2e6cbedcf7021e656f170e519))
+* enable turning off escaping HTML characters and JS line terminators in string values ([8cc0d8d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8cc0d8d6c535ad0cf9a5abf0d458cd9f74007da1))
+* export some KV utilities as a standalone entry point ([ec1cbf2](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/ec1cbf2f82195f74be4c3b8a8f1f5dc6535bee6b))
+
 ## [8.3.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.2.2...bridge-server@8.3.0) (2026-05-13)
 
 
