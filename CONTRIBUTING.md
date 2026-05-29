@@ -23,7 +23,7 @@ This project uses `npm` as its package manager.
 ├── package-lock.json
 ├── electron-builder.mjs # electron-builder's configuration
 ├── packages
-│   ├── /bridge-server # HTTP server that exposes an API for the front-end to communicate with Deno KV databases
+│   ├── /bridge-server # HTTP server that provides an API for the front-end to communicate with Deno KV databases
 │   ├── /main # Electron main process (modular back-end services)
 │   ├── /renderer # The front-end part of the app
 │   ├── /preload # The script that exposes APIs from the main process to the renderer process
@@ -157,6 +157,6 @@ Follow these steps to submit a pull request: 👇
 
 3. Create a new branch and implement your changes in it.
 
-4. Run the tests to ensure all of them pass and no regressions are introduced. Follow [Tests](README.md#tests) guide for more info.
+4. Run the tests to ensure all of them pass and no regressions are introduced.
 
 5. Create your pull request once you are ready 👍
