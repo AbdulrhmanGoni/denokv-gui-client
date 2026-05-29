@@ -14,7 +14,7 @@ import { AppUpdaterModule } from './modules/appUpdaterModule.js';
 import { MetadataModule } from './modules/metadataModule.js';
 import { KvServerClientModule } from './modules/kvServerClientModule.js';
 import { WatchedKeysServiceModule } from './modules/watchedKeysService.js';
-
+import { FileSystemServiceModule } from './modules/fileSystemService.js';
 
 export async function initApp(initConfig: AppInitConfig) {
   await createModuleRunner()
@@ -22,6 +22,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())
     .init(hardwareAccelerationMode({ enable: false }))
+    .init(new FileSystemServiceModule())
     .init(new KvStoresServiceModule())
     .init(new BridgeServerModule())
     .init(new SettingsServiceModule())

@@ -1,8 +1,7 @@
 import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
-import { BrowserWindow, dialog, ipcMain, screen, shell } from 'electron';
+import { BrowserWindow, screen } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
-import path from 'node:path';
 
 class WindowManager implements AppModule {
   readonly #preload: { path: string };
@@ -43,32 +42,6 @@ class WindowManager implements AppModule {
     } else {
       await browserWindow.loadFile(this.#renderer.path);
     }
-
-    ipcMain.handle('select-directory', async () => {
-      const result = await dialog.showOpenDialog(browserWindow, {
-        properties: ['openDirectory'],
-      });
-
-      if (result.canceled) return "";
-      return result.filePaths[0];
-    });
-
-    ipcMain.handle('select-file', async (_, directory?: string) => {
-      const result = await dialog.showOpenDialog(browserWindow, {
-        properties: ['openFile'],
-        defaultPath: directory,
-      });
-
-      if (result.canceled) return null;
-      return {
-        directory: path.dirname(result.filePaths[0]),
-        fileName: path.basename(result.filePaths[0])
-      };
-    });
-
-    ipcMain.handle('open-path', async (_, path) => {
-      return shell.showItemInFolder(path);
-    });
 
     return browserWindow;
   }
