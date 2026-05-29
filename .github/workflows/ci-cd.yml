@@ -2,6 +2,16 @@ name: CI/CD
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment, Either a typical CI run or a CD run where the app is built, tested and released"
+        required: true
+        default: "CI"
+        type: choice
+        options:
+          - CI
+          - Release
+
   push:
     branches: ["**"]
     paths:
@@ -35,7 +45,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
-  group: ${{github.workflow}}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment || 'CI' }}
   cancel-in-progress: true
 
 jobs:
@@ -44,10 +54,10 @@ jobs:
       contents: read
     uses: ./.github/workflows/compile-and-test.yml
     with:
-      isCD: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+      isCD: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release' }}
 
   publish-bridge-server:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release'
     permissions:
       contents: read
       id-token: write
@@ -56,7 +66,7 @@ jobs:
     uses: ./.github/workflows/publish-bridge-server.yml
 
   attest-release-artifacts:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release'
     needs:
       - compile-and-test
       - publish-bridge-server
@@ -79,7 +89,7 @@ jobs:
           subject-path: "dist/denokv-gui-client*, dist/latest*.yml"
 
   release:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release'
     permissions:
       contents: write
     needs:
