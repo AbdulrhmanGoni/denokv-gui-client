@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.23.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.22.0...v1.23.0) (2026-05-29)
+
+
+### Features
+
+* show the versions of `Electron`, `Node`, and `Chromium` in the bottom of settings page ([79b79de](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/79b79deb6c650d499db2b9cedbaf1243644c1e80))
+
+
+### Bug Fixes
+
+* correctly render URLs and HTML characters without escaping ([3969992](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/396999213afdb2bc4bf930215091372ea7348562))
+
+
+### Enhancements
+
+* reflect new value and versionstamp to local state immediately after editing a kv entry ([2c17d9d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2c17d9d032b1ebcf7c01c61bf9f55201659c5086))
+* improve error handling and feedback clarity of in-app bridge server ([38a3bdb](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/38a3bdb615a47a3a3443ce42c8833790781c004e))
+* disable automatic focus and tooltip-open on buttons when a dialog opens ([bb2b1ae](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/bb2b1aec1f2d2ab86db539b49dc7caf55bf504c9))
+* make app's layout more flexable with different screen sizes ([9cbaf21](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/9cbaf216105f9ce1858139d9680125ef42dec006))
+
+
+### Security
+
+* apply a security patch for "svelte" dependency ([f53d2c5](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f53d2c5070a535176d701347b3bdc91c6e864029))
+
+
+### User Interface Changes
+
+* change the `input` element of "String" data type in the Kv value editor to `textarea` ([661fc5f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/661fc5faef2ba102307151d8a9b382bcc3db2129))
+
 ## [1.22.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.21.0...v1.22.0) (2026-05-13)
 
 
