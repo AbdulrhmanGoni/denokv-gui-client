@@ -89,6 +89,7 @@ jobs:
     uses: ./.github/workflows/release.yml
 
   deploy-landing-page:
+    if: github.ref == 'refs/heads/main'
     permissions:
       pages: write
       id-token: write
