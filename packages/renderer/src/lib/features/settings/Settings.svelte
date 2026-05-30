@@ -55,9 +55,9 @@
     <span class="flex items-center gap-1">
         <span class="font-bold flex items-center gap-1">
             <img
-                class="size-0 dark:size-4 object-fill"
+                class="size-4 object-fill"
                 src={logo}
-                alt="Logo"
+                alt="{name} Logo"
             />
             {name}:
         </span>
