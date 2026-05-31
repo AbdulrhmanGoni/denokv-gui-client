@@ -15,6 +15,8 @@ class WindowManager implements AppModule {
   }
 
   async enable(context: ModuleContext): Promise<void> {
+    context.app.on('window-all-closed', () => context.app.quit());
+
     await context.app.whenReady();
     context.browserWindow = await this.restoreOrCreateWindow(true);
     context.app.on('second-instance', () => this.restoreOrCreateWindow(true));
