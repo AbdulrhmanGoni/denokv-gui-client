@@ -1,5 +1,6 @@
 <script lang="ts">
     import * as InputGroup from "$lib/ui/shadcn/input-group/index.js";
+    import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
 
     type ValueEditorProps = {
         value: number | string;
@@ -14,6 +15,7 @@
         bind:value
         type="number"
         placeholder="0"
+        class="{dataTypesColors.number} font-semibold"
         onchange={(e) => {
             value =
                 e.currentTarget.value != ""

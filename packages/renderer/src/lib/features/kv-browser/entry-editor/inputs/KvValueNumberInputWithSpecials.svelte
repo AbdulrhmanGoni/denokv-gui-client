@@ -20,6 +20,7 @@
                 bind:value={numberInput}
                 type="number"
                 placeholder="Number"
+                class="{dataTypesColors.number} font-semibold"
                 onchange={(e) => {
                     if (numberInputChecked) {
                         const number =

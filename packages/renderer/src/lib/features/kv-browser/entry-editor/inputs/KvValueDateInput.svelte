@@ -3,6 +3,7 @@
     import { Checkbox } from "$lib/ui/shadcn/checkbox";
     import { Input } from "$lib/ui/shadcn/input";
     import KvValueDateRenderer from "$lib/features/kv-browser/entry-renderer/KvValueDateRenderer.svelte";
+    import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
 
     type ValueEditorProps = {
         value: string;
@@ -84,7 +85,7 @@
 {#snippet timestampInput()}
     <Input
         type="number"
-        class={selectedMethod == "Timestamp" ? "" : "opacity-70"}
+        class="{selectedMethod == 'Timestamp' ? '' : 'opacity-70'} {dataTypesColors.number} font-semibold"
         defaultValue={timestamp}
         min={0}
         oninput={(e) => {
