@@ -18,6 +18,10 @@ export class FileSystemServiceModule implements AppModule {
             const result = await dialog.showOpenDialog(getBrowserWindow(context), {
                 properties: ['openFile'],
                 defaultPath: directory,
+                filters: [
+                    { name: 'SQLite', extensions: ['db', 'sqlite', 'sqlite3'] },
+                    { name: 'All Files', extensions: ['*'] }
+                ]
             });
 
             if (result.canceled) return null;
