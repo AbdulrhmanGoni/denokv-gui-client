@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.24.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.23.0...v1.24.0) (2026-06-02)
+
+
+### Bug Fixes
+
+* fix that icons of Electron, Node, and Chromium in settings page disappear in light mode ([9d49a8a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/9d49a8a2473ef6003c5d610bdd24693707a59030))
+
+
+### Enhancements
+
+* add SQLite db files filter to "Open File Dialog" when selecting a local Kv Store file ([9bbb547](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/9bbb54769c8d9210ff7ac6b196a74428e98f9b02))
+
+
+### User Interface Changes
+
+* colorize number fields values in KV Entry Editor ([5a2b011](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5a2b01152079772582ce3db6a5cdf7975c7fda5d))
+
 ## [1.23.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.22.0...v1.23.0) (2026-05-29)
 
 
