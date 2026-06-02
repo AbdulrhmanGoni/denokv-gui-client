@@ -15,6 +15,12 @@ class WindowManager implements AppModule {
   }
 
   async enable(context: ModuleContext): Promise<void> {
+    const isSingleInstance = context.app.requestSingleInstanceLock();
+    if (!isSingleInstance) {
+      context.app.quit();
+      process.exit(0);
+    }
+
     context.app.on('window-all-closed', () => context.app.quit());
 
     await context.app.whenReady();
