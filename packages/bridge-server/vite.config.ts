@@ -1,6 +1,6 @@
 import { defineConfig, type ViteDevServer, type PluginOption } from "vite";
 import { resolve } from "path";
-import dts from "vite-plugin-dts";
+import dts from "unplugin-dts/vite";
 
 type RendererWatchServerProvider = PluginOption & {
     api: { provideRendererWatchServer(): ViteDevServer };
@@ -38,7 +38,6 @@ export default defineConfig({
     plugins: [
         dts({
             include: ['src/**/*'],
-            rollupTypes: true,
         }),
         handleHotReload(),
     ],
