@@ -3,7 +3,6 @@ import mapWorkspaces from '@npmcli/map-workspaces';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import os from 'node:os';
-import { GetSignerFunction } from '@ossign/ossign';
 
 /** @type import('electron-builder').Configuration */
 const platformSpecificConfig = {}
@@ -35,8 +34,8 @@ switch (os.platform()) {
     if (process.env.OSSIGN_CONFIG || process.env.OSSIGN_CONFIG_BASE64) {
       platformSpecificConfig.win = {
         signtoolOptions: {
-	    sign: './scripts/customSign.js',
-	    signingHashAlgorithms: ['sha256'],
+          sign: './scripts/customSign.cjs',
+          signingHashAlgorithms: ['sha256'],
         }
       };
     }

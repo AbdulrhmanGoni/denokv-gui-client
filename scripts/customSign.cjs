@@ -1,5 +1,5 @@
-// const ossign = require('@ossign/ossign');
-import { SignSync } from '@ossign/ossign';
+const ossign = require('@ossign/ossign');
+// import { SignSync } from '@ossign/ossign';
 
 const signedFilePaths = new Set();
 
@@ -27,7 +27,7 @@ function sign(configuration) {
   }
 
   console.log(`Signing ${filePath} with OSSign...`);
-  SignSync(filePath, filePath, 'pecoff');
+  ossign.SignSync(filePath, filePath, 'pecoff');
   signedFilePaths.add(filePath);
   console.log(`Signed ${filePath}`);
 }
