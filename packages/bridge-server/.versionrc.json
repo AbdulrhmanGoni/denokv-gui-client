@@ -40,6 +40,14 @@
         {
             "type": "bs_secure",
             "section": "Security"
+        },
+        {
+            "type": "bs_chore",
+            "section": "Maintenance"
+        },
+        {
+            "type": "bs_enhance",
+            "section": "Enhancements"
         }
     ]
 }
