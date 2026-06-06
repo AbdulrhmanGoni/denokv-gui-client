@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@app/main": "*",
+    "@ossign/ossign": "^1.0.11",
     "dbmate": "^2.28.0"
   },
   "overrides": {
