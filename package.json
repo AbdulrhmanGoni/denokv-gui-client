@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@npmcli/map-workspaces": "4.0.2",
+    "@ossign/ossign": "^1.0.11",
     "@playwright/test": "^1.55.0",
     "@types/node": "24.0.3",
     "commit-and-tag-version": "^12.5.2",

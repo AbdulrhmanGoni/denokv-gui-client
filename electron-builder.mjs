@@ -31,7 +31,15 @@ switch (os.platform()) {
     break;
 
   case "win32":
-    // uses the default config for now
+    // Call the signing when the environment variables are set, otherwise skip it to avoid build failures in CI environments where the signing credentials are not available.
+    if (process.env.OSSIGN_CONFIG || process.env.OSSIGN_CONFIG_BASE64) {
+      platformSpecificConfig.win = {
+        signtoolOptions: {
+          sign: './scripts/customSign.cjs',
+          signingHashAlgorithms: ['sha256'],
+        }
+      };
+    }
     break;
 }
 
