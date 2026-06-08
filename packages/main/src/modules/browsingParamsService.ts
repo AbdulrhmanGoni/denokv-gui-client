@@ -9,7 +9,7 @@ import {
     insertQuery,
     updateQuery,
     getDefaultSavedBrowsingQuery
-} from "../db/browsingParamsQueries.js";
+} from "../db/queries/browsingParamsQueries.js";
 import { databaseTransaction } from "../db/db.js";
 
 export class BrowsingParamsServiceModule implements AppModule {

@@ -5,7 +5,7 @@ import {
     getWatchedKeysQuery,
     insertWatchedKeysQuery,
     updateWatchedKeysQuery,
-} from "../db/watchedKvEntriesQueries.js";
+} from "../db/queries/watchedKvEntriesQueries.js";
 
 export class WatchedKeysServiceModule implements AppModule {
     enable(_context: ModuleContext): void {

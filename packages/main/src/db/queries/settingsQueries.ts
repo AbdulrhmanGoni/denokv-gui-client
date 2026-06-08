@@ -1,4 +1,4 @@
-import { database } from './db.js';
+import { database } from '../db.js';
 
 export const insertSettingQuery = database.prepare(`
     INSERT INTO userSettings(settingsId, settingsAsJsonText) 

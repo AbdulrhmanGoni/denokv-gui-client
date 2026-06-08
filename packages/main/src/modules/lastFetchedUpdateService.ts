@@ -7,7 +7,7 @@ import {
     insertLastFetchedUpdateQuery,
     updateDoNotNotifyQuery,
     updateLastFetchedUpdateQuery,
-} from "../db/lastFetchedUpdateQueries.js";
+} from "../db/queries/lastFetchedUpdateQueries.js";
 import { isGreaterVersion } from "../helpers.js";
 import { appVersion } from "./metadataModule.js";
 

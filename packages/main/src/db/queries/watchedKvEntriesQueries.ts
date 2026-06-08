@@ -1,4 +1,4 @@
-import { database } from './db.js';
+import { database } from '../db.js';
 
 export const insertWatchedKeysQuery = database.prepare(`
     INSERT INTO watchedKeys(id, kvStoreId, keysAsJson) 

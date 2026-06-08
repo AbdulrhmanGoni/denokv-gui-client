@@ -1,4 +1,4 @@
-import { database } from './db.js';
+import { database } from '../db.js';
 
 export const insertLastFetchedUpdateQuery = database.prepare(`
     INSERT INTO lastFetchedUpdate(lastUpdateId, updateInfoAsJson)

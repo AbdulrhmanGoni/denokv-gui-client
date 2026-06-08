@@ -1,4 +1,4 @@
-import { database } from './db.js';
+import { database } from '../db.js';
 
 export const insertQuery = database.prepare(`
     INSERT INTO browsingParams(id, kvStoreId, paramsAsJson, isDefault, createdAt, updatedAt) 

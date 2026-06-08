@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 import { AppModule } from "../AppModule.js";
 import { ModuleContext } from "../ModuleContext.js";
-import { getSettingsQuery, insertSettingQuery, updateSettingQuery } from "../db/settingsQueries.js";
+import { getSettingsQuery, insertSettingQuery, updateSettingQuery } from "../db/queries/settingsQueries.js";
 
 export class SettingsServiceModule implements AppModule {
     enable(_context: ModuleContext): void {
