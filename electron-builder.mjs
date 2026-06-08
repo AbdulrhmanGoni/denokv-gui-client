@@ -45,6 +45,11 @@ switch (os.platform()) {
 
 export default /** @type import('electron-builder').Configuration */
   ({
+    publish: {
+      provider: 'github',
+      owner: 'AbdulrhmanGoni',
+      repo: 'denokv-gui-client',
+    },
     ...platformSpecificConfig,
     directories: {
       output: 'dist',
