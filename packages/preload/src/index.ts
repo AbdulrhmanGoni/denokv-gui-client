@@ -1,16 +1,16 @@
 import { ipcRenderer } from 'electron';
 import path from 'node:path';
 
-function selectDirectory(): Promise<string> {
-  return ipcRenderer.invoke('select-directory')
-}
-
-function selectFile(directory?: string): Promise<{ directory: string, fileName: string } | null> {
-  return ipcRenderer.invoke('select-file', directory)
-}
-
-function openPath(path: string): void {
-  ipcRenderer.invoke('open-path', path)
+const fileSystemService = {
+  selectDirectory(): Promise<string> {
+    return ipcRenderer.invoke('select-directory')
+  },
+  selectFile(directory?: string): Promise<{ directory: string, fileName: string } | null> {
+    return ipcRenderer.invoke('select-file', directory)
+  },
+  openPath(path: string): void {
+    ipcRenderer.invoke('open-path', path)
+  }
 }
 
 const pathUtils = {
@@ -124,9 +124,7 @@ const watchedKeysService = {
 
 export {
   metadata,
-  selectDirectory,
-  selectFile,
-  openPath,
+  fileSystemService,
   kvStoresService,
   kvClient,
   bridgeServer,

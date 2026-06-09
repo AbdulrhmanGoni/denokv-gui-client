@@ -2,7 +2,7 @@
   import { Input } from "$lib/ui/shadcn/input/index.js";
   import { Label } from "$lib/ui/shadcn/label/index.js";
   import { Button } from "$lib/ui/shadcn/button/index.js";
-  import { selectDirectory, selectFile, pathUtils } from "@app/preload";
+  import { fileSystemService, pathUtils } from "@app/preload";
   import Loader from "@lucide/svelte/icons/loader";
   import * as Select from "$lib/ui/shadcn/select";
   import type { Snippet } from "svelte";
@@ -83,11 +83,11 @@
   }
 
   async function pickDirectory() {
-    localKvDirectory = await selectDirectory();
+    localKvDirectory = await fileSystemService.selectDirectory();
   }
 
   async function pickFile() {
-    const selectedFile = await selectFile(localKvDirectory);
+    const selectedFile = await fileSystemService.selectFile(localKvDirectory);
     if (selectedFile) {
       localKvDirectory = selectedFile.directory;
       localKvFileName = selectedFile.fileName;

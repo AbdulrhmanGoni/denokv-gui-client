@@ -1,7 +1,7 @@
 <script lang="ts">
     import LinkIcon from "@lucide/svelte/icons/link";
     import FileLinkIcon from "@lucide/svelte/icons/file-symlink";
-    import { openPath } from "@app/preload";
+    import { fileSystemService } from "@app/preload";
 
     const { kvStore }: { kvStore: KvStore } = $props();
     const isLocal = $derived(
@@ -22,7 +22,7 @@
     <span
         onclick={() => {
             if (isLocal) {
-                openPath(kvStore.url);
+                fileSystemService.openPath(kvStore.url);
             }
         }}
         class="line-clamp-1 {isLocal ? 'hover:underline cursor-pointer' : ''}"

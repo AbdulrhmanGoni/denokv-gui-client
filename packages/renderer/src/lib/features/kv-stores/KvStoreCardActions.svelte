@@ -9,7 +9,7 @@
   import { Button } from "$lib/ui/shadcn/button/index.js";
   import { kvStoresState, openKvStore } from "$lib/states/kvStoresState.svelte";
   import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
-  import { openPath } from "@app/preload";
+  import { fileSystemService } from "@app/preload";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 
@@ -67,7 +67,7 @@
       {/if}
     </DropdownMenu.Item>
     {#if kvStore.type == "default"}
-      <DropdownMenu.Item onclick={() => openPath(kvStore.url)}>
+      <DropdownMenu.Item onclick={() => fileSystemService.openPath(kvStore.url)}>
         <OpenPathIcon /> Open Path
       </DropdownMenu.Item>
     {/if}
