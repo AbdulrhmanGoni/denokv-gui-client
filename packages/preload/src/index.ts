@@ -12,9 +12,9 @@ const fileSystemService = {
     ipcRenderer.invoke('open-path', path)
   },
   pathUtils: {
-  dirname: (p: string): string => path.dirname(p),
-  basename: (p: string): string => path.basename(p),
-  join: (...paths: string[]): string => path.join(...paths),
+    dirname: (p: string): string => path.dirname(p),
+    basename: (p: string): string => path.basename(p),
+    join: (...paths: string[]): string => path.join(...paths),
   }
 }
 

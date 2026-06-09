@@ -141,17 +141,24 @@ export function preloadContextExposureToRendererTests() {
         targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
     });
 
-    test.describe('Utility preload functions should be exposed', async () => {
-        const utilExports = ['selectDirectory', 'openPath'];
+    test(`'fileSystemService' should be exposed as an object with its methods`, async ({ page }) => {
+        const fileSystemService = await page.evaluate(
+            () => globalThis['fileSystemService' as keyof typeof globalThis]
+        );
+        expect(typeof fileSystemService).toEqual('object');
 
-        utilExports.forEach((exportName) => {
-            test(`'${exportName}' is exposed as a function`, async ({ page }) => {
-                const type = await page.evaluate(
-                    (key) => typeof globalThis[key as keyof typeof globalThis],
-                    exportName,
-                );
-                expect(type).toEqual('function');
-            });
-        });
+        const exposedMethods = Object.keys(fileSystemService)
+        const targetMethods = ['selectDirectory', 'selectFile', 'openPath', 'pathUtils'];
+
+        expect(exposedMethods.length).toBe(targetMethods.length);
+        targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+
+        // Check pathUtils methods
+        const pathUtils = (fileSystemService as any).pathUtils;
+        expect(typeof pathUtils).toEqual('object');
+        const pathUtilsMethods = Object.keys(pathUtils);
+        const targetPathUtilsMethods = ['dirname', 'basename', 'join'];
+        expect(pathUtilsMethods.length).toBe(targetPathUtilsMethods.length);
+        targetPathUtilsMethods.forEach((method) => expect(pathUtilsMethods).toContain(method));
     });
 }
