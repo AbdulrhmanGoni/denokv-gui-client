@@ -8,6 +8,11 @@ on:
         required: false
         type: boolean
         default: false
+      skip-audit:
+        description: "Whether to skip the 'Audit dependencies' step in compile-and-test job."
+        required: false
+        type: boolean
+        default: false
 
 defaults:
   run:
@@ -46,6 +51,7 @@ jobs:
         run: npm ci
 
       - name: Audit dependencies
+        if: ${{ !inputs.skip-audit }}
         run: (npm audit --json || true) | node scripts/handleDependenciesAuditResult.ts
         env:
           IS_CD: ${{ inputs.isCD }}

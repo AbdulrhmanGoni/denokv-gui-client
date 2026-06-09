@@ -11,6 +11,11 @@ on:
         options:
           - CI
           - Release
+      skip-audit:
+        description: "Whether to skip the 'Audit dependencies' step in compile-and-test job"
+        required: false
+        default: false
+        type: boolean
 
   push:
     branches: ["**"]
@@ -55,6 +60,7 @@ jobs:
     uses: ./.github/workflows/compile-and-test.yml
     with:
       isCD: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release' }}
+      skip-audit: ${{ inputs.skip-audit }}
 
   publish-bridge-server:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release'
