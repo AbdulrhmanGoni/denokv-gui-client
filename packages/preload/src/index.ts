@@ -10,14 +10,13 @@ const fileSystemService = {
   },
   openPath(path: string): void {
     ipcRenderer.invoke('open-path', path)
-  }
-}
-
-const pathUtils = {
+  },
+  pathUtils: {
   dirname: (p: string): string => path.dirname(p),
   basename: (p: string): string => path.basename(p),
   join: (...paths: string[]): string => path.join(...paths),
-};
+  }
+}
 
 const metadata = await ipcRenderer.invoke('get-metadata') as AppMetadata
 
@@ -133,5 +132,4 @@ export {
   lastFetchedUpdateService,
   browsingParamsService,
   watchedKeysService,
-  pathUtils,
 };

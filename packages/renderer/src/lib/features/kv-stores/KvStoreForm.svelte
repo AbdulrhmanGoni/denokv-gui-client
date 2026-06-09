@@ -2,7 +2,7 @@
   import { Input } from "$lib/ui/shadcn/input/index.js";
   import { Label } from "$lib/ui/shadcn/label/index.js";
   import { Button } from "$lib/ui/shadcn/button/index.js";
-  import { fileSystemService, pathUtils } from "@app/preload";
+  import { fileSystemService } from "@app/preload";
   import Loader from "@lucide/svelte/icons/loader";
   import * as Select from "$lib/ui/shadcn/select";
   import type { Snippet } from "svelte";
@@ -37,15 +37,15 @@
 
   let localKvDirectory = $state(
     defaultValues?.type == "local" && defaultValues?.url
-      ? pathUtils.dirname(defaultValues.url)
+      ? fileSystemService.pathUtils.dirname(defaultValues.url)
       : "",
   );
   let localKvFileName = $state(
     defaultValues?.type == "local" && defaultValues?.url
-      ? pathUtils.basename(defaultValues.url)
+      ? fileSystemService.pathUtils.basename(defaultValues.url)
       : "kv.sqlite3",
   );
-  let localKvUrl = $derived(pathUtils.join(localKvDirectory, localKvFileName));
+  let localKvUrl = $derived(fileSystemService.pathUtils.join(localKvDirectory, localKvFileName));
   let replaceExisting = $state(defaultValues?.replaceExisting ?? false);
   let selectedStoreType: KvStore["type"] | undefined = $state(
     defaultValues?.type ||
