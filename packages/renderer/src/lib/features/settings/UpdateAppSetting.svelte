@@ -121,8 +121,9 @@
             id="auto-check-for-updates"
             checked={!!settingsState.autoCheckForUpdate}
             onCheckedChange={setAutoCheckForUpdate}
+            class="cursor-pointer"
         />
-        <Label for="auto-check-for-updates">
+        <Label for="auto-check-for-updates" class="cursor-pointer">
             Always check for new updates automatically
         </Label>
     </div>
