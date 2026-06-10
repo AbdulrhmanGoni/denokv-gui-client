@@ -60,7 +60,7 @@ jobs:
     uses: ./.github/workflows/compile-and-test.yml
     with:
       isCD: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release' }}
-      skip-audit: ${{ inputs.skip-audit }}
+      skip-audit: ${{ inputs.skip-audit == true }}
 
   publish-bridge-server:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release'

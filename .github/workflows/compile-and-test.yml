@@ -51,7 +51,7 @@ jobs:
         run: npm ci
 
       - name: Audit dependencies
-        if: ${{ !inputs.skip-audit }}
+        if: inputs.skip-audit != true
         run: (npm audit --json || true) | node scripts/handleDependenciesAuditResult.ts
         env:
           IS_CD: ${{ inputs.isCD }}
