@@ -121,6 +121,14 @@ const watchedKeysService = {
     ipcRenderer.invoke('watchedKeysService:setWatchedKeys', kvStoreId, keys),
 };
 
+function isHardwareAccelerationEnabled() {
+  return ipcRenderer.invoke("isHardwareAccelerationEnabled")
+}
+
+function restartApp() {
+  return ipcRenderer.invoke("restart-app")
+}
+
 export {
   metadata,
   fileSystemService,
@@ -132,4 +140,6 @@ export {
   lastFetchedUpdateService,
   browsingParamsService,
   watchedKeysService,
+  isHardwareAccelerationEnabled,
+  restartApp,
 };

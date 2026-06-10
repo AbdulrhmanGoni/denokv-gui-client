@@ -1,7 +1,8 @@
 import type { AppModule } from '../AppModule.js';
 import { ModuleContext } from '../ModuleContext.js';
-import { BrowserWindow, screen } from 'electron';
+import { BrowserWindow, ipcMain, screen } from 'electron';
 import type { AppInitConfig } from '../AppInitConfig.js';
+import os from 'node:os';
 
 class WindowManager implements AppModule {
   readonly #preload: { path: string };
@@ -22,6 +23,18 @@ class WindowManager implements AppModule {
     }
 
     context.app.on('window-all-closed', () => context.app.quit());
+
+    ipcMain.handle("restart-app", () => {
+      let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
+      if (os.platform() == "linux" && process.env.APPIMAGE && context.app.isPackaged) {
+        relaunchOptions = {
+          execPath: process.env.APPIMAGE,
+          args: ['--appimage-extract-and-run'],
+        }
+      }
+      context.app.relaunch(relaunchOptions);
+      context.app.exit();
+    });
 
     await context.app.whenReady();
     context.browserWindow = await this.restoreOrCreateWindow(true);

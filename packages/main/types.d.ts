@@ -71,6 +71,7 @@ type LastFetchedUpdate = {
 
 type Settings = Partial<{
     autoCheckForUpdate: boolean;
+    disableHardwareAcceleration: boolean;
 }>
 
 type TrycatchResult<T> = { result: T; error: null } | { result: null; error: string };

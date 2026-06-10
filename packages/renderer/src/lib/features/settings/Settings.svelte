@@ -9,6 +9,7 @@
     import { updateAppState } from "$lib/states/appUpdate.svelte";
     import { settingsPageState } from "$lib/states/settingsState.svelte";
     import { metadata } from "@app/preload";
+    import HardwareAccelerationSetting from "./HardwareAccelerationSetting.svelte";
 </script>
 
 <Dialog.Root bind:open={settingsPageState.open}>
@@ -35,9 +36,12 @@
                 Settings
             </h1>
             <Separator />
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 flex-1">
-                <UpdateAppSetting />
-                <AppThemeSetting />
+            <div class="flex-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <UpdateAppSetting />
+                    <AppThemeSetting />
+                    <HardwareAccelerationSetting />
+                </div>
             </div>
             <Separator />
             <div class="flex gap-2 text-xs text-muted-foreground items-center justify-center">

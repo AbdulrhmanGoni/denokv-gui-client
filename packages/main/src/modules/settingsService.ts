@@ -22,7 +22,7 @@ export class SettingsServiceModule implements AppModule {
     }
 }
 
-function getSettings(): Settings | undefined {
+export function getSettings(): Settings | undefined {
     const result = getSettingsQuery.get() as { settingsAsJsonText: string } | undefined
     if (result) {
         return JSON.parse(result.settingsAsJsonText) as Settings

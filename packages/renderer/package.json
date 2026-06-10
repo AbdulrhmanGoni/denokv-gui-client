@@ -10,7 +10,7 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
-    "@internationalized/date": "^3.8.2",
+    "@internationalized/date": "^3.12.2",
     "@lucide/svelte": "^0.557.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/typography": "^0.5.15",
@@ -18,7 +18,7 @@
     "@tanstack/table-core": "^8.21.3",
     "@tsconfig/svelte": "^5.0.8",
     "@types/js-beautify": "^1.14.3",
-    "bits-ui": "^2.11.2",
+    "bits-ui": "^2.18.1",
     "clsx": "^2.1.1",
     "svelte": "^5.55.7",
     "svelte-check": "^4.4.8",
