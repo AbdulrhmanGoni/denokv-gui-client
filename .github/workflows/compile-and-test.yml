@@ -56,12 +56,6 @@ jobs:
         env:
           IS_CD: ${{ inputs.isCD }}
 
-      - name: Download "denokv-x86_64-apple-darwin" binary for mac-x64 build
-        if: matrix.os == 'macos-15-intel'
-        run: ./scripts/download-denokv-macos-intel-binary.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build app's packages
         run: npm run build
 

@@ -29,8 +29,8 @@ on:
       - "package.json"
       - "electron-builder.mjs"
       - "tests/**"
-      - "scripts/download-denokv-macos-intel-binary.sh"
       - "scripts/handleDependenciesAuditResult.ts"
+
   pull_request:
     types:
       - opened
