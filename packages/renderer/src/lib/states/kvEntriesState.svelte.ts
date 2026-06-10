@@ -6,166 +6,174 @@ import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
 import { isSameKvKey } from "@app/bridge-server/kv-utils";
 
 type KvEntriesState = {
-    entries: KvEntry[];
-    params: BrowsingParams & {
-        cursors: NonNullable<BrowseRouteOptions["cursor"]>[];
-    };
-    loading: boolean;
-    fetched: boolean;
-    error: string;
-    noMoreEntries: boolean;
-}
+  entries: KvEntry[];
+  params: BrowsingParams & {
+    cursors: NonNullable<BrowseRouteOptions["cursor"]>[];
+  };
+  loading: boolean;
+  fetched: boolean;
+  error: string;
+  noMoreEntries: boolean;
+};
 
 const defaultBrowsingParams = {
-    prefix: "[]",
-    start: "[]",
-    end: "[]",
-    limit: 40,
-    batchSize: 40,
-    reverse: false,
-    consistency: "strong",
-}
+  prefix: "[]",
+  start: "[]",
+  end: "[]",
+  limit: 40,
+  batchSize: 40,
+  reverse: false,
+  consistency: "strong",
+};
 
 export const kvEntriesStateDefaultValues: KvEntriesState = {
-    entries: [],
-    params: {
-        ...defaultBrowsingParams,
-        cursors: [],
-    },
-    loading: false,
-    fetched: false,
-    error: "",
-    noMoreEntries: false,
-}
+  entries: [],
+  params: {
+    ...defaultBrowsingParams,
+    cursors: [],
+  },
+  loading: false,
+  fetched: false,
+  error: "",
+  noMoreEntries: false,
+};
 
-export const kvEntriesState: KvEntriesState = $state(kvEntriesStateDefaultValues);
+export const kvEntriesState: KvEntriesState = $state(
+  kvEntriesStateDefaultValues,
+);
 
 export async function fetchEntries() {
-    if (kvStoresState.openedStore) {
-        kvEntriesState.loading = true;
-        const { error, result } = await kvClient.browse(
-            $state.snapshot(kvEntriesState.params),
-            kvEntriesState.params.cursors.at(-1)
-        );
+  if (kvStoresState.openedStore) {
+    kvEntriesState.loading = true;
+    const { error, result } = await kvClient.browse(
+      $state.snapshot(kvEntriesState.params),
+      kvEntriesState.params.cursors.at(-1),
+    );
 
-        if (error) {
-            kvEntriesState.error = error;
-            kvEntriesState.entries = [];
-            kvEntriesState.fetched = false;
-        } else {
-            kvEntriesState.error = "";
-            kvEntriesState.entries = result?.entries ? result?.entries : [];
-            kvEntriesState.fetched = true;
+    if (error) {
+      kvEntriesState.error = error;
+      kvEntriesState.entries = [];
+      kvEntriesState.fetched = false;
+    } else {
+      kvEntriesState.error = "";
+      kvEntriesState.entries = result?.entries ? result?.entries : [];
+      kvEntriesState.fetched = true;
 
-            if (result?.cursor) {
-                if (kvEntriesState.params.cursors.at(-1) !== result.cursor) {
-                    kvEntriesState.params.cursors.push(result.cursor)
-                }
-            } else {
-                kvEntriesState.noMoreEntries = true
-            }
-
-            if (kvEntriesState.entries.length < kvEntriesState.params.limit) {
-                kvEntriesState.noMoreEntries = true
-            }
+      if (result?.cursor) {
+        if (kvEntriesState.params.cursors.at(-1) !== result.cursor) {
+          kvEntriesState.params.cursors.push(result.cursor);
         }
-        kvEntriesState.loading = false;
+      } else {
+        kvEntriesState.noMoreEntries = true;
+      }
+
+      if (kvEntriesState.entries.length < kvEntriesState.params.limit) {
+        kvEntriesState.noMoreEntries = true;
+      }
     }
+    kvEntriesState.loading = false;
+  }
 }
 
 export function removeEntryFromState(entry: KvEntry) {
-    kvEntriesState.entries = kvEntriesState.entries.filter((ent) => !isSameKvKey(entry.key, ent.key))
+  kvEntriesState.entries = kvEntriesState.entries.filter(
+    (ent) => !isSameKvKey(entry.key, ent.key),
+  );
 }
 
 export async function resetEntriesState() {
-    await fetchSavedDefaultBrowsingParams()
-    Object.assign(kvEntriesState, kvEntriesStateDefaultValues)
+  await fetchSavedDefaultBrowsingParams();
+  Object.assign(kvEntriesState, kvEntriesStateDefaultValues);
 }
 
 export async function resetBrowsingParamsState() {
-    await fetchSavedDefaultBrowsingParams()
-    kvEntriesState.params = kvEntriesStateDefaultValues.params
+  await fetchSavedDefaultBrowsingParams();
+  kvEntriesState.params = kvEntriesStateDefaultValues.params;
 }
 
 export function createKvEntriesTable() {
-    let rowSelection = $state<RowSelectionState>({});
+  let rowSelection = $state<RowSelectionState>({});
 
-    return createSvelteTable({
-        get data() {
-            return kvEntriesState.entries;
-        },
-        getRowId: (row) => JSON.stringify(row.key),
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        onRowSelectionChange: (updater) => {
-            if (typeof updater === "function") {
-                rowSelection = updater(rowSelection);
-            } else {
-                rowSelection = updater;
-            }
-        },
-        state: {
-            get rowSelection() {
-                return rowSelection;
-            },
-        },
-    });
+  return createSvelteTable({
+    get data() {
+      return kvEntriesState.entries;
+    },
+    getRowId: (row) => JSON.stringify(row.key),
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onRowSelectionChange: (updater) => {
+      if (typeof updater === "function") {
+        rowSelection = updater(rowSelection);
+      } else {
+        rowSelection = updater;
+      }
+    },
+    state: {
+      get rowSelection() {
+        return rowSelection;
+      },
+    },
+  });
 }
 
 export function setBrowsingParams(params: BrowsingParams) {
-    kvEntriesState.params = {
-        ...kvEntriesStateDefaultValues.params,
-        ...params,
-    };
-    kvEntriesState.noMoreEntries = false;
-    fetchEntries();
+  kvEntriesState.params = {
+    ...kvEntriesStateDefaultValues.params,
+    ...params,
+  };
+  kvEntriesState.noMoreEntries = false;
+  fetchEntries();
 }
 
 type SavedBrowsingParamsState = {
-    savedParams: SavedBrowsingParamsRecord<BrowsingParams>[];
-    fetched: boolean;
-    error: string;
-    selectedParamsToEdit: SavedBrowsingParamsRecord<BrowsingParams> | null;
-}
+  savedParams: SavedBrowsingParamsRecord<BrowsingParams>[];
+  fetched: boolean;
+  error: string;
+  selectedParamsToEdit: SavedBrowsingParamsRecord<BrowsingParams> | null;
+};
 
 export const savedBrowsingParamsState: SavedBrowsingParamsState = $state({
-    savedParams: [],
-    fetched: false,
-    error: "",
-    selectedParamsToEdit: null,
+  savedParams: [],
+  fetched: false,
+  error: "",
+  selectedParamsToEdit: null,
 });
 
 export async function fetchSavedBrowsingParams() {
-    if (kvStoresState.openedStore) {
-        const { result, error } =
-            await browsingParamsService.getSavedBrowsingParamsRecords(
-                kvStoresState.openedStore.id,
-            );
+  if (kvStoresState.openedStore) {
+    const { result, error } =
+      await browsingParamsService.getSavedBrowsingParamsRecords(
+        kvStoresState.openedStore.id,
+      );
 
-        if (result) {
-            savedBrowsingParamsState.savedParams = result;
-            savedBrowsingParamsState.error = "";
-            savedBrowsingParamsState.fetched = true;
-        } else {
-            savedBrowsingParamsState.error = error;
-            savedBrowsingParamsState.fetched = false;
-        }
+    if (result) {
+      savedBrowsingParamsState.savedParams = result;
+      savedBrowsingParamsState.error = "";
+      savedBrowsingParamsState.fetched = true;
+    } else {
+      savedBrowsingParamsState.error = error;
+      savedBrowsingParamsState.fetched = false;
     }
+  }
 }
 
 export async function fetchSavedDefaultBrowsingParams() {
-    if (kvStoresState.openedStore) {
-        const { result } = await browsingParamsService.getDefaultSavedBrowsingParams(
-            kvStoresState.openedStore.id
-        )
+  if (kvStoresState.openedStore) {
+    const { result } =
+      await browsingParamsService.getDefaultSavedBrowsingParams(
+        kvStoresState.openedStore.id,
+      );
 
-        kvEntriesStateDefaultValues.params = {
-            ...kvEntriesStateDefaultValues.params,
-            ...(result?.paramsAsJson || defaultBrowsingParams)
-        }
-    }
+    kvEntriesStateDefaultValues.params = {
+      ...kvEntriesStateDefaultValues.params,
+      ...(result?.paramsAsJson || defaultBrowsingParams),
+    };
+  }
 }
 
 export function setDefaultBrowsingParams(params?: BrowsingParams) {
-    Object.assign(kvEntriesStateDefaultValues.params, params ?? defaultBrowsingParams)
+  Object.assign(
+    kvEntriesStateDefaultValues.params,
+    params ?? defaultBrowsingParams,
+  );
 }

@@ -194,8 +194,8 @@
         See the
         <PLink href="https://docs.deno.com/deploy/kv/manual/operations/#list">
           official manual
-        </PLink> of <strong>Deno Kv database</strong> for more information about
-        how filtering entries works.
+        </PLink> of <strong>Deno Kv database</strong> for more information about how
+        filtering entries works.
       </p>
       <Separator />
       <BrowsingParamsForm

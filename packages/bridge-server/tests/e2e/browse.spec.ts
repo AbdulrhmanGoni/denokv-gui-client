@@ -32,14 +32,14 @@ export function browseEndpointSpec({ bridgeServerClient }: TestDependencies) {
 
     it("should return the entries with a specific 'users' prefix", async () => {
       const options = {
-        prefix: ["users"]
+        prefix: ["users"],
       };
 
       const res = await bridgeServerClient.browse(options);
       expect(res.result?.entries).toBeInstanceOf(Array);
       res.result?.entries.forEach((entry) => {
         expect(entry.key[0]).toBe(options.prefix[0]);
-      })
+      });
     });
 
     it("should respect the xssSafe option when returning entries", async () => {
@@ -50,9 +50,14 @@ export function browseEndpointSpec({ bridgeServerClient }: TestDependencies) {
       });
 
       const resSafe = await bridgeServerClient.browse({ prefix: ["xss"] });
-      const resUnsafe = await bridgeServerClient.browse({ prefix: ["xss"], xssSafe: false });
+      const resUnsafe = await bridgeServerClient.browse({
+        prefix: ["xss"],
+        xssSafe: false,
+      });
 
-      expect(resSafe.result?.entries[0].value.data).toContain("\\u003Cscript\\u003E");
+      expect(resSafe.result?.entries[0].value.data).toContain(
+        "\\u003Cscript\\u003E",
+      );
       expect(resUnsafe.result?.entries[0].value.data).toContain("<script>");
 
       await bridgeServerClient.delete(key);

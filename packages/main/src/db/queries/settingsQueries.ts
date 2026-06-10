@@ -1,4 +1,4 @@
-import { database } from '../db.js';
+import { database } from "../db.js";
 
 export const insertSettingQuery = database.prepare(`
     INSERT INTO userSettings(settingsId, settingsAsJsonText) 
@@ -10,5 +10,5 @@ export const updateSettingQuery = database.prepare(`
 `);
 
 export const getSettingsQuery = database.prepare(
-    "SELECT settingsAsJsonText FROM userSettings WHERE settingsId = 'settings'"
+  "SELECT settingsAsJsonText FROM userSettings WHERE settingsId = 'settings'",
 );

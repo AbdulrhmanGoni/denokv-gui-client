@@ -67,7 +67,9 @@
       {/if}
     </DropdownMenu.Item>
     {#if kvStore.type == "default"}
-      <DropdownMenu.Item onclick={() => fileSystemService.openPath(kvStore.url)}>
+      <DropdownMenu.Item
+        onclick={() => fileSystemService.openPath(kvStore.url)}
+      >
         <OpenPathIcon /> Open Path
       </DropdownMenu.Item>
     {/if}

@@ -45,7 +45,9 @@
       ? fileSystemService.pathUtils.basename(defaultValues.url)
       : "kv.sqlite3",
   );
-  let localKvUrl = $derived(fileSystemService.pathUtils.join(localKvDirectory, localKvFileName));
+  let localKvUrl = $derived(
+    fileSystemService.pathUtils.join(localKvDirectory, localKvFileName),
+  );
   let replaceExisting = $state(defaultValues?.replaceExisting ?? false);
   let selectedStoreType: KvStore["type"] | undefined = $state(
     defaultValues?.type ||

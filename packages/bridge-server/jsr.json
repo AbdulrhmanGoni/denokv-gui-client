@@ -1,13 +1,10 @@
 {
-    "$schema": "https://jsr.io/schema/config-file.v1.json",
-    "name": "@denokv-gui-client/bridge-server",
-    "version": "9.0.0",
-    "exports": "./src/index.ts",
-    "publish": {
-        "include": [
-            "src/",
-            "README.md"
-        ]
-    },
-    "license": "MIT"
+  "$schema": "https://jsr.io/schema/config-file.v1.json",
+  "name": "@denokv-gui-client/bridge-server",
+  "version": "9.0.0",
+  "exports": "./src/index.ts",
+  "publish": {
+    "include": ["src/", "README.md"]
+  },
+  "license": "MIT"
 }

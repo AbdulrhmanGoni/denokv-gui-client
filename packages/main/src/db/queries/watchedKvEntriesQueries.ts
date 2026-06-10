@@ -1,4 +1,4 @@
-import { database } from '../db.js';
+import { database } from "../db.js";
 
 export const insertWatchedKeysQuery = database.prepare(`
     INSERT INTO watchedKeys(id, kvStoreId, keysAsJson) 
@@ -10,9 +10,9 @@ export const updateWatchedKeysQuery = database.prepare(`
 `);
 
 export const getWatchedKeysQuery = database.prepare(
-    "SELECT keysAsJson FROM watchedKeys WHERE kvStoreId = ?"
+  "SELECT keysAsJson FROM watchedKeys WHERE kvStoreId = ?",
 );
 
 export const deleteWatchedKeysQuery = database.prepare(
-    "DELETE FROM watchedKeys WHERE kvStoreId = ?"
+  "DELETE FROM watchedKeys WHERE kvStoreId = ?",
 );

@@ -1,54 +1,54 @@
 {
-    "name": "@app/bridge-server",
-    "version": "9.0.0",
-    "description": "A tiny HTTP server to expose Deno KV database over HTTP",
-    "type": "module",
-    "sideEffects": false,
-    "scripts": {
-        "build": "vite build",
-        "test": "vitest run tests/e2e/index.test.ts tests/units/*",
-        "typecheck": "tsc --noEmit"
+  "name": "@app/bridge-server",
+  "version": "9.0.0",
+  "description": "A tiny HTTP server to expose Deno KV database over HTTP",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run tests/e2e/index.test.ts tests/units/*",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
     },
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "default": "./dist/index.mjs"
-        },
-        "./kv-utils": {
-            "types": "./dist/kv-utils.d.ts",
-            "import": "./dist/kv-utils.mjs",
-            "default": "./dist/kv-utils.mjs"
-        }
-    },
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
-    "files": [
-        "dist",
-        "README.md"
-    ],
-    "engines": {
-        "node": ">=18.0.0"
-    },
-    "devDependencies": {
-        "@types/deno": "^2.5.0",
-        "@types/serialize-javascript": "^5.0.4",
-        "jsr": "0.14.3",
-        "typescript": "5.8.2",
-        "vite": "6.4.2",
-        "unplugin-dts": "1.0.2",
-        "vitest": "4.1.7"
-    },
-    "dependencies": {
-        "@deno/kv": "0.14.0",
-        "@hono/node-server": "2.0.4",
-        "hono": "4.12.23",
-        "serialize-javascript": "7.0.5"
-    },
-    "publish": {
-        "include": [
-            "src",
-            "README.md"
-        ]
+    "./kv-utils": {
+      "types": "./dist/kv-utils.d.ts",
+      "import": "./dist/kv-utils.mjs",
+      "default": "./dist/kv-utils.mjs"
     }
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/deno": "^2.5.0",
+    "@types/serialize-javascript": "^5.0.4",
+    "jsr": "0.14.3",
+    "typescript": "5.8.2",
+    "vite": "6.4.2",
+    "unplugin-dts": "1.0.2",
+    "vitest": "4.1.7"
+  },
+  "dependencies": {
+    "@deno/kv": "0.14.0",
+    "@hono/node-server": "2.0.4",
+    "hono": "4.12.23",
+    "serialize-javascript": "7.0.5"
+  },
+  "publish": {
+    "include": [
+      "src",
+      "README.md"
+    ]
+  }
 }

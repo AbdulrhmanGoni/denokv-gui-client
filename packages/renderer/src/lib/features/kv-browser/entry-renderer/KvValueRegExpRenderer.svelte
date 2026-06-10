@@ -1,19 +1,19 @@
 <script lang="ts">
-    import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
+  import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
 
-    let { regExpValue }: { regExpValue: string } = $props();
-    const regExp: { source: string; flags: string } = $derived(
-        JSON.parse(regExpValue),
-    );
+  let { regExpValue }: { regExpValue: string } = $props();
+  const regExp: { source: string; flags: string } = $derived(
+    JSON.parse(regExpValue),
+  );
 </script>
 
 {@render fSlash()}{regExp.source}{@render fSlash()}<!--
 --><span
-    class={dataTypesColors.blue}
+  class={dataTypesColors.blue}
 >
-    {regExp.flags}
+  {regExp.flags}
 </span>
 
 {#snippet fSlash()}
-    <span class="text-foreground">/</span>
+  <span class="text-foreground">/</span>
 {/snippet}

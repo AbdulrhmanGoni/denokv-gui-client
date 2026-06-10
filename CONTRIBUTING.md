@@ -64,9 +64,9 @@ Example:
 ```ts
 import { kvStoresService } from "@app/preload";
 
-kvStoresService.create(newKvStore)
+kvStoresService.create(newKvStore);
 
-kvStoresService.getAll()
+kvStoresService.getAll();
 ```
 
 **Tech Stack**:

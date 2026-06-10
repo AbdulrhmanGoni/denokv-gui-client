@@ -4,17 +4,19 @@ This package is a tiny web server provides a JSON-based API to access the Deno K
 from places like frontend web or mobile apps where using the Deno KV client directly (`Deno.openKv()` or `openKv()` in node) is not possible.
 
 > [!NOTE]
-> This package is mainly created to be used inside [Deno Kv GUI Client](https://abdulrhmangoni.github.io/denokv-gui-client/) desktop app 
-> or to be used as a bridge server between ***Deno Kv GUI Client*** app and a Deno Kv database that is existing in a place where ***Deno Kv GUI Client*** cant reach (e.g., Inside a docker container or In Memory database inside another process)
+> This package is mainly created to be used inside [Deno Kv GUI Client](https://abdulrhmangoni.github.io/denokv-gui-client/) desktop app
+> or to be used as a bridge server between **_Deno Kv GUI Client_** app and a Deno Kv database that is existing in a place where **_Deno Kv GUI Client_** cant reach (e.g., Inside a docker container or In Memory database inside another process)
 
 ## Installation
 
 **Deno:**
+
 ```shell
 deno add jsr:@denokv-gui-client/bridge-server
 ```
 
 **Node or Bun:**
+
 ```shell
 npx jsr add @denokv-gui-client/bridge-server
 # or
@@ -49,7 +51,7 @@ Import `openBridgeServerInNode` function and call it with an instance of Node's 
 ```ts
 import { openKv, type Kv } from "@deno/kv";
 import { openBridgeServerInNode } from "@denokv-gui-client/bridge-server";
-import { type ServerType } from '@hono/node-server';
+import { type ServerType } from "@hono/node-server";
 
 const kv: Kv = await openKv();
 const server: ServerType = openBridgeServerInNode(kv);
@@ -57,26 +59,27 @@ const server: ServerType = openBridgeServerInNode(kv);
 server.close(); // Later at some point if you want
 ```
 
-
-### Server Configuration Options 
+### Server Configuration Options
 
 Both `openBridgeServerInDeno` and `openBridgeServerInNode` functions accept the same 'options' object as the 2nd parameter.
 
-| Option    | Type   | Default | Description                                                         |
-|-----------|--------|---------|---------------------------------------------------------------------|
-| `port`      | `number` | 47168   | The port that the bridge server should be listening to              |
+| Option      | Type     | Default | Description                                                                    |
+| ----------- | -------- | ------- | ------------------------------------------------------------------------------ |
+| `port`      | `number` | 47168   | The port that the bridge server should be listening to                         |
 | `authToken` | `string` | ""      | Authentication token that configures the server to be accessible only using it |
 
 ### Server's endpoints
 
-The bridge server provides the following RESTful API endpoints. All endpoints return JSON responses either like this: 
+The bridge server provides the following RESTful API endpoints. All endpoints return JSON responses either like this:
+
 ```json
 { "result": <some data...> }
 ```
 
-or like this: 
+or like this:
+
 ```json
-{ "error": "some error message"}
+{ "error": "some error message" }
 ```
 
 #### GET /browse
@@ -85,16 +88,16 @@ List KV entries with optional filtering and pagination.
 
 **Query Parameters:**
 
-| Parameter     | Type      | Description |
-|---------------|-----------|-------------|
-| `limit`       | `number`  | Maximum number of entries to return (must be a positive integer). Defaults to 40 |
-| `cursor`      | `string`  | Cursor for pagination (obtained from previous browse response) |
-| `prefix`      | `string`  | Filter entries by key prefix. must be a URL-encoded JSON array (SerializedKvKey type) |
-| `start`       | `string`  | Start key for range query (inclusive). must be a URL-encoded JSON array (SerializedKvKey type) |
-| `end`         | `string`  | End key for range query (exclusive). must be a URL-encoded JSON array (SerializedKvKey type) |
-| `batchSize`   | `number`  | The number of entries to fetch from the database at once. |
-| `consistency` | `string`  | The consistency level of the list operation. either `"strong"` or `"eventual"`. |
-| `reverse`     | `boolean` | Whether to return the entries in reverse order. |
+| Parameter     | Type      | Description                                                                                                                    |
+| ------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `limit`       | `number`  | Maximum number of entries to return (must be a positive integer). Defaults to 40                                               |
+| `cursor`      | `string`  | Cursor for pagination (obtained from previous browse response)                                                                 |
+| `prefix`      | `string`  | Filter entries by key prefix. must be a URL-encoded JSON array (SerializedKvKey type)                                          |
+| `start`       | `string`  | Start key for range query (inclusive). must be a URL-encoded JSON array (SerializedKvKey type)                                 |
+| `end`         | `string`  | End key for range query (exclusive). must be a URL-encoded JSON array (SerializedKvKey type)                                   |
+| `batchSize`   | `number`  | The number of entries to fetch from the database at once.                                                                      |
+| `consistency` | `string`  | The consistency level of the list operation. either `"strong"` or `"eventual"`.                                                |
+| `reverse`     | `boolean` | Whether to return the entries in reverse order.                                                                                |
 | `xssSafe`     | `boolean` | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
 
 > **None of the above query parameters is required**
@@ -105,15 +108,15 @@ Retrieve a specific KV entry by its key.
 
 **Path Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `key` | `string` | Yes | The serialized KV key (URL-encoded JSON array) |
+| Parameter | Type     | Required | Description                                    |
+| --------- | -------- | -------- | ---------------------------------------------- |
+| `key`     | `string` | Yes      | The serialized KV key (URL-encoded JSON array) |
 
 **Query Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `xssSafe` | `boolean` | No | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
+| Parameter | Type      | Required | Description                                                                                                                    |
+| --------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `xssSafe` | `boolean` | No       | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
 
 #### PUT /set
 
@@ -121,15 +124,16 @@ Create or update a KV entry.
 
 **Query Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `key`     | `string` | Yes | The serialized KV key (URL-encoded JSON array) |
-| `expires` | `number` | No | Expiration timestamp in milliseconds |
-| `overwrite` | `boolean` | No | Whether to overwrite the value of the key if it already exists. Defaults to `true` unless explicitly set to `false` |
+| Parameter   | Type      | Required | Description                                                                                                         |
+| ----------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `key`       | `string`  | Yes      | The serialized KV key (URL-encoded JSON array)                                                                      |
+| `expires`   | `number`  | No       | Expiration timestamp in milliseconds                                                                                |
+| `overwrite` | `boolean` | No       | Whether to overwrite the value of the key if it already exists. Defaults to `true` unless explicitly set to `false` |
 
 **Request Body:**
 
 The request body must be a JSON object representing a serialized KV value (`SerializedKvValue`).
+
 ```json
   {
     "type": "Value Type",
@@ -143,9 +147,9 @@ Remove a KV entry from the Deno Kv database.
 
 **Query Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `key` | `string` | Yes | The serialized KV key (URL-encoded JSON array) |
+| Parameter | Type     | Required | Description                                    |
+| --------- | -------- | -------- | ---------------------------------------------- |
+| `key`     | `string` | Yes      | The serialized KV key (URL-encoded JSON array) |
 
 #### GET /check
 
@@ -165,6 +169,7 @@ Enqueue a message into the Deno KV Queue.
 **Request Body:**
 
 The request body must be a JSON object:
+
 ```json
 {
   "value": <SerializedKvValue>,
@@ -185,11 +190,21 @@ Perform multiple KV operations atomically.
 The request body must be a JSON array of `AtomicOperationInput` objects.
 
 Example:
+
 ```json
 [
-  { "name": "check", "key": "[\"users\", \"1\"]", "versionstamp": "00000000000000010000" },
+  {
+    "name": "check",
+    "key": "[\"users\", \"1\"]",
+    "versionstamp": "00000000000000010000"
+  },
   { "name": "sum", "key": "[\"users\", \"1\", \"score\"]", "value": 10 },
-  { "name": "set", "key": "[\"users\", \"2\", 123n]", "value": { "type": "String", "data": "New User" }, "expiresIn": 3600000 }
+  {
+    "name": "set",
+    "key": "[\"users\", \"2\", 123n]",
+    "value": { "type": "String", "data": "New User" },
+    "expiresIn": 3600000
+  }
 ]
 ```
 
@@ -200,6 +215,7 @@ Watch specific keys for updates via Server-Sent Events (SSE).
 **Request Body:**
 
 The request body must be a JSON array of serialized keys:
+
 ```json
 ["[\"key1\"]", "[\"key2\"]"]
 ```
@@ -235,21 +251,21 @@ const client = new BridgeServerClient("http://localhost:47168");
 new BridgeServerClient(baseUrl: string, options?: BridgeServerClientOptions)
 ```
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `baseUrl` | `string` | Yes | The base URL of the bridge server (e.g., `"http://localhost:47168"`) |
-| `options` | `BridgeServerClientOptions` | No | Optional configuration object |
+| Parameter | Type                        | Required | Description                                                          |
+| --------- | --------------------------- | -------- | -------------------------------------------------------------------- |
+| `baseUrl` | `string`                    | Yes      | The base URL of the bridge server (e.g., `"http://localhost:47168"`) |
+| `options` | `BridgeServerClientOptions` | No       | Optional configuration object                                        |
 
 #### BridgeServerClientOptions
 
-| Option | Type | Description |
-|--------|------|-------------|
+| Option      | Type     | Description                                                                                              |
+| ----------- | -------- | -------------------------------------------------------------------------------------------------------- |
 | `authToken` | `string` | Authentication token to include in request headers (required if the server was started with `authToken`) |
-
 
 ### Methods
 
 All methods return a `Promise<{ result: T | null; error: string | null }>` where:
+
 - `result` contains the successful response data (or `null` if an error occurred)
 - `error` contains an error message (or `null` if the request succeeded)
 
@@ -263,16 +279,16 @@ browse(options?: BrowsingOptions): Promise<{ result: BrowseReturn | null; error:
 
 **BrowsingOptions:**
 
-| Option        | Type                          | Description |
-|---------------|-------------------------------|-------------|
-| `limit`       | `number`                      | Maximum number of entries to return |
-| `cursor`      | `string`                      | Cursor for pagination (from previous browse result) |
-| `prefix`      | `SerializedKvKey` (as string) | Filter entries by key prefix |
-| `start`       | `SerializedKvKey` (as string) | Start key for range query (inclusive) |
-| `end`         | `SerializedKvKey` (as string) | End key for range query (exclusive) |
-| `batchSize`   | `number`                      | The number of entries to fetch from the database at once |
-| `consistency` | `"strong"` or `"eventual"`    | The consistency level of the list operation |
-| `reverse`     | `boolean`                     | Whether to return the entries in reverse order |
+| Option        | Type                          | Description                                                                                 |
+| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------- |
+| `limit`       | `number`                      | Maximum number of entries to return                                                         |
+| `cursor`      | `string`                      | Cursor for pagination (from previous browse result)                                         |
+| `prefix`      | `SerializedKvKey` (as string) | Filter entries by key prefix                                                                |
+| `start`       | `SerializedKvKey` (as string) | Start key for range query (inclusive)                                                       |
+| `end`         | `SerializedKvKey` (as string) | End key for range query (exclusive)                                                         |
+| `batchSize`   | `number`                      | The number of entries to fetch from the database at once                                    |
+| `consistency` | `"strong"` or `"eventual"`    | The consistency level of the list operation                                                 |
+| `reverse`     | `boolean`                     | Whether to return the entries in reverse order                                              |
 | `xssSafe`     | `boolean`                     | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
 
 #### `get(key, options?)`
@@ -285,8 +301,8 @@ get(key: SerializedKvKey, options?: { xssSafe?: boolean }): Promise<{ result: Se
 
 **Options:**
 
-| Option | Type | Description |
-|--------|------|-------------|
+| Option    | Type      | Description                                                                                 |
+| --------- | --------- | ------------------------------------------------------------------------------------------- |
 | `xssSafe` | `boolean` | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
 
 #### `set(key, value, options?)`
@@ -299,9 +315,9 @@ set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Pr
 
 **SetKeyOptions:**
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `expires` | `number` | Expiration timestamp in milliseconds |
+| Option      | Type      | Description                                                                                                         |
+| ----------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| `expires`   | `number`  | Expiration timestamp in milliseconds                                                                                |
 | `overwrite` | `boolean` | Whether to overwrite the value of the key if it already exists. Defaults to `true` unless explicitly set to `false` |
 
 #### `delete(key)`
@@ -349,6 +365,7 @@ cancelWatcher(): Promise<void>
 #### SerializedKvKey
 
 A serialized Deno KV key is a json-compatible array where each value inside it can be:
+
 - `string`
 - `number`
 - `boolean`
@@ -359,12 +376,14 @@ A serialized Deno KV key is a json-compatible array where each value inside it c
 #### SerializedKvValue
 
 A serialized Deno KV value is always a json-compatible object with:
+
 - `type`: The data type (e.g., `"String"`, `"Number"`, `"Boolean"`, `"Object"`, `"Array"`, `"Date"`, etc.)
 - `data`: The actual value (string, number, boolean, or serialized string for complex types)
 
 #### SerializedKvEntry
 
 A serialized KV entry is an object contains:
+
 - `key`: `SerializedKvKey`
 - `value`: `SerializedKvValue`
 - `versionstamp`: `string` - The version stamp of the entry

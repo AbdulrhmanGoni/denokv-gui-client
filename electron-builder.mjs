@@ -1,22 +1,23 @@
-import pkg from './package.json' with { type: 'json' };
-import mapWorkspaces from '@npmcli/map-workspaces';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import os from 'node:os';
+import pkg from "./package.json" with { type: "json" };
+import mapWorkspaces from "@npmcli/map-workspaces";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+import os from "node:os";
 
 /** @type import('electron-builder').Configuration */
-const platformSpecificConfig = {}
+const platformSpecificConfig = {};
 
 switch (os.platform()) {
   case "linux":
     platformSpecificConfig.linux = {
-      target: ['deb', 'AppImage'],
+      target: ["AppImage"],
       icon: "buildResources",
-    }
+    };
     break;
 
   case "darwin":
-    if (os.arch() == "x64") {
+    const arch = os.arch();
+    if (arch == "x64") {
       platformSpecificConfig.mac = {
         identity: null,
         target: [
@@ -24,8 +25,8 @@ switch (os.platform()) {
           { target: "zip", arch: ["x64"] },
         ],
         icon: "buildResources/icon.icns",
-      }
-    } else if (os.arch() == "arm64") {
+      };
+    } else if (arch == "arm64") {
       // uses the default config for now
     }
     break;
@@ -35,9 +36,9 @@ switch (os.platform()) {
     if (process.env.OSSIGN_CONFIG || process.env.OSSIGN_CONFIG_BASE64) {
       platformSpecificConfig.win = {
         signtoolOptions: {
-          sign: './scripts/customSign.cjs',
-          signingHashAlgorithms: ['sha256'],
-        }
+          sign: "./scripts/customSign.cjs",
+          signingHashAlgorithms: ["sha256"],
+        },
       };
     }
     break;
@@ -46,30 +47,25 @@ switch (os.platform()) {
 export default /** @type import('electron-builder').Configuration */
   ({
     publish: {
-      provider: 'github',
-      owner: 'AbdulrhmanGoni',
-      repo: 'denokv-gui-client',
+      provider: "github",
+      owner: "AbdulrhmanGoni",
+      repo: "denokv-gui-client",
     },
     ...platformSpecificConfig,
     directories: {
-      output: 'dist',
-      buildResources: 'buildResources',
+      output: "dist",
+      buildResources: "buildResources",
     },
     asarUnpack: [
       "node_modules/@dbmate/**",
       "node_modules/@app/main/dist/migrations/**",
     ],
     generateUpdatesFilesForAllChannels: true,
-    artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
-    files: [
-      'LICENSE*',
-      pkg.main,
-      ...await getListOfFilesFromEachWorkspace(),
-    ],
+    artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
+    files: ["LICENSE*", pkg.main, ...(await getListOfFilesFromEachWorkspace())],
   });
 
 async function getListOfFilesFromEachWorkspace() {
-
   /**
    * @type {Map<string, string>}
    */
@@ -81,12 +77,14 @@ async function getListOfFilesFromEachWorkspace() {
   const allFilesToInclude = [];
 
   for (const [name, path] of workspaces) {
-    const pkgPath = join(path, 'package.json');
-    const { default: workspacePkg } = await import(pathToFileURL(pkgPath), { with: { type: 'json' } });
+    const pkgPath = join(path, "package.json");
+    const { default: workspacePkg } = await import(pathToFileURL(pkgPath), {
+      with: { type: "json" },
+    });
 
-    let patterns = workspacePkg.files || ['dist/**', 'package.json'];
+    let patterns = workspacePkg.files || ["dist/**", "package.json"];
 
-    patterns = patterns.map(p => join('node_modules', name, p));
+    patterns = patterns.map((p) => join("node_modules", name, p));
     allFilesToInclude.push(...patterns);
   }
 

@@ -1,4 +1,4 @@
-import { database } from '../db.js';
+import { database } from "../db.js";
 
 export const insertQuery = database.prepare(`
     INSERT INTO browsingParams(id, kvStoreId, paramsAsJson, isDefault, createdAt, updatedAt) 
@@ -15,19 +15,19 @@ export const updateQuery = database.prepare(`
 `);
 
 export const deleteOneQuery = database.prepare(
-    'DELETE FROM browsingParams WHERE id = ?'
+  "DELETE FROM browsingParams WHERE id = ?",
 );
 
 export const clearSavedParamsQuery = database.prepare(
-    'DELETE FROM browsingParams WHERE kvStoreId = ?'
+  "DELETE FROM browsingParams WHERE kvStoreId = ?",
 );
 
 export const getAllQuery = database.prepare(
-    'SELECT * FROM browsingParams WHERE kvStoreId = ? ORDER BY updatedAt DESC'
+  "SELECT * FROM browsingParams WHERE kvStoreId = ? ORDER BY updatedAt DESC",
 );
 
 export const getDefaultSavedBrowsingQuery = database.prepare(
-    'SELECT * FROM browsingParams WHERE kvStoreId = ? AND isDefault = 1'
+  "SELECT * FROM browsingParams WHERE kvStoreId = ? AND isDefault = 1",
 );
 
 export const unsetDefaultParamsQuery = database.prepare(`

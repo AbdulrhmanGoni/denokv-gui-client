@@ -1,19 +1,19 @@
 import type { Kv, KvKey, KvListOptions, KvListSelector } from "@deno/kv";
 import {
-    deserializeKvKey,
-    deserializeKvValue,
-    type SerializedKvValue
+  deserializeKvKey,
+  deserializeKvValue,
+  type SerializedKvValue,
 } from "../serialization/main.ts";
 import { toNumber } from "../helpers";
 import { isValidKvKey } from "../kv-utils.ts";
 
-const errorCause = { cause: "ValidationError" }
+const errorCause = { cause: "ValidationError" };
 
 type ValidBrowseRequestParams = {
-    listSelector: KvListSelector;
-    options?: KvListOptions;
-    xssSafe: boolean;
-}
+  listSelector: KvListSelector;
+  options?: KvListOptions;
+  xssSafe: boolean;
+};
 /**
  * Parse and validate query parameters of `/browse` endpoint.
  *
@@ -28,69 +28,81 @@ type ValidBrowseRequestParams = {
  * @param url URL containing the query parameters to validate
  * @returns An object containing the validated query parameters
  */
-export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams {
-    const limitOption = url.searchParams.get("limit");
-    const batchSizeOption = url.searchParams.get("batchSize");
-    const consistency = url.searchParams.get("consistency")?.toString() as KvListOptions["consistency"];
-    const reverseOption = url.searchParams.get("reverse");
-    const cursor = url.searchParams.get("cursor")?.toString();
-    const xssSafe = url.searchParams.get("xssSafe") === "false" ? false : true;
+export function validateBrowseRequestParams(
+  url: URL,
+): ValidBrowseRequestParams {
+  const limitOption = url.searchParams.get("limit");
+  const batchSizeOption = url.searchParams.get("batchSize");
+  const consistency = url.searchParams
+    .get("consistency")
+    ?.toString() as KvListOptions["consistency"];
+  const reverseOption = url.searchParams.get("reverse");
+  const cursor = url.searchParams.get("cursor")?.toString();
+  const xssSafe = url.searchParams.get("xssSafe") === "false" ? false : true;
 
-    const defaultLimit = 40;
-    const limit = limitOption ? toNumber(limitOption) : defaultLimit;
-    if (limitOption && (limit === undefined || limit <= 0)) {
-        throw new Error(`Invalid limit option: must be positive integer. Got: ${limitOption}`, errorCause);
-    }
+  const defaultLimit = 40;
+  const limit = limitOption ? toNumber(limitOption) : defaultLimit;
+  if (limitOption && (limit === undefined || limit <= 0)) {
+    throw new Error(
+      `Invalid limit option: must be positive integer. Got: ${limitOption}`,
+      errorCause,
+    );
+  }
 
-    const batchSize = batchSizeOption ? toNumber(batchSizeOption) : undefined;
-    if (batchSizeOption && (batchSize === undefined || batchSize <= 0)) {
-        throw new Error(`Invalid batchSize option: must be positive integer. Got: ${batchSizeOption}`, errorCause);
-    }
+  const batchSize = batchSizeOption ? toNumber(batchSizeOption) : undefined;
+  if (batchSizeOption && (batchSize === undefined || batchSize <= 0)) {
+    throw new Error(
+      `Invalid batchSize option: must be positive integer. Got: ${batchSizeOption}`,
+      errorCause,
+    );
+  }
 
-    const options: ValidBrowseRequestParams["options"] = {
-        cursor,
-        limit,
-        batchSize,
-        consistency,
-        reverse: reverseOption === "true",
-    };
+  const options: ValidBrowseRequestParams["options"] = {
+    cursor,
+    limit,
+    batchSize,
+    consistency,
+    reverse: reverseOption === "true",
+  };
 
-    const listSelector = {} as ValidBrowseRequestParams["listSelector"];
+  const listSelector = {} as ValidBrowseRequestParams["listSelector"];
 
-    const prefixOption = url.searchParams.get("prefix")
-    const prefix = prefixOption ? deserializeKvKey(prefixOption, { allowEmptyKey: true }) : undefined;
-    if (prefix) {
-        Object.assign(listSelector, { prefix })
-    }
+  const prefixOption = url.searchParams.get("prefix");
+  const prefix = prefixOption
+    ? deserializeKvKey(prefixOption, { allowEmptyKey: true })
+    : undefined;
+  if (prefix) {
+    Object.assign(listSelector, { prefix });
+  }
 
-    const startOption = url.searchParams.get("start")
-    const start = startOption ? deserializeKvKey(startOption) : undefined;
-    if (start) {
-        Object.assign(listSelector, { start })
-    }
+  const startOption = url.searchParams.get("start");
+  const start = startOption ? deserializeKvKey(startOption) : undefined;
+  if (start) {
+    Object.assign(listSelector, { start });
+  }
 
-    const endOption = url.searchParams.get("end")
-    const end = endOption ? deserializeKvKey(endOption) : undefined;
-    if (end) {
-        Object.assign(listSelector, { end })
-    }
+  const endOption = url.searchParams.get("end");
+  const end = endOption ? deserializeKvKey(endOption) : undefined;
+  if (end) {
+    Object.assign(listSelector, { end });
+  }
 
-    if (Object.keys(listSelector).length == 0) {
-        Object.assign(listSelector, { prefix: [] })
-    }
+  if (Object.keys(listSelector).length == 0) {
+    Object.assign(listSelector, { prefix: [] });
+  }
 
-    return {
-        listSelector,
-        options,
-        xssSafe,
-    };
+  return {
+    listSelector,
+    options,
+    xssSafe,
+  };
 }
 
 type ValidSetRequestParams = {
-    key: KvKey;
-    expires?: number;
-    overwrite?: boolean;
-}
+  key: KvKey;
+  expires?: number;
+  overwrite?: boolean;
+};
 /**
  * Parse and validate query parameters of `/set` endpoint which are:
  *
@@ -104,93 +116,102 @@ type ValidSetRequestParams = {
  * @returns An object containing the validated key and optional expiration
  */
 export function validateSetRequestParams(url: URL): ValidSetRequestParams {
-    const targetKey = url.searchParams.get("key")
-    const key = targetKey ? deserializeKvKey(targetKey) : undefined;
+  const targetKey = url.searchParams.get("key");
+  const key = targetKey ? deserializeKvKey(targetKey) : undefined;
 
-    if (!key) {
-        throw new Error("No target key to set.", errorCause);
-    }
+  if (!key) {
+    throw new Error("No target key to set.", errorCause);
+  }
 
-    const expiresOption = url.searchParams.get("expires");
+  const expiresOption = url.searchParams.get("expires");
 
-    const expires = expiresOption ? Number(expiresOption) : undefined;
-    if (expiresOption && isNaN(expires!)) {
-        throw new Error(
-            `Invalid expiration time option: It must be a number in milliseconds. Got: ${expiresOption}`,
-            errorCause
-        );
-    }
+  const expires = expiresOption ? Number(expiresOption) : undefined;
+  if (expiresOption && isNaN(expires!)) {
+    throw new Error(
+      `Invalid expiration time option: It must be a number in milliseconds. Got: ${expiresOption}`,
+      errorCause,
+    );
+  }
 
-    const overwriteOption = url.searchParams.get("overwrite");
-    const overwrite = overwriteOption ? overwriteOption !== "false" : undefined;
+  const overwriteOption = url.searchParams.get("overwrite");
+  const overwrite = overwriteOption ? overwriteOption !== "false" : undefined;
 
-    return { key, expires, overwrite };
+  return { key, expires, overwrite };
 }
 
 export type EnqueueRequestInput = {
-    value: unknown,
-    options?: {
-        backoffSchedule?: number[],
-        delay?: number,
-        keysIfUndelivered?: string,
-    }
-}
+  value: unknown;
+  options?: {
+    backoffSchedule?: number[];
+    delay?: number;
+    keysIfUndelivered?: string;
+  };
+};
 
 type ValidEnqueueRequestBody = {
-    value: unknown,
-    options?: {
-        backoffSchedule?: number[],
-        delay?: number,
-        keysIfUndelivered?: KvKey[],
-    }
-}
+  value: unknown;
+  options?: {
+    backoffSchedule?: number[];
+    delay?: number;
+    keysIfUndelivered?: KvKey[];
+  };
+};
 
-function validateEnqueueOptions(options: unknown): ValidEnqueueRequestBody["options"] | undefined {
-    if (!options) return;
+function validateEnqueueOptions(
+  options: unknown,
+): ValidEnqueueRequestBody["options"] | undefined {
+  if (!options) return;
 
-    if (!(options instanceof Object)) {
-        throw new Error("'options' of 'enqueue' operation should be an object when set");
-    }
+  if (!(options instanceof Object)) {
+    throw new Error(
+      "'options' of 'enqueue' operation should be an object when set",
+    );
+  }
 
-    const ops: ValidEnqueueRequestBody["options"] = {}
+  const ops: ValidEnqueueRequestBody["options"] = {};
 
-    if ("backoffSchedule" in options) {
-        if (!(options.backoffSchedule instanceof Array)) {
-            throw new Error("'backoffSchedule' option of 'enqueue' operation should be an array of numbers");
-        }
-
-        ops.backoffSchedule = options.backoffSchedule
-    }
-
-    if ("delay" in options) {
-        if (typeof options.delay != "number") {
-            throw new Error("'delay' option of 'enqueue' operation should be a number");
-        }
-
-        ops.delay = options.delay
+  if ("backoffSchedule" in options) {
+    if (!(options.backoffSchedule instanceof Array)) {
+      throw new Error(
+        "'backoffSchedule' option of 'enqueue' operation should be an array of numbers",
+      );
     }
 
-    if ("keysIfUndelivered" in options) {
-        let parsedKeysIfUndeliveredOption = null
-        try { parsedKeysIfUndeliveredOption = eval(String(options.keysIfUndelivered)) }
-        catch { }
+    ops.backoffSchedule = options.backoffSchedule;
+  }
 
-        if (!(parsedKeysIfUndeliveredOption instanceof Array)) {
-            throw new Error(
-                "'keysIfUndelivered' option of 'enqueue' operation should be an array of valid Kv Keys in the serialized form as string"
-            );
-        }
-
-        if (parsedKeysIfUndeliveredOption.every(isValidKvKey)) {
-            ops.keysIfUndelivered = parsedKeysIfUndeliveredOption
-        } else {
-            throw new Error(
-                "'keysIfUndelivered' option of 'enqueue' operation contains at least one invalid Kv Key"
-            );
-        }
+  if ("delay" in options) {
+    if (typeof options.delay != "number") {
+      throw new Error(
+        "'delay' option of 'enqueue' operation should be a number",
+      );
     }
 
-    return ops
+    ops.delay = options.delay;
+  }
+
+  if ("keysIfUndelivered" in options) {
+    let parsedKeysIfUndeliveredOption = null;
+    try {
+      parsedKeysIfUndeliveredOption = eval(String(options.keysIfUndelivered));
+    } catch {}
+
+    if (!(parsedKeysIfUndeliveredOption instanceof Array)) {
+      throw new Error(
+        "'keysIfUndelivered' option of 'enqueue' operation should be an array of valid Kv Keys in the serialized form as string",
+      );
+    }
+
+    if (parsedKeysIfUndeliveredOption.every(isValidKvKey)) {
+      ops.keysIfUndelivered = parsedKeysIfUndeliveredOption;
+    } else {
+      throw new Error(
+        "'keysIfUndelivered' option of 'enqueue' operation contains at least one invalid Kv Key",
+      );
+    }
+  }
+
+  return ops;
 }
 
 /**
@@ -208,122 +229,154 @@ function validateEnqueueOptions(options: unknown): ValidEnqueueRequestBody["opti
  * @param kv The Deno KV instance
  * @returns An object containing the validated value and optional options
  */
-export async function validateEnqueueRequest(body: unknown, kv: Deno.Kv | Kv): Promise<ValidEnqueueRequestBody> {
-    if (!(body instanceof Object)) {
-        throw new Error("Invalid enqueue request body", errorCause);
-    }
+export async function validateEnqueueRequest(
+  body: unknown,
+  kv: Deno.Kv | Kv,
+): Promise<ValidEnqueueRequestBody> {
+  if (!(body instanceof Object)) {
+    throw new Error("Invalid enqueue request body", errorCause);
+  }
 
-    if (!("value" in body)) {
-        throw new Error("Invalid enqueue request body: must have a value", errorCause);
-    }
+  if (!("value" in body)) {
+    throw new Error(
+      "Invalid enqueue request body: must have a value",
+      errorCause,
+    );
+  }
 
-    return {
-        value: await deserializeKvValue(body.value, kv),
-        options: "options" in body ? validateEnqueueOptions(body.options) : undefined,
-    }
+  return {
+    value: await deserializeKvValue(body.value, kv),
+    options:
+      "options" in body ? validateEnqueueOptions(body.options) : undefined,
+  };
 }
 
 export type AtomicOperationInput =
-    { name: "check", key: string, versionstamp: string | null } |
-    { name: "set", key: string, value: SerializedKvValue, expiresIn?: number } |
-    { name: "sum", key: string, value: number } |
-    { name: "min", key: string, value: number } |
-    { name: "max", key: string, value: number } |
-    { name: "delete", key: string } |
-    { name: "enqueue" } & EnqueueRequestInput
+  | { name: "check"; key: string; versionstamp: string | null }
+  | { name: "set"; key: string; value: SerializedKvValue; expiresIn?: number }
+  | { name: "sum"; key: string; value: number }
+  | { name: "min"; key: string; value: number }
+  | { name: "max"; key: string; value: number }
+  | { name: "delete"; key: string }
+  | ({ name: "enqueue" } & EnqueueRequestInput);
 
 export type ValidAtomicOperation =
-    { name: "check", key: KvKey, versionstamp: string | null } |
-    { name: "set", key: KvKey, value: unknown, expiresIn?: number } |
-    { name: "sum", key: KvKey, value: bigint } |
-    { name: "min", key: KvKey, value: bigint } |
-    { name: "max", key: KvKey, value: bigint } |
-    { name: "delete", key: KvKey } |
-    { name: "enqueue" } & ValidEnqueueRequestBody
+  | { name: "check"; key: KvKey; versionstamp: string | null }
+  | { name: "set"; key: KvKey; value: unknown; expiresIn?: number }
+  | { name: "sum"; key: KvKey; value: bigint }
+  | { name: "min"; key: KvKey; value: bigint }
+  | { name: "max"; key: KvKey; value: bigint }
+  | { name: "delete"; key: KvKey }
+  | ({ name: "enqueue" } & ValidEnqueueRequestBody);
 
-function validateAtomicOperationKey(operation: Extract<Partial<AtomicOperationInput>, { key?: string }>): KvKey {
-    if (!operation.key) {
-        throw InvalidAOError(`'${operation.name}' operation must have a key`);
-    }
+function validateAtomicOperationKey(
+  operation: Extract<Partial<AtomicOperationInput>, { key?: string }>,
+): KvKey {
+  if (!operation.key) {
+    throw InvalidAOError(`'${operation.name}' operation must have a key`);
+  }
 
-    const key = eval(`(${operation.key})`)
-    if (!isValidKvKey(key)) {
-        throw InvalidAOError(`the key passed to the '${operation.name}' operation is invalid Deno Kv key`);
-    }
-    return key
+  const key = eval(`(${operation.key})`);
+  if (!isValidKvKey(key)) {
+    throw InvalidAOError(
+      `the key passed to the '${operation.name}' operation is invalid Deno Kv key`,
+    );
+  }
+  return key;
 }
 
-function validateAtomicOperationNumberValue(operation: Extract<Partial<AtomicOperationInput>, { value?: number }>): number {
-    if (typeof operation.value !== "number") {
-        throw InvalidAOError(`'${operation.name}' operation must have an integer value`);
-    }
+function validateAtomicOperationNumberValue(
+  operation: Extract<Partial<AtomicOperationInput>, { value?: number }>,
+): number {
+  if (typeof operation.value !== "number") {
+    throw InvalidAOError(
+      `'${operation.name}' operation must have an integer value`,
+    );
+  }
 
-    if (!Number.isInteger(operation.value)) {
-        throw InvalidAOError(`the value passed to the '${operation.name}' operation is not an integer`);
-    }
+  if (!Number.isInteger(operation.value)) {
+    throw InvalidAOError(
+      `the value passed to the '${operation.name}' operation is not an integer`,
+    );
+  }
 
-    return operation.value
+  return operation.value;
 }
 
-async function validateAtomicOperation(op: unknown, kv: Deno.Kv | Kv): Promise<ValidAtomicOperation> {
-    if (!(op instanceof Object)) {
-        throw InvalidAOError("Must be `ValidAtomicOperation` object");
+async function validateAtomicOperation(
+  op: unknown,
+  kv: Deno.Kv | Kv,
+): Promise<ValidAtomicOperation> {
+  if (!(op instanceof Object)) {
+    throw InvalidAOError("Must be `ValidAtomicOperation` object");
+  }
+
+  if (!("name" in op)) {
+    throw InvalidAOError("no atomic operation name provided");
+  }
+
+  const operation = op as Partial<AtomicOperationInput>;
+
+  if (
+    operation.name == "sum" ||
+    operation.name == "min" ||
+    operation.name == "max"
+  ) {
+    return {
+      name: operation.name,
+      key: validateAtomicOperationKey(operation),
+      value: BigInt(validateAtomicOperationNumberValue(operation)),
+    };
+  }
+
+  switch (operation.name) {
+    case "check": {
+      if (
+        operation.versionstamp !== null &&
+        (typeof operation.versionstamp !== "string" ||
+          operation.versionstamp === "")
+      ) {
+        throw InvalidAOError(
+          "versionstamp of 'check' operation must be either null or a non-empty string",
+        );
+      }
+
+      return {
+        name: operation.name,
+        key: validateAtomicOperationKey(operation),
+        versionstamp: operation.versionstamp,
+      };
     }
 
-    if (!("name" in op)) {
-        throw InvalidAOError("no atomic operation name provided");
+    case "set": {
+      return {
+        name: operation.name,
+        key: validateAtomicOperationKey(operation),
+        value: await deserializeKvValue(operation.value, kv),
+        expiresIn: operation.expiresIn,
+      };
     }
 
-    const operation = op as Partial<AtomicOperationInput>
-
-    if (operation.name == "sum" || operation.name == "min" || operation.name == "max") {
-        return {
-            name: operation.name,
-            key: validateAtomicOperationKey(operation),
-            value: BigInt(validateAtomicOperationNumberValue(operation))
-        }
+    case "delete": {
+      return {
+        name: operation.name,
+        key: validateAtomicOperationKey(operation),
+      };
     }
 
-    switch (operation.name) {
-        case "check": {
-            if (operation.versionstamp !== null && (typeof operation.versionstamp !== "string" || operation.versionstamp === "")) {
-                throw InvalidAOError("versionstamp of 'check' operation must be either null or a non-empty string");
-            }
-
-            return {
-                name: operation.name,
-                key: validateAtomicOperationKey(operation),
-                versionstamp: operation.versionstamp,
-            };
-        }
-
-        case "set": {
-            return {
-                name: operation.name,
-                key: validateAtomicOperationKey(operation),
-                value: await deserializeKvValue(operation.value, kv),
-                expiresIn: operation.expiresIn,
-            };
-        }
-
-        case "delete": {
-            return {
-                name: operation.name,
-                key: validateAtomicOperationKey(operation),
-            }
-        }
-
-        case "enqueue": {
-            return {
-                name: operation.name,
-                value: await deserializeKvValue(operation.value, kv),
-                options: validateEnqueueOptions(operation.options),
-            }
-        }
-
-        default:
-            throw InvalidAOError(`Unknown or unsupported atomic operation: "${operation.name}"`);
+    case "enqueue": {
+      return {
+        name: operation.name,
+        value: await deserializeKvValue(operation.value, kv),
+        options: validateEnqueueOptions(operation.options),
+      };
     }
+
+    default:
+      throw InvalidAOError(
+        `Unknown or unsupported atomic operation: "${operation.name}"`,
+      );
+  }
 }
 
 /**
@@ -337,20 +390,23 @@ async function validateAtomicOperation(op: unknown, kv: Deno.Kv | Kv): Promise<V
  * @returns A promise that resolves to an array of parsed and validated deno kv atomic operations in `ValidAtomicOperation` type
  * @throws {Error} If the operations list is not a non-empty array or if any operation is invalid
  */
-export async function validateAtomicOperations(operations: unknown, kv: Deno.Kv | Kv): Promise<ValidAtomicOperation[]> {
-    if (!(operations instanceof Array) || !operations.length) {
-        throw InvalidAOError(
-            "Must be an array of at least one valid `ValidAtomicOperation` object representing a Deno Kv atomic operation"
-        );
-    }
+export async function validateAtomicOperations(
+  operations: unknown,
+  kv: Deno.Kv | Kv,
+): Promise<ValidAtomicOperation[]> {
+  if (!(operations instanceof Array) || !operations.length) {
+    throw InvalidAOError(
+      "Must be an array of at least one valid `ValidAtomicOperation` object representing a Deno Kv atomic operation",
+    );
+  }
 
-    const parsedOperations = new Array(operations.length)
-    for (let i = 0; i < operations.length; i++) {
-        parsedOperations[i] = await validateAtomicOperation(operations[i], kv)
-    }
-    return parsedOperations
+  const parsedOperations = new Array(operations.length);
+  for (let i = 0; i < operations.length; i++) {
+    parsedOperations[i] = await validateAtomicOperation(operations[i], kv);
+  }
+  return parsedOperations;
 }
 
 function InvalidAOError(message: string) {
-    return new Error(`Invalid atomic operation: ${message}`);
+  return new Error(`Invalid atomic operation: ${message}`);
 }

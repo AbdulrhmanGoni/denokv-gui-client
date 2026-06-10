@@ -4,8 +4,8 @@ export type AppInitConfig = {
   };
 
   renderer:
-  | {
-    path: string;
-  }
-  | URL;
+    | {
+        path: string;
+      }
+    | URL;
 };

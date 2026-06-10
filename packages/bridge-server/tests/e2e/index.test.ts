@@ -25,11 +25,11 @@ for (const element of fakeData) {
   await kv.set(element.key, element.value);
 }
 
-const authToken = randomBytes(30).toString("base64")
+const authToken = randomBytes(30).toString("base64");
 
 const server = openBridgeServerInNode(kv, { port: 7963, authToken });
 
-const addressInfo = server.address() as AddressInfo
+const addressInfo = server.address() as AddressInfo;
 const bridgeServerUrl = `http://localhost:${addressInfo.port}`;
 
 const testsDependencies = {
