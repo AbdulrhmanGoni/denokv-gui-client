@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build --base ./",
     "preview": "vite preview",
-    "typecheck": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+    "typecheck": "svelte-check --threshold error --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
     "@internationalized/date": "^3.12.2",
