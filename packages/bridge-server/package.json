@@ -40,7 +40,7 @@
         "vitest": "4.1.7"
     },
     "dependencies": {
-        "@deno/kv": "0.13.0",
+        "@deno/kv": "0.14.0",
         "@hono/node-server": "2.0.4",
         "hono": "4.12.23",
         "serialize-javascript": "7.0.5"
