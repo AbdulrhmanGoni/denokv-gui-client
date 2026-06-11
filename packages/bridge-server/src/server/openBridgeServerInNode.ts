@@ -1,6 +1,6 @@
 import type { Kv } from "@deno/kv";
 import { createBridgeApp } from "./createBridgeApp.ts";
-import { serve, type ServerType } from '@hono/node-server';
+import { serve, type ServerType } from "@hono/node-server";
 import type { OpenBridgeServerOptions } from "./types.ts";
 import process from "node:process";
 
@@ -10,9 +10,9 @@ import process from "node:process";
  * @param kv An instance created by `openKv()` from `@deno/kv`.
  * @param options Optional configuration options
  * @param options.port Server port. Defaults to `47168`
- * @param options.authToken Authentication token to protect the server, if not set, the server will be publicly accessable. 
+ * @param options.authToken Authentication token to protect the server, if not set, the server will be publicly accessable.
  * Defaults to `DENOKV_BRIDGE_SERVER_AUTH_TOKEN` environment variable.
- * 
+ *
  * @returns An instance of `ServerType` from `@hono/node-server`
  *
  * @example
@@ -31,8 +31,12 @@ import process from "node:process";
  * // now the bridge server can only be accessed with "my-secret-token" authentication token passed as "Authorization" header
  * ```
  */
-export function openBridgeServerInNode(kv: Kv, options?: OpenBridgeServerOptions): ServerType {
-    const authToken = options?.authToken ?? process.env.DENOKV_BRIDGE_SERVER_AUTH_TOKEN
-    const app = createBridgeApp(kv, { authToken })
-    return serve({ fetch: app.fetch, port: options?.port ?? 47168 })
+export function openBridgeServerInNode(
+  kv: Kv,
+  options?: OpenBridgeServerOptions,
+): ServerType {
+  const authToken =
+    options?.authToken ?? process.env.DENOKV_BRIDGE_SERVER_AUTH_TOKEN;
+  const app = createBridgeApp(kv, { authToken });
+  return serve({ fetch: app.fetch, port: options?.port ?? 47168 });
 }

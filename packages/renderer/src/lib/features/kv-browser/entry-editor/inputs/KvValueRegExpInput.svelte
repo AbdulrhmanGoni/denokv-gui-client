@@ -1,77 +1,71 @@
 <script lang="ts">
-    import { CodeJar } from "codejar";
-    import { onMount } from "svelte";
-    import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
-    import { dataTypes } from "../../utils/dataTypes";
+  import { CodeJar } from "codejar";
+  import { onMount } from "svelte";
+  import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
+  import { dataTypes } from "../../utils/dataTypes";
 
-    type ValueEditorProps = {
-        value: string;
-    };
-    let { value = $bindable() }: ValueEditorProps = $props();
+  type ValueEditorProps = {
+    value: string;
+  };
+  let { value = $bindable() }: ValueEditorProps = $props();
 
-    let regexpJar: CodeJar | null = $state(null);
-    let flagsJar: CodeJar | null = $state(null);
+  let regexpJar: CodeJar | null = $state(null);
+  let flagsJar: CodeJar | null = $state(null);
 
-    let currentRegExp: { source: string; flags: string } = $state(
-        JSON.parse(value),
-    );
+  let currentRegExp: { source: string; flags: string } = $state(
+    JSON.parse(value),
+  );
 
-    onMount(() => {
-        regexpJar = CodeJar(
-            document.querySelector("#regexp-editorId")!,
-            () => {},
-        );
+  onMount(() => {
+    regexpJar = CodeJar(document.querySelector("#regexp-editorId")!, () => {});
 
-        flagsJar = CodeJar(
-            document.querySelector("#flags-editorId")!,
-            () => {},
-        );
+    flagsJar = CodeJar(document.querySelector("#flags-editorId")!, () => {});
 
-        regexpJar?.updateCode(currentRegExp.source);
-        flagsJar?.updateCode(currentRegExp.flags);
+    regexpJar?.updateCode(currentRegExp.source);
+    flagsJar?.updateCode(currentRegExp.flags);
 
-        regexpJar?.onUpdate((source) => (currentRegExp.source = source));
-        flagsJar?.onUpdate((flags) => (currentRegExp.flags = flags));
-    });
+    regexpJar?.onUpdate((source) => (currentRegExp.source = source));
+    flagsJar?.onUpdate((flags) => (currentRegExp.flags = flags));
+  });
 
-    $effect(() => {
-        value = JSON.stringify(currentRegExp);
-    });
+  $effect(() => {
+    value = JSON.stringify(currentRegExp);
+  });
 
-    $effect(() => {
-        const current = JSON.parse(value);
-        if (current.source === "" && current.flags === "") {
-            const starterRegExp = JSON.parse(
-                dataTypes.find((dt) => "RegExp" == dt.type)!.starter,
-            );
-            regexpJar?.updateCode(starterRegExp.source);
-            flagsJar?.updateCode(starterRegExp.flags);
-        }
-    });
+  $effect(() => {
+    const current = JSON.parse(value);
+    if (current.source === "" && current.flags === "") {
+      const starterRegExp = JSON.parse(
+        dataTypes.find((dt) => "RegExp" == dt.type)!.starter,
+      );
+      regexpJar?.updateCode(starterRegExp.source);
+      flagsJar?.updateCode(starterRegExp.flags);
+    }
+  });
 </script>
 
 <div
-    class="bg-card p-3 overflow-auto font-semibold rounded-md flex items-center"
+  class="bg-card p-3 overflow-auto font-semibold rounded-md flex items-center"
 >
-    <span class={`${dataTypesColors.blue} me-1`}>new</span>
-    <span class="dark:text-[#06a606] text-[#038703]">RegExp</span>
-    <span class="text-foreground">(</span>
-    {@render stringQuote()}
-    <span
-        class={`${dataTypesColors.regexp} bg-muted px-1 rounded-sm min-w-5`}
-        id="regexp-editorId"
-    ></span>
-    {@render stringQuote()}
-    <span class="text-foreground">, </span>
-    {@render stringQuote()}
-    <span
-        class={`${dataTypesColors.blue} bg-muted px-1 rounded-sm min-w-3`}
-        id="flags-editorId"
-    ></span>
-    {@render stringQuote()}
-    <span class="text-foreground">)</span>
+  <span class={`${dataTypesColors.blue} me-1`}>new</span>
+  <span class="dark:text-[#06a606] text-[#038703]">RegExp</span>
+  <span class="text-foreground">(</span>
+  {@render stringQuote()}
+  <span
+    class={`${dataTypesColors.regexp} bg-muted px-1 rounded-sm min-w-5`}
+    id="regexp-editorId"
+  ></span>
+  {@render stringQuote()}
+  <span class="text-foreground">, </span>
+  {@render stringQuote()}
+  <span
+    class={`${dataTypesColors.blue} bg-muted px-1 rounded-sm min-w-3`}
+    id="flags-editorId"
+  ></span>
+  {@render stringQuote()}
+  <span class="text-foreground">)</span>
 </div>
 
 {#snippet stringQuote()}
-    <span class={dataTypesColors.string}>"</span>
+  <span class={dataTypesColors.string}>"</span>
 {/snippet}

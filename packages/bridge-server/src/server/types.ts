@@ -1,4 +1,4 @@
 export type OpenBridgeServerOptions = {
-    port?: number;
-    authToken?: string
-}
+  port?: number;
+  authToken?: string;
+};

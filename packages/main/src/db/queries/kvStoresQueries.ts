@@ -1,4 +1,4 @@
-import { database } from '../db.js';
+import { database } from "../db.js";
 
 export const insertQuery = database.prepare(`
     INSERT INTO kvStores(id, name, url, type, accessToken, authToken, createdAt, updatedAt) 
@@ -17,13 +17,13 @@ export const updateQuery = database.prepare(`
 `);
 
 export const deleteOneQuery = database.prepare(
-    'DELETE FROM kvStores WHERE id = ?'
+  "DELETE FROM kvStores WHERE id = ?",
 );
 
 export const getAllQuery = database.prepare(
-    'SELECT * FROM kvStores ORDER BY updatedAt DESC'
+  "SELECT * FROM kvStores ORDER BY updatedAt DESC",
 );
 
 export const getOneQuery = database.prepare(
-    'SELECT * FROM kvStores WHERE id = ?'
+  "SELECT * FROM kvStores WHERE id = ?",
 );

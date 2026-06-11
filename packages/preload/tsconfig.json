@@ -9,13 +9,9 @@
     "strict": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "paths": {
-      "@app/*": [
-        "../*"
-      ]
+      "@app/*": ["../*"]
     }
   },
   "include": [
@@ -24,8 +20,5 @@
     "../main/types.d.ts",
     "types.d.ts"
   ],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }

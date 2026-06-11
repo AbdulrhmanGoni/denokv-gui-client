@@ -1,4 +1,4 @@
-import { database } from '../db.js';
+import { database } from "../db.js";
 
 export const insertLastFetchedUpdateQuery = database.prepare(`
     INSERT INTO lastFetchedUpdate(lastUpdateId, updateInfoAsJson)
@@ -11,13 +11,13 @@ export const updateLastFetchedUpdateQuery = database.prepare(`
 `);
 
 export const getLastFetchedUpdateQuery = database.prepare(
-    "SELECT updateInfoAsJson, doNotNotify FROM lastFetchedUpdate WHERE lastUpdateId = 'last-update'"
+  "SELECT updateInfoAsJson, doNotNotify FROM lastFetchedUpdate WHERE lastUpdateId = 'last-update'",
 );
 
 export const deleteLastFetchedUpdateQuery = database.prepare(
-    "DELETE FROM lastFetchedUpdate WHERE lastUpdateId = 'last-update'"
+  "DELETE FROM lastFetchedUpdate WHERE lastUpdateId = 'last-update'",
 );
 
 export const updateDoNotNotifyQuery = database.prepare(
-    "UPDATE lastFetchedUpdate SET doNotNotify = ? WHERE lastUpdateId = 'last-update'"
+  "UPDATE lastFetchedUpdate SET doNotNotify = ? WHERE lastUpdateId = 'last-update'",
 );

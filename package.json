@@ -29,6 +29,8 @@
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations -s packages/main/src/db/schema.sql",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "screenshots": "node scripts/takeScreenshots.ts"
   },
   "devDependencies": {
@@ -41,6 +43,8 @@
     "electron-builder": "26.10.0",
     "glob": "11.1.0",
     "playwright": "^1.55.0",
+    "prettier": "^3.8.3",
+    "prettier-plugin-svelte": "^4.1.0",
     "sharp": "^0.34.5"
   },
   "dependencies": {

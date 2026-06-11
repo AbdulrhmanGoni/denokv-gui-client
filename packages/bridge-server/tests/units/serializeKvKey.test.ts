@@ -10,13 +10,19 @@ describe("Test serializeKvKey function", () => {
 
   it("should serialize a key with BigInt", () => {
     const key = ["transactions", 12345678901234567890n];
-    const expected = ["transactions", { type: "BigInt", value: "12345678901234567890" }];
+    const expected = [
+      "transactions",
+      { type: "BigInt", value: "12345678901234567890" },
+    ];
     expect(serializeKvKey(key)).toEqual(expected);
   });
 
   it("should serialize a key with Uint8Array", () => {
     const key = ["blobs", new Uint8Array([1, 2, 3])];
-    const expected = ["blobs", { type: "Uint8Array", value: "new Uint8Array([1,2,3])" }];
+    const expected = [
+      "blobs",
+      { type: "Uint8Array", value: "new Uint8Array([1,2,3])" },
+    ];
     expect(serializeKvKey(key)).toEqual(expected);
   });
 
@@ -26,13 +32,21 @@ describe("Test serializeKvKey function", () => {
       "special",
       { type: "Number", value: "NaN" },
       { type: "Number", value: "Infinity" },
-      { type: "Number", value: "-Infinity" }
+      { type: "Number", value: "-Infinity" },
     ];
     expect(serializeKvKey(key)).toEqual(expected);
   });
 
   it("should serialize a key with all expected values", () => {
-    const key = ["users", 123n, new Uint8Array([4, 5, 6]), Infinity, NaN, false, 555];
+    const key = [
+      "users",
+      123n,
+      new Uint8Array([4, 5, 6]),
+      Infinity,
+      NaN,
+      false,
+      555,
+    ];
     const expected = [
       "users",
       { type: "BigInt", value: "123" },
@@ -46,7 +60,8 @@ describe("Test serializeKvKey function", () => {
   });
 
   it("should throw an error for unexpected key parts", () => {
-    const errorMessage = "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array"
+    const errorMessage =
+      "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array";
     // @ts-expect-error - Testing invalid key part
     expect(() => serializeKvKey([{ some: "object" }])).toThrow(errorMessage);
 

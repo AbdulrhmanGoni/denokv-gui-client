@@ -3,121 +3,128 @@ import { bridgeServer, kvStoresService } from "@app/preload";
 import { toast } from "svelte-sonner";
 
 type StoresState = {
-    kvStores: KvStore[];
-    kvStoreTypeCounts: Record<KvStore["type"], number>;
-    loaded: boolean;
-    error: string;
-    openedStore: KvStore | null;
-    openedStoreToEdit: KvStore | null;
-    openAddNewStoreForm: boolean;
-    renameDefaultKvStore: KvStore | null;
-    selectedTypes: KvStore["type"][];
-}
+  kvStores: KvStore[];
+  kvStoreTypeCounts: Record<KvStore["type"], number>;
+  loaded: boolean;
+  error: string;
+  openedStore: KvStore | null;
+  openedStoreToEdit: KvStore | null;
+  openAddNewStoreForm: boolean;
+  renameDefaultKvStore: KvStore | null;
+  selectedTypes: KvStore["type"][];
+};
 
 export let kvStoresState: StoresState = $state({
-    kvStores: [],
-    kvStoreTypeCounts: {
-        remote: 0,
-        local: 0,
-        default: 0,
-        bridge: 0,
-    },
-    loaded: false,
-    error: "",
-    openedStore: null,
-    openedStoreToEdit: null,
-    openAddNewStoreForm: false,
-    renameDefaultKvStore: null,
-    selectedTypes: [],
+  kvStores: [],
+  kvStoreTypeCounts: {
+    remote: 0,
+    local: 0,
+    default: 0,
+    bridge: 0,
+  },
+  loaded: false,
+  error: "",
+  openedStore: null,
+  openedStoreToEdit: null,
+  openAddNewStoreForm: false,
+  renameDefaultKvStore: null,
+  selectedTypes: [],
 });
 
 function calculateKvStoreTypeCounts() {
-    kvStoresState.kvStoreTypeCounts = kvStoresState.kvStores.reduce(
-        (counts, kvStore) => {
-            counts[kvStore.type] += 1;
-            return counts;
-        },
-        {
-            remote: 0,
-            local: 0,
-            default: 0,
-            bridge: 0,
-        } satisfies Record<KvStore["type"], number>,
-    );
+  kvStoresState.kvStoreTypeCounts = kvStoresState.kvStores.reduce(
+    (counts, kvStore) => {
+      counts[kvStore.type] += 1;
+      return counts;
+    },
+    {
+      remote: 0,
+      local: 0,
+      default: 0,
+      bridge: 0,
+    } satisfies Record<KvStore["type"], number>,
+  );
 }
 
 export async function loadKvStores() {
-    try {
-        kvStoresState.kvStores = await kvStoresService.getAll()
-        calculateKvStoreTypeCounts()
-        kvStoresState.loaded = true
-        kvStoresState.error = ""
-    } catch (error) {
-        kvStoresState.error = String(error)
-        kvStoresState.loaded = false
-    }
+  try {
+    kvStoresState.kvStores = await kvStoresService.getAll();
+    calculateKvStoreTypeCounts();
+    kvStoresState.loaded = true;
+    kvStoresState.error = "";
+  } catch (error) {
+    kvStoresState.error = String(error);
+    kvStoresState.loaded = false;
+  }
 }
 
 export async function openKvStore(kvStore: KvStore) {
-    globalState.loadingOverlay.open = true
-    globalState.loadingOverlay.text = "Testing Kv Database Connection..."
-    const testSucceed = await kvStoresService.testKvStoreConnection($state.snapshot(kvStore));
-    globalState.loadingOverlay.open = false
-    globalState.loadingOverlay.text = ""
+  globalState.loadingOverlay.open = true;
+  globalState.loadingOverlay.text = "Testing Kv Database Connection...";
+  const testSucceed = await kvStoresService.testKvStoreConnection(
+    $state.snapshot(kvStore),
+  );
+  globalState.loadingOverlay.open = false;
+  globalState.loadingOverlay.text = "";
 
-    if (testSucceed) {
-        const isStarted = await startKvStoreServer(kvStore)
-        if (isStarted) {
-            kvStoresState.openedStore = kvStore;
-        }
-        return isStarted
+  if (testSucceed) {
+    const isStarted = await startKvStoreServer(kvStore);
+    if (isStarted) {
+      kvStoresState.openedStore = kvStore;
     }
+    return isStarted;
+  }
 
-    toast.error("Connection Failed", {
-        description: testKvStoreConnectionErrorMessages[kvStore.type],
-    })
-    return false
+  toast.error("Connection Failed", {
+    description: testKvStoreConnectionErrorMessages[kvStore.type],
+  });
+  return false;
 }
 
 export async function closeKvStore() {
-    kvStoresState.openedStore = null;
-    await bridgeServer.closeServer();
+  kvStoresState.openedStore = null;
+  await bridgeServer.closeServer();
 }
 
 export function removeKvStore(kvStore: KvStore) {
-    const filteredKvStores = kvStoresState.kvStores.filter((c) => c.id != kvStore.id)
-    if (kvStoresState.kvStores.length === filteredKvStores.length) return
-    kvStoresState.kvStores = filteredKvStores
-    kvStoresState.kvStoreTypeCounts[kvStore.type] -= 1
+  const filteredKvStores = kvStoresState.kvStores.filter(
+    (c) => c.id != kvStore.id,
+  );
+  if (kvStoresState.kvStores.length === filteredKvStores.length) return;
+  kvStoresState.kvStores = filteredKvStores;
+  kvStoresState.kvStoreTypeCounts[kvStore.type] -= 1;
 }
 
 async function startKvStoreServer(kvStore: KvStore) {
-    let isOpened = false;
-    let error = "";
+  let isOpened = false;
+  let error = "";
 
-    try {
-        globalState.loadingOverlay.open = true
-        globalState.loadingOverlay.text = "Starting the Kv bridge server..."
-        isOpened = await bridgeServer.openServer($state.snapshot(kvStore));
-    } catch (e) {
-        error = String(e)
-    } finally {
-        globalState.loadingOverlay.open = false
-        globalState.loadingOverlay.text = ""
-    }
+  try {
+    globalState.loadingOverlay.open = true;
+    globalState.loadingOverlay.text = "Starting the Kv bridge server...";
+    isOpened = await bridgeServer.openServer($state.snapshot(kvStore));
+  } catch (e) {
+    error = String(e);
+  } finally {
+    globalState.loadingOverlay.open = false;
+    globalState.loadingOverlay.text = "";
+  }
 
-    if (!isOpened) {
-        toast.error("Error when trying to start the server", {
-            description: error || "We could not start the server that communicates with the Deno KV database.",
-        });
-    }
+  if (!isOpened) {
+    toast.error("Error when trying to start the server", {
+      description:
+        error ||
+        "We could not start the server that communicates with the Deno KV database.",
+    });
+  }
 
-    return isOpened
+  return isOpened;
 }
 
 const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
-    local: "Either the path to this local KV Store is wrong, moved or deleted",
-    remote: "Either authentication failed or the remote server is unreachable.",
-    default: "Either the path to this default local KV Store is wrong, moved or deleted",
-    bridge: "Either authentication failed or the bridge server is down.",
-}
+  local: "Either the path to this local KV Store is wrong, moved or deleted",
+  remote: "Either authentication failed or the remote server is unreachable.",
+  default:
+    "Either the path to this default local KV Store is wrong, moved or deleted",
+  bridge: "Either authentication failed or the bridge server is down.",
+};

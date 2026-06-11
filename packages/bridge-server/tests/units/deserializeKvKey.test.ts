@@ -22,7 +22,8 @@ describe("Test deserializeKvKey function", () => {
   });
 
   it("should parse a KvKey with a regular number in the custom form", () => {
-    const key = '[{ "type": "Number", "value": "123" }, { "type": "Number", "value": 1234 }]';
+    const key =
+      '[{ "type": "Number", "value": "123" }, { "type": "Number", "value": 1234 }]';
     const expected = [123, 1234];
     expect(deserializeKvKey(key)).toEqual(expected);
   });
@@ -35,7 +36,8 @@ describe("Test deserializeKvKey function", () => {
   });
 
   it("should parse a KvKey with a Uint8Array value", () => {
-    const key = '[{ "type": "Uint8Array", "value": "new Uint8Array([1, 2, 3, 4])" }, 1000]';
+    const key =
+      '[{ "type": "Uint8Array", "value": "new Uint8Array([1, 2, 3, 4])" }, 1000]';
     const expected = [new Uint8Array([1, 2, 3, 4]), 1000];
     expect(deserializeKvKey(key)).toEqual(expected);
   });
@@ -76,8 +78,6 @@ describe("Test deserializeKvKey function", () => {
 
   it("should throw an error for an invalid Uint8Array value", () => {
     const key = '[{ "type": "Uint8Array", "value": "invalid-Uint8Array" }]';
-    expect(() => deserializeKvKey(key)).toThrow(
-      "Invalid Uint8Array value: ",
-    );
+    expect(() => deserializeKvKey(key)).toThrow("Invalid Uint8Array value: ");
   });
 });

@@ -1,9 +1,12 @@
-import { shell } from 'electron';
-import { URL } from 'node:url';
-import { AppModule } from '../AppModule.js';
-import { ModuleContext } from '../ModuleContext.js';
+import { shell } from "electron";
+import { URL } from "node:url";
+import { AppModule } from "../AppModule.js";
+import { ModuleContext } from "../ModuleContext.js";
 
-const TRUSTED_EXTERNAL_ORIGINS = new Set(['https://github.com', 'https://docs.deno.com']);
+const TRUSTED_EXTERNAL_ORIGINS = new Set([
+  "https://github.com",
+  "https://docs.deno.com",
+]);
 
 type WebContentsUrlPolicyConfig = {
   allowedNavigationOrigin: string;
@@ -28,15 +31,21 @@ export class WebContentsUrlPolicy implements AppModule {
   }
 
   enable({ app }: ModuleContext): Promise<void> | void {
-    app.on('web-contents-created', (_, contents) => {
-      contents.on('will-navigate', (event, url) => {
+    app.on("web-contents-created", (_, contents) => {
+      contents.on("will-navigate", (event, url) => {
         const { origin } = new URL(url);
-        if (this.#allowedNavigationOrigin && origin === this.#allowedNavigationOrigin) return;
+        if (
+          this.#allowedNavigationOrigin &&
+          origin === this.#allowedNavigationOrigin
+        )
+          return;
 
         event.preventDefault();
 
         if (import.meta.env.DEV) {
-          console.warn(`[Security] Blocked navigation to disallowed origin: ${origin}`);
+          console.warn(
+            `[Security] Blocked navigation to disallowed origin: ${origin}`,
+          );
         }
       });
 
@@ -46,16 +55,20 @@ export class WebContentsUrlPolicy implements AppModule {
         if (this.#allowedExternalOrigins.has(origin)) {
           shell.openExternal(url).catch(console.error);
         } else if (import.meta.env.DEV) {
-          console.warn(`[Security] Blocked external URL for disallowed origin: ${origin}`);
+          console.warn(
+            `[Security] Blocked external URL for disallowed origin: ${origin}`,
+          );
         }
 
-        return { action: 'deny' };
+        return { action: "deny" };
       });
     });
   }
 }
 
-export function createWebContentsUrlPolicy(internalOrigin: string): WebContentsUrlPolicy {
+export function createWebContentsUrlPolicy(
+  internalOrigin: string,
+): WebContentsUrlPolicy {
   return new WebContentsUrlPolicy({
     allowedNavigationOrigin: internalOrigin,
     allowedExternalOrigins: TRUSTED_EXTERNAL_ORIGINS,

@@ -102,7 +102,9 @@
       <Textarea
         bind:value={editorValue.data as string}
         placeholder="String..."
-        class="bg-card max-h-full {dataTypesColors[editorValue.type.toLowerCase()]} font-semibold text-sm"
+        class="bg-card max-h-full {dataTypesColors[
+          editorValue.type.toLowerCase()
+        ]} font-semibold text-sm"
       />
     {:else if editorValue.type == "Boolean"}
       <KvValueBooleanInput bind:value={editorValue.data as boolean} />

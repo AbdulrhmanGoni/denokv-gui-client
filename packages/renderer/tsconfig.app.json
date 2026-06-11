@@ -17,12 +17,8 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "paths": {
-      "$lib": [
-        "./src/lib"
-      ],
-      "$lib/*": [
-        "./src/lib/*"
-      ]
+      "$lib": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"]
     }
   },
   "include": [
@@ -30,6 +26,6 @@
     "src/**/*.js",
     "src/**/*.svelte",
     "../../types/types.d.ts",
-    "../main/types.d.ts",
+    "../main/types.d.ts"
   ]
 }

@@ -3,28 +3,33 @@ import sJs, { type SerializeJSOptions } from "serialize-javascript";
 import { toNumber } from "../helpers";
 
 function serializeJs(jsValue: any, xssSafe: boolean = true) {
-    const options: SerializeJSOptions = { ignoreFunction: true };
-    if (!xssSafe) options.unsafe = true;
-    return sJs(jsValue, options);
+  const options: SerializeJSOptions = { ignoreFunction: true };
+  if (!xssSafe) options.unsafe = true;
+  return sJs(jsValue, options);
 }
 
-export type SerializedKvKey = (string | number | boolean | {
-    type: string;
-    value: string;
-})[]
+export type SerializedKvKey = (
+  | string
+  | number
+  | boolean
+  | {
+      type: string;
+      value: string;
+    }
+)[];
 
 export type SerializedKvValue = {
-    type: string;
-    data: string | number | boolean;
-}
+  type: string;
+  data: string | number | boolean;
+};
 
 export type SerializedKvEntry = {
-    key: SerializedKvKey;
-    value: SerializedKvValue;
-    versionstamp: string;
-}
+  key: SerializedKvKey;
+  value: SerializedKvValue;
+  versionstamp: string;
+};
 
-const errorCause = { cause: "SerializationError" }
+const errorCause = { cause: "SerializationError" };
 
 /**
  * Serialize a Deno Kv Key into a JSON-compatible array.
@@ -38,30 +43,30 @@ const errorCause = { cause: "SerializationError" }
  * @returns A JSON-compatible representation of the Deno KV key
  */
 export function serializeKvKey(key: KvKey): SerializedKvKey {
-    return key.map((part) => {
-        if (typeof part == "string" || typeof part == "boolean") {
-            return part
-        }
+  return key.map((part) => {
+    if (typeof part == "string" || typeof part == "boolean") {
+      return part;
+    }
 
-        if (typeof part == "bigint") {
-            return { type: "BigInt", value: part.toString() }
-        }
+    if (typeof part == "bigint") {
+      return { type: "BigInt", value: part.toString() };
+    }
 
-        if (typeof part == "number") {
-            if ([NaN, Infinity, -Infinity].includes(part)) {
-                return { type: "Number", value: part.toString() }
-            } else return part
-        }
+    if (typeof part == "number") {
+      if ([NaN, Infinity, -Infinity].includes(part)) {
+        return { type: "Number", value: part.toString() };
+      } else return part;
+    }
 
-        if (part instanceof Uint8Array) {
-            return { type: "Uint8Array", value: serializeUint8Array(part) }
-        }
+    if (part instanceof Uint8Array) {
+      return { type: "Uint8Array", value: serializeUint8Array(part) };
+    }
 
-        throw new Error(
-            "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array",
-            errorCause
-        )
-    })
+    throw new Error(
+      "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array",
+      errorCause,
+    );
+  });
 }
 
 /**
@@ -73,78 +78,91 @@ export function serializeKvKey(key: KvKey): SerializedKvKey {
  * @param options Optional flags, e.g. `allowEmptyKey` to not throw an error for empty keys
  * @returns A Deno Kv Key that can be used with Deno KV APIs
  */
-export function deserializeKvKey(key: string, options?: { allowEmptyKey?: boolean }): KvKey {
-    let parsed: unknown;
-    try {
-        parsed = JSON.parse(key);
-    } catch {
-        throw new Error("Invalid JSON format for KvKey.", errorCause);
+export function deserializeKvKey(
+  key: string,
+  options?: { allowEmptyKey?: boolean },
+): KvKey {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(key);
+  } catch {
+    throw new Error("Invalid JSON format for KvKey.", errorCause);
+  }
+
+  if (!Array.isArray(parsed)) {
+    throw new Error("KvKey must be an array.", errorCause);
+  }
+
+  if (!options?.allowEmptyKey && !parsed.length) {
+    throw new Error("KvKey must not be empty.", errorCause);
+  }
+
+  return parsed.map((part): string | number | bigint | boolean | Uint8Array => {
+    if (
+      typeof part === "string" ||
+      typeof part === "number" ||
+      typeof part === "boolean"
+    ) {
+      return part;
     }
 
-    if (!Array.isArray(parsed)) {
-        throw new Error("KvKey must be an array.", errorCause);
-    }
-
-    if (!options?.allowEmptyKey && !parsed.length) {
-        throw new Error("KvKey must not be empty.", errorCause);
-    }
-
-    return parsed.map((part): string | number | bigint | boolean | Uint8Array => {
-        if (
-            typeof part === "string" ||
-            typeof part === "number" ||
-            typeof part === "boolean"
-        ) {
-            return part;
+    // Handle custom representation of Uint8Array, Infinity, NaN and BigInt
+    if (
+      typeof part == "object" &&
+      part !== null &&
+      (typeof part.value == "string" || typeof part.value == "number")
+    ) {
+      if (part.type === "Number") {
+        switch (part.value) {
+          case "Infinity":
+            return Infinity;
+          case "-Infinity":
+            return -Infinity;
+          case "NaN":
+            return NaN;
+          default: {
+            const number = toNumber(String(part.value));
+            if (number != undefined) return number;
+            throw new Error("Invalid Number value: " + part.value, errorCause);
+          }
         }
+      }
 
-        // Handle custom representation of Uint8Array, Infinity, NaN and BigInt
-        if (typeof part == "object" && part !== null && (typeof part.value == "string" || typeof part.value == "number")) {
-            if (part.type === "Number") {
-                switch (part.value) {
-                    case "Infinity": return Infinity;
-                    case "-Infinity": return -Infinity;
-                    case "NaN": return NaN;
-                    default: {
-                        const number = toNumber(String(part.value))
-                        if (number != undefined) return number
-                        throw new Error("Invalid Number value: " + part.value, errorCause);
-                    }
-                }
-            }
-
-            if (part.type === "Uint8Array") {
-                const error = new Error("Invalid Uint8Array value: " + part.value, errorCause)
-                try {
-                    const uint8Array = eval(`(${part.value})`);
-                    if (uint8Array instanceof Uint8Array) {
-                        return uint8Array
-                    } else {
-                        throw error
-                    }
-                } catch {
-                    throw error
-                }
-            }
-
-            if (part.type === "BigInt") {
-                try {
-                    return BigInt(part.value)
-                } catch {
-                    throw new Error("Invalid BigInt value: " + part.value, errorCause);
-                }
-            }
-        }
-
-        throw new Error(
-            "Invalid JSON representation for a KvKey part.\n" +
-            "KvKey part must be String, Number, Boolean, " +
-            'Custom number wrapped as { type: "Number", value: ("NaN", "Infinity" or "-Infinity") }, ' +
-            'BigInt wrapped as { type: "BigInt", value: "..." }, ' +
-            'or Uint8Array wrapped as { type: "Uint8Array", value: "new Uint8Array(...)" }.',
-            errorCause
+      if (part.type === "Uint8Array") {
+        const error = new Error(
+          "Invalid Uint8Array value: " + part.value,
+          errorCause,
         );
-    });
+        try {
+          const uint8Array = eval(`(${part.value})`);
+          if (uint8Array instanceof Uint8Array) {
+            return uint8Array;
+          } else {
+            throw error;
+          }
+        } catch {
+          throw error;
+        }
+      }
+
+      if (part.type === "BigInt") {
+        try {
+          return BigInt(part.value);
+        } catch {
+          throw new Error("Invalid BigInt value: " + part.value, errorCause);
+        }
+      }
+    }
+
+    throw new Error(
+      "Invalid JSON representation for a KvKey part.\n" +
+        "KvKey part must be String, Number, Boolean, " +
+        'Custom number wrapped as { type: "Number", value: ("NaN", "Infinity" or "-Infinity") }, ' +
+        'BigInt wrapped as { type: "BigInt", value: "..." }, ' +
+        'or Uint8Array wrapped as { type: "Uint8Array", value: "new Uint8Array(...)" }.',
+      errorCause,
+    );
+  });
 }
 
 /**
@@ -154,53 +172,64 @@ export function deserializeKvKey(key: string, options?: { allowEmptyKey?: boolea
  * @param xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
  * @returns A `{ type, data }` JSON object
  */
-export function serializeKvValue(value: unknown, xssSafe: boolean = true): SerializedKvValue {
-    switch (typeof value) {
-        case "string": return {
-            type: "String",
-            data: xssSafe ? serializeJs(value, xssSafe).slice(1, -1) : value
-        };
-        case "number": {
-            if (value == Infinity || value == -Infinity || isNaN(value)) {
-                return { type: "Number", data: value.toString() }
-            }
-            return { type: "Number", data: value }
-        };
-        case "boolean": return { type: "Boolean", data: value };
-        case "bigint": return { type: "BigInt", data: value.toString() };
-        case "undefined": return { type: "Undefined", data: "undefined" };
-        case "object": {
-            if (value === null) {
-                return { type: "Null", data: "null" }
-            }
-
-            if (/^_?KvU64$/.test(Object.getPrototypeOf(value).constructor.name)) {
-                return {
-                    type: "KvU64",
-                    data: String((value as { value: bigint }).value)
-                };
-            }
-        }
+export function serializeKvValue(
+  value: unknown,
+  xssSafe: boolean = true,
+): SerializedKvValue {
+  switch (typeof value) {
+    case "string":
+      return {
+        type: "String",
+        data: xssSafe ? serializeJs(value, xssSafe).slice(1, -1) : value,
+      };
+    case "number": {
+      if (value == Infinity || value == -Infinity || isNaN(value)) {
+        return { type: "Number", data: value.toString() };
+      }
+      return { type: "Number", data: value };
     }
+    case "boolean":
+      return { type: "Boolean", data: value };
+    case "bigint":
+      return { type: "BigInt", data: value.toString() };
+    case "undefined":
+      return { type: "Undefined", data: "undefined" };
+    case "object": {
+      if (value === null) {
+        return { type: "Null", data: "null" };
+      }
 
-    if (value instanceof Array) return { type: "Array", data: serializeJs(value, xssSafe) }
-
-    if (value instanceof Date) return { type: "Date", data: value.toISOString() }
-
-    if (value instanceof Map) return { type: "Map", data: serializeJs(value, xssSafe) }
-
-    if (value instanceof Set) return { type: "Set", data: serializeJs(value, xssSafe) }
-
-    if (value instanceof RegExp) {
+      if (/^_?KvU64$/.test(Object.getPrototypeOf(value).constructor.name)) {
         return {
-            type: "RegExp",
-            data: JSON.stringify({ source: value.source, flags: value.flags }),
-        }
+          type: "KvU64",
+          data: String((value as { value: bigint }).value),
+        };
+      }
     }
+  }
 
-    if (value instanceof Uint8Array) return { type: "Uint8Array", data: serializeUint8Array(value) }
+  if (value instanceof Array)
+    return { type: "Array", data: serializeJs(value, xssSafe) };
 
-    return { type: "Object", data: serializeJs(value, xssSafe) };
+  if (value instanceof Date) return { type: "Date", data: value.toISOString() };
+
+  if (value instanceof Map)
+    return { type: "Map", data: serializeJs(value, xssSafe) };
+
+  if (value instanceof Set)
+    return { type: "Set", data: serializeJs(value, xssSafe) };
+
+  if (value instanceof RegExp) {
+    return {
+      type: "RegExp",
+      data: JSON.stringify({ source: value.source, flags: value.flags }),
+    };
+  }
+
+  if (value instanceof Uint8Array)
+    return { type: "Uint8Array", data: serializeUint8Array(value) };
+
+  return { type: "Object", data: serializeJs(value, xssSafe) };
 }
 
 /**
@@ -212,145 +241,168 @@ export function serializeKvValue(value: unknown, xssSafe: boolean = true): Seria
  * @param kv Deno KV instance, used for deserializing KvU64 values
  * @returns The deserialized Kv Entry value which can be added into Deno KV Databases
  */
-export async function deserializeKvValue(body: unknown, kv: Kv | Deno.Kv): Promise<unknown> {
-    if (!(body instanceof Object)) {
-        throw new Error("Invalid serialized Kv value: Should be an object with type and data properties", errorCause);
+export async function deserializeKvValue(
+  body: unknown,
+  kv: Kv | Deno.Kv,
+): Promise<unknown> {
+  if (!(body instanceof Object)) {
+    throw new Error(
+      "Invalid serialized Kv value: Should be an object with type and data properties",
+      errorCause,
+    );
+  }
+
+  if (!("type" in body)) {
+    throw new Error(
+      "Invalid serialized Kv value: No data type provided for the Kv value",
+      errorCause,
+    );
+  }
+
+  if (!("data" in body) || body.data === undefined) {
+    throw new Error(
+      "Invalid serialized Kv value: No data provided for the Kv value",
+      errorCause,
+    );
+  }
+
+  switch (body.type) {
+    case "Number": {
+      if (typeof body.data == "number") return body.data;
+
+      const stringNumber = String(body.data);
+      const number = toNumber(stringNumber);
+      if (number != undefined) return number;
+
+      const specialNumbers: Record<string, number> = {
+        Infinity: Infinity,
+        "-Infinity": -Infinity,
+        NaN: NaN,
+      };
+
+      if (specialNumbers[stringNumber] != undefined) {
+        return specialNumbers[stringNumber];
+      }
+
+      throw new Error("Invalid Number received", errorCause);
     }
 
-    if (!("type" in body)) {
-        throw new Error("Invalid serialized Kv value: No data type provided for the Kv value", errorCause);
+    case "String": {
+      if (typeof body.data == "string") return body.data;
+      throw new Error("Invalid string received", errorCause);
     }
 
-    if (!("data" in body) || body.data === undefined) {
-        throw new Error("Invalid serialized Kv value: No data provided for the Kv value", errorCause);
+    case "Boolean": {
+      if (typeof body.data == "boolean") return body.data;
+      if (body.data == "true") return true;
+      if (body.data == "false") return false;
+
+      throw new Error("Invalid boolean value received", errorCause);
     }
 
-    switch (body.type) {
-        case "Number": {
-            if (typeof body.data == "number") return body.data
+    case "BigInt": {
+      const number =
+        typeof body.data == "number" ? body.data : toNumber(String(body.data));
+      if (number != undefined) return BigInt(number);
 
-            const stringNumber = String(body.data)
-            const number = toNumber(stringNumber)
-            if (number != undefined) return number
-
-            const specialNumbers: Record<string, number> = {
-                "Infinity": Infinity,
-                "-Infinity": -Infinity,
-                "NaN": NaN,
-            }
-
-            if (specialNumbers[stringNumber] != undefined) {
-                return specialNumbers[stringNumber]
-            }
-
-            throw new Error("Invalid Number received", errorCause);
-        }
-
-        case "String": {
-            if (typeof body.data == "string") return body.data
-            throw new Error("Invalid string received", errorCause);
-        }
-
-        case "Boolean": {
-            if (typeof body.data == "boolean") return body.data
-            if (body.data == "true") return true
-            if (body.data == "false") return false
-
-            throw new Error("Invalid boolean value received", errorCause);
-        }
-
-        case "BigInt": {
-            const number = typeof body.data == "number" ? body.data : toNumber(String(body.data))
-            if (number != undefined) return BigInt(number)
-
-            throw new Error("Invalid BigInt received", errorCause);
-        }
-
-        case "KvU64": {
-            const number = typeof body.data == "number" ? body.data : toNumber(String(body.data))
-            if (number != undefined) {
-                let errorMessage = ""
-                try {
-                    const randomKey = ["random", crypto.randomUUID()]
-                    const result = await kv.atomic().sum(randomKey, BigInt(number)).commit()
-                    if (result.ok) {
-                        const u64Value = (await kv.get(randomKey)).value
-                        kv.delete(randomKey)
-                        return u64Value;
-                    }
-                } catch (error) {
-                    errorMessage = (error as Error).message
-                }
-
-                throw new Error(
-                    "Couldn't construct KvU64 value" + (errorMessage ? `: ${errorMessage}` : ""),
-                    errorCause
-                );
-            }
-
-            throw new Error("Invalid KvU64 number received", errorCause);
-        }
-
-        case "Date": {
-            if (typeof body.data == "number" || typeof body.data == "string") {
-                const date = new Date(body.data)
-                if (String(date) != "Invalid Date") return date
-            }
-            throw new Error("Invalid Date received", errorCause);
-        }
-
-        case "Undefined": return undefined;
-
-        case "Null": return null;
-
-        case "RegExp": {
-            if (typeof body.data == "string") {
-                try {
-                    const serilizedRegexp = JSON.parse(body.data)
-                    if (typeof serilizedRegexp.source == "string" && typeof serilizedRegexp.flags == "string") {
-                        return new RegExp(serilizedRegexp.source, serilizedRegexp.flags)
-                    }
-                } catch { }
-            }
-
-            throw new Error(
-                'Invalid serilized RegExp received, it should be a json object in the form {"source": "...", "flags": "..."}'
-                , errorCause
-            );
-        }
+      throw new Error("Invalid BigInt received", errorCause);
     }
 
-    const evaluatedData = eval(`(${body.data})`)
-
-    switch (body.type) {
-        case "Object": {
-            if (evaluatedData instanceof Object) return evaluatedData
-            throw new Error("Invalid Object received", errorCause);
+    case "KvU64": {
+      const number =
+        typeof body.data == "number" ? body.data : toNumber(String(body.data));
+      if (number != undefined) {
+        let errorMessage = "";
+        try {
+          const randomKey = ["random", crypto.randomUUID()];
+          const result = await kv
+            .atomic()
+            .sum(randomKey, BigInt(number))
+            .commit();
+          if (result.ok) {
+            const u64Value = (await kv.get(randomKey)).value;
+            kv.delete(randomKey);
+            return u64Value;
+          }
+        } catch (error) {
+          errorMessage = (error as Error).message;
         }
 
-        case "Array": {
-            if (evaluatedData instanceof Array) return evaluatedData
-            throw new Error("Invalid Array received", errorCause);
-        }
+        throw new Error(
+          "Couldn't construct KvU64 value" +
+            (errorMessage ? `: ${errorMessage}` : ""),
+          errorCause,
+        );
+      }
 
-        case "Set": {
-            if (evaluatedData instanceof Set) return evaluatedData
-            throw new Error("Invalid Set received", errorCause);
-        }
-
-        case "Map": {
-            if (evaluatedData instanceof Map) return evaluatedData
-            throw new Error("Invalid Map received", errorCause);
-        }
-
-        case "Uint8Array": {
-            if (evaluatedData instanceof Uint8Array) return evaluatedData
-            throw new Error("Invalid Uint8Array received", errorCause);
-        }
-
-        default:
-            throw new Error("Unsupported Data Type: " + body.type, errorCause);
+      throw new Error("Invalid KvU64 number received", errorCause);
     }
+
+    case "Date": {
+      if (typeof body.data == "number" || typeof body.data == "string") {
+        const date = new Date(body.data);
+        if (String(date) != "Invalid Date") return date;
+      }
+      throw new Error("Invalid Date received", errorCause);
+    }
+
+    case "Undefined":
+      return undefined;
+
+    case "Null":
+      return null;
+
+    case "RegExp": {
+      if (typeof body.data == "string") {
+        try {
+          const serilizedRegexp = JSON.parse(body.data);
+          if (
+            typeof serilizedRegexp.source == "string" &&
+            typeof serilizedRegexp.flags == "string"
+          ) {
+            return new RegExp(serilizedRegexp.source, serilizedRegexp.flags);
+          }
+        } catch {}
+      }
+
+      throw new Error(
+        'Invalid serilized RegExp received, it should be a json object in the form {"source": "...", "flags": "..."}',
+        errorCause,
+      );
+    }
+  }
+
+  const evaluatedData = eval(`(${body.data})`);
+
+  switch (body.type) {
+    case "Object": {
+      if (evaluatedData instanceof Object) return evaluatedData;
+      throw new Error("Invalid Object received", errorCause);
+    }
+
+    case "Array": {
+      if (evaluatedData instanceof Array) return evaluatedData;
+      throw new Error("Invalid Array received", errorCause);
+    }
+
+    case "Set": {
+      if (evaluatedData instanceof Set) return evaluatedData;
+      throw new Error("Invalid Set received", errorCause);
+    }
+
+    case "Map": {
+      if (evaluatedData instanceof Map) return evaluatedData;
+      throw new Error("Invalid Map received", errorCause);
+    }
+
+    case "Uint8Array": {
+      if (evaluatedData instanceof Uint8Array) return evaluatedData;
+      throw new Error("Invalid Uint8Array received", errorCause);
+    }
+
+    default:
+      throw new Error("Unsupported Data Type: " + body.type, errorCause);
+  }
 }
 
 /**
@@ -360,16 +412,19 @@ export async function deserializeKvValue(body: unknown, kv: Kv | Deno.Kv): Promi
  * @param xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
  * @returns Array of serialized Deno KV entries
  */
-export function serializeEntries(entries: KvEntry<unknown>[], xssSafe: boolean = true): SerializedKvEntry[] {
-    return entries.map<SerializedKvEntry>((entry) => {
-        return {
-            key: serializeKvKey(entry.key),
-            value: serializeKvValue(entry.value, xssSafe),
-            versionstamp: entry.versionstamp
-        }
-    })
+export function serializeEntries(
+  entries: KvEntry<unknown>[],
+  xssSafe: boolean = true,
+): SerializedKvEntry[] {
+  return entries.map<SerializedKvEntry>((entry) => {
+    return {
+      key: serializeKvKey(entry.key),
+      value: serializeKvValue(entry.value, xssSafe),
+      versionstamp: entry.versionstamp,
+    };
+  });
 }
 
 function serializeUint8Array(uint8Array: Uint8Array) {
-    return `new Uint8Array(${JSON.stringify(Array.from(uint8Array))})`
+  return `new Uint8Array(${JSON.stringify(Array.from(uint8Array))})`;
 }

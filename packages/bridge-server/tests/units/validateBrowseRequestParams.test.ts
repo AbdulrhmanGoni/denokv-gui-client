@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { validateBrowseRequestParams } from "../../src/index.ts";
 
 describe("Test 'validateBrowseRequestParams' function", () => {
-  const fakeUrl = "http://localhost:8000"
+  const fakeUrl = "http://localhost:8000";
 
   it("should parse a URL with no parameters and return the default values", () => {
     const url = new URL(fakeUrl + "/list");
@@ -110,7 +110,8 @@ describe("Test 'validateBrowseRequestParams' function", () => {
 
   it("should parse a URL with all parameters", () => {
     const url = new URL(
-      fakeUrl + '/list?limit=5&prefix=["posts"]&start=["posts", "2024"]&end=["posts", "2025"]&cursor=another-cursor&reverse=true&batchSize=20&consistency=strong&xssSafe=false',
+      fakeUrl +
+        '/list?limit=5&prefix=["posts"]&start=["posts", "2024"]&end=["posts", "2025"]&cursor=another-cursor&reverse=true&batchSize=20&consistency=strong&xssSafe=false',
     );
     const result = validateBrowseRequestParams(url);
     expect(result).toEqual({
@@ -126,8 +127,7 @@ describe("Test 'validateBrowseRequestParams' function", () => {
         reverse: true,
         cursor: "another-cursor",
       },
-      xssSafe: false
+      xssSafe: false,
     });
   });
 });
-

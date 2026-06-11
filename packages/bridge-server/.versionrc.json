@@ -1,53 +1,53 @@
 {
-    "releaseCommitMessageFormat": "chore(bridge-server-release): {{currentTag}}",
-    "writerOpts": {
-        "commitsSort": false
+  "releaseCommitMessageFormat": "chore(bridge-server-release): {{currentTag}}",
+  "writerOpts": {
+    "commitsSort": false
+  },
+  "tagPrefix": "bridge-server@",
+  "packageFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
     },
-    "tagPrefix": "bridge-server@",
-    "packageFiles": [
-        {
-            "filename": "package.json",
-            "type": "json"
-        },
-        {
-            "filename": "jsr.json",
-            "type": "json"
-        }
-    ],
-    "bumpFiles": [
-        {
-            "filename": "package.json",
-            "type": "json"
-        },
-        {
-            "filename": "jsr.json",
-            "type": "json"
-        }
-    ],
-    "types": [
-        {
-            "type": "bs_feat",
-            "section": "Features"
-        },
-        {
-            "type": "bs_fix",
-            "section": "Bug Fixes"
-        },
-        {
-            "type": "bs_api",
-            "section": "API Changes"
-        },
-        {
-            "type": "bs_secure",
-            "section": "Security"
-        },
-        {
-            "type": "bs_chore",
-            "section": "Maintenance"
-        },
-        {
-            "type": "bs_enhance",
-            "section": "Enhancements"
-        }
-    ]
+    {
+      "filename": "jsr.json",
+      "type": "json"
+    }
+  ],
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    },
+    {
+      "filename": "jsr.json",
+      "type": "json"
+    }
+  ],
+  "types": [
+    {
+      "type": "bs_feat",
+      "section": "Features"
+    },
+    {
+      "type": "bs_fix",
+      "section": "Bug Fixes"
+    },
+    {
+      "type": "bs_api",
+      "section": "API Changes"
+    },
+    {
+      "type": "bs_secure",
+      "section": "Security"
+    },
+    {
+      "type": "bs_chore",
+      "section": "Maintenance"
+    },
+    {
+      "type": "bs_enhance",
+      "section": "Enhancements"
+    }
+  ]
 }
