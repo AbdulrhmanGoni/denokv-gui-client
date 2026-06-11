@@ -10,7 +10,7 @@ const platformSpecificConfig = {};
 switch (os.platform()) {
   case "linux":
     platformSpecificConfig.linux = {
-      target: ["AppImage"],
+      target: ["deb", "AppImage"],
       icon: "buildResources",
     };
     break;
