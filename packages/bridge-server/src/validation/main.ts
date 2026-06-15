@@ -193,8 +193,10 @@ function validateEnqueueOptions(
   if ("keysIfUndelivered" in options) {
     let parsedKeysIfUndeliveredOption = null;
     try {
-      parsedKeysIfUndeliveredOption = (0, eval)(String(options.keysIfUndelivered));
-    } catch { }
+      parsedKeysIfUndeliveredOption = (0, eval)(
+        String(options.keysIfUndelivered),
+      );
+    } catch {}
 
     if (!(parsedKeysIfUndeliveredOption instanceof Array)) {
       throw new Error(

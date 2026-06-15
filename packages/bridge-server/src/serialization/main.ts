@@ -13,9 +13,9 @@ export type SerializedKvKey = (
   | number
   | boolean
   | {
-    type: string;
-    value: string;
-  }
+      type: string;
+      value: string;
+    }
 )[];
 
 export type SerializedKvValue = {
@@ -156,10 +156,10 @@ export function deserializeKvKey(
 
     throw new Error(
       "Invalid JSON representation for a KvKey part.\n" +
-      "KvKey part must be String, Number, Boolean, " +
-      'Custom number wrapped as { type: "Number", value: ("NaN", "Infinity" or "-Infinity") }, ' +
-      'BigInt wrapped as { type: "BigInt", value: "..." }, ' +
-      'or Uint8Array wrapped as { type: "Uint8Array", value: "new Uint8Array(...)" }.',
+        "KvKey part must be String, Number, Boolean, " +
+        'Custom number wrapped as { type: "Number", value: ("NaN", "Infinity" or "-Infinity") }, ' +
+        'BigInt wrapped as { type: "BigInt", value: "..." }, ' +
+        'or Uint8Array wrapped as { type: "Uint8Array", value: "new Uint8Array(...)" }.',
       errorCause,
     );
   });
@@ -330,7 +330,7 @@ export async function deserializeKvValue(
 
         throw new Error(
           "Couldn't construct KvU64 value" +
-          (errorMessage ? `: ${errorMessage}` : ""),
+            (errorMessage ? `: ${errorMessage}` : ""),
           errorCause,
         );
       }
@@ -362,7 +362,7 @@ export async function deserializeKvValue(
           ) {
             return new RegExp(serilizedRegexp.source, serilizedRegexp.flags);
           }
-        } catch { }
+        } catch {}
       }
 
       throw new Error(
