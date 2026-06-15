@@ -45,7 +45,7 @@
     "playwright": "^1.55.0",
     "prettier": "^3.8.3",
     "prettier-plugin-svelte": "^4.1.0",
-    "sharp": "^0.34.5"
+    "sharp": "0.35.1"
   },
   "dependencies": {
     "@app/main": "*",
