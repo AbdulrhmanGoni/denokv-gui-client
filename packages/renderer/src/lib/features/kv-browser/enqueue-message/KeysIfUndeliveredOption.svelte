@@ -32,7 +32,7 @@
 
   function onSet() {
     try {
-      const parsed = eval(editorValue);
+      const parsed = (0, eval)(editorValue);
       if (Array.isArray(parsed) && parsed.every((key) => Array.isArray(key))) {
         value = editorValue;
         setOpen(false);

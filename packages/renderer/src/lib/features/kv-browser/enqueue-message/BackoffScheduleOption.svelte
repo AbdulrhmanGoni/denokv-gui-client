@@ -32,7 +32,7 @@
 
   function onSet() {
     try {
-      const newValue = eval(editorValue);
+      const newValue = (0, eval)(editorValue);
       if (
         Array.isArray(newValue) &&
         newValue.every((v) => typeof v == "number")

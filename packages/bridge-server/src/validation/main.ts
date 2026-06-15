@@ -193,8 +193,8 @@ function validateEnqueueOptions(
   if ("keysIfUndelivered" in options) {
     let parsedKeysIfUndeliveredOption = null;
     try {
-      parsedKeysIfUndeliveredOption = eval(String(options.keysIfUndelivered));
-    } catch {}
+      parsedKeysIfUndeliveredOption = (0, eval)(String(options.keysIfUndelivered));
+    } catch { }
 
     if (!(parsedKeysIfUndeliveredOption instanceof Array)) {
       throw new Error(
@@ -276,7 +276,7 @@ function validateAtomicOperationKey(
     throw InvalidAOError(`'${operation.name}' operation must have a key`);
   }
 
-  const key = eval(`(${operation.key})`);
+  const key = (0, eval)(`(${operation.key})`);
   if (!isValidKvKey(key)) {
     throw InvalidAOError(
       `the key passed to the '${operation.name}' operation is invalid Deno Kv key`,

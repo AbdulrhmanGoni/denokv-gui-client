@@ -143,7 +143,7 @@ function kvKeyStringToSerializedForm(stringKvKey: string): {
 } {
   let key = null;
   try {
-    key = eval(`(${stringKvKey})`);
+    key = (0, eval)(`(${stringKvKey})`);
   } catch (error) {
     return {
       key: null,
