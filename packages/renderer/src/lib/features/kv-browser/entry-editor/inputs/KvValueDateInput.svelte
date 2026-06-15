@@ -23,7 +23,7 @@
 
   type InputOptionLayoutParams = {
     title: string;
-    input?: Snippet;
+    input?: () => ReturnType<Snippet>;
     method: CreateDateMethod;
     data: string;
     onChecked?: () => void;

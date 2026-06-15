@@ -16,7 +16,7 @@
     defaultValue?: KvEntry["value"];
     kvKeyCodeEditorRef?: KvKeyCodeEditor;
     kvValueEditorRef?: KvValueCodeEditor;
-    header?: Snippet;
+    header?: () => ReturnType<Snippet>;
     onSubmit: (
       key: string,
       value: KvEntry["value"],

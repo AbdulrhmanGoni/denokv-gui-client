@@ -123,7 +123,7 @@
   </div>
 </div>
 
-{#snippet actionsButtons(anotherButton: Snippet)}
+{#snippet actionsButtons(anotherButton: () => ReturnType<Snippet>)}
   <div class="flex gap-2.5 flex-wrap">
     {@render anotherButton()}
     {#if updateAppState.newUpdate?.isUpdateAvailable}

@@ -21,7 +21,7 @@
   type ValueEditorProps = {
     defaultValue: KvEntry["value"];
     editorValue: KvEntry["value"];
-    titleIcon: Snippet;
+    titleIcon: () => ReturnType<Snippet>;
     title?: string;
     jar?: CodeJar;
   };

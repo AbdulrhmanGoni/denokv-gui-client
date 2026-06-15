@@ -12,12 +12,12 @@
   type KvStoreFormProps = {
     defaultValues?: Partial<CreateKvStoreInput>;
     title: string;
-    titleIcon: Snippet;
+    titleIcon: () => ReturnType<Snippet>;
     onSubmitForm: (store: CreateKvStoreInput, form?: HTMLFormElement) => void;
     submitButtonText?: string;
     backButtonText?: string;
-    submitButtonIcon?: Snippet;
-    backButtonIcon?: Snippet;
+    submitButtonIcon?: () => ReturnType<Snippet>;
+    backButtonIcon?: () => ReturnType<Snippet>;
     onBack: () => void;
     isLoading?: boolean;
   };

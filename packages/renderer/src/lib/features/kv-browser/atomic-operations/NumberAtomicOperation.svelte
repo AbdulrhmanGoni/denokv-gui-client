@@ -19,7 +19,7 @@
     close?: () => void;
     operationName: "sum" | "min" | "max";
     Icon: Component;
-    description: Snippet;
+    description: () => ReturnType<Snippet>;
   } = $props();
 
   let editorValue = $state("[]");
