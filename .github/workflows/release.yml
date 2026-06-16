@@ -1,4 +1,4 @@
-name: Release
+name: Draft Release
 
 on:
   workflow_call:
@@ -8,6 +8,7 @@ env:
 
 jobs:
   release:
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -26,10 +27,21 @@ jobs:
       - name: Extract App's version
         run: echo "APP_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      - name: Create GitHub Release
+      - name: Draft a new release
         run: |
           gh release new $APP_VERSION \
+            --title "$APP_VERSION (draft)" \
             --notes-file RELEASE_NOTES.md \
+            --draft --latest=false \
             dist/denokv-gui-client* dist/latest*.yml
         env:
           GH_TOKEN: ${{ github.token }}
+
+      - name: Dispatch signing request to OSSign
+        id: dispatch
+        uses: ossign/actions/workflow/dispatch@main
+        with:
+          username: ${{ secrets.OSSIGN_USER }}
+          token: ${{ secrets.OSSIGN_TOKEN }}
+          dispatch_only: true
+

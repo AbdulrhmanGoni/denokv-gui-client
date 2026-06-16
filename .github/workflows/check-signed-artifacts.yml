@@ -1,0 +1,42 @@
+name: Check If OSSign Signed Artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      workflow_id:
+        description: "The ID of the workflow that builds and signs the artifacts"
+        required: true
+        type: string
+
+jobs:
+  check:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      APP_VERSION: ""
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Extract App's version
+        run: echo "APP_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Check if signing is finished
+        id: check
+        uses: ossign/actions/workflow/dispatch@main
+        with:
+          username: ${{ secrets.OSSIGN_USER }}
+          token: ${{ secrets.OSSIGN_TOKEN }}
+          single_check: ${{ github.event.inputs.workflow_id }}
+
+      - name: Download and upload the signed artifacts to the next release draft
+        if: steps.check.outputs.signed_artifacts != ''
+        env:
+          SIGNED_ARTIFACTS: ${{ steps.check.outputs.signed_artifacts }}
+        run: |
+          node scripts/download-signed-artifacts.ts && \
+          gh release upload $APP_VERSION \
+            signed-artifacts/denokv-gui-client* \
+            signed-artifacts/latest.yml \
+            --clobber
