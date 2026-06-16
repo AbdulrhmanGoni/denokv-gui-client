@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.25.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.24.0...v1.25.0) (2026-06-16)
+
+
+### Features
+
+* enable Hardware Acceleration by default and allow disabling it from settings page ([c0a0f9f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c0a0f9fac14f9f1dce75509c7d50378a3ffb6baf))
+
 ## [1.24.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.23.0...v1.24.0) (2026-06-02)
 
 ### Bug Fixes
