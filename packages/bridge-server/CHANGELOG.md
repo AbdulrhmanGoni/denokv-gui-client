@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [9.0.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@9.0.0...bridge-server@9.0.1) (2026-06-16)
+
+
+### Security
+
+* install a security patch for `hono` ([acb9762](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/acb97627df402bb0f1a518135517ad043df13df2))
+
+
+### Maintenance
+
+* update "@deno/kv" to version 0.14.0 ([a85a9cc](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a85a9cc91bb272c01c30ce52dcbb43efa38dbd48))
+* **dev:** replace "vite-plugin-dts" package with "unplugin-dts" ([e9beb90](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e9beb9053f7243e8727e759ce8f02ff8691d7de1))
+* upgrade "@hono/node-server" to v2 ([327c04f](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/327c04fc2ee14868bd4742c011ec5b8715d24201))
+* update "hono" dependency ([71acde9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/71acde917e57dc428debf9c81c321767dc943c86))
+* update "vitest" dependency ([4ca76f9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/4ca76f9c573973f33daa671e31636e5972ad55aa))
+
 ## [9.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@8.3.0...bridge-server@9.0.0) (2026-05-29)
 
 ### ⚠ BREAKING CHANGES
