@@ -103,6 +103,9 @@ jobs:
       - publish-bridge-server
       - attest-release-artifacts
     uses: ./.github/workflows/release.yml
+    secrets:
+      OSSIGN_USER: ${{ secrets.OSSIGN_USER }}
+      OSSIGN_TOKEN: ${{ secrets.OSSIGN_TOKEN }}
 
   deploy-landing-page:
     if: github.ref == 'refs/heads/main'
