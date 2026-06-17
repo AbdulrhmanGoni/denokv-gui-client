@@ -24,12 +24,11 @@ For more screenshots about how this app looks like, check out [screenshots](./sc
 
 **_Always recommended to download from the latest release_**
 
-> [!NOTE]
-> For Windows and Mac Users: <br />
-> This application is not code signed yet.
-> When running the app, you may encounter security warnings like "Unknown Publisher" or "'\*.app' is damaged and can’t be opened", So please ensure you trust the source code before proceeding with the installation.
-
 To download the **Deno KV GUI Client** app, go to [releases][releases-page] page, pick and download the file that matches your operating system:
+
+### Windows
+
+On Windows, you just need to download the `denokv-gui-client-x.x.x-win-x64.exe` file from [releases][releases-page] page and run it.
 
 ### Linux
 
@@ -76,6 +75,8 @@ Download the correct version for your Mac from the [releases][releases-page] pag
 - `denokv-gui-client-x.x.x-mac-x64.dmg` for **Intel-based Macs**
 
 > [!IMPORTANT]
+> The MacOS version of this application is not code signed yet. When running the app, you may encounter security warnings like "“denokv-gui-client.app” is damaged and can’t be opened." So please ensure you trust the source code.
+>
 > When you download and install the app, you'll most likely be prevented from opening it and see a warnings like this:
 >
 > > “denokv-gui-client.app” is damaged and can’t be opened. You should move it to the Bin.
@@ -86,11 +87,7 @@ Download the correct version for your Mac from the [releases][releases-page] pag
 > xattr -c /path/to/denokv-gui-client.app
 > ```
 >
-> _Make sure to set the right path_
-
-### Windows
-
-On Windows, you just need to download the `denokv-gui-client-x.x.x-win-x64.exe` file from [releases][releases-page] page and run it.
+> _Make sure to replace '/path/to' with the actual location of the app_
 
 ## Install and run locally
 
