@@ -2,7 +2,7 @@ name: Draft Release
 
 on:
   workflow_call:
-    
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -15,6 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
+      - name: Extract App's version
+        run: echo "APP_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Check Release Existence
+        id: check
+        run: |
+          if isAlreadyDrafted=$(gh release view "$APP_VERSION" --json isDraft -q .isDraft); then
+            if [ "$isAlreadyDrafted" = "true" ]; then
+              echo "isAlreadyDrafted=true" >> "$GITHUB_OUTPUT"
+              echo "::notice::$APP_VERSION version exists as draft release"
+            else
+              echo "::error::$APP_VERSION version was already released to the public"
+              exit 1
+            fi
+          else
+            echo "isAlreadyDrafted=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Download compiled app
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
@@ -24,15 +44,21 @@ jobs:
       - name: Extract the changelogs of the new release
         run: node ./scripts/extractLastReleaseChangelog.js > RELEASE_NOTES.md
 
-      - name: Extract App's version
-        run: echo "APP_VERSION=v$(jq -r .version package.json)" >> $GITHUB_ENV
-
       - name: Draft a new release
+        if: ${{ steps.check.outputs.isAlreadyDrafted == 'false' }}
         run: |
           gh release new $APP_VERSION \
             --title "$APP_VERSION (draft)" \
             --notes-file RELEASE_NOTES.md \
             --draft --latest=false \
             dist/denokv-gui-client* dist/latest*.yml
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Update the release draft
+        if: ${{ steps.check.outputs.isAlreadyDrafted == 'true' }}
+        run: |
+          gh release edit $APP_VERSION --notes-file RELEASE_NOTES.md
+          gh release upload $APP_VERSION dist/denokv-gui-client* dist/latest*.yml --clobber
         env:
           GH_TOKEN: ${{ github.token }}
