@@ -21,3 +21,7 @@ jobs:
           username: ${{ secrets.OSSIGN_USER }}
           token: ${{ secrets.OSSIGN_TOKEN }}
           dispatch_only: true
+
+      - run: |
+          echo "workflow_id: ${{ steps.dispatch.outputs.workflow_id }}"
+
