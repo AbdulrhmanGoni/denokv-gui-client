@@ -2,12 +2,7 @@ name: Draft Release
 
 on:
   workflow_call:
-    secrets:
-      OSSIGN_USER:
-        required: true
-      OSSIGN_TOKEN:
-        required: true
-
+    
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -41,12 +36,3 @@ jobs:
             dist/denokv-gui-client* dist/latest*.yml
         env:
           GH_TOKEN: ${{ github.token }}
-
-      - name: Dispatch signing request to OSSign
-        id: dispatch
-        uses: ossign/actions/workflow/dispatch@main
-        with:
-          username: ${{ secrets.OSSIGN_USER }}
-          token: ${{ secrets.OSSIGN_TOKEN }}
-          dispatch_only: true
-

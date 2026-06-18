@@ -16,6 +16,11 @@ on:
         required: false
         default: false
         type: boolean
+      skip-signing-request:
+        description: "Whether to skip calling 'dispatch-signing-request' job"
+        required: false
+        default: false
+        type: boolean
 
   push:
     branches: ["**"]
@@ -103,6 +108,12 @@ jobs:
       - publish-bridge-server
       - attest-release-artifacts
     uses: ./.github/workflows/release.yml
+
+  dispatch-signing-request:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release' && !inputs.skip-signing-request
+    needs:
+      - release
+    uses: ./.github/workflows/dispatch-signing-request.yml
     secrets:
       OSSIGN_USER: ${{ secrets.OSSIGN_USER }}
       OSSIGN_TOKEN: ${{ secrets.OSSIGN_TOKEN }}

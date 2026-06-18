@@ -1,0 +1,23 @@
+name: Dispatch a signing request to OSSign
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      OSSIGN_USER:
+        required: true
+      OSSIGN_TOKEN:
+        required: true
+
+jobs:
+  dispatch-signing-request:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch a signing request to OSSign
+        id: dispatch
+        uses: ossign/actions/workflow/dispatch@main
+        with:
+          username: ${{ secrets.OSSIGN_USER }}
+          token: ${{ secrets.OSSIGN_TOKEN }}
+          dispatch_only: true
