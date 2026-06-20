@@ -11,8 +11,11 @@ export function kvStoresTests() {
 
   const customFileName = "custom-test.db";
 
-  test.beforeAll(() => {
+  test.beforeAll(async ({ page }) => {
     mkdirSync(anotherNewKvStore.path);
+    await page.evaluate(() => {
+      window.localStorage.setItem("kv-stores-selected-types", "[]");
+    });
   });
 
   test.afterAll(() => {
