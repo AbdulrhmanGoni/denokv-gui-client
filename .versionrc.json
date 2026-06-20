@@ -24,6 +24,10 @@
       "section": "Security"
     },
     {
+      "type": "maintain",
+      "section": "Maintenance"
+    },
+    {
       "type": "ui",
       "section": "User Interface Changes"
     }
