@@ -1,4 +1,4 @@
-import type { Kv, KvEntry, KvKey } from "@deno/kv";
+import { KvU64, type KvEntry, type KvKey } from "@deno/kv";
 import sJs, { type SerializeJSOptions } from "serialize-javascript";
 import { toNumber } from "../helpers";
 
@@ -238,13 +238,9 @@ export function serializeKvValue(
  * Throws an Error with cause "SerializationError" when the type/data are invalid.
  *
  * @param body The serialized Kv Entry value using `serializeKvValue` function
- * @param kv Deno KV instance, used for deserializing KvU64 values
  * @returns The deserialized Kv Entry value which can be added into Deno KV Databases
  */
-export async function deserializeKvValue(
-  body: unknown,
-  kv: Kv | Deno.Kv,
-): Promise<unknown> {
+export function deserializeKvValue(body: unknown): unknown {
   if (!(body instanceof Object)) {
     throw new Error(
       "Invalid serialized Kv value: Should be an object with type and data properties",
@@ -312,27 +308,7 @@ export async function deserializeKvValue(
       const number =
         typeof body.data == "number" ? body.data : toNumber(String(body.data));
       if (number != undefined) {
-        let errorMessage = "";
-        try {
-          const randomKey = ["random", crypto.randomUUID()];
-          const result = await kv
-            .atomic()
-            .sum(randomKey, BigInt(number))
-            .commit();
-          if (result.ok) {
-            const u64Value = (await kv.get(randomKey)).value;
-            kv.delete(randomKey);
-            return u64Value;
-          }
-        } catch (error) {
-          errorMessage = (error as Error).message;
-        }
-
-        throw new Error(
-          "Couldn't construct KvU64 value" +
-            (errorMessage ? `: ${errorMessage}` : ""),
-          errorCause,
-        );
+        return new KvU64(BigInt(number));
       }
 
       throw new Error("Invalid KvU64 number received", errorCause);

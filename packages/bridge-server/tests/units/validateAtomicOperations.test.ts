@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { validateAtomicOperations } from "../../src/index.ts";
-import { openKv } from "@deno/kv";
-
-const kv = await openKv();
 
 describe("Test 'validateAtomicOperations' function", () => {
   it("should validate a list of various valid atomic operations", async () => {
@@ -24,7 +21,7 @@ describe("Test 'validateAtomicOperations' function", () => {
       { name: "enqueue", value: { type: "String", data: "msg" } },
     ];
 
-    const result = await validateAtomicOperations(operations, kv);
+    const result = validateAtomicOperations(operations);
 
     expect(result).toEqual([
       {
@@ -47,38 +44,34 @@ describe("Test 'validateAtomicOperations' function", () => {
   });
 
   it("should throw an error if input is not an array", async () => {
-    await expect(validateAtomicOperations("not an array", kv)).rejects.toThrow(
+    expect(() => validateAtomicOperations("not an array")).toThrow(
       "Invalid atomic operation: Must be an array of at least one valid `ValidAtomicOperation` object representing a Deno Kv atomic operation",
     );
   });
 
   it("should throw an error if array is empty", async () => {
-    await expect(validateAtomicOperations([], kv)).rejects.toThrow(
+    expect(() => validateAtomicOperations([])).toThrow(
       "Invalid atomic operation: Must be an array of at least one valid `ValidAtomicOperation` object representing a Deno Kv atomic operation",
     );
   });
 
   it("should throw an error if an operation is missing a name", async () => {
     const operations = [{ key: "['users', 1]" }];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
       "Invalid atomic operation: no atomic operation name provided",
     );
   });
 
   it("should throw an error for unsupported operation", async () => {
     const operations = [{ name: "invalid_op", key: "['users', 1]" }];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
       'Invalid atomic operation: Unknown or unsupported atomic operation: "invalid_op"',
     );
   });
 
   it("should throw an error for invalid key (not valid serialised KvKey)", async () => {
     const operations = [{ name: "delete", key: "['invalid' , {}]" }];
-    await expect(validateAtomicOperations(operations, kv)).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations)).toThrow(
       "Invalid atomic operation: the key passed to the 'delete' operation is invalid Deno Kv key",
     );
   });
@@ -87,7 +80,7 @@ describe("Test 'validateAtomicOperations' function", () => {
     const operations = [
       { name: "check", key: "['users', 1]", versionstamp: null },
     ];
-    const result = await validateAtomicOperations(operations, kv);
+    const result = validateAtomicOperations(operations);
     expect(result[0]).toEqual({
       name: "check",
       key: ["users", 1],
@@ -99,9 +92,7 @@ describe("Test 'validateAtomicOperations' function", () => {
     const operations = [
       { name: "check", key: "['users', 1]", versionstamp: 123 },
     ];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
       "Invalid atomic operation: versionstamp of 'check' operation must be either null or a non-empty string",
     );
   });
@@ -110,9 +101,7 @@ describe("Test 'validateAtomicOperations' function", () => {
     const operations = [
       { name: "check", key: "['users', 1]", versionstamp: "" },
     ];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
       "Invalid atomic operation: versionstamp of 'check' operation must be either null or a non-empty string",
     );
   });
@@ -126,7 +115,7 @@ describe("Test 'validateAtomicOperations' function", () => {
         expiresIn: 5000,
       },
     ];
-    const result = await validateAtomicOperations(operations, kv);
+    const result = validateAtomicOperations(operations);
     expect(result[0]).toEqual({
       name: "set",
       key: ["users", 1],
@@ -137,36 +126,28 @@ describe("Test 'validateAtomicOperations' function", () => {
 
   it("should throw error for missing key in 'set' operation", async () => {
     const operations = [{ name: "set", value: { type: "Number", data: 123 } }];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
       "Invalid atomic operation: 'set' operation must have a key",
     );
   });
 
   it("should throw error for non-number value in 'sum' operation", async () => {
     const operations = [{ name: "sum", key: "['a']", value: "not a number" }];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
       "Invalid atomic operation: 'sum' operation must have an integer value",
     );
   });
 
   it("should throw error for missing value in 'sum' operation", async () => {
     const operations = [{ name: "sum", key: "['a']" }];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow(
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
       "Invalid atomic operation: 'sum' operation must have an integer value",
     );
   });
 
   it("should throw error for non-integer number value in 'sum' operation", async () => {
     const operations = [{ name: "sum", key: "['a']", value: 1.5 }];
-    await expect(
-      validateAtomicOperations(operations as any, kv),
-    ).rejects.toThrow();
+    expect(() => validateAtomicOperations(operations as any)).toThrow();
   });
 
   it("should validate 'enqueue' with all options", async () => {
@@ -181,7 +162,7 @@ describe("Test 'validateAtomicOperations' function", () => {
         },
       },
     ];
-    const result = await validateAtomicOperations(operations, kv);
+    const result = validateAtomicOperations(operations);
     expect(result[0]).toEqual({
       name: "enqueue",
       value: { job: "test" },

@@ -112,7 +112,7 @@ export function createBridgeApp(
     const { key, expires, overwrite } = validateSetRequestParams(
       new URL(c.req.url),
     );
-    const validValue = await deserializeKvValue(await c.req.json(), kv);
+    const validValue = deserializeKvValue(await c.req.json());
 
     if (overwrite === false) {
       const result = await kv
@@ -156,19 +156,13 @@ export function createBridgeApp(
   });
 
   app.post("/enqueue", async (c) => {
-    const { value, options } = await validateEnqueueRequest(
-      await c.req.json(),
-      kv,
-    );
+    const { value, options } = validateEnqueueRequest(await c.req.json());
     const result = await kv.enqueue(value, options);
     return c.json({ result: result.ok });
   });
 
   app.post("/atomic", async (c) => {
-    const atomicOperations = await validateAtomicOperations(
-      await c.req.json(),
-      kv,
-    );
+    const atomicOperations = validateAtomicOperations(await c.req.json());
 
     let kvAtomicOperation = kv.atomic();
 

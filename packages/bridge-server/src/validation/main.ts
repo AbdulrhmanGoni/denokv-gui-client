@@ -228,13 +228,9 @@ function validateEnqueueOptions(
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
  * @param body The request body containing the value to enqueue and optional options
- * @param kv The Deno KV instance
  * @returns An object containing the validated value and optional options
  */
-export async function validateEnqueueRequest(
-  body: unknown,
-  kv: Deno.Kv | Kv,
-): Promise<ValidEnqueueRequestBody> {
+export function validateEnqueueRequest(body: unknown): ValidEnqueueRequestBody {
   if (!(body instanceof Object)) {
     throw new Error("Invalid enqueue request body", errorCause);
   }
@@ -247,7 +243,7 @@ export async function validateEnqueueRequest(
   }
 
   return {
-    value: await deserializeKvValue(body.value, kv),
+    value: deserializeKvValue(body.value),
     options:
       "options" in body ? validateEnqueueOptions(body.options) : undefined,
   };
@@ -305,10 +301,7 @@ function validateAtomicOperationNumberValue(
   return operation.value;
 }
 
-async function validateAtomicOperation(
-  op: unknown,
-  kv: Deno.Kv | Kv,
-): Promise<ValidAtomicOperation> {
+function validateAtomicOperation(op: unknown): ValidAtomicOperation {
   if (!(op instanceof Object)) {
     throw InvalidAOError("Must be `ValidAtomicOperation` object");
   }
@@ -354,7 +347,7 @@ async function validateAtomicOperation(
       return {
         name: operation.name,
         key: validateAtomicOperationKey(operation),
-        value: await deserializeKvValue(operation.value, kv),
+        value: deserializeKvValue(operation.value),
         expiresIn: operation.expiresIn,
       };
     }
@@ -369,7 +362,7 @@ async function validateAtomicOperation(
     case "enqueue": {
       return {
         name: operation.name,
-        value: await deserializeKvValue(operation.value, kv),
+        value: deserializeKvValue(operation.value),
         options: validateEnqueueOptions(operation.options),
       };
     }
@@ -388,14 +381,12 @@ async function validateAtomicOperation(
  * The input must be a non-empty array of valid operation objects.
  *
  * @param operations An array of atomic operations to validate
- * @param kv The Deno KV instance
- * @returns A promise that resolves to an array of parsed and validated deno kv atomic operations in `ValidAtomicOperation` type
+ * @returns Array of parsed and validated deno kv atomic operations in `ValidAtomicOperation` type
  * @throws {Error} If the operations list is not a non-empty array or if any operation is invalid
  */
-export async function validateAtomicOperations(
+export function validateAtomicOperations(
   operations: unknown,
-  kv: Deno.Kv | Kv,
-): Promise<ValidAtomicOperation[]> {
+): ValidAtomicOperation[] {
   if (!(operations instanceof Array) || !operations.length) {
     throw InvalidAOError(
       "Must be an array of at least one valid `ValidAtomicOperation` object representing a Deno Kv atomic operation",
@@ -404,7 +395,7 @@ export async function validateAtomicOperations(
 
   const parsedOperations = new Array(operations.length);
   for (let i = 0; i < operations.length; i++) {
-    parsedOperations[i] = await validateAtomicOperation(operations[i], kv);
+    parsedOperations[i] = validateAtomicOperation(operations[i]);
   }
   return parsedOperations;
 }
