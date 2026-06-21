@@ -68,20 +68,36 @@ jobs:
       - name: Build the app
         run: npm run compile -- -p never
 
-      - name: Run UI e2e tests (Windows, Mac)
-        # retry one more time if the tests fail
-        run: npm run test || npm run test
-        if: matrix.os != 'ubuntu-latest'
-
-      - name: Run UI e2e tests (Linux)
-        # retry one more time if the tests fail
+      - name: Run UI e2e tests
+        id: tests
         run: |
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test || \
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test
-        if: matrix.os == 'ubuntu-latest'
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test || \
+            xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test
+          else
+            npm run test || npm run test
+          fi
+
+          if [ $? -eq 0 ]; then
+            echo "failed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "failed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          exit 0
 
       - name: Upload compiled app
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: ${{ matrix.os }}
-          path: dist
+          path: |
+            dist
+            test-results
+
+      - name: Decide Whether the job failed or not
+        run: |
+          if [ "${{ steps.tests.outputs.failed }}" == "true" ]; then
+            exit 1
+          else
+            exit 0
+          fi
