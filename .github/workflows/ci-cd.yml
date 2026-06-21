@@ -102,7 +102,7 @@ jobs:
   release:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release'
     permissions:
-      contents: write
+      contents: read
     needs:
       - compile-and-test
       - publish-bridge-server
