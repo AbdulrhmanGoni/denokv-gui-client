@@ -6,7 +6,7 @@
   import KvKeyEditor from "$lib/features/kv-browser/entry-editor/KvKeyEditor.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import SearchIcon from "@lucide/svelte/icons/search";
-  import FileIcon from "@lucide/svelte/icons/file-plus";
+  import DatabaseSearchIcon from "@lucide/svelte/icons/database-search";
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import XIcon from "@lucide/svelte/icons/x";
   import {
@@ -46,7 +46,7 @@
 <Dialog.Root bind:open={getOpen, setOpen}>
   <Dialog.Content class="max-w-3xl w-full p-3 gap-0">
     <h1 class="flex items-center gap-2 text-2xl font-bold">
-      <FileIcon class="size-7" />
+      <DatabaseSearchIcon class="size-7" />
       Look Up a KV Entry
     </h1>
     <p class="py-1.5 text-muted-foreground">Look up a Kv Entry by it's key</p>
