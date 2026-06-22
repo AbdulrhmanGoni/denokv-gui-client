@@ -2,6 +2,10 @@ name: Draft Release
 
 on:
   workflow_call:
+    secrets:
+      BOT_PRIVATE_KEY:
+        required: true
+        description: Bot's private key for creating releases.
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true

@@ -109,6 +109,8 @@ jobs:
       - publish-bridge-server
       - attest-release-artifacts
     uses: ./.github/workflows/release.yml
+    secrets:
+      BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
 
   dispatch-signing-request:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.environment == 'Release' && !inputs.skip-signing-request
