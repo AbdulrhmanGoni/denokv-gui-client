@@ -86,13 +86,17 @@ jobs:
 
           exit 0
 
+      - name: Upload test results
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: "test-results-${{ matrix.os }}"
+          path: test-results
+
       - name: Upload compiled app
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: ${{ matrix.os }}
-          path: |
-            dist
-            test-results
+          name: "app-${{ matrix.os }}"
+          path: dist
 
       - name: Decide Whether the job failed or not
         run: |
