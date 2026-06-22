@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.26.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.25.0...v1.26.0) (2026-06-22)
+
+
+### Enhancements
+
+* improve performance of constructing KvU64 values ([8bc43cc](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8bc43cc9b72ac3e382cffea208653fcba033ae45))
+
+
+### Maintenance
+
+* update `electron` to version 42.4.1 ([6cacc13](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/6cacc133bec697c7e749b9caaf6a78875c7987f8))
+
+
+### User Interface Changes
+
+* set an appropriate title icon for "Look Up a KV Entry" window ([d986b2a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d986b2ad289bc2fc7620224e4d1ba9265999b6f3))
+
 ## [1.25.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.24.0...v1.25.0) (2026-06-16)
 
 
