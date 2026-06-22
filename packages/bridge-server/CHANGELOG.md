@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [10.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@9.0.1...bridge-server@10.0.0) (2026-06-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* `deserializeKvValue` function becomes synchronous and
+no longer requires `Kv` instance as the second parameter.
+
+### Enhancements
+
+* improve performance of constructing KvU64 values ([8bc43cc](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8bc43cc9b72ac3e382cffea208653fcba033ae45))
+
 ## [9.0.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@9.0.0...bridge-server@9.0.1) (2026-06-16)
 
 
