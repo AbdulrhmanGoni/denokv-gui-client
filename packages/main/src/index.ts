@@ -2,7 +2,7 @@ import type { AppInitConfig } from "./AppInitConfig.js";
 import { createModuleRunner } from "./ModuleRunner.js";
 import { createWindowManagerModule } from "./modules/WindowManager.js";
 import { HardwareAccelerationModule } from "./modules/HardwareAccelerationModule.js";
-import { createWebContentsUrlPolicy } from "./modules/WebContentsUrlPolicy.js";
+import { WebContentsUrlPolicy } from "./modules/WebContentsUrlPolicy.js";
 import { BridgeServerModule } from "./modules/bridgeServer.js";
 import { KvStoresServiceModule } from "./modules/kvStoresService.js";
 import { SettingsServiceModule } from "./modules/settingsService.js";
@@ -34,7 +34,7 @@ export async function initApp(initConfig: AppInitConfig) {
     .init(new KvServerClientModule())
     .init(new WatchedKeysServiceModule())
     .init(
-      createWebContentsUrlPolicy(
+      new WebContentsUrlPolicy(
         initConfig.renderer instanceof URL ? initConfig.renderer.origin : "",
       ),
     );
