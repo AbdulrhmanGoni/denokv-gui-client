@@ -1,8 +1,7 @@
 import type { AppModule } from "../AppModule.js";
 import { ModuleContext } from "../ModuleContext.js";
-import { BrowserWindow, ipcMain, screen } from "electron";
+import { BrowserWindow, screen } from "electron";
 import type { AppInitConfig } from "../AppInitConfig.js";
-import os from "node:os";
 
 export class WindowManager implements AppModule {
   readonly #preload: { path: string };
@@ -22,31 +21,6 @@ export class WindowManager implements AppModule {
   }
 
   async enable(context: ModuleContext): Promise<void> {
-    const isSingleInstance = context.app.requestSingleInstanceLock();
-    if (!isSingleInstance) {
-      context.app.quit();
-      process.exit(0);
-    }
-
-    context.app.on("window-all-closed", () => context.app.quit());
-
-    ipcMain.handle("restart-app", () => {
-      let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
-      if (
-        os.platform() == "linux" &&
-        process.env.APPIMAGE &&
-        context.app.isPackaged
-      ) {
-        relaunchOptions = {
-          execPath: process.env.APPIMAGE,
-          args: ["--appimage-extract-and-run"],
-        };
-      }
-      context.app.relaunch(relaunchOptions);
-      context.app.exit();
-    });
-
-    await context.app.whenReady();
     context.browserWindow = await this.restoreOrCreateWindow(true);
     context.app.on("second-instance", () => this.restoreOrCreateWindow(true));
     context.app.on("activate", () => this.restoreOrCreateWindow(true));

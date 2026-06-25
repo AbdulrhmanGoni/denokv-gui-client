@@ -15,6 +15,7 @@ import { MetadataModule } from "./modules/metadataModule.js";
 import { KvServerClientModule } from "./modules/kvServerClientModule.js";
 import { WatchedKeysServiceModule } from "./modules/watchedKeysService.js";
 import { FileSystemServiceModule } from "./modules/fileSystemService.js";
+import { AppManagerModule } from "./modules/AppManagerModule.js";
 
 export async function initModules(modules: AppModule[]): Promise<void> {
   const context: ModuleContext = { app };
@@ -25,6 +26,7 @@ export async function initModules(modules: AppModule[]): Promise<void> {
 
 export async function initApp(initConfig: AppInitConfig) {
   await initModules([
+    new AppManagerModule(),
     new MetadataModule(),
     new HardwareAccelerationModule(),
     new FileSystemServiceModule(),
