@@ -1,5 +1,7 @@
 import type { AppInitConfig } from "./AppInitConfig.js";
-import { initModules } from "./ModuleRunner.js";
+import { AppModule } from "./AppModule.js";
+import { ModuleContext } from "./ModuleContext.js";
+import { app } from "electron";
 import { WindowManager } from "./modules/WindowManager.js";
 import { HardwareAccelerationModule } from "./modules/HardwareAccelerationModule.js";
 import { WebContentsUrlPolicy } from "./modules/WebContentsUrlPolicy.js";
@@ -13,6 +15,13 @@ import { MetadataModule } from "./modules/metadataModule.js";
 import { KvServerClientModule } from "./modules/kvServerClientModule.js";
 import { WatchedKeysServiceModule } from "./modules/watchedKeysService.js";
 import { FileSystemServiceModule } from "./modules/fileSystemService.js";
+
+export async function initModules(modules: AppModule[]): Promise<void> {
+  const context: ModuleContext = { app };
+  for (const module of modules) {
+    await module.enable(context);
+  }
+}
 
 export async function initApp(initConfig: AppInitConfig) {
   await initModules([
