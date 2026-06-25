@@ -4,7 +4,7 @@ import { BrowserWindow, ipcMain, screen } from "electron";
 import type { AppInitConfig } from "../AppInitConfig.js";
 import os from "node:os";
 
-class WindowManager implements AppModule {
+export class WindowManager implements AppModule {
   readonly #preload: { path: string };
   readonly #renderer: { path: string } | URL;
   readonly #openDevTools;
@@ -102,10 +102,4 @@ class WindowManager implements AppModule {
 
     return window;
   }
-}
-
-export function createWindowManagerModule(
-  ...args: ConstructorParameters<typeof WindowManager>
-) {
-  return new WindowManager(...args);
 }
