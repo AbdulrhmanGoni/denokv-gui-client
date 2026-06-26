@@ -35,7 +35,6 @@ import { isSameKvKey } from "../kv-utils.ts";
  * Deno.serve({ port: 8000 }, app.fetch);
  * ```
  *
- * @remarks
  * The bridge server provides the following endpoints:
  * - `GET /browse` - List KV entries (mirroring 'Deno.Kv.list()')
  * - `GET /get/:key` - Retrieve a specific KV entry by key (mirroring `Deno.Kv.get()`)

@@ -30,6 +30,8 @@
     "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations -s packages/main/src/db/schema.sql",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "lint:check": "oxlint",
+    "lint:fix": "oxlint --fix",
     "screenshots": "node scripts/takeScreenshots.ts"
   },
   "devDependencies": {
@@ -41,6 +43,7 @@
     "electron": "42.4.1",
     "electron-builder": "26.15.3",
     "glob": "11.1.0",
+    "oxlint": "^1.71.0",
     "playwright": "^1.55.0",
     "prettier": "^3.8.3",
     "prettier-plugin-svelte": "^4.1.0",

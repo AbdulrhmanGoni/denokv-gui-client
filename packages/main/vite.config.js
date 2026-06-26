@@ -46,7 +46,7 @@ function copyMigrations() {
 
 /**
  * Implement Electron app reload when some file was changed
- * @return {import('vite').Plugin}
+ * @returns {import('vite').Plugin}
  */
 function handleHotReload() {
   /** @type {ChildProcess} */

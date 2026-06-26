@@ -16,7 +16,7 @@
   );
 
   function next() {
-    thereIsNextCursor && fetchEntries();
+    if (thereIsNextCursor) fetchEntries();
   }
 
   function prev() {

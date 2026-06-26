@@ -37,7 +37,7 @@ export class BrowsingParamsServiceModule implements AppModule {
               isDefault: Number(updateData.setAsDefault),
             });
 
-            if (!!result.changes) return true;
+            if (result.changes) return true;
 
             throw "Failed to save the browsing params";
           });
@@ -118,7 +118,7 @@ export class BrowsingParamsServiceModule implements AppModule {
                 : null,
           });
 
-          if (!!result.changes) return true;
+          if (result.changes) return true;
 
           throw "Failed to update the saved browsing params";
         });
@@ -130,7 +130,7 @@ export class BrowsingParamsServiceModule implements AppModule {
       (_, browsingParamsId: string) => {
         return syncTrycatch<true>(() => {
           const result = deleteOneQuery.run(browsingParamsId);
-          if (!!result.changes) return true;
+          if (result.changes) return true;
           throw "Failed to delete the saved browsing params";
         });
       },

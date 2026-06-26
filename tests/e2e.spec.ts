@@ -5,7 +5,7 @@ import { globSync } from "glob";
 import { platform } from "node:process";
 import { mainWindowTests } from "./mainWindowTests";
 import { preloadContextExposureToRendererTests } from "./preloadContextExposureToRendererTests";
-import { rmSync, writeFileSync } from "node:fs";
+import { rmSync } from "node:fs";
 import path from "node:path";
 import { kvStoresTests } from "./kvStoresTests";
 import { kvEntriesTests } from "./kvEntriesTests";
@@ -21,6 +21,7 @@ type TestFixtures = {
 
 export const test = base.extend<TestFixtures>({
   electronApp: [
+    // oxlint-disable-next-line no-empty-pattern
     async ({}, use) => {
       /**
        * Executable path depends on root package name!

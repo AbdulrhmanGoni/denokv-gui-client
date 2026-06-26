@@ -123,7 +123,7 @@ export async function watchKvEntries(entries: SerializedKvEntry[]) {
     const exists = watchedKvEntriesState.keys.some((key) =>
       isSameKvKey(key, entry.key),
     );
-    !exists && updatedWatchedKeys.push(entry.key);
+    if (!exists) updatedWatchedKeys.push(entry.key);
   }
 
   if (watchedKvEntriesState.keys.length === updatedWatchedKeys.length) return;
