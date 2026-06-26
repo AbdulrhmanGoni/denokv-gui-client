@@ -49,7 +49,7 @@
 
   async function submitEntry() {
     props.onSubmit(
-      kvKeyCodeEditor!?.toString(),
+      kvKeyCodeEditor!.toString(),
       $state.snapshot(kvValueEditorValue),
       kvEntryExpirationDateValue,
       overwrite,

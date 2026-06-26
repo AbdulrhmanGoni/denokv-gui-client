@@ -58,11 +58,12 @@ export async function startCheckingForUpdates() {
   const lastFetchedUpdate =
     await lastFetchedUpdateService.getLastFetchedUpdate();
   if (lastFetchedUpdate) {
-    !lastFetchedUpdate.doNotNotify &&
+    if (!lastFetchedUpdate.doNotNotify) {
       notifyUserForNewUpdate(
         lastFetchedUpdate.data,
         `A new update is available (v${lastFetchedUpdate.data.updateInfo.version})`,
       );
+    }
     updateAppState.newUpdate = lastFetchedUpdate.data;
     updateAppState.checkingForUpdatesDone = true;
     updateAppState.newUpdate = await appUpdater.checkForUpdate();

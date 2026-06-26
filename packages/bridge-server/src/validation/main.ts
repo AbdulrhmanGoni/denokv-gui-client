@@ -1,4 +1,4 @@
-import type { Kv, KvKey, KvListOptions, KvListSelector } from "@deno/kv";
+import type { KvKey, KvListOptions, KvListSelector } from "@deno/kv";
 import {
   deserializeKvKey,
   deserializeKvValue,
@@ -393,7 +393,9 @@ export function validateAtomicOperations(
     );
   }
 
-  const parsedOperations = new Array(operations.length);
+  const parsedOperations = Array.from<ValidAtomicOperation>({
+    length: operations.length,
+  });
   for (let i = 0; i < operations.length; i++) {
     parsedOperations[i] = validateAtomicOperation(operations[i]);
   }

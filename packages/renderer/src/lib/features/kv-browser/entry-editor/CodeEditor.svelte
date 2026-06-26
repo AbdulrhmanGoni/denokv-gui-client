@@ -37,7 +37,7 @@
       addClosing: false,
     });
 
-    jar?.updateCode(autoFormat ? format(editorValue) : editorValue);
+    jar.updateCode(autoFormat ? format(editorValue) : editorValue);
   });
 </script>
 

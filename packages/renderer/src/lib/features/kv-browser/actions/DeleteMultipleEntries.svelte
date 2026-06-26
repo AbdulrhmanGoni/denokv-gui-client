@@ -21,7 +21,7 @@
 
     const rowsToDelete = selectedRows;
 
-    new Promise<void>(async (resolve) => {
+    (async () => {
       for (let i = 0; i < rowsToDelete.length; i++) {
         if (isCanceled) break;
 
@@ -46,9 +46,7 @@
       successfullyDeletedEntries = 0;
       entriesToDeletedCount = 0;
       isCanceled = false;
-
-      resolve();
-    });
+    })();
 
     setOpen(false);
   }

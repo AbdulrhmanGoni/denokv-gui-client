@@ -65,7 +65,7 @@ function mockExposed() {
 
 /**
  * Implement Electron webview reload when some file was changed
- * @return {import('vite').Plugin}
+ * @returns {import('vite').Plugin}
  */
 function handleHotReload() {
   /** @type {import('vite').ViteDevServer|null} */

@@ -24,9 +24,9 @@
   import LoaderIcon from "@lucide/svelte/icons/loader";
 
   function getAtomicOperationsInOrder() {
-    let orderedOperations: AtomicOperationInput[] = new Array(
-      $operations.length,
-    );
+    let orderedOperations: AtomicOperationInput[] = Array.from({
+      length: $operations.length,
+    });
     $operations.map((op) => {
       orderedOperations[$operationsOrder.indexOf(op.id)] = op.operation;
     });

@@ -56,12 +56,14 @@
   function onDataTypeChange(selectedDataType: KvDataType) {
     if (selectedDataType.type == defaultValue?.type) {
       editorValue.data = String(defaultValue.data);
-      isFormattableValue &&
+      if (isFormattableValue) {
         jar?.updateCode(codeFormatter(kvValueToEditorValue(defaultValue)));
+      }
     } else {
       editorValue.data = selectedDataType.starter;
-      isFormattableValue &&
+      if (isFormattableValue) {
         jar?.updateCode(codeFormatter(selectedDataType.starter));
+      }
     }
 
     editorValue.type = selectedDataType.type;

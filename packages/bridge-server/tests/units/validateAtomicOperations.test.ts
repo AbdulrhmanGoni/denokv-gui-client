@@ -147,7 +147,9 @@ describe("Test 'validateAtomicOperations' function", () => {
 
   it("should throw error for non-integer number value in 'sum' operation", async () => {
     const operations = [{ name: "sum", key: "['a']", value: 1.5 }];
-    expect(() => validateAtomicOperations(operations as any)).toThrow();
+    expect(() => validateAtomicOperations(operations as any)).toThrow(
+      "Invalid atomic operation: the value passed to the 'sum' operation is not an integer",
+    );
   });
 
   it("should validate 'enqueue' with all options", async () => {
