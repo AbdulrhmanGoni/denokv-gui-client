@@ -1,8 +1,7 @@
 import type { ElectronApplication } from "playwright";
 import { _electron as electron } from "playwright";
 import { test as base } from "@playwright/test";
-import { globSync } from "glob";
-import { platform } from "node:process";
+import getCompiledAppPath from "./getCompiledAppPath";
 import { mainWindowTests } from "./mainWindowTests";
 import { preloadContextExposureToRendererTests } from "./preloadContextExposureToRendererTests";
 import { rmSync } from "node:fs";
@@ -23,21 +22,8 @@ export const test = base.extend<TestFixtures>({
   electronApp: [
     // oxlint-disable-next-line no-empty-pattern
     async ({}, use) => {
-      /**
-       * Executable path depends on root package name!
-       */
-      let executablePattern = "dist/*/denokv-gui-client{,.*}";
-      if (platform === "darwin") {
-        executablePattern += "/Contents/*/denokv-gui-client";
-      }
-
-      const [executablePath] = globSync(executablePattern);
-      if (!executablePath) {
-        throw new Error("App Executable path not found");
-      }
-
       const electronApp = await electron.launch({
-        executablePath: executablePath,
+        executablePath: getCompiledAppPath(),
         args: ["--no-sandbox"],
       });
 

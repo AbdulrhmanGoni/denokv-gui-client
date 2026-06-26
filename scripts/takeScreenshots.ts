@@ -1,7 +1,5 @@
-import { _electron as electron } from "playwright";
-import type { Page } from "playwright";
-import { globSync } from "glob";
-import { platform } from "node:process";
+import { type Page, _electron as electron } from "playwright";
+import getCompiledAppPath from "../tests/getCompiledAppPath.ts";
 import sharp from "sharp";
 import { readdirSync, rmSync, writeFileSync } from "node:fs";
 import { randomTestingKvEntries } from "../tests/testingKvEntries.ts";
@@ -9,20 +7,8 @@ import path from "node:path";
 
 process.env.PLAYWRIGHT_TEST = "true";
 
-let executablePattern = "dist/*/denokv-gui-client{,.*}";
-if (platform === "darwin") {
-  executablePattern += "/Contents/*/denokv-gui-client";
-}
-
-const [executablePath] = globSync(executablePattern);
-if (!executablePath) {
-  throw new Error(
-    "App Executable path not found. Please compile the app first using: npm run compile",
-  );
-}
-
 const electronApp = await electron.launch({
-  executablePath: executablePath,
+  executablePath: getCompiledAppPath(),
   args: ["--no-sandbox"],
 });
 
