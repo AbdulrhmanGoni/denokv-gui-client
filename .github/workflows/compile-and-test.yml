@@ -62,6 +62,9 @@ jobs:
       - name: Run typecheck
         run: npm run typecheck
 
+      - name: Run code linter
+        run: npm run lint:check
+
       - name: Run bridge server tests
         run: npm run test --workspace=@app/bridge-server
 
