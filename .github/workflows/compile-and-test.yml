@@ -69,7 +69,7 @@ jobs:
         run: npm run test --workspace=@app/bridge-server
 
       - name: Build the app
-        run: npm run compile -- -p never
+        run: npx electron-builder build --config electron-builder.mjs --publish never
 
       - name: Run UI e2e tests
         id: tests
