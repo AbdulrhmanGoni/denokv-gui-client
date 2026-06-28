@@ -45,25 +45,21 @@ switch (os.platform()) {
 }
 
 export default /** @type import('electron-builder').Configuration */
-  ({
-    publish: {
-      provider: "github",
-      owner: "AbdulrhmanGoni",
-      repo: "denokv-gui-client",
-    },
-    ...platformSpecificConfig,
-    directories: {
-      output: "dist",
-      buildResources: "buildResources",
-    },
-    asarUnpack: [
-      "node_modules/@dbmate/**",
-      "node_modules/@app/main/dist/migrations/**",
-    ],
-    generateUpdatesFilesForAllChannels: true,
-    artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-    files: ["LICENSE*", pkg.main, ...(await getListOfFilesFromEachWorkspace())],
-  });
+({
+  publish: {
+    provider: "github",
+    owner: "AbdulrhmanGoni",
+    repo: "denokv-gui-client",
+  },
+  ...platformSpecificConfig,
+  directories: {
+    output: "dist",
+    buildResources: "buildResources",
+  },
+  asarUnpack: ["node_modules/@app/main/dist/migrations/**"],
+  artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
+  files: ["LICENSE*", pkg.main, ...(await getListOfFilesFromEachWorkspace())],
+});
 
 async function getListOfFilesFromEachWorkspace() {
   /**
