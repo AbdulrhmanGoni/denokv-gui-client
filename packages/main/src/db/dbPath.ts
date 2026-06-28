@@ -7,9 +7,9 @@ function getAppDataPath(appName: string) {
   const platform = process.platform;
 
   if (platform === "win32") {
-    const localAppData = (process.env.LOCALAPPDATA ||
-      process.env.APPDATA) as string;
-    return path.join(localAppData, appName);
+    const localAppData = process.env.LOCALAPPDATA || process.env.APPDATA;
+    if (localAppData) return path.join(localAppData, appName);
+    return path.join(home, "AppData", "Local");
   }
 
   if (platform === "darwin") {
