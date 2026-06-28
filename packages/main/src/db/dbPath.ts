@@ -21,13 +21,12 @@ function getAppDataPath(appName: string) {
 }
 
 export function getDatabasePath() {
-  const dbDir = getAppDataPath("denokv-gui-client");
-
-  const dbPath = path.join(dbDir, "kv-stores-database.sqlite");
+  const dbDir =
+    process.env.DENOKV_GUI_CLIENT_DB_DIR || getAppDataPath("denokv-gui-client");
 
   if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true });
   }
 
-  return dbPath;
+  return path.join(dbDir, "kv-stores-database.sqlite");
 }
