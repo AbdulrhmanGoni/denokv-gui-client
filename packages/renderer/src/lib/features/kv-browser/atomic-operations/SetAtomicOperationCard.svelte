@@ -1,6 +1,6 @@
 <script lang="ts">
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
-  import type { AtomicOperationInput } from "@app/bridge-server";
+  import type { AtomicOperationUIInput } from "./atomicOperationsState.svelte";
   import CodeRenderer from "../entry-renderer/CodeRenderer.svelte";
   import AtomicOperationCardLayout from "./AtomicOperationCardLayout.svelte";
   import KvValueRenderer from "../entry-renderer/KvValueRenderer.svelte";
@@ -9,7 +9,7 @@
     operation,
     id,
   }: {
-    operation: Extract<AtomicOperationInput, { name: "set" }>;
+    operation: Extract<AtomicOperationUIInput, { name: "set" }>;
     id: string;
   } = $props();
 </script>

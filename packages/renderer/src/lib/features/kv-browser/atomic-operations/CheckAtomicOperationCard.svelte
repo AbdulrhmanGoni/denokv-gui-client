@@ -1,6 +1,6 @@
 <script lang="ts">
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
-  import type { AtomicOperationInput } from "@app/bridge-server";
+  import type { AtomicOperationUIInput } from "./atomicOperationsState.svelte";
   import CodeRenderer from "../entry-renderer/CodeRenderer.svelte";
   import TagIcon from "@lucide/svelte/icons/tag";
   import AtomicOperationCardLayout from "./AtomicOperationCardLayout.svelte";
@@ -10,7 +10,7 @@
     operation,
     id,
   }: {
-    operation: Extract<AtomicOperationInput, { name: "check" }>;
+    operation: Extract<AtomicOperationUIInput, { name: "check" }>;
     id: string;
   } = $props();
 </script>

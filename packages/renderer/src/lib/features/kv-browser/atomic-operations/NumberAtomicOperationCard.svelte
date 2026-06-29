@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AtomicOperationInput } from "@app/bridge-server";
+  import type { AtomicOperationUIInput } from "./atomicOperationsState.svelte";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import CodeRenderer from "../entry-renderer/CodeRenderer.svelte";
   import dataTypesColors from "../utils/dataTypesColors";
@@ -9,7 +9,7 @@
     operation,
     id,
   }: {
-    operation: Extract<AtomicOperationInput, { name: "sum" | "min" | "max" }>;
+    operation: Extract<AtomicOperationUIInput, { name: "sum" | "min" | "max" }>;
     id: string;
   } = $props();
 </script>

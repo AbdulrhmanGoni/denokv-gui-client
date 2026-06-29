@@ -2,15 +2,33 @@ import type { AtomicOperationInput } from "@app/bridge-server";
 import { writable } from "svelte/store";
 import { calcAtomicOperationCardPosition } from "./calcAtomicOperationCardPosition";
 
+type EnqueueAtomicOperationUIInput = Extract<
+  AtomicOperationInput,
+  { name: "enqueue" }
+>;
+
+type AtomicOperationUIInputWithoutEnqueue = Exclude<
+  AtomicOperationInput,
+  { name: "enqueue" }
+>;
+
+type OverwriteKey<K> = Omit<K, "key"> & { key: string };
+
+export type AtomicOperationUIInput =
+  | EnqueueAtomicOperationUIInput
+  | {
+      [K in AtomicOperationUIInputWithoutEnqueue as K["name"]]: OverwriteKey<K>;
+    }[AtomicOperationUIInputWithoutEnqueue["name"]];
+
 export type AtomicOperationItem = {
   id: string;
-  operation: AtomicOperationInput;
+  operation: AtomicOperationUIInput;
 };
 
 export const operations = writable<AtomicOperationItem[]>([]);
 export const operationsOrder = writable<string[]>([]);
 
-export function addAtomicOperation(operation: AtomicOperationInput) {
+export function addAtomicOperation(operation: AtomicOperationUIInput) {
   const newOperation = { id: crypto.randomUUID(), operation };
   operations.update((ops) => {
     ops.push(newOperation);
