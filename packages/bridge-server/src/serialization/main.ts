@@ -75,18 +75,32 @@ export function serializeKvKey(key: KvKey): SerializedKvKey {
  * Throws an Error with cause "SerializationError" when the input is invalid.
  *
  * @param key JSON string representing a serialized Deno Kv Key
- * @param options Optional flags, e.g. `allowEmptyKey` to not throw an error for empty keys
+ * @param options Optional flags
+ * @param options.allowEmptyKey `allowEmptyKey` to not throw an error for empty keys (Defaults to `false`).
+ * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (Defaults to `false`).
  * @returns A Deno Kv Key that can be used with Deno KV APIs
  */
 export function deserializeKvKey(
-  key: string,
-  options?: { allowEmptyKey?: boolean },
+  key: string | SerializedKvKey,
+  options?: { allowEmptyKey?: boolean; jsKey?: boolean },
 ): KvKey {
   let parsed: unknown;
-  try {
-    parsed = JSON.parse(key);
-  } catch {
-    throw new Error("Invalid JSON format for KvKey.", errorCause);
+  if (typeof key === "string") {
+    if (!options?.jsKey) {
+      try {
+        parsed = JSON.parse(key);
+      } catch {
+        throw new Error("Invalid JSON format for KvKey.", errorCause);
+      }
+    } else {
+      try {
+        parsed = (0, eval)(`(${key})`);
+      } catch {
+        throw new Error("Invalid Deno Kv Key.", errorCause);
+      }
+    }
+  } else {
+    parsed = key;
   }
 
   if (!Array.isArray(parsed)) {

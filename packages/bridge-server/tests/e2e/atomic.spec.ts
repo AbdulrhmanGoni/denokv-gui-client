@@ -119,10 +119,13 @@ export function atomicEndpointSpec({
     });
 
     it("should fail if 'sum' operation value is not a number", async () => {
-      const res = await bridgeServerClient.atomic([
-        // @ts-expect-error testing invalid input
-        { name: "sum", key: "['bal']", value: "not-a-number" },
-      ]);
+      const res = await bridgeServerClient.atomic(
+        [
+          // @ts-expect-error testing invalid input
+          { name: "sum", key: "['bal']", value: "not-a-number" },
+        ],
+        { jsKey: true },
+      );
       expect(res.result).toBe(null);
       expect(res.error).toMatch(
         /'sum' operation must have an integer value|not an integer/i,
@@ -130,11 +133,12 @@ export function atomicEndpointSpec({
     });
 
     it("should fail if key is an invalid Deno KV key structure", async () => {
-      const res = await bridgeServerClient.atomic([
-        { name: "delete", key: "{ invalid: 'key' }" },
-      ]);
+      const res = await bridgeServerClient.atomic(
+        [{ name: "delete", key: "{ invalid: 'key' }" }],
+        { jsKey: true },
+      );
       expect(res.result).toBe(null);
-      expect(res.error).toMatch(/invalid Deno Kv key/i);
+      expect(res.error).toMatch(/must be an array/i);
     });
   });
 }

@@ -99,6 +99,7 @@ List KV entries with optional filtering and pagination.
 | `consistency` | `string`  | The consistency level of the list operation. either `"strong"` or `"eventual"`.                                                |
 | `reverse`     | `boolean` | Whether to return the entries in reverse order.                                                                                |
 | `xssSafe`     | `boolean` | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
+| `jsKey`       | `boolean` | Whether to parse the `prefix`, `start`, and `end` keys as JavaScript literals instead of strict JSON. Defaults to `false`.   |
 
 > **None of the above query parameters is required**
 
@@ -117,6 +118,7 @@ Retrieve a specific KV entry by its key.
 | Parameter | Type      | Required | Description                                                                                                                    |
 | --------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `xssSafe` | `boolean` | No       | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
+| `jsKey`   | `boolean` | No       | Whether to parse the `key` as a JavaScript literal instead of strict JSON. Defaults to `false`.                                |
 
 #### PUT /set
 
@@ -129,6 +131,7 @@ Create or update a KV entry.
 | `key`       | `string`  | Yes      | The serialized KV key (URL-encoded JSON array)                                                                      |
 | `expires`   | `number`  | No       | Expiration timestamp in milliseconds                                                                                |
 | `overwrite` | `boolean` | No       | Whether to overwrite the value of the key if it already exists. Defaults to `true` unless explicitly set to `false` |
+| `jsKey`     | `boolean` | No       | Whether to parse the `key` as a JavaScript literal instead of strict JSON. Defaults to `false`.                     |
 
 **Request Body:**
 
@@ -147,9 +150,10 @@ Remove a KV entry from the Deno Kv database.
 
 **Query Parameters:**
 
-| Parameter | Type     | Required | Description                                    |
-| --------- | -------- | -------- | ---------------------------------------------- |
-| `key`     | `string` | Yes      | The serialized KV key (URL-encoded JSON array) |
+| Parameter | Type      | Required | Description                                                                                     |
+| --------- | --------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `key`     | `string`  | Yes      | The serialized KV key (URL-encoded JSON array)                                                  |
+| `jsKey`   | `boolean` | No       | Whether to parse the `key` as a JavaScript literal instead of strict JSON. Defaults to `false`. |
 
 #### GET /check
 
@@ -185,6 +189,12 @@ The request body must be a JSON object:
 
 Perform multiple KV operations atomically.
 
+**Query Parameters:**
+
+| Parameter | Type      | Required | Description                                                                                   |
+| --------- | --------- | -------- | --------------------------------------------------------------------------------------------- |
+| `jsKey`   | `boolean` | No       | Whether to parse the keys as JavaScript literals instead of strict JSON. Defaults to `false`. |
+
 **Request Body:**
 
 The request body must be a JSON array of `AtomicOperationInput` objects.
@@ -201,7 +211,7 @@ Example:
   { "name": "sum", "key": "[\"users\", \"1\", \"score\"]", "value": 10 },
   {
     "name": "set",
-    "key": "[\"users\", \"2\", 123n]",
+    "key": "[\"users\", \"2\", { \"type\": \"BigInt\", value: 123 }]",
     "value": { "type": "String", "data": "New User" },
     "expiresIn": 3600000
   }
@@ -211,6 +221,13 @@ Example:
 #### POST /watch
 
 Watch specific keys for updates via Server-Sent Events (SSE).
+
+**Query Parameters:**
+
+| Parameter | Type      | Required | Description                                                                                                                    |
+| --------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `jsKey`   | `boolean` | No       | Whether to parse the keys as JavaScript literals instead of strict JSON. Defaults to `false`.                                  |
+| `xssSafe` | `boolean` | No       | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
 
 **Request Body:**
 
@@ -290,20 +307,22 @@ browse(options?: BrowsingOptions): Promise<{ result: BrowseReturn | null; error:
 | `consistency` | `"strong"` or `"eventual"`    | The consistency level of the list operation                                                 |
 | `reverse`     | `boolean`                     | Whether to return the entries in reverse order                                              |
 | `xssSafe`     | `boolean`                     | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
+| `jsKey`       | `boolean`                     | Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to `false`) |
 
 #### `get(key, options?)`
 
 Retrieve a specific entry by its key.
 
 ```ts
-get(key: SerializedKvKey, options?: { xssSafe?: boolean }): Promise<{ result: SerializedKvEntry | null; error: string | null }>
+get(key: SerializedKvKey, options?: { xssSafe?: boolean; jsKey?: boolean }): Promise<{ result: SerializedKvEntry | null; error: string | null }>
 ```
 
 **Options:**
 
-| Option    | Type      | Description                                                                                 |
-| --------- | --------- | ------------------------------------------------------------------------------------------- |
-| `xssSafe` | `boolean` | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
+| Option    | Type      | Description                                                                                     |
+| --------- | --------- | ----------------------------------------------------------------------------------------------- |
+| `xssSafe` | `boolean` | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`)     |
+| `jsKey`   | `boolean` | Whether to parse the `key` as a JavaScript literal instead of strict JSON (defaults to `false`) |
 
 #### `set(key, value, options?)`
 
@@ -319,13 +338,14 @@ set(key: SerializedKvKey, value: SerializedKvValue, options?: SetKeyOptions): Pr
 | ----------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
 | `expires`   | `number`  | Expiration timestamp in milliseconds                                                                                |
 | `overwrite` | `boolean` | Whether to overwrite the value of the key if it already exists. Defaults to `true` unless explicitly set to `false` |
+| `jsKey`     | `boolean` | Whether to parse the `key` as a JavaScript literal instead of strict JSON (defaults to `false`)                     |
 
 #### `delete(key)`
 
 Delete an entry from the KV database.
 
 ```ts
-delete(key: SerializedKvKey): Promise<{ result: true | null; error: string | null }>
+delete(key: SerializedKvKey, options?: { jsKey?: boolean }): Promise<{ result: true | null; error: string | null }>
 ```
 
 #### `enqueue(value, options?)`
@@ -341,7 +361,7 @@ enqueue(value: SerializedKvValue, options?: EnqueueOptions): Promise<{ result: b
 Perform multiple operations as a single atomic transaction.
 
 ```ts
-atomic(operations: AtomicOperationInput[]): Promise<{ result: boolean | null; error: string | null }>
+atomic(operations: AtomicOperationInput[], options?: { jsKey?: boolean }): Promise<{ result: boolean | null; error: string | null }>
 ```
 
 #### `watch(keys, listener)`
@@ -349,7 +369,7 @@ atomic(operations: AtomicOperationInput[]): Promise<{ result: boolean | null; er
 Watches a set of keys for updates.
 
 ```ts
-watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void): Promise<(() => void) | void>
+watch(keys: SerializedKvKey[], listener: (updatedEntries: SerializedKvEntry[]) => void, options?: { xssSafe?: boolean; jsKey?: boolean }): Promise<(() => void) | void>
 ```
 
 #### `cancelWatcher()`

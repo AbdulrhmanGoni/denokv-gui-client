@@ -2,6 +2,7 @@ import type { KvKey, KvListOptions, KvListSelector } from "@deno/kv";
 import {
   deserializeKvKey,
   deserializeKvValue,
+  SerializedKvKey,
   type SerializedKvValue,
 } from "../serialization/main.ts";
 import { toNumber } from "../helpers";
@@ -22,6 +23,7 @@ type ValidBrowseRequestParams = {
  * - `consistency`, `cursor`: passed through as-is.
  * - `reverse`: boolean flag. (set to "true" for `true`, otherwise `false`).
  * - `xssSafe`: optional boolean flag to toggle XSS escaping from string values (defaults to true unless set to "false").
+ * - `jsKey`: optional boolean flag indicating if the keys should be parsed as JavaScript literals instead of strict JSON (defaults to false).
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
@@ -65,24 +67,28 @@ export function validateBrowseRequestParams(
     reverse: reverseOption === "true",
   };
 
+  const jsKey = url.searchParams.get("jsKey") === "true";
+
   const listSelector = {} as ValidBrowseRequestParams["listSelector"];
 
   const prefixOption = url.searchParams.get("prefix");
   const prefix = prefixOption
-    ? deserializeKvKey(prefixOption, { allowEmptyKey: true })
+    ? deserializeKvKey(prefixOption, { allowEmptyKey: true, jsKey })
     : undefined;
   if (prefix) {
     Object.assign(listSelector, { prefix });
   }
 
   const startOption = url.searchParams.get("start");
-  const start = startOption ? deserializeKvKey(startOption) : undefined;
+  const start = startOption
+    ? deserializeKvKey(startOption, { allowEmptyKey: true, jsKey })
+    : undefined;
   if (start) {
     Object.assign(listSelector, { start });
   }
 
   const endOption = url.searchParams.get("end");
-  const end = endOption ? deserializeKvKey(endOption) : undefined;
+  const end = endOption ? deserializeKvKey(endOption, { jsKey }) : undefined;
   if (end) {
     Object.assign(listSelector, { end });
   }
@@ -109,6 +115,7 @@ type ValidSetRequestParams = {
  * - `key`: required parameter (will be parsed using `deserializeKvKey`)
  * - `expires`: optional parameter which must be a number in milliseconds when provided.
  * - `overwrite`: optional parameter which must be a boolean when provided.
+ * - `jsKey`: optional parameter indicating if the key should be parsed as a JavaScript literal instead of strict JSON (defaults to false).
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
@@ -117,7 +124,10 @@ type ValidSetRequestParams = {
  */
 export function validateSetRequestParams(url: URL): ValidSetRequestParams {
   const targetKey = url.searchParams.get("key");
-  const key = targetKey ? deserializeKvKey(targetKey) : undefined;
+  const jsKey = url.searchParams.get("jsKey") === "true";
+  const key = targetKey
+    ? deserializeKvKey(targetKey, { jsKey: jsKey })
+    : undefined;
 
   if (!key) {
     throw new Error("No target key to set.", errorCause);
@@ -250,12 +260,21 @@ export function validateEnqueueRequest(body: unknown): ValidEnqueueRequestBody {
 }
 
 export type AtomicOperationInput =
-  | { name: "check"; key: string; versionstamp: string | null }
-  | { name: "set"; key: string; value: SerializedKvValue; expiresIn?: number }
-  | { name: "sum"; key: string; value: number }
-  | { name: "min"; key: string; value: number }
-  | { name: "max"; key: string; value: number }
-  | { name: "delete"; key: string }
+  | {
+      name: "check";
+      key: string | SerializedKvKey;
+      versionstamp: string | null;
+    }
+  | {
+      name: "set";
+      key: string | SerializedKvKey;
+      value: SerializedKvValue;
+      expiresIn?: number;
+    }
+  | { name: "sum"; key: string | SerializedKvKey; value: number }
+  | { name: "min"; key: string | SerializedKvKey; value: number }
+  | { name: "max"; key: string | SerializedKvKey; value: number }
+  | { name: "delete"; key: string | SerializedKvKey }
   | ({ name: "enqueue" } & EnqueueRequestInput);
 
 export type ValidAtomicOperation =
@@ -267,20 +286,22 @@ export type ValidAtomicOperation =
   | { name: "delete"; key: KvKey }
   | ({ name: "enqueue" } & ValidEnqueueRequestBody);
 
+export type AtomicOperationsKeyOptions = {
+  jsKey?: boolean;
+};
+
 function validateAtomicOperationKey(
-  operation: Extract<Partial<AtomicOperationInput>, { key?: string }>,
+  operation: Extract<
+    Partial<AtomicOperationInput>,
+    { key?: string | SerializedKvKey }
+  >,
+  options?: AtomicOperationsKeyOptions,
 ): KvKey {
   if (!operation.key) {
     throw InvalidAOError(`'${operation.name}' operation must have a key`);
   }
 
-  const key = (0, eval)(`(${operation.key})`);
-  if (!isValidKvKey(key)) {
-    throw InvalidAOError(
-      `the key passed to the '${operation.name}' operation is invalid Deno Kv key`,
-    );
-  }
-  return key;
+  return deserializeKvKey(operation.key, { jsKey: options?.jsKey });
 }
 
 function validateAtomicOperationNumberValue(
@@ -301,7 +322,10 @@ function validateAtomicOperationNumberValue(
   return operation.value;
 }
 
-function validateAtomicOperation(op: unknown): ValidAtomicOperation {
+function validateAtomicOperation(
+  op: unknown,
+  options?: AtomicOperationsKeyOptions,
+): ValidAtomicOperation {
   if (!(op instanceof Object)) {
     throw InvalidAOError("Must be `ValidAtomicOperation` object");
   }
@@ -311,6 +335,7 @@ function validateAtomicOperation(op: unknown): ValidAtomicOperation {
   }
 
   const operation = op as Partial<AtomicOperationInput>;
+  const KeyOptions = { jsKey: options?.jsKey };
 
   if (
     operation.name == "sum" ||
@@ -319,7 +344,7 @@ function validateAtomicOperation(op: unknown): ValidAtomicOperation {
   ) {
     return {
       name: operation.name,
-      key: validateAtomicOperationKey(operation),
+      key: validateAtomicOperationKey(operation, KeyOptions),
       value: BigInt(validateAtomicOperationNumberValue(operation)),
     };
   }
@@ -338,7 +363,7 @@ function validateAtomicOperation(op: unknown): ValidAtomicOperation {
 
       return {
         name: operation.name,
-        key: validateAtomicOperationKey(operation),
+        key: validateAtomicOperationKey(operation, KeyOptions),
         versionstamp: operation.versionstamp,
       };
     }
@@ -346,7 +371,7 @@ function validateAtomicOperation(op: unknown): ValidAtomicOperation {
     case "set": {
       return {
         name: operation.name,
-        key: validateAtomicOperationKey(operation),
+        key: validateAtomicOperationKey(operation, KeyOptions),
         value: deserializeKvValue(operation.value),
         expiresIn: operation.expiresIn,
       };
@@ -355,7 +380,7 @@ function validateAtomicOperation(op: unknown): ValidAtomicOperation {
     case "delete": {
       return {
         name: operation.name,
-        key: validateAtomicOperationKey(operation),
+        key: validateAtomicOperationKey(operation, KeyOptions),
       };
     }
 
@@ -381,11 +406,13 @@ function validateAtomicOperation(op: unknown): ValidAtomicOperation {
  * The input must be a non-empty array of valid operation objects.
  *
  * @param operations An array of atomic operations to validate
+ * @param options.jsKey Optional parameter indicating if the keys should be parsed as a JavaScript literal instead of strict JSON (defaults to false).
  * @returns Array of parsed and validated deno kv atomic operations in `ValidAtomicOperation` type
  * @throws {Error} If the operations list is not a non-empty array or if any operation is invalid
  */
 export function validateAtomicOperations(
   operations: unknown,
+  options?: AtomicOperationsKeyOptions,
 ): ValidAtomicOperation[] {
   if (!(operations instanceof Array) || !operations.length) {
     throw InvalidAOError(
@@ -397,7 +424,7 @@ export function validateAtomicOperations(
     length: operations.length,
   });
   for (let i = 0; i < operations.length; i++) {
-    parsedOperations[i] = validateAtomicOperation(operations[i]);
+    parsedOperations[i] = validateAtomicOperation(operations[i], options);
   }
   return parsedOperations;
 }

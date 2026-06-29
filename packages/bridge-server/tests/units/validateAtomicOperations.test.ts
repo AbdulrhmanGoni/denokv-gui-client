@@ -21,7 +21,7 @@ describe("Test 'validateAtomicOperations' function", () => {
       { name: "enqueue", value: { type: "String", data: "msg" } },
     ];
 
-    const result = validateAtomicOperations(operations);
+    const result = validateAtomicOperations(operations, { jsKey: true });
 
     expect(result).toEqual([
       {
@@ -57,22 +57,23 @@ describe("Test 'validateAtomicOperations' function", () => {
 
   it("should throw an error if an operation is missing a name", async () => {
     const operations = [{ key: "['users', 1]" }];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       "Invalid atomic operation: no atomic operation name provided",
     );
   });
 
   it("should throw an error for unsupported operation", async () => {
     const operations = [{ name: "invalid_op", key: "['users', 1]" }];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       'Invalid atomic operation: Unknown or unsupported atomic operation: "invalid_op"',
     );
   });
 
   it("should throw an error for invalid key (not valid serialised KvKey)", async () => {
     const operations = [{ name: "delete", key: "['invalid' , {}]" }];
-    expect(() => validateAtomicOperations(operations)).toThrow(
-      "Invalid atomic operation: the key passed to the 'delete' operation is invalid Deno Kv key",
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
+      // "Invalid atomic operation: the key passed to the 'delete' operation is invalid Deno Kv key",
+      "Invalid JSON representation for a KvKey part",
     );
   });
 
@@ -80,7 +81,7 @@ describe("Test 'validateAtomicOperations' function", () => {
     const operations = [
       { name: "check", key: "['users', 1]", versionstamp: null },
     ];
-    const result = validateAtomicOperations(operations);
+    const result = validateAtomicOperations(operations, { jsKey: true });
     expect(result[0]).toEqual({
       name: "check",
       key: ["users", 1],
@@ -92,7 +93,7 @@ describe("Test 'validateAtomicOperations' function", () => {
     const operations = [
       { name: "check", key: "['users', 1]", versionstamp: 123 },
     ];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations)).toThrow(
       "Invalid atomic operation: versionstamp of 'check' operation must be either null or a non-empty string",
     );
   });
@@ -101,7 +102,7 @@ describe("Test 'validateAtomicOperations' function", () => {
     const operations = [
       { name: "check", key: "['users', 1]", versionstamp: "" },
     ];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       "Invalid atomic operation: versionstamp of 'check' operation must be either null or a non-empty string",
     );
   });
@@ -115,7 +116,7 @@ describe("Test 'validateAtomicOperations' function", () => {
         expiresIn: 5000,
       },
     ];
-    const result = validateAtomicOperations(operations);
+    const result = validateAtomicOperations(operations, { jsKey: true });
     expect(result[0]).toEqual({
       name: "set",
       key: ["users", 1],
@@ -126,28 +127,28 @@ describe("Test 'validateAtomicOperations' function", () => {
 
   it("should throw error for missing key in 'set' operation", async () => {
     const operations = [{ name: "set", value: { type: "Number", data: 123 } }];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       "Invalid atomic operation: 'set' operation must have a key",
     );
   });
 
   it("should throw error for non-number value in 'sum' operation", async () => {
     const operations = [{ name: "sum", key: "['a']", value: "not a number" }];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       "Invalid atomic operation: 'sum' operation must have an integer value",
     );
   });
 
   it("should throw error for missing value in 'sum' operation", async () => {
     const operations = [{ name: "sum", key: "['a']" }];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       "Invalid atomic operation: 'sum' operation must have an integer value",
     );
   });
 
   it("should throw error for non-integer number value in 'sum' operation", async () => {
     const operations = [{ name: "sum", key: "['a']", value: 1.5 }];
-    expect(() => validateAtomicOperations(operations as any)).toThrow(
+    expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       "Invalid atomic operation: the value passed to the 'sum' operation is not an integer",
     );
   });

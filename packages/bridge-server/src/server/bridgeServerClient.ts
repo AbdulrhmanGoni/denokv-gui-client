@@ -100,6 +100,8 @@ export type BrowsingOptions = {
   end?: SerializedKvKey;
   /** Whether to escape HTML characters and JS line terminators from strings (defaults to true) */
   xssSafe?: boolean;
+  /** Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to false) */
+  jsKey?: boolean;
 };
 
 /** Options for setting a KV key */
@@ -108,6 +110,8 @@ export type SetKeyOptions = {
   expires?: number;
   /** Whether to overwrite the value if the key already exists (defaults to true) */
   overwrite?: boolean;
+  /** Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false) */
+  jsKey?: boolean;
 };
 
 /** The result of a set operation */
@@ -186,12 +190,13 @@ export class BridgeServerClient {
   /**
    * Retrieves a single Deno KV entry by its key.
    * @param key The key to retrieve
-   * @param options Optional settings like xssSafe
+   * @param options Optional configurations like `xssSafe` and `jsKey`
    * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true). Set to false to disable.
+   * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false).
    */
   get(
     key: SerializedKvKey,
-    options?: { xssSafe?: boolean },
+    options?: { xssSafe?: boolean; jsKey?: boolean },
   ): CallBridgeServerReturn<SerializedKvEntry> {
     return callBridgeServerRequest<SerializedKvEntry>({
       url: `${this.baseUrl}/get/${encodeURIComponent(JSON.stringify(key))}`,
@@ -204,11 +209,16 @@ export class BridgeServerClient {
   /**
    * Deletes a Deno KV entry by its key.
    * @param key The key to delete
+   * @param options Optional configurations
+   * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false).
    */
-  delete(key: SerializedKvKey): CallBridgeServerReturn<true> {
+  delete(
+    key: SerializedKvKey,
+    options?: { jsKey?: boolean },
+  ): CallBridgeServerReturn<true> {
     return callBridgeServerRequest<true>({
       url: `${this.baseUrl}/delete`,
-      options: { key },
+      options: { key, ...options },
       headers: this.headers,
       method: "DELETE",
     });
@@ -234,15 +244,19 @@ export class BridgeServerClient {
   /**
    * Performs an atomic operation consisting of multiple checks and mutations.
    * @param atomicOperations An array of atomic operations to perform
+   * @param options Optional configuration
+   * @param options.jsKey Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to false).
    */
   atomic(
     atomicOperations: AtomicOperationInput[],
+    options?: { jsKey?: boolean },
   ): CallBridgeServerReturn<boolean> {
     return callBridgeServerRequest<boolean>({
       url: `${this.baseUrl}/atomic`,
       body: atomicOperations,
       method: "POST",
       headers: this.headers,
+      options,
     });
   }
 
@@ -254,21 +268,19 @@ export class BridgeServerClient {
    *
    * @param keys An array of KV keys to watch
    * @param listener A callback function to be called when one of the watched keys is updated
-   * @param options Optional configuration settings
+   * @param options Optional configurations
    * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
+   * @param options.jsKey Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to false).
    * @returns A promise that resolves when the watch stream is closed or cancelled
    */
   async watch(
     keys: SerializedKvKey[],
     listener: (updatedEntries: SerializedKvEntry[]) => void,
-    options?: { xssSafe?: boolean },
+    options?: { xssSafe?: boolean; jsKey?: boolean },
   ): Promise<void> {
     try {
       const controller = new AbortController();
-      const queryParams = new URLSearchParams();
-      if (options?.xssSafe !== undefined) {
-        queryParams.append("xssSafe", options.xssSafe.toString());
-      }
+      const queryParams = options ? optionsToUrlSearchParams(options) : "";
       const response = await fetch(`${this.baseUrl}/watch?${queryParams}`, {
         method: "POST",
         headers: this.headers,

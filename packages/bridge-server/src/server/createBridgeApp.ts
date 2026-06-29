@@ -5,6 +5,7 @@ import {
   serializeEntries,
   SerializedKvKey,
   SerializedKvEntry,
+  serializeKvKey,
 } from "../serialization/main.ts";
 import {
   validateBrowseRequestParams,
@@ -89,8 +90,9 @@ export function createBridgeApp(
   app.get("/get/:key", async (c) => {
     const targetKey = c.req.param("key");
     const xssSafe = c.req.query("xssSafe") === "false" ? false : true;
+    const jsKey = c.req.query("jsKey") === "true";
 
-    const key = deserializeKvKey(targetKey);
+    const key = deserializeKvKey(targetKey, { jsKey });
 
     const entry = await kv.get(key);
 
@@ -99,7 +101,7 @@ export function createBridgeApp(
     } else {
       return c.json({
         result: {
-          key: JSON.parse(targetKey),
+          key: serializeKvKey(key),
           value: serializeKvValue(entry.value, xssSafe),
           versionstamp: entry.versionstamp,
         },
@@ -146,8 +148,9 @@ export function createBridgeApp(
     if (!targetKey) {
       return c.json({ error: "No target key to delete." }, 400);
     }
+    const jsKey = c.req.query("jsKey") === "true";
 
-    const key = deserializeKvKey(targetKey);
+    const key = deserializeKvKey(targetKey, { jsKey });
 
     await kv.delete(key);
 
@@ -161,7 +164,11 @@ export function createBridgeApp(
   });
 
   app.post("/atomic", async (c) => {
-    const atomicOperations = validateAtomicOperations(await c.req.json());
+    const jsKey = c.req.query("jsKey") === "true";
+
+    const atomicOperations = validateAtomicOperations(await c.req.json(), {
+      jsKey,
+    });
 
     let kvAtomicOperation = kv.atomic();
 
@@ -246,7 +253,9 @@ export function createBridgeApp(
       return c.json({ error: "No keys provided to watch." }, 400);
     }
 
-    const keys = serializedKeys.map((key) => deserializeKvKey(key));
+    const jsKey = c.req.query("jsKey") === "true";
+
+    const keys = serializedKeys.map((key) => deserializeKvKey(key, { jsKey }));
 
     await closeWatchStreamReader();
 
