@@ -93,11 +93,11 @@ export type BrowsingOptions = {
   /** Whether to return the entries in reverse order */
   reverse?: boolean;
   /** Filter entries by key prefix */
-  prefix?: SerializedKvKey;
+  prefix?: SerializedKvKey | string;
   /** Start key for range query (inclusive) */
-  start?: SerializedKvKey;
+  start?: SerializedKvKey | string;
   /** End key for range query (exclusive) */
-  end?: SerializedKvKey;
+  end?: SerializedKvKey | string;
   /** Whether to escape HTML characters and JS line terminators from strings (defaults to true) */
   xssSafe?: boolean;
   /** Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to false) */
@@ -274,7 +274,7 @@ export class BridgeServerClient {
    * @returns A promise that resolves when the watch stream is closed or cancelled
    */
   async watch(
-    keys: SerializedKvKey[] | string[] | string,
+    keys: SerializedKvKey[] | string[],
     listener: (updatedEntries: SerializedKvEntry[]) => void,
     options?: { xssSafe?: boolean; jsKey?: boolean },
   ): Promise<void> {
@@ -284,14 +284,11 @@ export class BridgeServerClient {
       const response = await fetch(`${this.baseUrl}/watch?${queryParams}`, {
         method: "POST",
         headers: this.headers,
-        body:
-          typeof keys == "string"
+        body: JSON.stringify(
+          typeof keys[0] == "string"
             ? keys
-            : JSON.stringify(
-                typeof keys[0] == "string"
-                  ? keys
-                  : keys.map((key) => JSON.stringify(key)),
-              ),
+            : keys.map((key) => JSON.stringify(key)),
+        ),
         signal: controller.signal,
       });
 
