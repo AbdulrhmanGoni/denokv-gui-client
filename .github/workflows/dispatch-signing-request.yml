@@ -24,4 +24,3 @@ jobs:
 
       - run: |
           echo "workflow_id: ${{ steps.dispatch.outputs.workflow_id }}"
-

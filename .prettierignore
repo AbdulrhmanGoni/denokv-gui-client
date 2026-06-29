@@ -16,3 +16,4 @@ pnpm-lock.yaml
 landing/pnpm-lock.yaml
 database.dev.sqlite
 database.test.sqlite
+CHANGELOG.md

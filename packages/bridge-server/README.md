@@ -99,7 +99,7 @@ List KV entries with optional filtering and pagination.
 | `consistency` | `string`  | The consistency level of the list operation. either `"strong"` or `"eventual"`.                                                |
 | `reverse`     | `boolean` | Whether to return the entries in reverse order.                                                                                |
 | `xssSafe`     | `boolean` | Whether to escape HTML characters and JS line terminators from strings. Defaults to `true` unless explicitly set to `"false"`. |
-| `jsKey`       | `boolean` | Whether to parse the `prefix`, `start`, and `end` keys as JavaScript literals instead of strict JSON. Defaults to `false`.   |
+| `jsKey`       | `boolean` | Whether to parse the `prefix`, `start`, and `end` keys as JavaScript literals instead of strict JSON. Defaults to `false`.     |
 
 > **None of the above query parameters is required**
 
@@ -296,17 +296,17 @@ browse(options?: BrowsingOptions): Promise<{ result: BrowseReturn | null; error:
 
 **BrowsingOptions:**
 
-| Option        | Type                          | Description                                                                                 |
-| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------- |
-| `limit`       | `number`                      | Maximum number of entries to return                                                         |
-| `cursor`      | `string`                      | Cursor for pagination (from previous browse result)                                         |
-| `prefix`      | `SerializedKvKey` (as string) | Filter entries by key prefix                                                                |
-| `start`       | `SerializedKvKey` (as string) | Start key for range query (inclusive)                                                       |
-| `end`         | `SerializedKvKey` (as string) | End key for range query (exclusive)                                                         |
-| `batchSize`   | `number`                      | The number of entries to fetch from the database at once                                    |
-| `consistency` | `"strong"` or `"eventual"`    | The consistency level of the list operation                                                 |
-| `reverse`     | `boolean`                     | Whether to return the entries in reverse order                                              |
-| `xssSafe`     | `boolean`                     | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`) |
+| Option        | Type                          | Description                                                                                   |
+| ------------- | ----------------------------- | --------------------------------------------------------------------------------------------- |
+| `limit`       | `number`                      | Maximum number of entries to return                                                           |
+| `cursor`      | `string`                      | Cursor for pagination (from previous browse result)                                           |
+| `prefix`      | `SerializedKvKey` (as string) | Filter entries by key prefix                                                                  |
+| `start`       | `SerializedKvKey` (as string) | Start key for range query (inclusive)                                                         |
+| `end`         | `SerializedKvKey` (as string) | End key for range query (exclusive)                                                           |
+| `batchSize`   | `number`                      | The number of entries to fetch from the database at once                                      |
+| `consistency` | `"strong"` or `"eventual"`    | The consistency level of the list operation                                                   |
+| `reverse`     | `boolean`                     | Whether to return the entries in reverse order                                                |
+| `xssSafe`     | `boolean`                     | Whether to escape HTML characters and JS line terminators from strings (defaults to `true`)   |
 | `jsKey`       | `boolean`                     | Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to `false`) |
 
 #### `get(key, options?)`

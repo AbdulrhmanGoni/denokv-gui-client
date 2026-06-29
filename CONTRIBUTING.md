@@ -33,7 +33,7 @@ This project uses `npm` as its package manager.
 ├── /landing # Landing page source code
 ├── /screenshots # Screenshots of the app
 ├── /scripts
-├── /tests # End-to-end tests
+├── /tests # End-to-end application UI tests
 ├── /types
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
@@ -155,7 +155,7 @@ Follow these steps to submit a pull request: 👇
 
 2. Follow the [Install and Run instructions](README.md#install-and-run-locally) in the `README.md` to set up your development environment.
 
-3. Create a new branch and implement your changes in it.
+3. Create a new branch and make your changes in it.
 
 4. Run the tests to ensure all of them pass and no regressions are introduced.
 
