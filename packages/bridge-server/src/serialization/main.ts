@@ -115,6 +115,8 @@ export function deserializeKvKey(
     if (
       typeof part === "string" ||
       typeof part === "number" ||
+      typeof part === "bigint" ||
+      part instanceof Uint8Array ||
       typeof part === "boolean"
     ) {
       return part;
