@@ -130,4 +130,29 @@ describe("Test 'validateBrowseRequestParams' function", () => {
       xssSafe: false,
     });
   });
+
+  it("should parse key selectors as JS literals when jsKey=true", () => {
+    const url = new URL(
+      fakeUrl +
+        "/list?prefix=['posts']&start=['posts',2024n]&end=['posts',2025n]&jsKey=true",
+    );
+    const result = validateBrowseRequestParams(url);
+    expect(result.listSelector).toEqual({
+      prefix: ["posts"],
+      start: ["posts", 2024n],
+      end: ["posts", 2025n],
+    });
+  });
+
+  it("should throw error for valid key selectors as JS literal when 'jsKey' option is false or not provided", () => {
+    const url1 = new URL(fakeUrl + "/list?prefix=['posts', 6n]");
+    expect(() => validateBrowseRequestParams(url1)).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
+
+    const url2 = new URL(fakeUrl + "/list?prefix=['posts']&jsKey=false");
+    expect(() => validateBrowseRequestParams(url2)).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
+  });
 });

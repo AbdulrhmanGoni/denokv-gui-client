@@ -140,5 +140,57 @@ export function atomicEndpointSpec({
       expect(res.result).toBe(null);
       expect(res.error).toMatch(/must be an array/i);
     });
+
+    it("should handle keys passed as JS literals and perform operations when jsKey query parameter is true", async () => {
+      const key = "['e2e', 'atomic', 'jsKey']";
+      const res = await bridgeServerClient.atomic(
+        [
+          {
+            name: "set",
+            key: key,
+            value: { type: "String", data: "atomic-js-val" },
+          },
+        ],
+        { jsKey: true },
+      );
+      expect(res.result).toBe(true);
+
+      const dbVal = await kv.get(["e2e", "atomic", "jsKey"]);
+      expect(dbVal.value).toBe("atomic-js-val");
+    });
+
+    it("should fail when an operation has it's key as JS literal and jsKey is false or missing", async () => {
+      const res1 = await bridgeServerClient.atomic([
+        {
+          name: "set",
+          key: "['JS-Only', new Uint8Array([255, 255, 255])]",
+          value: { type: "String", data: "atomic-js-val-fail" },
+        },
+        {
+          name: "delete",
+          key: '["key JSON-safe"]',
+        },
+      ]);
+      expect(res1.result).toBeNull();
+      expect(res1.error).toContain("Invalid JSON format for KvKey.");
+
+      const res2 = await bridgeServerClient.atomic(
+        [
+          {
+            name: "check",
+            key: "['JS-Only', 85485n]",
+            versionstamp: "00000000f0000000",
+          },
+          {
+            name: "max",
+            key: '["key JSON-safe"]',
+            value: 636,
+          },
+        ],
+        { jsKey: false },
+      );
+      expect(res2.result).toBeNull();
+      expect(res2.error).toContain("Invalid JSON format for KvKey.");
+    });
   });
 }

@@ -62,5 +62,32 @@ export function setEndpointSpec({ bridgeServerClient, kv }: TestDependencies) {
       const getRes = await kv.get(key);
       expect(getRes.value).toBe("initial");
     });
+
+    it("should set the key when passed as JS literal and 'jsKey' parameter is true", async () => {
+      const key = "[new Uint8Array([5, 6, 7]), 'set', 47727732n]";
+      const value = { type: "String", data: "jsKeyVal" };
+      const res = await bridgeServerClient.set(key as any, value, {
+        jsKey: true,
+      });
+      expect(res.result?.ok).toBe(true);
+
+      const dbVal = await kv.get([new Uint8Array([5, 6, 7]), "set", 47727732n]);
+      expect(dbVal.value).toBe("jsKeyVal");
+    });
+
+    it("should return an error for the key when passed as JS literal and 'jsKey' parameter is false or missing", async () => {
+      const key = "[new Uint8Array([4, 8, 9]), 'set', 999999n]";
+      const value = { type: "String", data: "jsKeyVal" };
+      const res1 = await bridgeServerClient.set(key as any, value);
+      expect(res1.error).toContain("Invalid JSON format for KvKey.");
+
+      const res2 = await bridgeServerClient.set(key as any, value, {
+        jsKey: false,
+      });
+      expect(res2.error).toContain("Invalid JSON format for KvKey.");
+
+      const dbVal = await kv.get([new Uint8Array([4, 8, 9]), "set", 999999n]);
+      expect(dbVal.value).toBeNull();
+    });
   });
 }

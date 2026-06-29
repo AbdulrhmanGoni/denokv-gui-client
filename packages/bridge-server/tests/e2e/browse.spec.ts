@@ -62,5 +62,27 @@ export function browseEndpointSpec({ bridgeServerClient }: TestDependencies) {
 
       await bridgeServerClient.delete(key);
     });
+
+    it("should return the entries with the prefix key passed as JS string", async () => {
+      const options = { prefix: "['users']", jsKey: true };
+
+      const res = await bridgeServerClient.browse(options);
+      expect(res.result?.entries).toBeInstanceOf(Array);
+      res.result?.entries.forEach((entry) => {
+        expect(entry.key[0]).toBe("users");
+      });
+    });
+
+    it("should return an error if the prefix key passed as JS string and jsKey option is false or missing", async () => {
+      const prefix = "['users']";
+
+      const res1 = await bridgeServerClient.browse({ prefix });
+      expect(res1.result).toBeNull();
+      expect(res1.error).toContain("Invalid JSON format for KvKey.");
+
+      const res2 = await bridgeServerClient.browse({ prefix, jsKey: false });
+      expect(res2.result).toBeNull();
+      expect(res2.error).toContain("Invalid JSON format for KvKey.");
+    });
   });
 }

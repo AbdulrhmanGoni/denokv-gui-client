@@ -80,4 +80,33 @@ describe("Test deserializeKvKey function", () => {
     const key = '[{ "type": "Uint8Array", "value": "invalid-Uint8Array" }]';
     expect(() => deserializeKvKey(key)).toThrow("Invalid Uint8Array value: ");
   });
+
+  it("should parse a KvKey as a JS literal when the jsKey option is enabled", () => {
+    const key = "['posts', 123, true, 6n,]";
+    const expected = ["posts", 123, true, 6n];
+    expect(deserializeKvKey(key, { jsKey: true })).toEqual(expected);
+  });
+
+  it("should parse a KvKey as a mix of JS literal and the custom JSON representation", () => {
+    const key = `['posts', { type: "BigInt", value: 999999 }, 999999n]`;
+    const expected = ["posts", 999999n, 999999n];
+    expect(deserializeKvKey(key, { jsKey: true })).toEqual(expected);
+  });
+
+  it("should throw an error for a non-JSON KvKey when jsKey option is disabled", () => {
+    const key = "[100000000000n, 'test']";
+    expect(() => deserializeKvKey(key, { jsKey: false })).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
+    expect(() => deserializeKvKey(key)).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
+  });
+
+  it("should throw an error for invalid JS expression when jsKey option is enabled", () => {
+    const key = "[posts, 123]";
+    expect(() => deserializeKvKey(key, { jsKey: true })).toThrow(
+      "Invalid Deno Kv Key.",
+    );
+  });
 });

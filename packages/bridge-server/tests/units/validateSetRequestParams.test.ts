@@ -73,4 +73,28 @@ describe("Test 'validateSetRequestParams' function", () => {
     };
     expect(validateSetRequestParams(url4)).toEqual(expected4);
   });
+
+  it("should parse the key as a JS literal when jsKey=true", () => {
+    const url = new URL(
+      `${fakeUrl}/set?key=['data', new Uint8Array([1, 2, 3])]&jsKey=true`,
+    );
+    const expected = {
+      key: ["data", new Uint8Array([1, 2, 3])],
+      overwrite: undefined,
+      expires: undefined,
+    };
+    expect(validateSetRequestParams(url)).toEqual(expected);
+  });
+
+  it("should throw error for JS literal key when jsKey=false or not provided", () => {
+    const url1 = new URL(`${fakeUrl}/set?key=['users', 6n]`);
+    expect(() => validateSetRequestParams(url1)).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
+
+    const url2 = new URL(`${fakeUrl}/set?key=['users', 6n]&jsKey=false`);
+    expect(() => validateSetRequestParams(url2)).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
+  });
 });

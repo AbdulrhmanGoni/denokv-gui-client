@@ -12,15 +12,23 @@ type WatchConnection = {
 
 async function openWatchConnection(
   { bridgeServerUrl, authToken }: TestDependencies,
-  keys: SerializedKvKey[],
+  keys: SerializedKvKey[] | string[],
+  queryParams?: Record<string, string>,
 ): Promise<WatchConnection> {
   const abortController = new AbortController();
-  const response = await fetch(`${bridgeServerUrl}/watch`, {
-    method: "POST",
-    headers: { Authorization: authToken },
-    body: JSON.stringify(keys.map((key) => JSON.stringify(key))),
-    signal: abortController.signal,
-  });
+  const response = await fetch(
+    `${bridgeServerUrl}/watch?${new URLSearchParams(queryParams)}`,
+    {
+      method: "POST",
+      headers: { Authorization: authToken },
+      body: JSON.stringify(
+        typeof keys[0] == "string"
+          ? keys
+          : keys.map((key) => JSON.stringify(key)),
+      ),
+      signal: abortController.signal,
+    },
+  );
 
   expect(response.ok).toBe(true);
   expect(response.headers.get("Content-Type")).toMatch(/text\/event-stream/);
@@ -44,16 +52,10 @@ async function readNextWatchMessage(
   reader: ReadableStreamDefaultReader<Uint8Array>,
 ): Promise<SerializedKvEntry[]> {
   const decoder = new TextDecoder();
-
-  while (true) {
-    const { value, done } = await reader.read();
-    expect(done).toBe(false);
-
-    const data = decoder.decode(value);
-    if (data === ": ping") continue;
-
-    return JSON.parse(data);
-  }
+  const { value, done } = await reader.read();
+  expect(done).toBe(false);
+  const data = decoder.decode(value);
+  return JSON.parse(data);
 }
 
 export function watchEndpointSpec(dependencies: TestDependencies) {
@@ -134,6 +136,72 @@ export function watchEndpointSpec(dependencies: TestDependencies) {
 
       expect(response.status).toBe(400);
       expect(json.error).toBe("No keys provided to watch.");
+    });
+
+    it("should fail if the passed keys are JS literals but jsKey query parameter is false or missing", async () => {
+      const res1 = await fetch(`${dependencies.bridgeServerUrl}/watch`, {
+        method: "POST",
+        headers: { Authorization: dependencies.authToken },
+        body: `["['js only', 777777n]"]`,
+      });
+      const json1 = await res1.json();
+      expect(res1.status).toBe(400);
+      expect(json1.error).toContain("Invalid JSON format for KvKey.");
+
+      const res2 = await fetch(`${dependencies.bridgeServerUrl}/watch`, {
+        method: "POST",
+        headers: { Authorization: dependencies.authToken },
+        body: `["['js only', new Uint8Array([1, 2, 3])]"]`,
+      });
+      const json2 = await res2.json();
+      expect(res2.status).toBe(400);
+      expect(json2.error).toContain("Invalid JSON format for KvKey.");
+    });
+
+    it("should handle keys passed as JS literals and stream updates for them when jsKey query parameter is true", async () => {
+      const key1 = ["updates", 1000n, new Uint8Array([10, 10, 10])] as const;
+      const key2 = ["updates", 2000n, new Uint8Array([20, 20, 20])] as const;
+      await kv.set(key1, "initial 1000n");
+      await kv.set(key2, "initial 2000n");
+
+      const watchConnection = await openWatchConnection(
+        dependencies,
+        [
+          "['updates', 1000n, new Uint8Array([10, 10, 10])]",
+          "['updates', 2000n, new Uint8Array([20, 20, 20])]",
+        ],
+        { jsKey: "true" },
+      );
+
+      // consume the initial values so the stream queue becomes empty for the next steps
+      await readNextWatchMessage(watchConnection.reader);
+
+      for (const key of [key1, key2]) {
+        const newValue = `updated-${crypto.randomUUID()}`;
+        const { versionstamp: newVersionstamp } = await kv.set(key, newValue);
+
+        const entries = await readNextWatchMessage(watchConnection.reader);
+        expect(entries).toHaveLength(1);
+        expect(entries).toEqual([
+          expect.objectContaining({
+            key: [
+              "updates",
+              {
+                type: "BigInt",
+                value: String(key[1]),
+              },
+              {
+                type: "Uint8Array",
+                value: `new Uint8Array([${key[2].join(",")}])`,
+              },
+            ],
+            value: { type: "String", data: newValue },
+            versionstamp: newVersionstamp,
+          }),
+        ]);
+      }
+
+      await closeWatchConnection(watchConnection);
     });
   });
 }

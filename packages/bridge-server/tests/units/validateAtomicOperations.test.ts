@@ -176,4 +176,23 @@ describe("Test 'validateAtomicOperations' function", () => {
       },
     });
   });
+
+  it("should parse JS literal keys in operations when jsKey is true", async () => {
+    const operations = [{ name: "delete", key: "['users', 1n, ]" }];
+    const result = validateAtomicOperations(operations, { jsKey: true });
+    expect(result[0]).toEqual({
+      name: "delete",
+      key: ["users", 1n],
+    });
+  });
+
+  it("should throw error for JS literal keys in operations when jsKey is false or not provided", async () => {
+    const operations = [{ name: "delete", key: "['users', 1n, ]" }];
+    expect(() => validateAtomicOperations(operations)).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
+    expect(() =>
+      validateAtomicOperations(operations, { jsKey: false }),
+    ).toThrow("Invalid JSON format for KvKey.");
+  });
 });
