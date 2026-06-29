@@ -166,12 +166,12 @@ export class BridgeServerClient {
 
   /**
    * Creates or updates a Deno KV entry.
-   * @param key The key to set
+   * @param key The key of the Kv entry to set
    * @param value The value to set (must be in `SerializedKvValue` type)
    * @param options Optional settings like expiration time and overwrite behavior
    */
   set(
-    key: SerializedKvKey,
+    key: SerializedKvKey | string,
     value: SerializedKvValue,
     options?: SetKeyOptions,
   ): CallBridgeServerReturn<SetKeyReturn> {
@@ -189,17 +189,17 @@ export class BridgeServerClient {
 
   /**
    * Retrieves a single Deno KV entry by its key.
-   * @param key The key to retrieve
+   * @param key The key of the Kv entry to retrieve
    * @param options Optional configurations like `xssSafe` and `jsKey`
    * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true). Set to false to disable.
    * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false).
    */
   get(
-    key: SerializedKvKey,
+    key: SerializedKvKey | string,
     options?: { xssSafe?: boolean; jsKey?: boolean },
   ): CallBridgeServerReturn<SerializedKvEntry> {
     return callBridgeServerRequest<SerializedKvEntry>({
-      url: `${this.baseUrl}/get/${encodeURIComponent(JSON.stringify(key))}`,
+      url: `${this.baseUrl}/get/${encodeURIComponent(typeof key == "string" ? key : JSON.stringify(key))}`,
       options,
       headers: this.headers,
       method: "GET",
@@ -208,12 +208,12 @@ export class BridgeServerClient {
 
   /**
    * Deletes a Deno KV entry by its key.
-   * @param key The key to delete
+   * @param key The key of the Kv entry to delete
    * @param options Optional configurations
    * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false).
    */
   delete(
-    key: SerializedKvKey,
+    key: SerializedKvKey | string,
     options?: { jsKey?: boolean },
   ): CallBridgeServerReturn<true> {
     return callBridgeServerRequest<true>({
@@ -274,7 +274,7 @@ export class BridgeServerClient {
    * @returns A promise that resolves when the watch stream is closed or cancelled
    */
   async watch(
-    keys: SerializedKvKey[],
+    keys: SerializedKvKey[] | string[] | string,
     listener: (updatedEntries: SerializedKvEntry[]) => void,
     options?: { xssSafe?: boolean; jsKey?: boolean },
   ): Promise<void> {
@@ -284,7 +284,14 @@ export class BridgeServerClient {
       const response = await fetch(`${this.baseUrl}/watch?${queryParams}`, {
         method: "POST",
         headers: this.headers,
-        body: JSON.stringify(keys.map((key) => JSON.stringify(key))),
+        body:
+          typeof keys == "string"
+            ? keys
+            : JSON.stringify(
+                typeof keys[0] == "string"
+                  ? keys
+                  : keys.map((key) => JSON.stringify(key)),
+              ),
         signal: controller.signal,
       });
 
