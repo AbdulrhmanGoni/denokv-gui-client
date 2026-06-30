@@ -277,7 +277,7 @@ export class BridgeServerClient {
     keys: SerializedKvKey[] | string[],
     listener: (updatedEntries: SerializedKvEntry[]) => void,
     options?: { xssSafe?: boolean; jsKey?: boolean },
-  ): Promise<void> {
+  ): Promise<void | { error: string }> {
     try {
       const controller = new AbortController();
       const queryParams = options ? optionsToUrlSearchParams(options) : "";
@@ -292,17 +292,32 @@ export class BridgeServerClient {
         signal: controller.signal,
       });
 
-      if (!response.body) throw "No response body (stream) found.";
+      if (!response.ok) {
+        const returnError = { error: "" };
+        try {
+          returnError.error = (await response.json()).error;
+        } catch {
+          returnError.error = await response.text();
+        }
+
+        return returnError;
+      }
+
+      if (!response.body) throw new Error("No response body (stream) found.");
 
       this.watchReader = response.body.getReader();
       const decoder = new TextDecoder();
-      while (true) {
-        const { done, value } = await this.watchReader.read();
-        if (done) break;
-        const data = decoder.decode(value);
-        if (data !== ": ping") listener(JSON.parse(data));
-      }
-    } catch {}
+      (async (reader: ReadableStreamDefaultReader) => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const data = decoder.decode(value);
+          if (data !== ": ping") listener(JSON.parse(data));
+        }
+      })(this.watchReader);
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : String(err) };
+    }
   }
 
   /**
