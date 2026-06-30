@@ -40,13 +40,13 @@ export function resetWatchedKvEntriesState() {
   watchedKvEntriesState.selectedKeys = [];
 }
 
-export function startWatchingKvEntries(isReopen: boolean = false) {
+export async function startWatchingKvEntries(isReopen: boolean = false) {
   if (!watchedKvEntriesState.keys.length) {
     kvClient.cancelWatcher();
     return;
   }
 
-  kvClient.watch(
+  const result = await kvClient.watch(
     $state.snapshot(watchedKvEntriesState.keys),
     (updatedEntries) => {
       const isInitialCall = !watchedKvEntriesState.keysEntries.length;
@@ -91,6 +91,12 @@ export function startWatchingKvEntries(isReopen: boolean = false) {
       if (isReopen) isReopen = false;
     },
   );
+
+  if (result) {
+    toast.error(
+      `Failed to start the watching process for the provided keys: ${result.error}`,
+    );
+  }
 }
 
 export async function syncWatchedKeys(updatedWatchedKeys: SerializedKvKey[]) {
@@ -109,7 +115,7 @@ export async function syncWatchedKeys(updatedWatchedKeys: SerializedKvKey[]) {
         watchedKvEntriesState.selectedKeys.filter((key) =>
           updatedWatchedKeys.some((k) => isSameKvKey(key, k)),
         );
-      startWatchingKvEntries(true);
+      await startWatchingKvEntries(true);
     } else toast.error("Failed to sync watched keys.");
   }
 }

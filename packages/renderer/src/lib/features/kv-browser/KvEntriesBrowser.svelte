@@ -48,7 +48,7 @@
     await fetchEntries();
     resetWatchedKvEntriesState();
     await fetchWatchedKeysForOpenedKvStore();
-    startWatchingKvEntries();
+    await startWatchingKvEntries();
   });
 </script>
 

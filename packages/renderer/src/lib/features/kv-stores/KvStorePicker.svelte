@@ -33,7 +33,7 @@
       await fetchEntries();
       resetWatchedKvEntriesState();
       await fetchWatchedKeysForOpenedKvStore();
-      startWatchingKvEntries();
+      await startWatchingKvEntries();
     } else {
       openedKvStoreId = kvStoresState.openedStore!.id;
     }

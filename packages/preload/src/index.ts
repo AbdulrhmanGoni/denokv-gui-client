@@ -71,12 +71,13 @@ const kvClient = {
     operations: AtomicOperationInput[],
   ): Promise<TrycatchResult<boolean>> =>
     ipcRenderer.invoke("kvClient:atomic", operations),
-  watch: (
-    keys: SerializedKvKey[],
+  watch: async (
+    keys: SerializedKvKey[] | string[],
     listener: (updatedEntries: SerializedKvEntry[]) => void,
-  ): void => {
+  ): Promise<void | { error: string }> => {
     ipcRenderer.removeAllListeners("kvClient:watch-listener");
-    ipcRenderer.invoke("kvClient:watch", keys);
+    const error = await ipcRenderer.invoke("kvClient:watch", keys);
+    if (error) return error;
     ipcRenderer.on(
       "kvClient:watch-listener",
       (_event, updatedEntries: SerializedKvEntry[]) => listener(updatedEntries),

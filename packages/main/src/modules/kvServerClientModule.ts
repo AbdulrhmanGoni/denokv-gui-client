@@ -118,7 +118,7 @@ export class KvServerClientModule implements AppModule {
         );
       }
       const serverClient = getServerClient();
-      serverClient.watch(
+      return serverClient.watch(
         keys,
         (updatedEntries: SerializedKvEntry[]) => {
           context.browserWindow?.webContents.send(
