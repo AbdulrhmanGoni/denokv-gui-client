@@ -2,7 +2,6 @@ import { ipcMain } from "electron";
 import { ModuleContext } from "../ModuleContext.js";
 import { AppModule } from "../AppModule.js";
 import { getServerClient } from "./bridgeServer.js";
-import { serializeKvKey } from "@app/bridge-server";
 
 export class KvServerClientModule implements AppModule {
   enable(context: ModuleContext): void {
@@ -17,6 +16,7 @@ export class KvServerClientModule implements AppModule {
           consistency: params.consistency,
           reverse: params.reverse,
           xssSafe: false,
+          jsKey: true,
         };
 
         if (nextCursor) {
@@ -24,16 +24,17 @@ export class KvServerClientModule implements AppModule {
         }
 
         for (const param of ["prefix", "start", "end"] as const) {
-          const result = kvKeyStringToSerializedForm(params[param]);
-          if (result.key && result.key.length) {
-            Object.assign(options, { [param]: result.key });
+          if (params[param] === "[]") continue;
+
+          const evaluatedKey = (0, eval)(`(${params[param]})`);
+          const isArray = Array.isArray(evaluatedKey);
+          if (isArray) {
+            if (evaluatedKey.length) options[param] = params[param];
           } else {
-            if (!result.key) {
-              return {
-                error: result.error,
-                result: null,
-              };
-            }
+            return {
+              error: `Invalid ${param} Key, Must be an array containing valid Deno Kv Key-parts`,
+              result: null,
+            };
           }
         }
 
@@ -50,46 +51,25 @@ export class KvServerClientModule implements AppModule {
         options?: SetKeyOptions,
       ) => {
         const serverClient = getServerClient();
-
-        if (typeof kvKey == "string") {
-          const result = kvKeyStringToSerializedForm(kvKey);
-          if (result.key) {
-            return serverClient.set(result.key, value, options);
-          }
-
-          return {
-            error: result.error,
-            result: null,
-          };
-        }
-
         return serverClient.set(kvKey, value, options);
       },
     );
 
-    ipcMain.handle(`kvClient:deleteKey`, (_, key: SerializedKvKey) => {
-      const serverClient = getServerClient();
-      return serverClient.delete(key);
-    });
+    ipcMain.handle(
+      `kvClient:deleteKey`,
+      (_, key: string | SerializedKvKey, options?: { jsKey?: boolean }) => {
+        const serverClient = getServerClient();
+        return serverClient.delete(key, options);
+      },
+    );
 
-    ipcMain.handle(`kvClient:get`, (_, key: string | SerializedKvKey) => {
-      const serverClient = getServerClient();
-
-      const options = { xssSafe: false };
-      if (typeof key == "string") {
-        const result = kvKeyStringToSerializedForm(key);
-        if (result.key) {
-          return serverClient.get(result.key, options);
-        }
-
-        return {
-          error: result.error,
-          result: null,
-        };
-      }
-
-      return serverClient.get(key, options);
-    });
+    ipcMain.handle(
+      `kvClient:get`,
+      (_, key: string | SerializedKvKey, options?: { jsKey?: boolean }) => {
+        const serverClient = getServerClient();
+        return serverClient.get(key, { ...options, xssSafe: false });
+      },
+    );
 
     ipcMain.handle(
       `kvClient:enqueue`,
@@ -105,76 +85,48 @@ export class KvServerClientModule implements AppModule {
 
     ipcMain.handle(
       `kvClient:atomic`,
-      (_, operations: AtomicOperationInput[]) => {
+      (
+        _,
+        operations: AtomicOperationInput[],
+        options?: { jsKey?: boolean },
+      ) => {
         const serverClient = getServerClient();
-        return serverClient.atomic(operations);
+        return serverClient.atomic(operations, options);
       },
     );
 
-    ipcMain.handle(`kvClient:watch`, (_, keys: SerializedKvKey[]) => {
-      if (!context.browserWindow) {
-        throw new Error(
-          "Trying to call `kvClient:watch` before the browser window is created.",
-        );
-      }
-      const serverClient = getServerClient();
-      return serverClient.watch(
-        keys,
-        (updatedEntries: SerializedKvEntry[]) => {
-          context.browserWindow?.webContents.send(
-            "kvClient:watch-listener",
-            updatedEntries,
-          );
+    ipcMain.handle(
+      `kvClient:watch`,
+      (
+        _,
+        keys: SerializedKvKey[],
+        options?: {
+          xssSafe?: boolean;
+          jsKey?: boolean;
         },
-        { xssSafe: false },
-      );
-    });
+      ) => {
+        if (!context.browserWindow) {
+          throw new Error(
+            "Trying to call `kvClient:watch` before the browser window is created.",
+          );
+        }
+        const serverClient = getServerClient();
+        return serverClient.watch(
+          keys,
+          (updatedEntries: SerializedKvEntry[]) => {
+            context.browserWindow?.webContents.send(
+              "kvClient:watch-listener",
+              updatedEntries,
+            );
+          },
+          { ...options, xssSafe: false },
+        );
+      },
+    );
 
     ipcMain.handle(`kvClient:cancelWatcher`, () => {
       const serverClient = getServerClient();
       serverClient.cancelWatcher();
     });
   }
-}
-
-function kvKeyStringToSerializedForm(stringKvKey: string): {
-  key: SerializedKvKey | null;
-  error: string | null;
-} {
-  let key = null;
-  try {
-    key = (0, eval)(`(${stringKvKey})`);
-  } catch (error) {
-    return {
-      key: null,
-      error: String(error),
-    };
-  }
-
-  if (!(key instanceof Array)) {
-    return {
-      key: null,
-      error:
-        "Invalid Key. It should be an array of string, number, bigint, boolean or Uint8Array",
-    };
-  }
-
-  const allKeyPartsAreValid = key.every(
-    (part) =>
-      ["string", "number", "bigint", "boolean"].includes(typeof part) ||
-      part instanceof Uint8Array,
-  );
-
-  if (!allKeyPartsAreValid) {
-    return {
-      key: null,
-      error:
-        "Invalid Key Part. The key should contain only string, number, bigint, boolean or Uint8Array",
-    };
-  }
-
-  return {
-    key: serializeKvKey(key),
-    error: null,
-  };
 }

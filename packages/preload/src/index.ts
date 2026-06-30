@@ -56,12 +56,16 @@ const kvClient = {
     options?: SetKeyOptions,
   ): Promise<TrycatchResult<SetKeyReturn>> =>
     ipcRenderer.invoke("kvClient:set", kvKey, value, options),
-  deleteKey: (key: SerializedKvKey): Promise<TrycatchResult<true>> =>
-    ipcRenderer.invoke("kvClient:deleteKey", key),
+  deleteKey: (
+    key: SerializedKvKey | string,
+    options?: { jsKey?: boolean },
+  ): Promise<TrycatchResult<true>> =>
+    ipcRenderer.invoke("kvClient:deleteKey", key, options),
   get: (
     key: string | SerializedKvKey,
+    options?: { jsKey?: boolean; xssSafe?: boolean },
   ): Promise<TrycatchResult<SerializedKvEntry>> =>
-    ipcRenderer.invoke("kvClient:get", key),
+    ipcRenderer.invoke("kvClient:get", key, options),
   enqueue: (
     value: EnqueueRequestInput["value"],
     options?: EnqueueRequestInput["options"],
@@ -69,14 +73,16 @@ const kvClient = {
     ipcRenderer.invoke("kvClient:enqueue", value, options),
   atomic: (
     operations: AtomicOperationInput[],
+    options?: { jsKey?: boolean },
   ): Promise<TrycatchResult<boolean>> =>
-    ipcRenderer.invoke("kvClient:atomic", operations),
+    ipcRenderer.invoke("kvClient:atomic", operations, options),
   watch: async (
     keys: SerializedKvKey[] | string[],
     listener: (updatedEntries: SerializedKvEntry[]) => void,
+    options?: { jsKey?: boolean; xssSafe?: boolean },
   ): Promise<void | { error: string }> => {
     ipcRenderer.removeAllListeners("kvClient:watch-listener");
-    const error = await ipcRenderer.invoke("kvClient:watch", keys);
+    const error = await ipcRenderer.invoke("kvClient:watch", keys, options);
     if (error) return error;
     ipcRenderer.on(
       "kvClient:watch-listener",
