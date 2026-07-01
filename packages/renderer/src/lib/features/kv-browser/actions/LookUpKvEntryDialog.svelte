@@ -29,7 +29,7 @@
   async function searchForKey() {
     isLoading = true;
     const key = kvKeyCodeEditor!.toString();
-    const { error, result } = await kvClient.get(key);
+    const { error, result } = await kvClient.get(key, { jsKey: true });
 
     if (result) {
       openKvEntryDialog(result);

@@ -44,7 +44,7 @@
     globalState.loadingOverlay.open = true;
     globalState.loadingOverlay.text = "Committing Atomic Operations...";
     const orderedOperations = getAtomicOperationsInOrder();
-    const response = await kvClient.atomic(orderedOperations);
+    const response = await kvClient.atomic(orderedOperations, { jsKey: true });
     if (response.result) {
       toast.success("The Atomic operations committed successfully");
       resetOperations();

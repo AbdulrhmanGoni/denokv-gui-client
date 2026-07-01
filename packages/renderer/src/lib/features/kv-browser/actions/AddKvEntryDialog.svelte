@@ -27,7 +27,7 @@
   ) {
     addingEntry = true;
 
-    const options: { expires?: number; overwrite?: boolean } = { overwrite };
+    const options: SetKeyOptions = { overwrite, jsKey: true };
     if (!isNaN(expires)) options.expires = expires;
 
     const res = await kvClient.set(key, value, options);
