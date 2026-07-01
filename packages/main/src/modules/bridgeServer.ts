@@ -57,7 +57,7 @@ class BridgeServerController {
     this.bridgeServerAuthToken = null;
   }
 
-  getClient(): BridgeServerClient {
+  get client(): BridgeServerClient {
     if (!this.serverClient) {
       throw new Error(
         "Trying to use the bridge server client before it gets initialized!",
@@ -68,20 +68,17 @@ class BridgeServerController {
   }
 }
 
-const bridgeServerController = new BridgeServerController();
+export const bridgeServerController = new BridgeServerController();
 
 export class BridgeServerModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle("bridgeServer:openServer", async (_, kvStore: KvStore) => {
-      return await bridgeServerController.open(kvStore);
-    });
+    ipcMain.handle(
+      "bridgeServer:openServer",
+      async (_, kvStore: KvStore) => await bridgeServerController.open(kvStore),
+    );
 
     ipcMain.handle("bridgeServer:closeServer", () =>
       bridgeServerController.close(),
     );
   }
-}
-
-export function getServerClient(): BridgeServerClient {
-  return bridgeServerController.getClient();
 }

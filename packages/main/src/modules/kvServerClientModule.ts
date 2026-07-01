@@ -1,15 +1,13 @@
 import { ipcMain } from "electron";
 import { ModuleContext } from "../ModuleContext.js";
 import { AppModule } from "../AppModule.js";
-import { getServerClient } from "./bridgeServer.js";
+import { bridgeServerController } from "./bridgeServer.js";
 
 export class KvServerClientModule implements AppModule {
   enable(context: ModuleContext): void {
     ipcMain.handle(
       `kvClient:browse`,
       (_, params: BrowsingParams, nextCursor?: string) => {
-        const serverClient = getServerClient();
-
         const options: BrowseRouteOptions = {
           limit: params.limit,
           batchSize: params.batchSize,
@@ -38,7 +36,7 @@ export class KvServerClientModule implements AppModule {
           }
         }
 
-        return serverClient.browse(options);
+        return bridgeServerController.client.browse(options);
       },
     );
 
@@ -50,24 +48,24 @@ export class KvServerClientModule implements AppModule {
         value: SerializedKvValue,
         options?: SetKeyOptions,
       ) => {
-        const serverClient = getServerClient();
-        return serverClient.set(kvKey, value, options);
+        return bridgeServerController.client.set(kvKey, value, options);
       },
     );
 
     ipcMain.handle(
       `kvClient:deleteKey`,
       (_, key: string | SerializedKvKey, options?: { jsKey?: boolean }) => {
-        const serverClient = getServerClient();
-        return serverClient.delete(key, options);
+        return bridgeServerController.client.delete(key, options);
       },
     );
 
     ipcMain.handle(
       `kvClient:get`,
       (_, key: string | SerializedKvKey, options?: { jsKey?: boolean }) => {
-        const serverClient = getServerClient();
-        return serverClient.get(key, { ...options, xssSafe: false });
+        return bridgeServerController.client.get(key, {
+          ...options,
+          xssSafe: false,
+        });
       },
     );
 
@@ -78,8 +76,7 @@ export class KvServerClientModule implements AppModule {
         value: EnqueueRequestInput["value"],
         options?: EnqueueRequestInput["options"],
       ) => {
-        const serverClient = getServerClient();
-        return serverClient.enqueue(value, options);
+        return bridgeServerController.client.enqueue(value, options);
       },
     );
 
@@ -90,8 +87,7 @@ export class KvServerClientModule implements AppModule {
         operations: AtomicOperationInput[],
         options?: { jsKey?: boolean },
       ) => {
-        const serverClient = getServerClient();
-        return serverClient.atomic(operations, options);
+        return bridgeServerController.client.atomic(operations, options);
       },
     );
 
@@ -110,8 +106,7 @@ export class KvServerClientModule implements AppModule {
             "Trying to call `kvClient:watch` before the browser window is created.",
           );
         }
-        const serverClient = getServerClient();
-        return serverClient.watch(
+        return bridgeServerController.client.watch(
           keys,
           (updatedEntries: SerializedKvEntry[]) => {
             context.browserWindow?.webContents.send(
@@ -125,8 +120,7 @@ export class KvServerClientModule implements AppModule {
     );
 
     ipcMain.handle(`kvClient:cancelWatcher`, () => {
-      const serverClient = getServerClient();
-      serverClient.cancelWatcher();
+      bridgeServerController.client.cancelWatcher();
     });
   }
 }
