@@ -1,5 +1,5 @@
 export function copyEntryVersionStamp(entry: SerializedKvEntry) {
-  navigator.clipboard.writeText(entry.versionstamp);
+  navigator.clipboard.writeText(String(entry.versionstamp));
 }
 
 export function copyEntryKey(entry: SerializedKvEntry) {
