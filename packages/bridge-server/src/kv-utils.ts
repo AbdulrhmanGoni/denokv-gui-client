@@ -3,6 +3,7 @@ import type { SerializedKvKey } from "./serialization/main.ts";
 export function isValidKvKey(key: unknown): boolean {
   return (
     Array.isArray(key) &&
+    key.length > 0 &&
     key.every(
       (keyPart) =>
         typeof keyPart === "bigint" ||
