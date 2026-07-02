@@ -74,7 +74,7 @@ export function preloadContextExposureToRendererTests() {
     expect(typeof bridgeServer).toEqual("object");
 
     const exposedMethods = Object.keys(bridgeServer);
-    const targetMethods = ["openServer", "closeServer"];
+    const targetMethods = ["openServer", "closeServer", "utils"];
 
     expect(exposedMethods.length).toBe(targetMethods.length);
     targetMethods.forEach((method) => expect(exposedMethods).toContain(method));

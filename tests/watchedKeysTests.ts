@@ -1,4 +1,4 @@
-import { expect } from "playwright/test";
+import { expect, type Page } from "playwright/test";
 import { test, testingKvStore } from "./e2e.spec";
 
 const watchedEntries = [
@@ -16,7 +16,7 @@ const watchedEntries = [
   },
 ];
 
-async function filterWatchTestEntries(page: import("playwright/test").Page) {
+async function filterWatchTestEntries(page: Page) {
   await page
     .locator("button", { has: page.locator("svg.lucide-pencil-line") })
     .click();
@@ -37,10 +37,7 @@ async function filterWatchTestEntries(page: import("playwright/test").Page) {
   );
 }
 
-async function selectEntryRow(
-  page: import("playwright/test").Page,
-  keyPart: string,
-) {
+async function selectEntryRow(page: Page, keyPart: string) {
   const row = page.locator("tr", { hasText: `"${keyPart}"` });
   await row.locator('[data-slot="checkbox"]').click();
 }
@@ -157,6 +154,57 @@ export function watchedKeysTests() {
     await expect(
       page.locator("button", { hasText: "Watched Keys (0)" }),
     ).toBeVisible();
+    await page.keyboard.press("Escape");
+  });
+
+  test("Use 'Add a Key to the Watch List' window to add a new key to the watch list", async ({
+    page,
+  }) => {
+    await page.locator("button", { hasText: "Watched Keys (0)" }).click();
+
+    await page.locator("button", { hasText: "Add Key" }).click();
+
+    await expect(
+      page.locator("div[data-slot='dialog-content'][data-state='open']", {
+        hasText: "Add a Key to the Watch List",
+      }),
+    ).toBeVisible();
+
+    const prefixKeyEditor = page.locator("#key-editor");
+    await prefixKeyEditor.fill('["watch-tests", "new key", 100n]');
+    await prefixKeyEditor.press("Space");
+    await page.waitForTimeout(70);
+
+    await page.locator("button", { hasText: "Add to Watch List" }).click();
+
+    const dialog = page.locator(
+      "div[data-slot='dialog-content'][data-state='open']",
+    );
+    await expect(dialog).toContainText('"new key"');
+    await expect(dialog).toContainText("100 n");
+    await expect(dialog.getByText("null", { exact: true })).toHaveCount(2);
+
+    const newVersionstamp = await page.evaluate<string>(async () => {
+      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+      const res = await kvClient.set(
+        '["watch-tests", "new key", 100n]',
+        {
+          type: "String",
+          data: "updated-new-key",
+        },
+        { jsKey: true },
+      );
+      return res.result.versionstamp;
+    });
+
+    await expect(dialog.getByText("null", { exact: true })).toHaveCount(0);
+    await expect(
+      dialog.getByText('"updated-new-key"', { exact: true }),
+    ).toHaveCount(1);
+    await expect(
+      dialog.getByText(newVersionstamp, { exact: true }),
+    ).toHaveCount(1);
+
     await page.keyboard.press("Escape");
   });
 }

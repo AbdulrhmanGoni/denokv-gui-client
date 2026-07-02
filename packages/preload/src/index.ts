@@ -1,5 +1,6 @@
 import { ipcRenderer } from "electron";
 import path from "node:path";
+import { serializeKvKey } from "@app/bridge-server";
 
 const fileSystemService = {
   selectDirectory(): Promise<string> {
@@ -100,6 +101,9 @@ const bridgeServer = {
     ipcRenderer.invoke("bridgeServer:openServer", kvStore),
   closeServer: (): Promise<void> =>
     ipcRenderer.invoke("bridgeServer:closeServer"),
+  utils: {
+    serializeKvKey,
+  },
 };
 
 const settingsService = {

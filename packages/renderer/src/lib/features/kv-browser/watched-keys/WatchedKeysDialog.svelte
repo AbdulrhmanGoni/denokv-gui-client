@@ -12,6 +12,7 @@
   import EyeOffIcon from "@lucide/svelte/icons/eye-off";
   import WatchedKeyEntryCard from "./WatchedKeyEntryCard.svelte";
   import { isSameKvKey } from "@app/bridge-server/kv-utils";
+  import AddKeyToWatchList from "./AddKeyToWatchList.svelte";
 </script>
 
 <Dialog.Root bind:open={watchedKvEntriesState.openDialog}>
@@ -22,7 +23,7 @@
   <Dialog.Content class="max-w-3xl w-full p-3 gap-0 overflow-hidden">
     <Dialog.Title class="flex gap-2 items-center text-2xl mb-1">
       <EyeIcon class="size-7" />
-      Watched Keys
+      Watched Keys ({watchedKvEntriesState.keys.length})
     </Dialog.Title>
     <p class="text-muted-foreground">
       All your watched keys in
@@ -82,6 +83,7 @@
           Unwatch ({watchedKvEntriesState.selectedKeys.length})
         </Button>
       {/if}
+      <AddKeyToWatchList />
     </div>
   </Dialog.Content>
 </Dialog.Root>
