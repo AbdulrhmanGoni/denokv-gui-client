@@ -26,7 +26,7 @@ export type SerializedKvValue = {
 export type SerializedKvEntry = {
   key: SerializedKvKey;
   value: SerializedKvValue;
-  versionstamp: string;
+  versionstamp: string | null;
 };
 
 const errorCause = { cause: "SerializationError" };

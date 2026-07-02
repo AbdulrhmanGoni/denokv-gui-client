@@ -42,7 +42,7 @@ export function resetWatchedKvEntriesState() {
 
 export async function startWatchingKvEntries(isReopen: boolean = false) {
   if (!watchedKvEntriesState.keys.length) {
-    kvClient.cancelWatcher();
+    await kvClient.cancelWatcher();
     return;
   }
 
@@ -116,7 +116,9 @@ export async function syncWatchedKeys(updatedWatchedKeys: SerializedKvKey[]) {
           updatedWatchedKeys.some((k) => isSameKvKey(key, k)),
         );
       await startWatchingKvEntries(true);
-    } else toast.error("Failed to sync watched keys.");
+    } else {
+      toast.error("Failed to sync watched keys.");
+    }
   }
 }
 

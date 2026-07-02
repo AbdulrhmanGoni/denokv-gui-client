@@ -38,7 +38,7 @@
     <Separator class="my-2" />
     {#if watchedKvEntriesState.keysEntries.length}
       <div class="flex flex-col gap-2 max-h-[360px] overflow-auto pr-1">
-        {#each watchedKvEntriesState.keysEntries as entry (entry.versionstamp)}
+        {#each watchedKvEntriesState.keysEntries as entry (entry.key)}
           <WatchedKeyEntryCard {entry} />
         {/each}
       </div>
