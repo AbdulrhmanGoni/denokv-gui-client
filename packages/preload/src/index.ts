@@ -28,19 +28,11 @@ const kvStoresService = {
     ipcRenderer.invoke("kvStoresService:create", input),
   update: (kvStore: KvStore, changes: EditKvStoreInput): Promise<boolean> =>
     ipcRenderer.invoke("kvStoresService:update", kvStore, changes),
-  getAll: (): Promise<KvStore[]> =>
-    ipcRenderer.invoke("kvStoresService:getAll"),
+  getAll: (): Promise<KvStore[]> => ipcRenderer.invoke("kvStoresService:getAll"),
   deleteOne: (kvStore: KvStore): Promise<boolean> =>
     ipcRenderer.invoke("kvStoresService:deleteOne", kvStore),
-  renameDefaultLocalKvStore: (
-    store: KvStore,
-    newName: string,
-  ): Promise<boolean> =>
-    ipcRenderer.invoke(
-      "kvStoresService:renameDefaultLocalKvStore",
-      store,
-      newName,
-    ),
+  renameDefaultLocalKvStore: (store: KvStore, newName: string): Promise<boolean> =>
+    ipcRenderer.invoke("kvStoresService:renameDefaultLocalKvStore", store, newName),
   testKvStoreConnection: (kvStore: TestKvStoreParams): Promise<boolean> =>
     ipcRenderer.invoke("kvStoresService:testKvStoreConnection", kvStore),
 };
@@ -99,8 +91,7 @@ const kvClient = {
 const bridgeServer = {
   openServer: (kvStore: KvStore): Promise<boolean> =>
     ipcRenderer.invoke("bridgeServer:openServer", kvStore),
-  closeServer: (): Promise<void> =>
-    ipcRenderer.invoke("bridgeServer:closeServer"),
+  closeServer: (): Promise<void> => ipcRenderer.invoke("bridgeServer:closeServer"),
   utils: {
     serializeKvKey,
   },
@@ -117,10 +108,7 @@ const lastFetchedUpdateService = {
   getLastFetchedUpdate: (): Promise<LastFetchedUpdate | null> =>
     ipcRenderer.invoke("lastFetchedUpdateService:getLastFetchedUpdate"),
   setLastFetchedUpdate: (updateInfo: UpdateCheckResult): Promise<boolean> =>
-    ipcRenderer.invoke(
-      "lastFetchedUpdateService:setLastFetchedUpdate",
-      updateInfo,
-    ),
+    ipcRenderer.invoke("lastFetchedUpdateService:setLastFetchedUpdate", updateInfo),
   deleteLastFetchedUpdate: (): Promise<boolean> =>
     ipcRenderer.invoke("lastFetchedUpdateService:deleteLastFetchedUpdate"),
   doNotNotifyLastFetchedUpdate: (): Promise<boolean> =>
@@ -132,29 +120,17 @@ const browsingParamsService = {
     kvStoreId: string,
     updateData: { browsingParams: SavedBrowsingParams; setAsDefault: boolean },
   ): Promise<TrycatchResult<true>> =>
-    ipcRenderer.invoke(
-      "browsingParamsService:saveBrowsingParams",
-      kvStoreId,
-      updateData,
-    ),
+    ipcRenderer.invoke("browsingParamsService:saveBrowsingParams", kvStoreId, updateData),
   getSavedBrowsingParamsRecords: (
     kvStoreId: string,
-  ): Promise<
-    TrycatchResult<SavedBrowsingParamsRecord<SavedBrowsingParams>[]>
-  > =>
-    ipcRenderer.invoke(
-      "browsingParamsService:getSavedBrowsingParamsRecords",
-      kvStoreId,
-    ),
+  ): Promise<TrycatchResult<SavedBrowsingParamsRecord<SavedBrowsingParams>[]>> =>
+    ipcRenderer.invoke("browsingParamsService:getSavedBrowsingParamsRecords", kvStoreId),
   getDefaultSavedBrowsingParams: (
     kvStoreId: string,
   ): Promise<
     TrycatchResult<SavedBrowsingParamsRecord<SavedBrowsingParams> | undefined>
   > =>
-    ipcRenderer.invoke(
-      "browsingParamsService:getDefaultSavedBrowsingParams",
-      kvStoreId,
-    ),
+    ipcRenderer.invoke("browsingParamsService:getDefaultSavedBrowsingParams", kvStoreId),
   updateSavedBrowsingParams: (
     kvStoreId: string,
     browsingParamsId: string,
@@ -169,9 +145,7 @@ const browsingParamsService = {
       browsingParamsId,
       updateData,
     ),
-  deleteSavedBrowsingParams: (
-    browsingParamsId: string,
-  ): Promise<TrycatchResult<true>> =>
+  deleteSavedBrowsingParams: (browsingParamsId: string): Promise<TrycatchResult<true>> =>
     ipcRenderer.invoke(
       "browsingParamsService:deleteSavedBrowsingParams",
       browsingParamsId,
@@ -182,8 +156,7 @@ const appUpdater = {
   checkForUpdate: (): Promise<UpdateCheckResult | null> =>
     ipcRenderer.invoke("check-for-update"),
   downloadUpdate: (): Promise<any> => ipcRenderer.invoke("download-update"),
-  cancelUpdate: (): Promise<void> =>
-    ipcRenderer.invoke("cancel-downloading-update"),
+  cancelUpdate: (): Promise<void> => ipcRenderer.invoke("cancel-downloading-update"),
   onDownloadingUpdateProgress: (
     cb: (progressInfo: DownloadUpdateProgressInfo) => void,
   ): void => {
@@ -199,10 +172,7 @@ const appUpdater = {
 const watchedKeysService = {
   getWatchedKeys: (kvStoreId: string): Promise<SerializedKvKey[] | null> =>
     ipcRenderer.invoke("watchedKeysService:getWatchedKeys", kvStoreId),
-  setWatchedKeys: (
-    kvStoreId: string,
-    keys: SerializedKvKey[],
-  ): Promise<boolean> =>
+  setWatchedKeys: (kvStoreId: string, keys: SerializedKvKey[]): Promise<boolean> =>
     ipcRenderer.invoke("watchedKeysService:setWatchedKeys", kvStoreId, keys),
 };
 

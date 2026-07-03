@@ -8,10 +8,7 @@
   import SaveIcon from "@lucide/svelte/icons/save";
   import { toast } from "svelte-sonner";
   import { kvStoresService } from "@app/preload";
-  import {
-    kvStoresState,
-    loadKvStores,
-  } from "$lib/states/kvStoresState.svelte";
+  import { kvStoresState, loadKvStores } from "$lib/states/kvStoresState.svelte";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 
@@ -28,9 +25,7 @@
       );
 
       if (res) {
-        toast.success(
-          `The "${kvStore.name}" Kv store was renamed successfully`,
-        );
+        toast.success(`The "${kvStore.name}" Kv store was renamed successfully`);
         closeEdit();
         loadKvStores();
       } else {
@@ -65,9 +60,7 @@
           value={kvStore.name}
           placeholder="New Name"
         />
-        <p class="text-muted-foreground text-sm">
-          Enter a new name for this Kv Store
-        </p>
+        <p class="text-muted-foreground text-sm">Enter a new name for this Kv Store</p>
       </div>
       <div class="ms-auto flex gap-2">
         <Button

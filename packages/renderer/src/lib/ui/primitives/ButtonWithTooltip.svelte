@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import type {
-    ButtonVariant,
-    ButtonSize,
-  } from "$lib/ui/shadcn/button/index.js";
+  import type { ButtonVariant, ButtonSize } from "$lib/ui/shadcn/button/index.js";
   import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
   import { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
   import type { TooltipTriggerProps } from "bits-ui";
@@ -29,10 +26,7 @@
 </script>
 
 <Tooltip.Root>
-  <Tooltip.Trigger
-    {...restProps}
-    class={buttonVariants({ variant, className, size })}
-  >
+  <Tooltip.Trigger {...restProps} class={buttonVariants({ variant, className, size })}>
     {@render children()}
   </Tooltip.Trigger>
   <Tooltip.Content class={tooltipContentClasses}>

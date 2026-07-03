@@ -17,11 +17,6 @@
   }
 </script>
 
-<div
-  class="sm:w-xl w-md md:w-2xl bg-background overflow-auto p-3 gap-2 rounded-lg"
->
-  <EnqueueMessageForm
-    onSubmit={enqueue}
-    submitButtonText="Add Enqueue Operation"
-  />
+<div class="sm:w-xl w-md md:w-2xl bg-background overflow-auto p-3 gap-2 rounded-lg">
+  <EnqueueMessageForm onSubmit={enqueue} submitButtonText="Add Enqueue Operation" />
 </div>

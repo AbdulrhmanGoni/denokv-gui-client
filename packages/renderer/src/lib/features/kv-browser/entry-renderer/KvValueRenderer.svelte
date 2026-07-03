@@ -10,19 +10,14 @@
     value,
     format,
     className,
-  }: { value: KvEntry["value"]; format?: boolean; className?: string } =
-    $props();
+  }: { value: KvEntry["value"]; format?: boolean; className?: string } = $props();
 
   const dataTypeColor = $derived(dataTypesColors[value.type.toLowerCase()]);
 </script>
 
 <div
   onwheel={wheelXScrollingHandler}
-  class={cn(
-    "font-semibold overflow-auto flex-1 py-1",
-    dataTypeColor,
-    className,
-  )}
+  class={cn("font-semibold overflow-auto flex-1 py-1", dataTypeColor, className)}
 >
   {#if value.type === "String"}
     <pre>{`"${value.data}"`}</pre>

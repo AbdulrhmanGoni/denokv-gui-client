@@ -145,27 +145,21 @@
       Filter
     </div>
     <Separator orientation="vertical" />
-    <div
-      class="flex gap-1 items-center font-semibold bg-card px-2 rounded-sm text-sm"
-    >
+    <div class="flex gap-1 items-center font-semibold bg-card px-2 rounded-sm text-sm">
       <p>Prefix:</p>
       <CodeRenderer code={kvEntriesState.params.prefix} />
     </div>
 
     <Separator orientation="vertical" />
 
-    <div
-      class="flex gap-1 items-center font-semibold bg-card px-2 rounded-sm text-sm"
-    >
+    <div class="flex gap-1 items-center font-semibold bg-card px-2 rounded-sm text-sm">
       <p>Start:</p>
       <CodeRenderer code={kvEntriesState.params.start} />
     </div>
 
     <Separator orientation="vertical" />
 
-    <div
-      class="flex gap-1 items-center font-semibold bg-card px-2 rounded-sm text-sm"
-    >
+    <div class="flex gap-1 items-center font-semibold bg-card px-2 rounded-sm text-sm">
       <p>End:</p>
       <CodeRenderer code={kvEntriesState.params.end} />
     </div>
@@ -194,8 +188,8 @@
         See the
         <PLink href="https://docs.deno.com/deploy/kv/manual/operations/#list">
           official manual
-        </PLink> of <strong>Deno Kv database</strong> for more information about how
-        filtering entries works.
+        </PLink> of <strong>Deno Kv database</strong> for more information about how filtering
+        entries works.
       </p>
       <Separator />
       <BrowsingParamsForm
@@ -220,21 +214,16 @@
             bind:checked={setParamsAsDefault}
             disabled={!saveParams}
           />
-          <Label for="set-default">
-            Set this filter as the default for the current KV store?
-          </Label>
+          <Label for="set-default"
+            >Set this filter as the default for the current KV store?</Label
+          >
         </div>
         <div class="flex flex-row-reverse gap-2 mt-2">
           <Button onclick={onApplyParams} size="sm">
             Apply
             <SaveFilterIcon />
           </Button>
-          <Button
-            class="ms-auto"
-            variant="outline"
-            size="sm"
-            onclick={resetFormParams}
-          >
+          <Button class="ms-auto" variant="outline" size="sm" onclick={resetFormParams}>
             Reset
             <ClearFilter />
           </Button>

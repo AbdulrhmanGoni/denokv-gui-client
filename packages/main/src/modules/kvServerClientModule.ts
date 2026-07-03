@@ -82,11 +82,7 @@ export class KvServerClientModule implements AppModule {
 
     ipcMain.handle(
       `kvClient:atomic`,
-      (
-        _,
-        operations: AtomicOperationInput[],
-        options?: { jsKey?: boolean },
-      ) => {
+      (_, operations: AtomicOperationInput[], options?: { jsKey?: boolean }) => {
         return bridgeServerController.client.atomic(operations, options);
       },
     );

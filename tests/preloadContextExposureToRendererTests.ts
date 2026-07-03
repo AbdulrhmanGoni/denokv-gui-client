@@ -41,9 +41,7 @@ export function preloadContextExposureToRendererTests() {
     targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
   });
 
-  test(`'kvClient' should be exposed as an object with its methods`, async ({
-    page,
-  }) => {
+  test(`'kvClient' should be exposed as an object with its methods`, async ({ page }) => {
     const kvClient = await page.evaluate(
       () => globalThis["kvClient" as keyof typeof globalThis],
     );
@@ -181,12 +179,7 @@ export function preloadContextExposureToRendererTests() {
     expect(typeof fileSystemService).toEqual("object");
 
     const exposedMethods = Object.keys(fileSystemService);
-    const targetMethods = [
-      "selectDirectory",
-      "selectFile",
-      "openPath",
-      "pathUtils",
-    ];
+    const targetMethods = ["selectDirectory", "selectFile", "openPath", "pathUtils"];
 
     expect(exposedMethods.length).toBe(targetMethods.length);
     targetMethods.forEach((method) => expect(exposedMethods).toContain(method));

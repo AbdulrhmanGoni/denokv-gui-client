@@ -31,9 +31,9 @@
         "{kvStoresState.openedStore?.name}"
       </strong>
       Store will be listed here.<br /> See the
-      <PLink href="https://docs.deno.com/deploy/kv/operations/#watch">
-        offecial documentation
-      </PLink>
+      <PLink href="https://docs.deno.com/deploy/kv/operations/#watch"
+        >offecial documentation</PLink
+      >
       of the <strong>watch</strong> operation for more information.
     </p>
     <Separator class="my-2" />
@@ -65,8 +65,8 @@
         <Button
           size="sm"
           variant="outline"
-          class="h-fit py-0.5 px-1.5! text-destructive {watchedKvEntriesState
-            .selectedKeys.length
+          class="h-fit py-0.5 px-1.5! text-destructive {watchedKvEntriesState.selectedKeys
+            .length
             ? ''
             : 'invisible'}"
           disabled={!watchedKvEntriesState.selectedKeys.length}

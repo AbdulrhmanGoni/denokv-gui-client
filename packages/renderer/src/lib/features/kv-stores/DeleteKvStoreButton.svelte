@@ -61,12 +61,11 @@
       <AlertDialog.Description>
         {#if isDangerous}
           <span class="text-destructive font-medium">
-            This will permanently delete the Kv Store with all data inside it
-            from your machine.
+            This will permanently delete the Kv Store with all data inside it from your
+            machine.
           </span>
         {:else}
-          This will delete the stored info about the Kv Store not the data
-          inside it.
+          This will delete the stored info about the Kv Store not the data inside it.
         {/if}
         You won't be able to unde this action
       </AlertDialog.Description>

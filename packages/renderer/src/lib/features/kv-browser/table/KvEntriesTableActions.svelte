@@ -40,12 +40,7 @@
   <DropdownMenu.Trigger>
     {#snippet child({ props })}
       <div class="flex justify-end">
-        <Button
-          {...props}
-          variant="ghost"
-          size="icon"
-          class="relative size-8 p-0"
-        >
+        <Button {...props} variant="ghost" size="icon" class="relative size-8 p-0">
           <EllipsisIcon />
         </Button>
       </div>

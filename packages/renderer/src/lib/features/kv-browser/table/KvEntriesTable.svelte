@@ -2,10 +2,7 @@
   import { FlexRender } from "$lib/ui/shadcn/data-table/index.js";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import * as Table from "$lib/ui/shadcn/table/index.js";
-  import {
-    kvEntriesState,
-    fetchEntries,
-  } from "$lib/states/kvEntriesState.svelte";
+  import { kvEntriesState, fetchEntries } from "$lib/states/kvEntriesState.svelte";
   import type { Table as TableType } from "@tanstack/table-core";
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import RefreshIcon from "@lucide/svelte/icons/refresh-cw";
@@ -45,10 +42,7 @@
           </tr>
         {:else if kvEntriesState.error}
           <tr>
-            <td
-              colspan={columns.length}
-              class="h-[398px] text-center space-y-1"
-            >
+            <td colspan={columns.length} class="h-[398px] text-center space-y-1">
               <p class="text-lg text-destructive font-semibold">
                 Failed to fetch entries
               </p>
@@ -63,10 +57,7 @@
             <KvEntriesTableRow {row} />
           {:else}
             <tr>
-              <td
-                colspan={columns.length}
-                class="h-[398px] text-lg text-center"
-              >
+              <td colspan={columns.length} class="h-[398px] text-lg text-center">
                 {#if kvEntriesState.params.cursors.length}
                   No More Entries in this Deno Kv Store.
                 {:else}

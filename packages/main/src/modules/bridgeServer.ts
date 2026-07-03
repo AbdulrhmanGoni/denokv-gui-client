@@ -37,12 +37,9 @@ class BridgeServerController {
       );
     }
 
-    this.serverClient = new BridgeServerClient(
-      `http://localhost:${address.port}`,
-      {
-        authToken: this.bridgeServerAuthToken,
-      },
-    );
+    this.serverClient = new BridgeServerClient(`http://localhost:${address.port}`, {
+      authToken: this.bridgeServerAuthToken,
+    });
 
     return true;
   }
@@ -77,8 +74,6 @@ export class BridgeServerModule implements AppModule {
       async (_, kvStore: KvStore) => await bridgeServerController.open(kvStore),
     );
 
-    ipcMain.handle("bridgeServer:closeServer", () =>
-      bridgeServerController.close(),
-    );
+    ipcMain.handle("bridgeServer:closeServer", () => bridgeServerController.close());
   }
 }

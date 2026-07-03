@@ -1,9 +1,6 @@
 <script lang="ts">
   import * as Select from "$lib/ui/shadcn/select";
-  import {
-    dataTypes,
-    type KvDataType,
-  } from "$lib/features/kv-browser/utils/dataTypes";
+  import { dataTypes, type KvDataType } from "$lib/features/kv-browser/utils/dataTypes";
 
   type Props = {
     selectedDataType: KvDataType;

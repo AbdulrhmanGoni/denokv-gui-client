@@ -127,9 +127,7 @@
     <p class="flex gap-2 items-center font-bold text-lg">
       <TagsIcon /> Versionstamp
     </p>
-    <div
-      class="flex gap-2 items-center justify-between bg-card py-1.5 px-3 rounded-md"
-    >
+    <div class="flex gap-2 items-center justify-between bg-card py-1.5 px-3 rounded-md">
       <p class="text-nowrap">{entry.versionstamp}</p>
       <CopyKvEntry target="Versionstamp" {entry} />
     </div>

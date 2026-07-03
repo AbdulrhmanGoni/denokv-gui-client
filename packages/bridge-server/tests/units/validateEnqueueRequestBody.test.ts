@@ -206,14 +206,7 @@ describe("Test 'validateEnqueueRequest' function", () => {
     };
     const result = validateEnqueueRequest(body);
     expect(result).toEqual({
-      value: [
-        1,
-        2,
-        { nested: true },
-        "string",
-        null,
-        [new Set(["test1", "test2"])],
-      ],
+      value: [1, 2, { nested: true }, "string", null, [new Set(["test1", "test2"])]],
       options: undefined,
     });
   });

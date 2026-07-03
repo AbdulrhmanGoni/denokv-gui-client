@@ -17,11 +17,7 @@ export class AppManagerModule implements AppModule {
 
     ipcMain.handle("restart-app", () => {
       let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
-      if (
-        os.platform() == "linux" &&
-        process.env.APPIMAGE &&
-        context.app.isPackaged
-      ) {
+      if (os.platform() == "linux" && process.env.APPIMAGE && context.app.isPackaged) {
         relaunchOptions = {
           execPath: process.env.APPIMAGE,
           args: ["--appimage-extract-and-run"],

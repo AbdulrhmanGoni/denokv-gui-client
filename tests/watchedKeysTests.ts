@@ -17,9 +17,7 @@ const watchedEntries = [
 ];
 
 async function filterWatchTestEntries(page: Page) {
-  await page
-    .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-    .click();
+  await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
 
   const prefixKeyEditor = page.locator("#prefix-key-editor");
   await prefixKeyEditor.fill('["watch-tests"]');
@@ -58,18 +56,12 @@ export function watchedKeysTests() {
     await selectEntryRow(page, "alpha");
     await selectEntryRow(page, "beta");
 
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (0)" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (0)" })).toBeVisible();
     await page.getByRole("button", { name: "Watch", exact: true }).click();
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (2)" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (2)" })).toBeVisible();
 
     await page.locator("button", { hasText: "Watched Keys (2)" }).click();
-    const dialog = page.locator(
-      "div[data-slot='dialog-content'][data-state='open']",
-    );
+    const dialog = page.locator("div[data-slot='dialog-content'][data-state='open']");
 
     await expect(dialog).toContainText('"alpha"');
     await expect(dialog).toContainText('"beta"');
@@ -80,37 +72,27 @@ export function watchedKeysTests() {
       .locator("div.rounded-md.border", { hasText: '"alpha"' })
       .getByRole("button", { name: "Unwatch", exact: true })
       .click();
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (1)" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (1)" })).toBeVisible();
     await expect(dialog).not.toContainText('"alpha"');
 
     await dialog.locator('[data-slot="checkbox"]').click();
     await dialog.locator("button", { hasText: "Unwatch (1)" }).click();
 
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (0)" }),
-    ).toBeVisible();
-    await expect(
-      dialog.locator("p", { hasText: "No Watched Keys" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (0)" })).toBeVisible();
+    await expect(dialog.locator("p", { hasText: "No Watched Keys" })).toBeVisible();
     await page.keyboard.press("Escape");
   });
 
   test("Persist watched keys and reflect live updates", async ({ page }) => {
     await filterWatchTestEntries(page);
 
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (0)" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (0)" })).toBeVisible();
     const liveRow = page.locator("tr", { hasText: '"live"' });
     await liveRow.locator('button[data-slot="dropdown-menu-trigger"]').click();
     await page
       .locator('div[data-slot="dropdown-menu-item"]', { hasText: "Watch" })
       .click();
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (1)" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (1)" })).toBeVisible();
 
     await page.locator("button svg.lucide-arrow-left-from-line").click();
     await page
@@ -120,13 +102,9 @@ export function watchedKeysTests() {
       })
       .dblclick({ position: { x: 10, y: 10 } });
 
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (1)" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (1)" })).toBeVisible();
     await page.locator("button", { hasText: "Watched Keys (1)" }).click();
-    const dialog = page.locator(
-      "div[data-slot='dialog-content'][data-state='open']",
-    );
+    const dialog = page.locator("div[data-slot='dialog-content'][data-state='open']");
     await expect(dialog).toContainText('"live"');
     await expect(dialog).toContainText('"initial-live"');
 
@@ -139,9 +117,7 @@ export function watchedKeysTests() {
     });
 
     await expect(dialog).toContainText('"updated-live"');
-    await expect(
-      page.locator("tr", { hasText: '"updated-live"' }),
-    ).toBeVisible();
+    await expect(page.locator("tr", { hasText: '"updated-live"' })).toBeVisible();
 
     await page.evaluate(async () => {
       const kvClient = globalThis["kvClient" as keyof typeof globalThis];
@@ -151,9 +127,7 @@ export function watchedKeysTests() {
     await expect(dialog.getByText("null").first()).toBeVisible();
 
     await dialog.getByRole("button", { name: "Unwatch", exact: true }).click();
-    await expect(
-      page.locator("button", { hasText: "Watched Keys (0)" }),
-    ).toBeVisible();
+    await expect(page.locator("button", { hasText: "Watched Keys (0)" })).toBeVisible();
     await page.keyboard.press("Escape");
   });
 
@@ -177,9 +151,7 @@ export function watchedKeysTests() {
 
     await page.locator("button", { hasText: "Add to Watch List" }).click();
 
-    const dialog = page.locator(
-      "div[data-slot='dialog-content'][data-state='open']",
-    );
+    const dialog = page.locator("div[data-slot='dialog-content'][data-state='open']");
     await expect(dialog).toContainText('"new key"');
     await expect(dialog).toContainText("100 n");
     await expect(dialog.getByText("null", { exact: true })).toHaveCount(2);
@@ -198,12 +170,8 @@ export function watchedKeysTests() {
     });
 
     await expect(dialog.getByText("null", { exact: true })).toHaveCount(0);
-    await expect(
-      dialog.getByText('"updated-new-key"', { exact: true }),
-    ).toHaveCount(1);
-    await expect(
-      dialog.getByText(newVersionstamp, { exact: true }),
-    ).toHaveCount(1);
+    await expect(dialog.getByText('"updated-new-key"', { exact: true })).toHaveCount(1);
+    await expect(dialog.getByText(newVersionstamp, { exact: true })).toHaveCount(1);
 
     await page.keyboard.press("Escape");
   });

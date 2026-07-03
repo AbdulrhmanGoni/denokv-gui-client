@@ -3,15 +3,10 @@ import type { TestDependencies } from "./index.test.ts";
 import { serializeKvKey } from "../../src/serialization/main.ts";
 import { fakeData } from "../fakeTestData.ts";
 
-export function deleteEndpointSpec({
-  kv,
-  bridgeServerClient,
-}: TestDependencies) {
+export function deleteEndpointSpec({ kv, bridgeServerClient }: TestDependencies) {
   describe("'DELETE /delete' endpoint's specifications", () => {
     it("should delete an existing kv entry successfully", async () => {
-      const delRes = await bridgeServerClient.delete(
-        serializeKvKey(fakeData[1].key),
-      );
+      const delRes = await bridgeServerClient.delete(serializeKvKey(fakeData[1].key));
       expect(delRes.result).toBe(true);
 
       const entry = await kv.get(fakeData[1].key);
@@ -20,9 +15,7 @@ export function deleteEndpointSpec({
     });
 
     it("should resolve silently when trying to delete a unexisting kv entry", async () => {
-      const delRes = await bridgeServerClient.delete(
-        serializeKvKey([6, "any-thing", 0]),
-      );
+      const delRes = await bridgeServerClient.delete(serializeKvKey([6, "any-thing", 0]));
       expect(delRes.result).toEqual(true);
     });
 
@@ -63,11 +56,7 @@ export function deleteEndpointSpec({
     });
 
     it("should succeed to delete the key when passed as a JS literal with JSON form part", async () => {
-      const targetKeyName = [
-        "delete",
-        1000000n,
-        new Uint8Array([111, 111, 111]),
-      ];
+      const targetKeyName = ["delete", 1000000n, new Uint8Array([111, 111, 111])];
       await kv.set(targetKeyName, "to-be-deleted");
 
       const targetKey =

@@ -8,12 +8,10 @@ export function copyEntryKey(entry: SerializedKvEntry) {
       entry.key
         .map((keyPart) => {
           if (typeof keyPart == "string") return `"${keyPart}"`;
-          if (typeof keyPart == "number" || typeof keyPart == "boolean")
-            return keyPart;
+          if (typeof keyPart == "number" || typeof keyPart == "boolean") return keyPart;
           if (keyPart.type == "Number") return keyPart.value;
           if (keyPart.type == "BigInt") return String(keyPart.value + "n");
-          if (keyPart.type == "Uint8Array")
-            return `new Uint8Array(${keyPart.value})`;
+          if (keyPart.type == "Uint8Array") return `new Uint8Array(${keyPart.value})`;
           return String(keyPart);
         })
         .join(", ") +

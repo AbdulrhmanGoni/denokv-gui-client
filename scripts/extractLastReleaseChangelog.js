@@ -19,9 +19,7 @@ rl.on("line", (line) => {
       closed = true;
     } else {
       const [, compareLink] = line.split(" ");
-      const compareVersionsText = compareLink.match(
-        /v\d+.\d+.\d+...v\d+.\d+.\d+/,
-      );
+      const compareVersionsText = compareLink.match(/v\d+.\d+.\d+...v\d+.\d+.\d+/);
       if (compareVersionsText) {
         fullChangelogCompareLink = compareLink.replace(
           /\[\d+.\d+.\d+\]/,

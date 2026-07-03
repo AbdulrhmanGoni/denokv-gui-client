@@ -2,18 +2,13 @@
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import ArrowRight from "@lucide/svelte/icons/arrow-right";
   import ArrowLeft from "@lucide/svelte/icons/arrow-left";
-  import {
-    fetchEntries,
-    kvEntriesState,
-  } from "$lib/states/kvEntriesState.svelte";
+  import { fetchEntries, kvEntriesState } from "$lib/states/kvEntriesState.svelte";
 
   let thereIsNextCursor = $derived(
     !!kvEntriesState.params.cursors.at(-1) && !kvEntriesState.noMoreEntries,
   );
 
-  let thereIsPreviousCursor = $derived(
-    kvEntriesState.params.cursors.length > 1,
-  );
+  let thereIsPreviousCursor = $derived(kvEntriesState.params.cursors.length > 1);
 
   function next() {
     if (thereIsNextCursor) fetchEntries();

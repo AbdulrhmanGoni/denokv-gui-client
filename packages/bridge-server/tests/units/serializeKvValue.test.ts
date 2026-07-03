@@ -36,10 +36,9 @@ describe("serializeKvValue", () => {
   });
 
   it("should serialize KvU64 values", () => {
-    const value = Object.assign(
-      Object.create({ constructor: { name: "KvU64" } }),
-      { value: 99n },
-    );
+    const value = Object.assign(Object.create({ constructor: { name: "KvU64" } }), {
+      value: 99n,
+    });
     const result = serializeKvValue(value);
     expect(result).toEqual({ type: "KvU64", data: "99" });
   });

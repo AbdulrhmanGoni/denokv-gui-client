@@ -43,9 +43,7 @@ export function setEndpointSpec({ bridgeServerClient, kv }: TestDependencies) {
         versionstamp: putRes.result?.versionstamp,
       });
 
-      expect(Object.getPrototypeOf(getRes.value).constructor.name).toMatch(
-        /KvU64/g,
-      );
+      expect(Object.getPrototypeOf(getRes.value).constructor.name).toMatch(/KvU64/g);
     });
 
     it("should not overwrite existing entry if overwrite is false", async () => {

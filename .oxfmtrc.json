@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "svelte": true,
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "package-lock.json",
+    "landing",
+    "packages/renderer/src/lib/ui/shadcn",
+    "database.*.sqlite",
+    "CHANGELOG.md",
+    "build",
+    "coverage",
+    "test-results",
+    "buildResources",
+    ".svelte-kit",
+    ".vite",
+    "*.local",
+    ".env",
+    "*.env.*",
+    ".DS_Store"
+  ],
+  "printWidth": 90,
+  "tabWidth": 2,
+  "jsdoc": true,
+  "sortPackageJson": false
+}

@@ -2,10 +2,7 @@ import type { AtomicOperationInput } from "@app/bridge-server";
 import { writable } from "svelte/store";
 import { calcAtomicOperationCardPosition } from "./calcAtomicOperationCardPosition";
 
-type EnqueueAtomicOperationUIInput = Extract<
-  AtomicOperationInput,
-  { name: "enqueue" }
->;
+type EnqueueAtomicOperationUIInput = Extract<AtomicOperationInput, { name: "enqueue" }>;
 
 type AtomicOperationUIInputWithoutEnqueue = Exclude<
   AtomicOperationInput,

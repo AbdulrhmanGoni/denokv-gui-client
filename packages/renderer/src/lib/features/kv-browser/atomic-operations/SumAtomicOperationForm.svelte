@@ -6,19 +6,14 @@
   let { close }: { close?: () => void } = $props();
 </script>
 
-<NumberAtomicOperation
-  operationName="sum"
-  Icon={PlusIcon}
-  {close}
-  {description}
-/>
+<NumberAtomicOperation operationName="sum" Icon={PlusIcon} {close} {description} />
 
 {#snippet description()}
   <p class="text-muted-foreground">
-    Adds the value of the key to the sum. If the key does not exist, it is
-    created with the value of the sum. For more information, see the
-    <PLink href="https://docs.deno.com/deploy/kv/operations/#sum">
-      official documentation
-    </PLink>
+    Adds the value of the key to the sum. If the key does not exist, it is created with
+    the value of the sum. For more information, see the
+    <PLink href="https://docs.deno.com/deploy/kv/operations/#sum"
+      >official documentation</PLink
+    >
   </p>
 {/snippet}

@@ -87,9 +87,7 @@ export async function closeKvStore() {
 }
 
 export function removeKvStore(kvStore: KvStore) {
-  const filteredKvStores = kvStoresState.kvStores.filter(
-    (c) => c.id != kvStore.id,
-  );
+  const filteredKvStores = kvStoresState.kvStores.filter((c) => c.id != kvStore.id);
   if (kvStoresState.kvStores.length === filteredKvStores.length) return;
   kvStoresState.kvStores = filteredKvStores;
   kvStoresState.kvStoreTypeCounts[kvStore.type] -= 1;
@@ -124,7 +122,6 @@ async function startKvStoreServer(kvStore: KvStore) {
 const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
   local: "Either the path to this local KV Store is wrong, moved or deleted",
   remote: "Either authentication failed or the remote server is unreachable.",
-  default:
-    "Either the path to this default local KV Store is wrong, moved or deleted",
+  default: "Either the path to this default local KV Store is wrong, moved or deleted",
   bridge: "Either authentication failed or the bridge server is down.",
 };

@@ -10,17 +10,16 @@ type AppMetadata = {
 type CreateKvStoreInput = Pick<
   KvStore,
   "name" | "url" | "type" | "accessToken" | "authToken"
-> & { replaceExisting?: boolean };
+> & {
+  replaceExisting?: boolean;
+};
 
 type EditKvStoreInput = Partial<Pick<KvStore, "name" | "url" | "type">> & {
   accessToken: KvStore["accessToken"];
   authToken: KvStore["authToken"];
 };
 
-type TestKvStoreParams = Pick<
-  KvStore,
-  "url" | "type" | "accessToken" | "authToken"
->;
+type TestKvStoreParams = Pick<KvStore, "url" | "type" | "accessToken" | "authToken">;
 
 type BrowseRouteOptions = import("@app/bridge-server").BrowsingOptions;
 
@@ -80,6 +79,4 @@ type Settings = Partial<{
   disableHardwareAcceleration: boolean;
 }>;
 
-type TrycatchResult<T> =
-  | { result: T; error: null }
-  | { result: null; error: string };
+type TrycatchResult<T> = { result: T; error: null } | { result: null; error: string };

@@ -1,8 +1,5 @@
 <script lang="ts">
-  import {
-    kvStoresState,
-    loadKvStores,
-  } from "$lib/states/kvStoresState.svelte";
+  import { kvStoresState, loadKvStores } from "$lib/states/kvStoresState.svelte";
   import DatabaseIcon from "@lucide/svelte/icons/database";
   import PlusIcon from "@lucide/svelte/icons/circle-plus";
   import AlertIcon from "@lucide/svelte/icons/octagon-alert";
@@ -79,9 +76,7 @@
 
   function toggleFilter(type: (typeof filterOptions)[0]["type"]) {
     if (kvStoresState.selectedTypes.includes(type)) {
-      kvStoresState.selectedTypes = kvStoresState.selectedTypes.filter(
-        (t) => t !== type,
-      );
+      kvStoresState.selectedTypes = kvStoresState.selectedTypes.filter((t) => t !== type);
     } else {
       kvStoresState.selectedTypes = [...kvStoresState.selectedTypes, type];
     }
@@ -128,39 +123,28 @@
   {#if kvStoresState.error}
     <div class="text-center flex-1 flex flex-col justify-center items-center">
       <AlertIcon class="text-destructive size-10 mb-2" />
-      <p class="text-foreground font-semibold text-xl">
-        Failed to fetch Kv Stores
-      </p>
+      <p class="text-foreground font-semibold text-xl">Failed to fetch Kv Stores</p>
       <p class="text-destructive">
         <span class="">{kvStoresState.error}</span>
       </p>
     </div>
   {:else if kvStoresState.kvStores.length == 0}
-    <div
-      class="text-center flex-1 flex gap-2 flex-col justify-center items-center"
-    >
+    <div class="text-center flex-1 flex gap-2 flex-col justify-center items-center">
       <CircleOff class="size-10" />
       <div class="text-muted-foreground text-center">
-        <p class="text-foreground font-semibold text-xl">
-          No kv stores are available
-        </p>
+        <p class="text-foreground font-semibold text-xl">No kv stores are available</p>
         <p>Start by adding a new kv store, and then open and explore it!</p>
       </div>
       {@render addKvStoreButton()}
     </div>
   {:else if filteredKvStores.length === 0}
-    <div
-      class="text-center flex-1 gap-2 flex flex-col justify-center items-center"
-    >
+    <div class="text-center flex-1 gap-2 flex flex-col justify-center items-center">
       <SearchXIcon class="text-muted-foreground size-10" />
       <p class="text-foreground font-semibold text-xl">No matching Kv Stores</p>
       <p class="text-muted-foreground">
         No kv stores found matching the selected type filters.
       </p>
-      <Button
-        variant="outline"
-        onclick={() => (kvStoresState.selectedTypes = [])}
-      >
+      <Button variant="outline" onclick={() => (kvStoresState.selectedTypes = [])}>
         Clear filters
       </Button>
     </div>

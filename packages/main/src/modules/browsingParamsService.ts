@@ -48,46 +48,40 @@ export class BrowsingParamsServiceModule implements AppModule {
     ipcMain.handle(
       "browsingParamsService:getSavedBrowsingParamsRecords",
       (_, kvStoreId: string) => {
-        return syncTrycatch<SavedBrowsingParamsRecord<SavedBrowsingParams>[]>(
-          () => {
-            const result = getAllQuery.all(kvStoreId) as
-              | SavedBrowsingParamsRecord<string>[]
-              | undefined;
-            if (result) {
-              return result.map((record) => ({
-                ...record,
-                paramsAsJson: JSON.parse(
-                  record.paramsAsJson,
-                ) as SavedBrowsingParams,
-              }));
-            }
+        return syncTrycatch<SavedBrowsingParamsRecord<SavedBrowsingParams>[]>(() => {
+          const result = getAllQuery.all(kvStoreId) as
+            | SavedBrowsingParamsRecord<string>[]
+            | undefined;
+          if (result) {
+            return result.map((record) => ({
+              ...record,
+              paramsAsJson: JSON.parse(record.paramsAsJson) as SavedBrowsingParams,
+            }));
+          }
 
-            throw "Couldn't fetch the saved browsing params";
-          },
-        );
+          throw "Couldn't fetch the saved browsing params";
+        });
       },
     );
 
     ipcMain.handle(
       "browsingParamsService:getDefaultSavedBrowsingParams",
       (_, kvStoreId: string) => {
-        return syncTrycatch<
-          SavedBrowsingParamsRecord<SavedBrowsingParams> | undefined
-        >(() => {
-          const result = getDefaultSavedBrowsingQuery.get(kvStoreId) as
-            | SavedBrowsingParamsRecord<string>
-            | undefined;
-          if (result) {
-            return {
-              ...result,
-              paramsAsJson: JSON.parse(
-                result.paramsAsJson,
-              ) as SavedBrowsingParams,
-            };
-          }
+        return syncTrycatch<SavedBrowsingParamsRecord<SavedBrowsingParams> | undefined>(
+          () => {
+            const result = getDefaultSavedBrowsingQuery.get(kvStoreId) as
+              | SavedBrowsingParamsRecord<string>
+              | undefined;
+            if (result) {
+              return {
+                ...result,
+                paramsAsJson: JSON.parse(result.paramsAsJson) as SavedBrowsingParams,
+              };
+            }
 
-          return;
-        });
+            return;
+          },
+        );
       },
     );
 
@@ -113,9 +107,7 @@ export class BrowsingParamsServiceModule implements AppModule {
               ? JSON.stringify(updateData.newBrowsingParams)
               : null,
             isDefault:
-              "setAsDefault" in updateData
-                ? Number(updateData.setAsDefault)
-                : null,
+              "setAsDefault" in updateData ? Number(updateData.setAsDefault) : null,
           });
 
           if (result.changes) return true;

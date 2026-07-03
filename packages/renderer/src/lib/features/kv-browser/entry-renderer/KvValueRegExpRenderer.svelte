@@ -2,9 +2,7 @@
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
 
   let { regExpValue }: { regExpValue: string } = $props();
-  const regExp: { source: string; flags: string } = $derived(
-    JSON.parse(regExpValue),
-  );
+  const regExp: { source: string; flags: string } = $derived(JSON.parse(regExpValue));
 </script>
 
 {@render fSlash()}{regExp.source}{@render fSlash()}<!--

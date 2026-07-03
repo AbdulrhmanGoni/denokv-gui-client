@@ -20,9 +20,7 @@ export function kvEntriesTests() {
 
     await page.locator("button", { hasText: "Reload" }).click();
 
-    await expect(
-      page.locator("td", { hasText: "testing-kv-entry" }),
-    ).toBeVisible();
+    await expect(page.locator("td", { hasText: "testing-kv-entry" })).toBeVisible();
     await expect(page.locator("td", { hasText: "undefined" })).toBeVisible();
   });
 
@@ -43,12 +41,8 @@ export function kvEntriesTests() {
         hasText: "Undefined",
       })
       .click();
-    await page
-      .locator('div[data-slot="select-item"]', { hasText: "String" })
-      .click();
-    await page
-      .locator("textarea")
-      .fill("will-not-be-set-because-overwrite-is-unchecked");
+    await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
+    await page.locator("textarea").fill("will-not-be-set-because-overwrite-is-unchecked");
     await page.locator("button", { hasText: "Add" }).click();
     await page.keyboard.press("Escape");
 
@@ -87,9 +81,7 @@ export function kvEntriesTests() {
     await page
       .locator('button[data-slot="select-trigger"]', { hasText: "Undefined" })
       .click();
-    await page
-      .locator('div[data-slot="select-item"]', { hasText: "String" })
-      .click();
+    await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
     await page.locator("textarea").fill("new-test-value");
     await page
       .locator("button", {
@@ -99,9 +91,7 @@ export function kvEntriesTests() {
       .click();
     await page.keyboard.press("Escape");
     await page.locator("button", { hasText: "Reload" }).click();
-    await expect(
-      page.locator("td", { hasText: '"new-test-value"' }),
-    ).toBeVisible();
+    await expect(page.locator("td", { hasText: '"new-test-value"' })).toBeVisible();
   });
 
   test("Delete a Kv Entry", async ({ page }) => {
@@ -114,22 +104,22 @@ export function kvEntriesTests() {
     await page
       .locator(
         'div[data-slot="dropdown-menu-item"] button[data-slot="alert-dialog-trigger"]',
-        { hasText: "Delete" },
+        {
+          hasText: "Delete",
+        },
       )
       .click();
 
     await page
       .locator(
         'div[data-slot="alert-dialog-content"] button[data-slot="alert-dialog-action"]',
-        { hasText: "Confirm" },
+        {
+          hasText: "Confirm",
+        },
       )
       .click();
 
-    await expect(
-      page.locator("td", { hasText: "testing-kv-entry" }),
-    ).not.toBeVisible();
-    await expect(
-      page.locator("tbody", { hasText: "No More Entries" }),
-    ).toBeVisible();
+    await expect(page.locator("td", { hasText: "testing-kv-entry" })).not.toBeVisible();
+    await expect(page.locator("tbody", { hasText: "No More Entries" })).toBeVisible();
   });
 }

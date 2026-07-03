@@ -74,8 +74,8 @@
     <div class="space-y-2">
       <p class="text-xl font-semibold">Keys If Undelivered</p>
       <p class="text-sm text-muted-foreground ms-1">
-        Set keys to save the message value with when failing to deliver the
-        message to the queue.
+        Set keys to save the message value with when failing to deliver the message to the
+        queue.
         <PLink
           href="https://docs.deno.com/api/deno/~/Deno.Kv.prototype.enqueue#:~:text=keysIfUndelivered%20option"
         >

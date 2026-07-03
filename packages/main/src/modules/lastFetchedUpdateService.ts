@@ -28,13 +28,10 @@ export class LastFetchedUpdateServiceModule implements AppModule {
       deleteLastFetchedUpdate(),
     );
 
-    ipcMain.handle(
-      "lastFetchedUpdateService:doNotNotifyLastFetchedUpdate",
-      () => {
-        const result = updateDoNotNotifyQuery.run(1);
-        return !!result.changes;
-      },
-    );
+    ipcMain.handle("lastFetchedUpdateService:doNotNotifyLastFetchedUpdate", () => {
+      const result = updateDoNotNotifyQuery.run(1);
+      return !!result.changes;
+    });
   }
 }
 

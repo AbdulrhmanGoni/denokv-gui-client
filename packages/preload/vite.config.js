@@ -31,8 +31,9 @@ export default /**
 });
 
 /**
- * This plugin creates a browser (renderer) version of `preload` package.
- * Basically, it just reads all exported nominals from `preload` package and defines them as globalThis properties.
+ * This plugin creates a browser (renderer) version of `preload` package. Basically, it
+ * just reads all exported nominals from `preload` package and defines them as globalThis
+ * properties.
  */
 function mockExposed() {
   const virtualModuleId = "virtual:browser.js";
@@ -65,10 +66,11 @@ function mockExposed() {
 
 /**
  * Implement Electron webview reload when some file was changed
- * @returns {import('vite').Plugin}
+ *
+ * @returns {import("vite").Plugin}
  */
 function handleHotReload() {
-  /** @type {import('vite').ViteDevServer|null} */
+  /** @type {import("vite").ViteDevServer | null} */
   let rendererWatchServer = null;
 
   return {
@@ -86,8 +88,7 @@ function handleHotReload() {
         throw new Error("Renderer watch server provider not found");
       }
 
-      rendererWatchServer =
-        rendererWatchServerProvider.api.provideRendererWatchServer();
+      rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer();
 
       return {
         build: {

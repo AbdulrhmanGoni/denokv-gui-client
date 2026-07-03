@@ -41,9 +41,7 @@
   let keysIfUndeliveredOption = $state<string>("[]");
 
   function reset() {
-    editorValue.data = dataTypes.find(
-      (dt) => editorValue?.type == dt.type,
-    )!.starter;
+    editorValue.data = dataTypes.find((dt) => editorValue?.type == dt.type)!.starter;
     editorValueRef?.updateCode(editorValue.data);
     delayOption = 0;
     backoffScheduleOptionValue = [];
@@ -97,12 +95,7 @@
     />
   </div>
   <div class="flex flex-row-reverse gap-2">
-    <Button
-      disabled={props.loading}
-      variant="secondary"
-      size="sm"
-      onclick={enqueue}
-    >
+    <Button disabled={props.loading} variant="secondary" size="sm" onclick={enqueue}>
       {props.submitButtonText ?? "Enqueue"}
       {#if props.loading}
         <LoaderIcon class="size-4 animate-spin" />

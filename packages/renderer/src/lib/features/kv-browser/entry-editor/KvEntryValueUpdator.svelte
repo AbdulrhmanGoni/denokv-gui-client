@@ -16,9 +16,7 @@
 
   const { entry }: { entry: KvEntry } = $props();
 
-  let kvValueEditorValue: KvEntry["value"] = $state(
-    $state.snapshot(entry.value),
-  );
+  let kvValueEditorValue: KvEntry["value"] = $state($state.snapshot(entry.value));
 
   async function saveChanges() {
     if (
@@ -29,10 +27,7 @@
       globalState.loadingOverlay.text = "Updating entry...";
       const updatedValue = $state.snapshot(kvValueEditorValue);
       const currentEntry = $state.snapshot(entry);
-      const { error, result } = await kvClient.set(
-        currentEntry.key,
-        updatedValue,
-      );
+      const { error, result } = await kvClient.set(currentEntry.key, updatedValue);
 
       if (result && result.ok) {
         const updatedEntry = {
@@ -44,9 +39,7 @@
         updateOpenKvEntry(updatedEntry);
 
         kvEntriesState.entries = kvEntriesState.entries.map((existingEntry) =>
-          isSameKvKey(existingEntry.key, updatedEntry.key)
-            ? updatedEntry
-            : existingEntry,
+          isSameKvKey(existingEntry.key, updatedEntry.key) ? updatedEntry : existingEntry,
         );
 
         toast.success("The changes was saved successfully");

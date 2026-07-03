@@ -95,8 +95,8 @@
     <AlertDialog.Header>
       <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
       <AlertDialog.Description>
-        This will permanently delete all selected Kv Entries and you won't be
-        able to undo this action.
+        This will permanently delete all selected Kv Entries and you won't be able to undo
+        this action.
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>

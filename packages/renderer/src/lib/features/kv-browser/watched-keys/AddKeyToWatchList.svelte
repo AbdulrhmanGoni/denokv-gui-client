@@ -56,8 +56,8 @@
       Add a Key to the Watch List
     </h1>
     <p class="py-1.5 text-muted-foreground">
-      Enter a specific Deno KV Key to add it to the watch list and receive
-      updates when it changes.
+      Enter a specific Deno KV Key to add it to the watch list and receive updates when it
+      changes.
     </p>
     <Separator class="my-3" />
     <KvKeyEditor bind:jar={kvKeyCodeEditor} />

@@ -19,34 +19,35 @@ import type { BlankEnv, BlankSchema } from "hono/types";
 import { isSameKvKey } from "../kv-utils.ts";
 
 /**
- * Creates the bridge server which is a Hono web application that provides HTTP endpoints to interact with
- * a given Deno KV database.
+ * Creates the bridge server which is a Hono web application that provides HTTP endpoints
+ * to interact with a given Deno KV database.
+ *
+ * @example
+ *   ```typescript
+ *   const kv = await Deno.openKv();
+ *   const app = createBridgeApp(kv);
+ *
+ *   // Start a server
+ *   Deno.serve({ port: 8000 }, app.fetch);
+ *   ```
+ *
+ *   The bridge server provides the following endpoints:
+ *   - `GET /browse` - List KV entries (mirroring 'Deno.Kv.list()')
+ *   - `GET /get/:key` - Retrieve a specific KV entry by key (mirroring `Deno.Kv.get()`)
+ *   - `PUT /set` - Create or update a KV entry (mirroring `Deno.Kv.set()`)
+ *   - `DELETE /delete` - Remove a KV entry (mirroring `Deno.Kv.delete()`)
+ *   - `POST /enqueue` - Enqueue a message to a Deno Kv queue (mirroring `Deno.Kv.enqueue()`)
+ *   - `POST /atomic` - Perform atomic operations on KV entries (mirroring `Deno.Kv.atomic()`)
+ *   - `POST /watch` - Watch specific keys for updates (mirroring `Deno.Kv.watch()`)
+ *   - `GET /check` - Health check endpoint to verify KV connectivity
+ *
+ *   All endpoints include CORS headers allowing cross-origin requests from any domain.
  *
  * @param kv An instance of the official Deno.Kv API class or compatible KV implementation
  * @param options Optional configuration for the bridge server
  * @param options.authToken Authentication token to protect the server
- * @returns An instance of the `Hono` class which represents the entry point of the bridge server
- *
- * @example
- * ```typescript
- * const kv = await Deno.openKv();
- * const app = createBridgeApp(kv);
- *
- * // Start a server
- * Deno.serve({ port: 8000 }, app.fetch);
- * ```
- *
- * The bridge server provides the following endpoints:
- * - `GET /browse` - List KV entries (mirroring 'Deno.Kv.list()')
- * - `GET /get/:key` - Retrieve a specific KV entry by key (mirroring `Deno.Kv.get()`)
- * - `PUT /set` - Create or update a KV entry (mirroring `Deno.Kv.set()`)
- * - `DELETE /delete` - Remove a KV entry (mirroring `Deno.Kv.delete()`)
- * - `POST /enqueue` - Enqueue a message to a Deno Kv queue (mirroring `Deno.Kv.enqueue()`)
- * - `POST /atomic` - Perform atomic operations on KV entries (mirroring `Deno.Kv.atomic()`)
- * - `POST /watch` - Watch specific keys for updates (mirroring `Deno.Kv.watch()`)
- * - `GET /check` - Health check endpoint to verify KV connectivity
- *
- * All endpoints include CORS headers allowing cross-origin requests from any domain.
+ * @returns An instance of the `Hono` class which represents the entry point of the bridge
+ *   server
  */
 export function createBridgeApp(
   kv: Kv | Deno.Kv,
@@ -110,9 +111,7 @@ export function createBridgeApp(
   });
 
   app.put("/set", async (c) => {
-    const { key, expires, overwrite } = validateSetRequestParams(
-      new URL(c.req.url),
-    );
+    const { key, expires, overwrite } = validateSetRequestParams(new URL(c.req.url));
     const validValue = deserializeKvValue(await c.req.json());
 
     if (overwrite === false) {
@@ -182,32 +181,21 @@ export function createBridgeApp(
           break;
 
         case "sum":
-          kvAtomicOperation = kvAtomicOperation.sum(
-            operation.key,
-            operation.value,
-          );
+          kvAtomicOperation = kvAtomicOperation.sum(operation.key, operation.value);
           break;
 
         case "min":
-          kvAtomicOperation = kvAtomicOperation.min(
-            operation.key,
-            operation.value,
-          );
+          kvAtomicOperation = kvAtomicOperation.min(operation.key, operation.value);
           break;
 
         case "max":
-          kvAtomicOperation = kvAtomicOperation.max(
-            operation.key,
-            operation.value,
-          );
+          kvAtomicOperation = kvAtomicOperation.max(operation.key, operation.value);
           break;
 
         case "set":
-          kvAtomicOperation = kvAtomicOperation.set(
-            operation.key,
-            operation.value,
-            { expireIn: operation.expiresIn },
-          );
+          kvAtomicOperation = kvAtomicOperation.set(operation.key, operation.value, {
+            expireIn: operation.expiresIn,
+          });
           break;
 
         case "delete":
@@ -234,8 +222,7 @@ export function createBridgeApp(
     return c.json({ result: true });
   });
 
-  let watchedEntries: { key: SerializedKvKey; versionstamp: string | null }[] =
-    [];
+  let watchedEntries: { key: SerializedKvKey; versionstamp: string | null }[] = [];
   let watchStreamReader: ReadableStreamDefaultReader<
     Deno.KvEntryMaybe<unknown>[] | KvEntryMaybe<unknown>[]
   > | null = null;
@@ -332,10 +319,7 @@ export function createBridgeApp(
   });
 
   app.all("*", (c) => {
-    return c.json(
-      { error: `'${c.req.method} ${c.req.path}' route dosen't exist` },
-      404,
-    );
+    return c.json({ error: `'${c.req.method} ${c.req.path}' route dosen't exist` }, 404);
   });
 
   app.onError((err, c) => {

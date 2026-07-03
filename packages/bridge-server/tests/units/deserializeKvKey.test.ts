@@ -44,9 +44,7 @@ describe("Test deserializeKvKey function", () => {
 
   it("should throw an error for invalid JSON", () => {
     const key = '["users", "alice"';
-    expect(() => deserializeKvKey(key)).toThrow(
-      "Invalid JSON format for KvKey.",
-    );
+    expect(() => deserializeKvKey(key)).toThrow("Invalid JSON format for KvKey.");
   });
 
   it("should throw an error for a non-array KvKey", () => {
@@ -98,15 +96,11 @@ describe("Test deserializeKvKey function", () => {
     expect(() => deserializeKvKey(key, { jsKey: false })).toThrow(
       "Invalid JSON format for KvKey.",
     );
-    expect(() => deserializeKvKey(key)).toThrow(
-      "Invalid JSON format for KvKey.",
-    );
+    expect(() => deserializeKvKey(key)).toThrow("Invalid JSON format for KvKey.");
   });
 
   it("should throw an error for invalid JS expression when jsKey option is enabled", () => {
     const key = "[posts, 123]";
-    expect(() => deserializeKvKey(key, { jsKey: true })).toThrow(
-      "Invalid Deno Kv Key.",
-    );
+    expect(() => deserializeKvKey(key, { jsKey: true })).toThrow("Invalid Deno Kv Key.");
   });
 });

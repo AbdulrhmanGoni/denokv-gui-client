@@ -35,24 +35,23 @@ function copyMigrations() {
     name: "copy-migrations",
     closeBundle() {
       const distPath = resolve(__dirname, "dist");
-      cpSync(
-        resolve(__dirname, "src/db/migrations"),
-        `${distPath}/migrations`,
-        { recursive: true },
-      );
+      cpSync(resolve(__dirname, "src/db/migrations"), `${distPath}/migrations`, {
+        recursive: true,
+      });
     },
   };
 }
 
 /**
  * Implement Electron app reload when some file was changed
- * @returns {import('vite').Plugin}
+ *
+ * @returns {import("vite").Plugin}
  */
 function handleHotReload() {
   /** @type {ChildProcess} */
   let electronApp = null;
 
-  /** @type {import('vite').ViteDevServer|null} */
+  /** @type {import("vite").ViteDevServer | null} */
   let rendererWatchServer = null;
 
   return {
@@ -70,11 +69,9 @@ function handleHotReload() {
         throw new Error("Renderer watch server provider not found");
       }
 
-      rendererWatchServer =
-        rendererWatchServerProvider.api.provideRendererWatchServer();
+      rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer();
 
-      process.env.VITE_DEV_SERVER_URL =
-        rendererWatchServer.resolvedUrls.local[0];
+      process.env.VITE_DEV_SERVER_URL = rendererWatchServer.resolvedUrls.local[0];
 
       return {
         build: {

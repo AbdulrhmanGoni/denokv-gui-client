@@ -37,22 +37,18 @@
     Check Operation
   </h1>
   <p class="text-muted-foreground">
-    Add to the operation a check that ensures that the versionstamp of the
-    key-value entry in the KV store matches the given versionstamp. If the check
-    fails, the entire operation will fail and no mutations will be performed.
+    Add to the operation a check that ensures that the versionstamp of the key-value entry
+    in the KV store matches the given versionstamp. If the check fails, the entire
+    operation will fail and no mutations will be performed.
   </p>
   <Separator />
   <KvKeyEditor editorId="check-key-editor" bind:jar={kvKeyEditorRef} />
   <div class="space-y-1.5">
     <p class="flex gap-2 items-center font-bold text-lg">
       <TagIcon /> Versionstamp
-      <span
-        class="text-base flex items-center text-muted-foreground font-medium"
-      >
+      <span class="text-base flex items-center text-muted-foreground font-medium">
         (<span>default:</span>
-        <code class="ms-1 font-mono bg-muted px-1 rounded text-foreground">
-          null
-        </code>)
+        <code class="ms-1 font-mono bg-muted px-1 rounded text-foreground"> null </code>)
       </span>
     </p>
     <Input

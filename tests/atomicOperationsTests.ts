@@ -2,28 +2,20 @@ import { expect } from "playwright/test";
 import { test } from "./e2e.spec";
 
 export function atomicOperationsTests() {
-  test("Check that a Kv Entry doesn't exist before adding it", async ({
-    page,
-  }) => {
+  test("Check that a Kv Entry doesn't exist before adding it", async ({ page }) => {
     await page.locator("button", { hasText: "Atomic" }).click();
     await page.locator("button", { hasText: "check" }).click();
-    await page
-      .locator("#check-key-editor")
-      .fill('["new-kv-that-did-not-exist"]');
+    await page.locator("#check-key-editor").fill('["new-kv-that-did-not-exist"]');
     await page.locator("button", { hasText: "Add Check" }).click();
 
-    await page
-      .locator("button", { hasText: "set", hasNotText: "Reset" })
-      .click();
+    await page.locator("button", { hasText: "set", hasNotText: "Reset" }).click();
     await page
       .locator("button", {
         has: page.locator("svg.lucide-chevron-down"),
         hasText: "Undefined",
       })
       .click();
-    await page
-      .locator('div[data-slot="select-item"]', { hasText: "Boolean" })
-      .click();
+    await page.locator('div[data-slot="select-item"]', { hasText: "Boolean" }).click();
     const setKeyEditor = page.locator("div#key-editor");
     await setKeyEditor.fill('["new-kv-that-did-not-exist"]');
     await setKeyEditor.press("Space");
@@ -54,23 +46,17 @@ export function atomicOperationsTests() {
     page,
   }) => {
     await page.locator("button", { hasText: "check" }).click();
-    await page
-      .locator("#check-key-editor")
-      .fill('["new-kv-that-did-not-exist"]');
+    await page.locator("#check-key-editor").fill('["new-kv-that-did-not-exist"]');
     await page.locator("button", { hasText: "Add Check" }).click();
 
-    await page
-      .locator("button", { hasText: "set", hasNotText: "Reset" })
-      .click();
+    await page.locator("button", { hasText: "set", hasNotText: "Reset" }).click();
     await page
       .locator("button", {
         has: page.locator("svg.lucide-chevron-down"),
         hasText: "Undefined",
       })
       .click();
-    await page
-      .locator('div[data-slot="select-item"]', { hasText: "Boolean" })
-      .click();
+    await page.locator('div[data-slot="select-item"]', { hasText: "Boolean" }).click();
     const setKeyEditor = page.locator("div#key-editor");
     await setKeyEditor.fill('["new-kv-that-did-not-exist"]');
     await setKeyEditor.press("Space");
@@ -97,26 +83,19 @@ export function atomicOperationsTests() {
     });
   });
 
-  test("Add, Delete, and Update entries in one atomic transaction", async ({
-    page,
-  }) => {
+  test("Add, Delete, and Update entries in one atomic transaction", async ({ page }) => {
     await page.evaluate(async () => {
       const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      await kvClient.set(
-        ["new-kv", "should-be-updated-in-atomic-transaction", true],
-        {
-          type: "String",
-          data: "should-be-updated",
-        },
-      );
+      await kvClient.set(["new-kv", "should-be-updated-in-atomic-transaction", true], {
+        type: "String",
+        data: "should-be-updated",
+      });
     });
 
     await page.locator("button", { hasText: "Reset" }).click();
 
     // Add a new entry
-    await page
-      .locator("button", { hasText: "set", hasNotText: "Reset" })
-      .click();
+    await page.locator("button", { hasText: "set", hasNotText: "Reset" }).click();
     const setKeyEditor = page.locator("div#key-editor");
     await setKeyEditor.fill('["new-kv", "added-in-atomic-transaction"]');
     await setKeyEditor.press("Space");
@@ -126,12 +105,8 @@ export function atomicOperationsTests() {
         hasText: "Undefined",
       })
       .click();
-    await page
-      .locator('div[data-slot="select-item"]', { hasText: "Number" })
-      .click();
-    await page
-      .locator('div[data-slot="input-group"] input[type="number"]')
-      .fill("123");
+    await page.locator('div[data-slot="select-item"]', { hasText: "Number" }).click();
+    await page.locator('div[data-slot="input-group"] input[type="number"]').fill("123");
     await page.locator('div[data-slot="input-group-addon"] button').click();
     await page.locator("button", { hasText: "Add Set Operation" }).click();
 
@@ -143,9 +118,7 @@ export function atomicOperationsTests() {
     await page.locator("button", { hasText: "Add Delete Operation" }).click();
 
     // Update an existing entry
-    await page
-      .locator("button", { hasText: "set", hasNotText: "Reset" })
-      .click();
+    await page.locator("button", { hasText: "set", hasNotText: "Reset" }).click();
     const updateKeyEditor = page.locator("div#key-editor");
     await updateKeyEditor.fill(
       '["new-kv", "should-be-updated-in-atomic-transaction", true]',
@@ -157,9 +130,7 @@ export function atomicOperationsTests() {
         hasText: "Undefined",
       })
       .click();
-    await page
-      .locator('div[data-slot="select-item"]', { hasText: "String" })
-      .click();
+    await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
     await page.locator("textarea").fill("was-updated");
     await page.locator("button", { hasText: "Add Set Operation" }).click();
 
@@ -169,10 +140,7 @@ export function atomicOperationsTests() {
     const responses = await page.evaluate(async () => {
       const kvClient = globalThis["kvClient" as keyof typeof globalThis];
       return {
-        newKvResponse: await kvClient.get([
-          "new-kv",
-          "added-in-atomic-transaction",
-        ]),
+        newKvResponse: await kvClient.get(["new-kv", "added-in-atomic-transaction"]),
         deletedKvResponse: await kvClient.get(["new-kv-that-did-not-exist"]),
         updatedKvResponse: await kvClient.get([
           "new-kv",
@@ -225,9 +193,7 @@ export function atomicOperationsTests() {
     });
 
     // Add a new entry
-    await page
-      .locator("button", { hasText: "set", hasNotText: "Reset" })
-      .click();
+    await page.locator("button", { hasText: "set", hasNotText: "Reset" }).click();
     const setKeyEditor = page.locator("div#key-editor");
     await setKeyEditor.fill('["new-kv", "should-not-be-added"]');
     await setKeyEditor.press("Space");
@@ -241,9 +207,7 @@ export function atomicOperationsTests() {
     await page.locator("button", { hasText: "Add Delete Operation" }).click();
 
     // Update an existing entry
-    await page
-      .locator("button", { hasText: "set", hasNotText: "Reset" })
-      .click();
+    await page.locator("button", { hasText: "set", hasNotText: "Reset" }).click();
     const updateKeyEditor = page.locator("div#key-editor");
     await updateKeyEditor.fill(
       '["new-kv", "should-not-be-updated-in-atomic-transaction", true]',
@@ -255,9 +219,7 @@ export function atomicOperationsTests() {
         hasText: "Undefined",
       })
       .click();
-    await page
-      .locator('div[data-slot="select-item"]', { hasText: "String" })
-      .click();
+    await page.locator('div[data-slot="select-item"]', { hasText: "String" }).click();
     await page.locator("textarea").fill("update-that-wont-take-effect");
     await page.locator("button", { hasText: "Add Set Operation" }).click();
 
@@ -274,10 +236,7 @@ export function atomicOperationsTests() {
       const kvClient = globalThis["kvClient" as keyof typeof globalThis];
       return {
         newKvResponse: await kvClient.get(["new-kv", "should-not-be-added"]),
-        deletedKvResponse: await kvClient.get([
-          "new-kv",
-          "added-in-atomic-transaction",
-        ]),
+        deletedKvResponse: await kvClient.get(["new-kv", "added-in-atomic-transaction"]),
         updatedKvResponse: await kvClient.get([
           "new-kv",
           "should-not-be-updated-in-atomic-transaction",
@@ -346,17 +305,15 @@ export function atomicOperationsTests() {
       await page
         .locator(`input#${operation.name}-value-input`)
         .fill(operation.operationValue.toString());
-      await page
-        .locator("button", { hasText: `Add ${operation.name}` })
-        .click();
+      await page.locator("button", { hasText: `Add ${operation.name}` }).click();
       await page.waitForTimeout(70);
     }
 
     // Commit the transaction
     await page.locator("button", { hasText: "Commit" }).click();
 
-    const responses: { operation: TestOperation; response: any }[] =
-      await page.evaluate(async (operations: TestOperation[]) => {
+    const responses: { operation: TestOperation; response: any }[] = await page.evaluate(
+      async (operations: TestOperation[]) => {
         const kvClient = globalThis["kvClient" as keyof typeof globalThis];
         const responses: { operation: TestOperation; response: any }[] = [];
         for (const operation of operations) {
@@ -366,7 +323,9 @@ export function atomicOperationsTests() {
           });
         }
         return responses;
-      }, operations);
+      },
+      operations,
+    );
 
     for (const { operation, response } of responses) {
       expect(response).toEqual({

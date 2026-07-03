@@ -45,22 +45,22 @@
         consistency,
         reverse,
       };
-      const { result, error } =
-        await browsingParamsService.updateSavedBrowsingParams(
-          kvStoresState.openedStore.id,
-          savedBrowsingParamsRecord.id,
-          { newBrowsingParams },
-        );
+      const { result, error } = await browsingParamsService.updateSavedBrowsingParams(
+        kvStoresState.openedStore.id,
+        savedBrowsingParamsRecord.id,
+        { newBrowsingParams },
+      );
 
       if (result) {
         toast.success("The browsing params were updated successfully");
-        savedBrowsingParamsState.savedParams =
-          savedBrowsingParamsState.savedParams.map((record) => {
+        savedBrowsingParamsState.savedParams = savedBrowsingParamsState.savedParams.map(
+          (record) => {
             if (record.id == savedBrowsingParamsRecord.id) {
               record.paramsAsJson = newBrowsingParams;
             }
             return record;
-          });
+          },
+        );
         closeForm();
       } else {
         toast.error(error);

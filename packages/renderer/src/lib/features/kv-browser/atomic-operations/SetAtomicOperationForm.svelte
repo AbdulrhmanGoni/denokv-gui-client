@@ -27,8 +27,8 @@
       Set Operation
     </h1>
     <p class="text-muted-foreground">
-      <strong>Add</strong> or <strong>Update</strong> a key-value entry in the KV
-      store to the given value.
+      <strong>Add</strong> or <strong>Update</strong> a key-value entry in the KV store to the
+      given value.
     </p>
   </div>
 {/snippet}

@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { TestDependencies } from "./index.test.ts";
-import type {
-  SerializedKvEntry,
-  SerializedKvKey,
-} from "../../src/serialization/main.ts";
+import type { SerializedKvEntry, SerializedKvKey } from "../../src/serialization/main.ts";
 
 type WatchConnection = {
   reader: ReadableStreamDefaultReader<Uint8Array>;
@@ -22,9 +19,7 @@ async function openWatchConnection(
       method: "POST",
       headers: { Authorization: authToken },
       body: JSON.stringify(
-        typeof keys[0] == "string"
-          ? keys
-          : keys.map((key) => JSON.stringify(key)),
+        typeof keys[0] == "string" ? keys : keys.map((key) => JSON.stringify(key)),
       ),
       signal: abortController.signal,
     },
@@ -40,10 +35,7 @@ async function openWatchConnection(
   };
 }
 
-async function closeWatchConnection({
-  reader,
-  abortController,
-}: WatchConnection) {
+async function closeWatchConnection({ reader, abortController }: WatchConnection) {
   await reader.cancel().catch(() => {});
   abortController.abort();
 }
@@ -68,10 +60,7 @@ export function watchEndpointSpec(dependencies: TestDependencies) {
       await kv.set(key1, "first");
       await kv.set(key2, "second");
 
-      const watchConnection = await openWatchConnection(dependencies, [
-        key1,
-        key2,
-      ]);
+      const watchConnection = await openWatchConnection(dependencies, [key1, key2]);
 
       try {
         const entries = await readNextWatchMessage(watchConnection.reader);
@@ -102,10 +91,7 @@ export function watchEndpointSpec(dependencies: TestDependencies) {
       await kv.set(key1, "initial first");
       await kv.set(key2, "initial second");
 
-      const watchConnection = await openWatchConnection(dependencies, [
-        key1,
-        key2,
-      ]);
+      const watchConnection = await openWatchConnection(dependencies, [key1, key2]);
 
       try {
         await readNextWatchMessage(watchConnection.reader);

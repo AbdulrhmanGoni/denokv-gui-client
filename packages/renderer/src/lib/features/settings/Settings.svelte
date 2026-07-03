@@ -42,9 +42,7 @@
         </div>
       </div>
       <Separator />
-      <div
-        class="flex gap-2 text-xs text-muted-foreground items-center justify-center"
-      >
+      <div class="flex gap-2 text-xs text-muted-foreground items-center justify-center">
         {@render displayVersion(
           "Electron",
           metadata.electronVersion,

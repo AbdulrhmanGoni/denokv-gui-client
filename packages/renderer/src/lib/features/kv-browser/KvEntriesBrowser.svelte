@@ -78,12 +78,7 @@
     </Button>
     <AtomicOperationsConstructor />
     <EnqueueMessage />
-    <Button
-      class="gap-1"
-      size="sm"
-      variant="secondary1"
-      onclick={openLookUpKeyDialog}
-    >
+    <Button class="gap-1" size="sm" variant="secondary1" onclick={openLookUpKeyDialog}>
       Look Up
       <SearchIcon class="rotate-75" />
     </Button>

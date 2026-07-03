@@ -74,11 +74,7 @@
         <InputGroup.Addon>
           <InputGroup.Text class="me-1">Batch Size:</InputGroup.Text>
         </InputGroup.Addon>
-        <InputGroup.Input
-          type="number"
-          bind:value={batchSize}
-          class="ps-0.5!"
-        />
+        <InputGroup.Input type="number" bind:value={batchSize} class="ps-0.5!" />
       </InputGroup.Root>
     </div>
     <div class="flex gap-2 items-end">
@@ -102,9 +98,7 @@
     <Checkbox id="reverse-option" class="mt-1" bind:checked={reverse} />
     <label for="reverse-option">
       <p class="font-bold text-base">Reverse?</p>
-      <p class="text-sm text-muted-foreground">
-        Return the entries in reverse order
-      </p>
+      <p class="text-sm text-muted-foreground">Return the entries in reverse order</p>
     </label>
   </div>
   <Separator />

@@ -4,9 +4,7 @@
   import { fileSystemService } from "@app/preload";
 
   const { kvStore }: { kvStore: KvStore } = $props();
-  const isLocal = $derived(
-    kvStore.type == "local" || kvStore.type == "default",
-  );
+  const isLocal = $derived(kvStore.type == "local" || kvStore.type == "default");
 </script>
 
 <p class="flex items-center gap-2 text-sm overflow-x-hidden">

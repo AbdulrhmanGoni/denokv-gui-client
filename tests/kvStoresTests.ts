@@ -241,9 +241,7 @@ export function kvStoresTests() {
     ).toBeVisible();
   });
 
-  test("Create a local Kv Store with trailing slash in directory", async ({
-    page,
-  }) => {
+  test("Create a local Kv Store with trailing slash in directory", async ({ page }) => {
     const addKvStoreButton = page.locator("button", {
       hasText: "Add Kv Store",
     });
@@ -269,9 +267,7 @@ export function kvStoresTests() {
     await expect(trailingSlashStoreCard).toBeVisible();
   });
 
-  test('Create a local Kv Store with "replace existing" option', async ({
-    page,
-  }) => {
+  test('Create a local Kv Store with "replace existing" option', async ({ page }) => {
     const hardDriveIcon = page.locator("svg.lucide-hard-drive");
     await page
       .locator("#kv-stores-grid > div", {

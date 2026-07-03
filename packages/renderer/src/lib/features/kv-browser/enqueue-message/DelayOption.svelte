@@ -6,9 +6,7 @@
 
 <InputGroup.Root class="max-w-52">
   <InputGroup.Addon>
-    <InputGroup.Text class="me-1 text-foreground font-semibold">
-      Delay?:
-    </InputGroup.Text>
+    <InputGroup.Text class="me-1 text-foreground font-semibold">Delay?:</InputGroup.Text>
   </InputGroup.Addon>
   <InputGroup.Input type="number" bind:value class="ps-0.5!" />
   <InputGroup.Addon align="inline-end">

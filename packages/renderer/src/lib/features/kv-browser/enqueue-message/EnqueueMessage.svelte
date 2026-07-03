@@ -47,9 +47,7 @@
     Enqueue
     <MessageSquarePlusIcon class="size-4" />
   </Dialog.Trigger>
-  <Dialog.Content
-    class="max-w-2xl w-full max-h-[600px] overflow-auto p-3 gap-2"
-  >
+  <Dialog.Content class="max-w-2xl w-full max-h-[600px] overflow-auto p-3 gap-2">
     <EnqueueMessageForm onSubmit={enqueue} loading={isEnqueuing} />
   </Dialog.Content>
 </Dialog.Root>

@@ -116,9 +116,7 @@
       placeholder="Name"
       defaultValue={defaultValues?.name}
     />
-    <p class="text-muted-foreground text-sm">
-      Enter the name of the new kv store.
-    </p>
+    <p class="text-muted-foreground text-sm">Enter the name of the new kv store.</p>
   </div>
   <div class="space-y-1.5">
     <Label for="name">Kv Store Type</Label>
@@ -163,11 +161,7 @@
             bind:value={localKvFileName}
           />
           <InputGroup.Addon align="inline-end">
-            <InputGroup.Button
-              onclick={pickFile}
-              variant="default"
-              disabled={isLoading}
-            >
+            <InputGroup.Button onclick={pickFile} variant="default" disabled={isLoading}>
               Pick
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -220,8 +214,8 @@
           Replace Existing?
         </Label>
         <p class="text-sm text-muted-foreground">
-          If there is already an existing database file with the same name in
-          the picked directory, replace it with a new empty database file.
+          If there is already an existing database file with the same name in the picked
+          directory, replace it with a new empty database file.
         </p>
       </div>
     </div>
@@ -269,8 +263,7 @@
         defaultValue={defaultValues?.authToken ?? ""}
       />
       <p class="text-muted-foreground text-sm">
-        Enter the auth token of bridge server if it's required to access the
-        server.
+        Enter the auth token of bridge server if it's required to access the server.
       </p>
     </div>
   {/if}
@@ -287,11 +280,7 @@
       {/if}
       {backButtonText ? backButtonText : "Back"}
     </Button>
-    <Button
-      type="submit"
-      class={isLoading ? "cursor-progress" : ""}
-      disabled={isLoading}
-    >
+    <Button type="submit" class={isLoading ? "cursor-progress" : ""} disabled={isLoading}>
       {submitButtonText ? submitButtonText : "Submit"}
       {#if isLoading}
         <Loader class="animate-spin" />

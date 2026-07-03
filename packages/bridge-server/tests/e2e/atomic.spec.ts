@@ -1,10 +1,7 @@
 import { describe, it, expect } from "vitest";
 import type { TestDependencies } from "./index.test.ts";
 
-export function atomicEndpointSpec({
-  bridgeServerClient,
-  kv,
-}: TestDependencies) {
+export function atomicEndpointSpec({ bridgeServerClient, kv }: TestDependencies) {
   describe("'POST /atomic' endpoint's specifications", () => {
     it("should perform a simple atomic set and retrieve it", async () => {
       const key = ["e2e", "atomic", "set", Date.now()];
@@ -135,7 +132,9 @@ export function atomicEndpointSpec({
     it("should fail if key is an invalid Deno KV key structure", async () => {
       const res = await bridgeServerClient.atomic(
         [{ name: "delete", key: "{ invalid: 'key' }" }],
-        { jsKey: true },
+        {
+          jsKey: true,
+        },
       );
       expect(res.result).toBe(null);
       expect(res.error).toMatch(/must be an array/i);
