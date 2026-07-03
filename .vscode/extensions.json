@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "oxc.oxc-vscode",
+    "svelte.svelte-vscode",
+    "astro-build.astro-vscode"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "oxc.enable.oxlint": true,
+  "oxc.enable.oxfmt": true,
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "oxc.oxc-vscode"
+}

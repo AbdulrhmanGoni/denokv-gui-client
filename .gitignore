@@ -1,7 +1,6 @@
 node_modules
 .DS_Store
 dist
-.vscode
 *.local
 test-results
 database.dev.sqlite
