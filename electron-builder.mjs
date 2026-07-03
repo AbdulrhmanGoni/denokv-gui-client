@@ -48,16 +48,21 @@ function getPlatformConfig() {
 }
 
 function getAppPackagesFiles() {
-  const allFilesToInclude = [];
+  const filesToIncludeOrExclude = [];
 
   const packagesDir = readdirSync("./packages", { withFileTypes: true });
   for (const fileOrDir of packagesDir) {
     if (fileOrDir.isDirectory()) {
-      allFilesToInclude.push(path.join("node_modules", "@app", fileOrDir.name, "dist"));
+      const packagePath = path.join("node_modules", "@app", fileOrDir.name)
+      filesToIncludeOrExclude.push(
+        "!" + path.join(packagePath, "**"),
+        path.join(packagePath, "dist"),
+        path.join(packagePath, "package.json"),
+      );
     }
   }
 
-  return allFilesToInclude;
+  return filesToIncludeOrExclude;
 }
 
 export default /** @type import('electron-builder').Configuration */
