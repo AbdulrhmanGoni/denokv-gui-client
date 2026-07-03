@@ -12,9 +12,7 @@
   import { restartApp } from "@app/preload";
   import RotateCw from "@lucide/svelte/icons/rotate-cw";
 
-  let hardwareAccelerationEnabled = $derived(
-    !settingsState.disableHardwareAcceleration,
-  );
+  let hardwareAccelerationEnabled = $derived(!settingsState.disableHardwareAcceleration);
   let hardwareAccelerationModeChanged = $derived(
     hardwareAccelerationEnabled ===
       settingsPageState.isHardwareAccelerationCurrentlyDisabled,
@@ -27,8 +25,8 @@
     Hardware Acceleration
   </h3>
   <p class="text-muted-foreground text-sm">
-    When enabled, the app will use your computer's graphics hardware (if
-    available) to improve visual performance for smoother experience
+    When enabled, the app will use your computer's graphics hardware (if available) to
+    improve visual performance for smoother experience
   </p>
   <div class="flex items-center gap-1.5 bg-card p-2 rounded-md">
     <Switch

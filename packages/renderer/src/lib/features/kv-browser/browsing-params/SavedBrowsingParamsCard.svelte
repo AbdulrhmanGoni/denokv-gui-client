@@ -26,31 +26,29 @@
 
   async function setSavedBrowsingParamsAsTheDefault(setAsDefault: boolean) {
     if (kvStoresState.openedStore) {
-      const { result, error } =
-        await browsingParamsService.updateSavedBrowsingParams(
-          kvStoresState.openedStore.id,
-          browsingParamsRecord.id,
-          { setAsDefault },
-        );
+      const { result, error } = await browsingParamsService.updateSavedBrowsingParams(
+        kvStoresState.openedStore.id,
+        browsingParamsRecord.id,
+        { setAsDefault },
+      );
 
       if (result) {
         toast.success(
           `The saved browsing params were ${setAsDefault ? "set" : "unset"} as the default successfully`,
         );
-        savedBrowsingParamsState.savedParams =
-          savedBrowsingParamsState.savedParams.map((record) => {
+        savedBrowsingParamsState.savedParams = savedBrowsingParamsState.savedParams.map(
+          (record) => {
             if (record.id == browsingParamsRecord.id) {
               record.isDefault = setAsDefault ? 1 : 0;
               setDefaultBrowsingParams(
-                record.isDefault
-                  ? browsingParamsRecord.paramsAsJson
-                  : undefined,
+                record.isDefault ? browsingParamsRecord.paramsAsJson : undefined,
               );
             } else {
               record.isDefault = 0;
             }
             return record;
-          });
+          },
+        );
       } else {
         toast.error(error);
       }
@@ -109,8 +107,7 @@
     <Button
       size="sm"
       variant={browsingParamsRecord.isDefault ? "outline" : "default"}
-      onclick={() =>
-        setSavedBrowsingParamsAsTheDefault(!browsingParamsRecord.isDefault)}
+      onclick={() => setSavedBrowsingParamsAsTheDefault(!browsingParamsRecord.isDefault)}
     >
       {#if browsingParamsRecord.isDefault}
         default

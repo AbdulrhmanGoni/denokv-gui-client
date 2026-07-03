@@ -48,9 +48,7 @@ export default defineConfig({
   },
 });
 
-/**
- * Implement Electron webview reload when some file change in the bridge-server package
- */
+/** Implement Electron webview reload when some file change in the bridge-server package */
 function handleHotReload() {
   let rendererWatchServer: import("vite").ViteDevServer | null = null;
 
@@ -73,8 +71,7 @@ function handleHotReload() {
         throw new Error("Renderer watch server provider not found");
       }
 
-      rendererWatchServer =
-        rendererWatchServerProvider.api.provideRendererWatchServer();
+      rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer();
 
       return { build: { watch: {} } };
     },

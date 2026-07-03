@@ -62,11 +62,6 @@
         <Select.Item value="days">days</Select.Item>
       </Select.Content>
     </Select.Root>
-    <Input
-      type="number"
-      placeholder="0{unit}"
-      class="w-36"
-      bind:value={inputValue}
-    />
+    <Input type="number" placeholder="0{unit}" class="w-36" bind:value={inputValue} />
   </div>
 </div>

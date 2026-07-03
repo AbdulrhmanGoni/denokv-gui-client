@@ -14,11 +14,6 @@
       "@app/*": ["../*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "../../types/*.d.ts",
-    "../main/types.d.ts",
-    "types.d.ts"
-  ],
+  "include": ["src/**/*.ts", "../../types/*.d.ts", "../main/types.d.ts", "types.d.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }

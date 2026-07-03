@@ -21,9 +21,7 @@
     }}
   />
   <InputGroup.Addon class="pl-1">
-    <span
-      class="dark:bg-green-500/25 bg-green-500/35 p-1 rounded-sm text-foreground"
-    >
+    <span class="dark:bg-green-500/25 bg-green-500/35 p-1 rounded-sm text-foreground">
       {type}
     </span>
   </InputGroup.Addon>

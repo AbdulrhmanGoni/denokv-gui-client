@@ -19,28 +19,22 @@ import { deleteWatchedKeysQuery } from "../db/queries/watchedKvEntriesQueries.js
 
 export class KvStoresServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle(
-      "kvStoresService:create",
-      async (_, input: CreateKvStoreInput) => {
-        if (
-          input.type == "local" &&
-          (input.replaceExisting || !existsSync(input.url))
-        ) {
-          await writeFile(input.url, "");
-        }
+    ipcMain.handle("kvStoresService:create", async (_, input: CreateKvStoreInput) => {
+      if (input.type == "local" && (input.replaceExisting || !existsSync(input.url))) {
+        await writeFile(input.url, "");
+      }
 
-        const result = insertQuery.run(
-          crypto.randomUUID(),
-          input.name,
-          input.url,
-          input.type,
-          input.accessToken,
-          input.authToken,
-        );
+      const result = insertQuery.run(
+        crypto.randomUUID(),
+        input.name,
+        input.url,
+        input.type,
+        input.accessToken,
+        input.authToken,
+      );
 
-        return !!result.changes;
-      },
-    );
+      return !!result.changes;
+    });
 
     ipcMain.handle(
       "kvStoresService:update",
@@ -81,8 +75,7 @@ export class KvStoresServiceModule implements AppModule {
 
       return [...kvStores, ...defaultKvStores].sort(
         (storeA, storeB) =>
-          new Date(storeB.updatedAt).getTime() -
-          new Date(storeA.updatedAt).getTime(),
+          new Date(storeB.updatedAt).getTime() - new Date(storeA.updatedAt).getTime(),
       );
     });
 
@@ -93,9 +86,7 @@ export class KvStoresServiceModule implements AppModule {
         await rm(`${kvStore.url}-wal`, { force: true });
 
         if (kvStore.type == "default") {
-          const storedKvStore = getOneQuery.get(kvStore.id) as
-            | KvStore
-            | undefined;
+          const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined;
           if (!storedKvStore) {
             clearSavedParamsQuery.run(kvStore.id);
             deleteWatchedKeysQuery.run(kvStore.id);
@@ -129,13 +120,7 @@ export class KvStoresServiceModule implements AppModule {
           return !!result.changes;
         }
 
-        const result = insertQuery.run(
-          store.id,
-          newName,
-          store.url,
-          store.type,
-          null,
-        );
+        const result = insertQuery.run(store.id, newName, store.url, store.type, null);
 
         return !!result.changes;
       },
@@ -146,9 +131,7 @@ export class KvStoresServiceModule implements AppModule {
       async (_, kvStore: TestKvStoreParams) => {
         if (kvStore.type == "bridge") {
           return await fetch(`${kvStore.url}/check`, {
-            headers: kvStore.authToken
-              ? { Authorization: kvStore.authToken }
-              : undefined,
+            headers: kvStore.authToken ? { Authorization: kvStore.authToken } : undefined,
           })
             .then((res) => res.ok)
             .catch(() => false);
@@ -183,11 +166,7 @@ async function getDefaultLocalKvStores(exclude: KvStore["id"][]) {
         });
         for (const entry of dir) {
           if (entry.isDirectory() && !exclude.includes(entry.name)) {
-            const kvFile = path.join(
-              entry.parentPath,
-              entry.name,
-              "kv.sqlite3",
-            );
+            const kvFile = path.join(entry.parentPath, entry.name, "kv.sqlite3");
             if (existsSync(kvFile)) {
               const fileStat = statSync(kvFile);
               dataDirs.push({

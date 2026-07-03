@@ -6,25 +6,19 @@
   import FileIcon from "@lucide/svelte/icons/file";
   import LocalStorageIcon from "@lucide/svelte/icons/hard-drive";
   import type { Table } from "@tanstack/table-core";
-  import {
-    fetchEntries,
-    resetEntriesState,
-  } from "$lib/states/kvEntriesState.svelte";
+  import { fetchEntries, resetEntriesState } from "$lib/states/kvEntriesState.svelte";
   import {
     fetchWatchedKeysForOpenedKvStore,
     resetWatchedKvEntriesState,
     startWatchingKvEntries,
   } from "$lib/states/watchedKvEntriesState.svelte";
 
-  const { kvEntriesTable }: { kvEntriesTable: Table<SerializedKvEntry> } =
-    $props();
+  const { kvEntriesTable }: { kvEntriesTable: Table<SerializedKvEntry> } = $props();
 
   let openedKvStoreId = $derived(kvStoresState.openedStore?.id);
 
   async function onKvStoreChange(kvStoreId: string) {
-    const chosenKvStore = kvStoresState.kvStores.find(
-      (kv) => kv.id == kvStoreId,
-    )!;
+    const chosenKvStore = kvStoresState.kvStores.find((kv) => kv.id == kvStoreId)!;
 
     const open = await openKvStore(chosenKvStore);
     if (open) {
@@ -40,11 +34,7 @@
   }
 </script>
 
-<Select.Root
-  type="single"
-  onValueChange={onKvStoreChange}
-  bind:value={openedKvStoreId}
->
+<Select.Root type="single" onValueChange={onKvStoreChange} bind:value={openedKvStoreId}>
   <Select.Trigger class="text-base">
     {@render item(kvStoresState.openedStore!)}
   </Select.Trigger>

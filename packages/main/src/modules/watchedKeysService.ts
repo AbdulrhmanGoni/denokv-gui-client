@@ -9,16 +9,13 @@ import {
 
 export class WatchedKeysServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle(
-      "watchedKeysService:getWatchedKeys",
-      (_, kvStoreId: string) => {
-        const row = getWatchedKeysQuery.get(kvStoreId) as
-          | { keysAsJson: string }
-          | undefined;
-        if (!row) return null;
-        return JSON.parse(row.keysAsJson) as SerializedKvKey[];
-      },
-    );
+    ipcMain.handle("watchedKeysService:getWatchedKeys", (_, kvStoreId: string) => {
+      const row = getWatchedKeysQuery.get(kvStoreId) as
+        | { keysAsJson: string }
+        | undefined;
+      if (!row) return null;
+      return JSON.parse(row.keysAsJson) as SerializedKvKey[];
+    });
 
     ipcMain.handle(
       "watchedKeysService:setWatchedKeys",

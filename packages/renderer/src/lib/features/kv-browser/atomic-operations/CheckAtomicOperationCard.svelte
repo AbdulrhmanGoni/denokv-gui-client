@@ -16,9 +16,7 @@
 </script>
 
 <AtomicOperationCardLayout {id} {operation}>
-  <div
-    class="flex gap-1 items-center flex-1 font-semibold px-1.5 overflow-auto"
-  >
+  <div class="flex gap-1 items-center flex-1 font-semibold px-1.5 overflow-auto">
     <CodeRenderer code={operation.key} />
   </div>
   <Separator orientation="vertical" />

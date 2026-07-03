@@ -55,9 +55,7 @@ export function browseEndpointSpec({ bridgeServerClient }: TestDependencies) {
         xssSafe: false,
       });
 
-      expect(resSafe.result?.entries[0].value.data).toContain(
-        "\\u003Cscript\\u003E",
-      );
+      expect(resSafe.result?.entries[0].value.data).toContain("\\u003Cscript\\u003E");
       expect(resUnsafe.result?.entries[0].value.data).toContain("<script>");
 
       await bridgeServerClient.delete(key);

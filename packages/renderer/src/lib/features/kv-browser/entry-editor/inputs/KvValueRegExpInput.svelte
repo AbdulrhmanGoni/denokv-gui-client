@@ -12,9 +12,7 @@
   let regexpJar: CodeJar | null = $state(null);
   let flagsJar: CodeJar | null = $state(null);
 
-  let currentRegExp: { source: string; flags: string } = $state(
-    JSON.parse(value),
-  );
+  let currentRegExp: { source: string; flags: string } = $state(JSON.parse(value));
 
   onMount(() => {
     regexpJar = CodeJar(document.querySelector("#regexp-editorId")!, () => {});
@@ -44,9 +42,7 @@
   });
 </script>
 
-<div
-  class="bg-card p-3 overflow-auto font-semibold rounded-md flex items-center"
->
+<div class="bg-card p-3 overflow-auto font-semibold rounded-md flex items-center">
   <span class={`${dataTypesColors.blue} me-1`}>new</span>
   <span class="dark:text-[#06a606] text-[#038703]">RegExp</span>
   <span class="text-foreground">(</span>

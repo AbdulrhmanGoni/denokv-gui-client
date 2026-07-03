@@ -9,10 +9,7 @@
 
   const { kvStore }: { kvStore: KvStore } = $props();
 
-  async function onSubmitForm(
-    store: CreateKvStoreInput,
-    form?: HTMLFormElement,
-  ) {
+  async function onSubmitForm(store: CreateKvStoreInput, form?: HTMLFormElement) {
     const changes = getChanges(store);
     if (!changes) {
       toast.warning("No changes to save");
@@ -50,8 +47,7 @@
     let isChanged = false;
 
     Object.entries(restKvStoreForm).forEach(([key, value]) => {
-      const fieldChanged =
-        $state.snapshot(kvStore)[key as keyof KvStore] !== value;
+      const fieldChanged = $state.snapshot(kvStore)[key as keyof KvStore] !== value;
 
       if (fieldChanged) {
         Object.assign(changes, { [key]: value });

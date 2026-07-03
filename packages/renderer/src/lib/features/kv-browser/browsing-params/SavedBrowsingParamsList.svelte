@@ -13,8 +13,7 @@
   import ArrowLeft from "@lucide/svelte/icons/arrow-left";
   import { onMount } from "svelte";
 
-  const { closeList }: { closeList: (closeDialog?: boolean) => void } =
-    $props();
+  const { closeList }: { closeList: (closeDialog?: boolean) => void } = $props();
 
   onMount(fetchSavedBrowsingParams);
 </script>
@@ -60,12 +59,7 @@
 {/if}
 
 {#snippet backButtom(className?: string)}
-  <Button
-    class={className}
-    variant="outline"
-    size="sm"
-    onclick={() => closeList()}
-  >
+  <Button class={className} variant="outline" size="sm" onclick={() => closeList()}>
     <ArrowLeft />
     Back
   </Button>

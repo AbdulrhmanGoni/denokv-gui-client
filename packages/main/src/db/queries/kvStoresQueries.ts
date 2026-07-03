@@ -16,14 +16,10 @@ export const updateQuery = database.prepare(`
     WHERE id = $id
 `);
 
-export const deleteOneQuery = database.prepare(
-  "DELETE FROM kvStores WHERE id = ?",
-);
+export const deleteOneQuery = database.prepare("DELETE FROM kvStores WHERE id = ?");
 
 export const getAllQuery = database.prepare(
   "SELECT * FROM kvStores ORDER BY updatedAt DESC",
 );
 
-export const getOneQuery = database.prepare(
-  "SELECT * FROM kvStores WHERE id = ?",
-);
+export const getOneQuery = database.prepare("SELECT * FROM kvStores WHERE id = ?");

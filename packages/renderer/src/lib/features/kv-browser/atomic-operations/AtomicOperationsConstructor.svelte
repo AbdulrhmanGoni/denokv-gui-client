@@ -35,9 +35,7 @@
 
   async function commitAtomicOperations() {
     if (!$operations.length) {
-      toast.warning(
-        "You need to at least add one operation to be able to commit",
-      );
+      toast.warning("You need to at least add one operation to be able to commit");
       return;
     }
 
@@ -72,9 +70,7 @@
 <Dialog.Root
   bind:open={getOpenAtomicOperationsFormState, setOpenAtomicOperationsFormState}
 >
-  <Dialog.Trigger
-    class={cn(buttonVariants({ size: "sm", variant: "secondary2" }))}
-  >
+  <Dialog.Trigger class={cn(buttonVariants({ size: "sm", variant: "secondary2" }))}>
     Atomic
     <AtomIcon class="size-4.5" />
   </Dialog.Trigger>
@@ -82,9 +78,7 @@
     class="max-h-[600px] h-full max-w-5xl w-full bg-transparent border-0 py-0 px-2 shadow-none!"
     showCloseButton={false}
   >
-    <div
-      class="flex flex-col gap-3 p-3 bg-background rounded-lg border shadow-lg"
-    >
+    <div class="flex flex-col gap-3 p-3 bg-background rounded-lg border shadow-lg">
       <div class="space-y-1">
         <h1 class="text-2xl font-bold flex gap-2 items-center">
           <AtomIcon class="size-7" />

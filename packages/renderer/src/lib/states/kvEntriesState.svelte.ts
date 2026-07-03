@@ -38,9 +38,7 @@ export const kvEntriesStateDefaultValues: KvEntriesState = {
   noMoreEntries: false,
 };
 
-export const kvEntriesState: KvEntriesState = $state(
-  kvEntriesStateDefaultValues,
-);
+export const kvEntriesState: KvEntriesState = $state(kvEntriesStateDefaultValues);
 
 export async function fetchEntries() {
   if (kvStoresState.openedStore) {
@@ -141,10 +139,9 @@ export const savedBrowsingParamsState: SavedBrowsingParamsState = $state({
 
 export async function fetchSavedBrowsingParams() {
   if (kvStoresState.openedStore) {
-    const { result, error } =
-      await browsingParamsService.getSavedBrowsingParamsRecords(
-        kvStoresState.openedStore.id,
-      );
+    const { result, error } = await browsingParamsService.getSavedBrowsingParamsRecords(
+      kvStoresState.openedStore.id,
+    );
 
     if (result) {
       savedBrowsingParamsState.savedParams = result;
@@ -159,10 +156,9 @@ export async function fetchSavedBrowsingParams() {
 
 export async function fetchSavedDefaultBrowsingParams() {
   if (kvStoresState.openedStore) {
-    const { result } =
-      await browsingParamsService.getDefaultSavedBrowsingParams(
-        kvStoresState.openedStore.id,
-      );
+    const { result } = await browsingParamsService.getDefaultSavedBrowsingParams(
+      kvStoresState.openedStore.id,
+    );
 
     kvEntriesStateDefaultValues.params = {
       ...kvEntriesStateDefaultValues.params,
@@ -172,8 +168,5 @@ export async function fetchSavedDefaultBrowsingParams() {
 }
 
 export function setDefaultBrowsingParams(params?: BrowsingParams) {
-  Object.assign(
-    kvEntriesStateDefaultValues.params,
-    params ?? defaultBrowsingParams,
-  );
+  Object.assign(kvEntriesStateDefaultValues.params, params ?? defaultBrowsingParams);
 }

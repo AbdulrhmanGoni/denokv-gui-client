@@ -36,9 +36,7 @@
   <button class="cursor-pointer" onclick={() => removeAtomicOperation(id)}>
     <XIcon class="size-4" />
   </button>
-  <div
-    class="flex items-center bg-card rounded-md border h-full w-full shadow-lg"
-  >
+  <div class="flex items-center bg-card rounded-md border h-full w-full shadow-lg">
     <div
       class={cn(
         "flex gap-1.5 items-center px-2 py-2 rounded-s-md",

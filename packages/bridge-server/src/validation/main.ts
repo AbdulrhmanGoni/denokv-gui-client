@@ -22,17 +22,17 @@ type ValidBrowseRequestParams = {
  * - `limit` and `batchSize`: optional positive integers.
  * - `consistency`, `cursor`: passed through as-is.
  * - `reverse`: boolean flag. (set to "true" for `true`, otherwise `false`).
- * - `xssSafe`: optional boolean flag to toggle XSS escaping from string values (defaults to true unless set to "false").
- * - `jsKey`: optional boolean flag indicating if the keys should be parsed as JavaScript literals instead of strict JSON (defaults to false).
+ * - `xssSafe`: optional boolean flag to toggle XSS escaping from string values (defaults to
+ *   true unless set to "false").
+ * - `jsKey`: optional boolean flag indicating if the keys should be parsed as JavaScript
+ *   literals instead of strict JSON (defaults to false).
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
  * @param url URL containing the query parameters to validate
  * @returns An object containing the validated query parameters
  */
-export function validateBrowseRequestParams(
-  url: URL,
-): ValidBrowseRequestParams {
+export function validateBrowseRequestParams(url: URL): ValidBrowseRequestParams {
   const limitOption = url.searchParams.get("limit");
   const batchSizeOption = url.searchParams.get("batchSize");
   const consistency = url.searchParams
@@ -115,7 +115,8 @@ type ValidSetRequestParams = {
  * - `key`: required parameter (will be parsed using `deserializeKvKey`)
  * - `expires`: optional parameter which must be a number in milliseconds when provided.
  * - `overwrite`: optional parameter which must be a boolean when provided.
- * - `jsKey`: optional parameter indicating if the key should be parsed as a JavaScript literal instead of strict JSON (defaults to false).
+ * - `jsKey`: optional parameter indicating if the key should be parsed as a JavaScript
+ *   literal instead of strict JSON (defaults to false).
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
@@ -125,9 +126,7 @@ type ValidSetRequestParams = {
 export function validateSetRequestParams(url: URL): ValidSetRequestParams {
   const targetKey = url.searchParams.get("key");
   const jsKey = url.searchParams.get("jsKey") === "true";
-  const key = targetKey
-    ? deserializeKvKey(targetKey, { jsKey: jsKey })
-    : undefined;
+  const key = targetKey ? deserializeKvKey(targetKey, { jsKey: jsKey }) : undefined;
 
   if (!key) {
     throw new Error("No target key to set.", errorCause);
@@ -173,9 +172,7 @@ function validateEnqueueOptions(
   if (!options) return;
 
   if (!(options instanceof Object)) {
-    throw new Error(
-      "'options' of 'enqueue' operation should be an object when set",
-    );
+    throw new Error("'options' of 'enqueue' operation should be an object when set");
   }
 
   const ops: ValidEnqueueRequestBody["options"] = {};
@@ -192,9 +189,7 @@ function validateEnqueueOptions(
 
   if ("delay" in options) {
     if (typeof options.delay != "number") {
-      throw new Error(
-        "'delay' option of 'enqueue' operation should be a number",
-      );
+      throw new Error("'delay' option of 'enqueue' operation should be a number");
     }
 
     ops.delay = options.delay;
@@ -203,9 +198,7 @@ function validateEnqueueOptions(
   if ("keysIfUndelivered" in options) {
     let parsedKeysIfUndeliveredOption = null;
     try {
-      parsedKeysIfUndeliveredOption = (0, eval)(
-        String(options.keysIfUndelivered),
-      );
+      parsedKeysIfUndeliveredOption = (0, eval)(String(options.keysIfUndelivered));
     } catch {}
 
     if (!(parsedKeysIfUndeliveredOption instanceof Array)) {
@@ -227,13 +220,18 @@ function validateEnqueueOptions(
 }
 
 /**
- * Parse and validate the body of `/enqueue` endpoint which should be an object containing:
+ * Parse and validate the body of `/enqueue` endpoint which should be an object
+ * containing:
  *
- * - `value`: The actual value to enqueue. Should be in `SerializedKvValue` type (will be deserialized by `deserializeKvValue` fn)
+ * - `value`: The actual value to enqueue. Should be in `SerializedKvValue` type (will be
+ *   deserialized by `deserializeKvValue` fn)
  * - `options`: An optional object containing the following optional properties:
- *   - `backoffSchedule`: An optional array of numbers representing the backoff schedule in milliseconds
+ *
+ *   - `backoffSchedule`: An optional array of numbers representing the backoff schedule in
+ *     milliseconds
  *   - `delay`: An optional number representing the delay in milliseconds
- *   - `keysIfUndelivered`: An optional array of Deno kv keys as string to be used if the message is undelivered
+ *   - `keysIfUndelivered`: An optional array of Deno kv keys as string to be used if the
+ *     message is undelivered
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
@@ -246,16 +244,12 @@ export function validateEnqueueRequest(body: unknown): ValidEnqueueRequestBody {
   }
 
   if (!("value" in body)) {
-    throw new Error(
-      "Invalid enqueue request body: must have a value",
-      errorCause,
-    );
+    throw new Error("Invalid enqueue request body: must have a value", errorCause);
   }
 
   return {
     value: deserializeKvValue(body.value),
-    options:
-      "options" in body ? validateEnqueueOptions(body.options) : undefined,
+    options: "options" in body ? validateEnqueueOptions(body.options) : undefined,
   };
 }
 
@@ -291,10 +285,7 @@ export type AtomicOperationsKeyOptions = {
 };
 
 function validateAtomicOperationKey(
-  operation: Extract<
-    Partial<AtomicOperationInput>,
-    { key?: string | SerializedKvKey }
-  >,
+  operation: Extract<Partial<AtomicOperationInput>, { key?: string | SerializedKvKey }>,
   options?: AtomicOperationsKeyOptions,
 ): KvKey {
   if (!operation.key) {
@@ -308,9 +299,7 @@ function validateAtomicOperationNumberValue(
   operation: Extract<Partial<AtomicOperationInput>, { value?: number }>,
 ): number {
   if (typeof operation.value !== "number") {
-    throw InvalidAOError(
-      `'${operation.name}' operation must have an integer value`,
-    );
+    throw InvalidAOError(`'${operation.name}' operation must have an integer value`);
   }
 
   if (!Number.isInteger(operation.value)) {
@@ -337,11 +326,7 @@ function validateAtomicOperation(
   const operation = op as Partial<AtomicOperationInput>;
   const KeyOptions = { jsKey: options?.jsKey };
 
-  if (
-    operation.name == "sum" ||
-    operation.name == "min" ||
-    operation.name == "max"
-  ) {
+  if (operation.name == "sum" || operation.name == "min" || operation.name == "max") {
     return {
       name: operation.name,
       key: validateAtomicOperationKey(operation, KeyOptions),
@@ -353,8 +338,7 @@ function validateAtomicOperation(
     case "check": {
       if (
         operation.versionstamp !== null &&
-        (typeof operation.versionstamp !== "string" ||
-          operation.versionstamp === "")
+        (typeof operation.versionstamp !== "string" || operation.versionstamp === "")
       ) {
         throw InvalidAOError(
           "versionstamp of 'check' operation must be either null or a non-empty string",
@@ -402,13 +386,17 @@ function validateAtomicOperation(
 /**
  * Validates a list of Deno Kv atomic operations.
  *
- * Each operation in the list should be a valid `AtomicOperationInput` object and will be validated using `validateAtomicOperation`.
- * The input must be a non-empty array of valid operation objects.
+ * Each operation in the list should be a valid `AtomicOperationInput` object and will be
+ * validated using `validateAtomicOperation`. The input must be a non-empty array of valid
+ * operation objects.
  *
  * @param operations An array of atomic operations to validate
- * @param options.jsKey Optional parameter indicating if the keys should be parsed as a JavaScript literal instead of strict JSON (defaults to false).
- * @returns Array of parsed and validated deno kv atomic operations in `ValidAtomicOperation` type
- * @throws {Error} If the operations list is not a non-empty array or if any operation is invalid
+ * @param options.jsKey Optional parameter indicating if the keys should be parsed as a
+ *   JavaScript literal instead of strict JSON (defaults to false).
+ * @returns Array of parsed and validated deno kv atomic operations in
+ *   `ValidAtomicOperation` type
+ * @throws {Error} If the operations list is not a non-empty array or if any operation is
+ *   invalid
  */
 export function validateAtomicOperations(
   operations: unknown,

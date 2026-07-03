@@ -70,8 +70,7 @@ try {
   await page.waitForLoadState("load");
 
   await page.evaluate(async (kvStores) => {
-    const kvStoresService =
-      globalThis["kvStoresService" as keyof typeof globalThis];
+    const kvStoresService = globalThis["kvStoresService" as keyof typeof globalThis];
     for (const kvStore of kvStores) {
       await kvStoresService.create(kvStore);
     }
@@ -81,10 +80,7 @@ try {
 } finally {
   await electronApp.close();
 
-  writeFileSync(
-    path.resolve(import.meta.dirname, "../tests/database.test.sqlite"),
-    "",
-  );
+  writeFileSync(path.resolve(import.meta.dirname, "../tests/database.test.sqlite"), "");
 
   for (const kvStore of kvStores) {
     if (kvStore.type === "local") {
@@ -245,17 +241,14 @@ async function takeScreenshotOfLookupEntryDialog(page: Page) {
 }
 
 async function takeScreenshotOfBrowsingParamsDialog(page: Page) {
-  await page
-    .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-    .click();
+  await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
   await page.waitForTimeout(100);
   await takeScreenshotOfTheme(page, "BrowsingParamsDialog");
 }
 
 async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page) {
   await page.evaluate(async () => {
-    const kvStoresService =
-      globalThis["kvStoresService" as keyof typeof globalThis];
+    const kvStoresService = globalThis["kvStoresService" as keyof typeof globalThis];
     const store = (await kvStoresService.getAll()).find(
       (store: any) => store.type === "local",
     );
@@ -263,9 +256,7 @@ async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page) {
     const browsingParamsService =
       globalThis["browsingParamsService" as keyof typeof globalThis];
 
-    const res = await browsingParamsService.getSavedBrowsingParamsRecords(
-      store.id,
-    );
+    const res = await browsingParamsService.getSavedBrowsingParamsRecords(store.id);
     if (res.result.length) {
       return;
     }
@@ -298,9 +289,7 @@ async function takeScreenshotOfEnqueueMessageDialog(page: Page) {
     '{task: "delete-files-task", files: ["file-id-1", "file-id-2", "file-id-3"]}',
   );
   await valueEditor.press("Space");
-  await page
-    .locator("button", { has: page.locator("svg.lucide-scan-text") })
-    .click();
+  await page.locator("button", { has: page.locator("svg.lucide-scan-text") }).click();
   await page.waitForTimeout(100);
 
   await page
@@ -326,9 +315,7 @@ async function takeScreenshotOfEnqueueMessageDialog(page: Page) {
     .click();
   await page.waitForTimeout(100);
 
-  const keysIfUndeliveredEditor = page.locator(
-    "div#keys-if-undelivered-editor",
-  );
+  const keysIfUndeliveredEditor = page.locator("div#keys-if-undelivered-editor");
   await keysIfUndeliveredEditor.fill('[["undelivered", "delete-files-task"]]');
   await keysIfUndeliveredEditor.press("Space");
   await takeScreenshotOfTheme(page, "EnqueueMessageKeysIfUndeliveredOption");
@@ -361,9 +348,7 @@ async function takeScreenshotOfAtomicOperationsDialog(page: Page) {
       hasText: "Undefined",
     })
     .click();
-  await page
-    .locator('div[data-slot="select-item"]', { hasText: "Object" })
-    .click();
+  await page.locator('div[data-slot="select-item"]', { hasText: "Object" }).click();
   const setKeyEditor = page.locator("div#key-editor");
   await setKeyEditor.fill('["users", "abdulrhman"]');
   await setKeyEditor.press("Space");

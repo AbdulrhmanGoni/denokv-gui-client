@@ -5,10 +5,7 @@ import { ModuleContext } from "../ModuleContext.js";
 
 export class WebContentsUrlPolicy implements AppModule {
   readonly internalOrigin: string;
-  readonly allowedExternalOrigins = [
-    "https://github.com",
-    "https://docs.deno.com",
-  ];
+  readonly allowedExternalOrigins = ["https://github.com", "https://docs.deno.com"];
 
   constructor(internalOrigin: string) {
     this.internalOrigin = internalOrigin;
@@ -23,9 +20,7 @@ export class WebContentsUrlPolicy implements AppModule {
         event.preventDefault();
 
         if (import.meta.env.DEV) {
-          console.warn(
-            `[Security] Blocked navigation to disallowed origin: ${origin}`,
-          );
+          console.warn(`[Security] Blocked navigation to disallowed origin: ${origin}`);
         }
       });
 

@@ -33,10 +33,7 @@
   function onSet() {
     try {
       const newValue = (0, eval)(editorValue);
-      if (
-        Array.isArray(newValue) &&
-        newValue.every((v) => typeof v == "number")
-      ) {
+      if (Array.isArray(newValue) && newValue.every((v) => typeof v == "number")) {
         value = newValue;
         setOpen(false);
         return;
@@ -75,8 +72,8 @@
     <div class="space-y-2 overflow-auto">
       <p class="text-xl font-semibold">Backoff Schedule</p>
       <p class="text-sm text-muted-foreground">
-        An array of numbers (in milliseconds) that specify the retry policy for
-        failed message delivery.
+        An array of numbers (in milliseconds) that specify the retry policy for failed
+        message delivery.
         <PLink
           href="https://docs.deno.com/api/deno/~/Deno.Kv.prototype.enqueue#:~:text=backoffSchedule%20option"
         >

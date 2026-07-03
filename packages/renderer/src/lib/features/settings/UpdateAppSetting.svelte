@@ -6,10 +6,7 @@
     cancelDownloadingUpdate,
     quitAndInstallTheUpdate,
   } from "$lib/states/appUpdate.svelte";
-  import {
-    setAutoCheckForUpdate,
-    settingsState,
-  } from "$lib/states/settingsState.svelte";
+  import { setAutoCheckForUpdate, settingsState } from "$lib/states/settingsState.svelte";
   import { metadata } from "@app/preload";
   import Progress from "$lib/ui/shadcn/progress/progress.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
@@ -49,9 +46,7 @@
         v{updateAppState.newUpdate.updateInfo.version}
       </span>
       (<span>
-        {formatTimeAgo(
-          new Date(updateAppState.newUpdate.updateInfo.releaseDate),
-        )}
+        {formatTimeAgo(new Date(updateAppState.newUpdate.updateInfo.releaseDate))}
       </span>)
     </p>
     {#if updateAppState.downloadingUpdatesError}
@@ -103,9 +98,7 @@
           </span>
         {/if}
       {:else if updateAppState.checkingForUpdatesDone}
-        <span class="text-muted-foreground italic">
-          No new update is available
-        </span>
+        <span class="text-muted-foreground italic"> No new update is available </span>
       {/if}
     </p>
     {@render actionsButtons(checkForUpdateButton)}

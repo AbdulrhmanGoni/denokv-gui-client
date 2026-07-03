@@ -13,8 +13,7 @@ export const columns: ColumnDef<KvEntry>[] = [
       renderComponent(Checkbox, {
         checked: table.getIsAllPageRowsSelected(),
         indeterminate:
-          table.getIsSomePageRowsSelected() &&
-          !table.getIsAllPageRowsSelected(),
+          table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected(),
         onCheckedChange: (value) => table.toggleAllPageRowsSelected(!!value),
         "aria-label": "Select all",
       }),

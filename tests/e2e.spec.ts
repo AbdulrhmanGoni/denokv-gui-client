@@ -60,10 +60,7 @@ export const testingKvStore = {
   path: import.meta.dirname,
 };
 
-const testDatabaseFilePath = path.resolve(
-  import.meta.dirname,
-  "./database.test.sqlite",
-);
+const testDatabaseFilePath = path.resolve(import.meta.dirname, "./database.test.sqlite");
 
 test.afterAll(async ({ electronApp }) => {
   await electronApp.close();

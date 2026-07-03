@@ -3,10 +3,7 @@
   import ScanTextIcon from "@lucide/svelte/icons/scan-text";
   import ButtonWithTooltip from "$lib/ui/primitives/ButtonWithTooltip.svelte";
   import KvValueDataTypeSelect from "$lib/features/kv-browser/entry-editor/inputs/KvValueDataTypeSelect.svelte";
-  import {
-    dataTypes,
-    type KvDataType,
-  } from "$lib/features/kv-browser/utils/dataTypes";
+  import { dataTypes, type KvDataType } from "$lib/features/kv-browser/utils/dataTypes";
   import CodeEditor from "$lib/features/kv-browser/entry-editor/CodeEditor.svelte";
   import codeFormatter from "$lib/helpers/codeFormatter";
   import { type Snippet } from "svelte";
@@ -115,9 +112,7 @@
     {:else if editorValue.type == "RegExp"}
       <KvValueRegExpInput bind:value={editorValue.data as string} />
     {:else if editorValue.type == "Null" || editorValue.type == "Undefined"}
-      <div
-        class="flex gap-1 items-center font-bold bg-card px-3 py-2.5 rounded-sm"
-      >
+      <div class="flex gap-1 items-center font-bold bg-card px-3 py-2.5 rounded-sm">
         <span class={dataTypesColors[editorValue.type.toLowerCase()]}>
           {editorValue.type.toLowerCase()}
         </span>

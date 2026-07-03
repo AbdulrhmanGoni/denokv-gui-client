@@ -24,17 +24,15 @@
   }
 
   async function deleteSavedBrowsingParams() {
-    const { result, error } =
-      await browsingParamsService.deleteSavedBrowsingParams(
-        browsingParamsRecord.id,
-      );
+    const { result, error } = await browsingParamsService.deleteSavedBrowsingParams(
+      browsingParamsRecord.id,
+    );
 
     if (result) {
       toast.success("The saved browsing params were deleted successfully");
-      savedBrowsingParamsState.savedParams =
-        savedBrowsingParamsState.savedParams.filter(
-          (record) => record.id != browsingParamsRecord.id,
-        );
+      savedBrowsingParamsState.savedParams = savedBrowsingParamsState.savedParams.filter(
+        (record) => record.id != browsingParamsRecord.id,
+      );
       openDialog = false;
     } else {
       toast.error(error);
@@ -52,8 +50,8 @@
     <AlertDialog.Header>
       <AlertDialog.Title>Are you sure?</AlertDialog.Title>
       <AlertDialog.Description>
-        This will permanently delete these saved browsing parameters. You won't
-        be able to undo this action.
+        This will permanently delete these saved browsing parameters. You won't be able to
+        undo this action.
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>

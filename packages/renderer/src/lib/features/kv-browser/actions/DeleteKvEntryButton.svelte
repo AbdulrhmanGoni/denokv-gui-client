@@ -51,15 +51,15 @@
     <AlertDialog.Header>
       <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
       <AlertDialog.Description>
-        This will permanently delete the Kv Entry and you won't be able to undo
-        this action.
+        This will permanently delete the Kv Entry and you won't be able to undo this
+        action.
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
       <AlertDialog.Cancel disabled={isDeleting}>Cancel</AlertDialog.Cancel>
-      <AlertDialog.Action disabled={isDeleting} onclick={deleteFn}>
-        Confirm
-      </AlertDialog.Action>
+      <AlertDialog.Action disabled={isDeleting} onclick={deleteFn}
+        >Confirm</AlertDialog.Action
+      >
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>

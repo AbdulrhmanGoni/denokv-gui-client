@@ -33,12 +33,7 @@
 <DropdownMenu.Root bind:open={getOpenMenu, setOpenMenu}>
   <DropdownMenu.Trigger>
     {#snippet child({ props })}
-      <Button
-        {...props}
-        variant="ghost"
-        size="icon"
-        class="relative p-0 text-foreground"
-      >
+      <Button {...props} variant="ghost" size="icon" class="relative p-0 text-foreground">
         <EllipsisIcon class="size-5" />
       </Button>
     {/snippet}
@@ -67,9 +62,7 @@
       {/if}
     </DropdownMenu.Item>
     {#if kvStore.type == "default"}
-      <DropdownMenu.Item
-        onclick={() => fileSystemService.openPath(kvStore.url)}
-      >
+      <DropdownMenu.Item onclick={() => fileSystemService.openPath(kvStore.url)}>
         <OpenPathIcon /> Open Path
       </DropdownMenu.Item>
     {/if}

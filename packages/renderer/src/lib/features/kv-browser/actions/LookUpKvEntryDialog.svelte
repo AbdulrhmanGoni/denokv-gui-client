@@ -54,12 +54,7 @@
     <KvKeyEditor bind:jar={kvKeyCodeEditor} />
     <Separator class="my-3" />
     <div class="flex flex-row-reverse gap-2">
-      <Button
-        disabled={isLoading}
-        variant="default"
-        size="sm"
-        onclick={searchForKey}
-      >
+      <Button disabled={isLoading} variant="default" size="sm" onclick={searchForKey}>
         Search
         {#if isLoading}
           <LoaderIcon class="animate-spin" />

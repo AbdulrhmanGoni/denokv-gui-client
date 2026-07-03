@@ -51,10 +51,7 @@
   </div>
 </div>
 
-{#snippet specialNumber(
-  specialNumber: "NaN" | "Infinity" | "-Infinity",
-  color: string,
-)}
+{#snippet specialNumber(specialNumber: "NaN" | "Infinity" | "-Infinity", color: string)}
   <button
     class={cn(
       "flex gap-1 flex-1 justify-center font-bold bg-card px-3 py-2 rounded-sm text-sm cursor-pointer hover:bg-accent border border-transparent",

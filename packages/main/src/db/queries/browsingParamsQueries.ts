@@ -14,9 +14,7 @@ export const updateQuery = database.prepare(`
     WHERE id = $id;
 `);
 
-export const deleteOneQuery = database.prepare(
-  "DELETE FROM browsingParams WHERE id = ?",
-);
+export const deleteOneQuery = database.prepare("DELETE FROM browsingParams WHERE id = ?");
 
 export const clearSavedParamsQuery = database.prepare(
   "DELETE FROM browsingParams WHERE kvStoreId = ?",

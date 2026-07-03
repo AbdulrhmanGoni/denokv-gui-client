@@ -3,17 +3,13 @@
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
   import { wheelXScrollingHandler } from "./wheelXScrollingHandler";
 
-  const { key, className }: { key: KvEntry["key"]; className?: string } =
-    $props();
+  const { key, className }: { key: KvEntry["key"]; className?: string } = $props();
 </script>
 
 <div
   onwheel={wheelXScrollingHandler}
   role="presentation"
-  class={cn(
-    "flex gap-1 items-center font-semibold overflow-auto py-1",
-    className,
-  )}
+  class={cn("flex gap-1 items-center font-semibold overflow-auto py-1", className)}
 >
   {"["}
   {#each key as keyPart, i}

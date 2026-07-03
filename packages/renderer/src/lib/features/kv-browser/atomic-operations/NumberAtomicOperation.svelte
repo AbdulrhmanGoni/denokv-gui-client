@@ -45,9 +45,7 @@
     close?.();
   }
 
-  let title = $derived(
-    operationName[0].toUpperCase() + operationName.substring(1),
-  );
+  let title = $derived(operationName[0].toUpperCase() + operationName.substring(1));
 </script>
 
 <div class="sm:w-xl w-md bg-background p-3 space-y-3 rounded-lg">

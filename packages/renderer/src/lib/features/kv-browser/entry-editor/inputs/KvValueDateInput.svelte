@@ -32,10 +32,7 @@
 </script>
 
 <div class="space-y-2">
-  <KvValueDateRenderer
-    {value}
-    className="bg-card px-4 py-3 rounded-sm font-bold"
-  />
+  <KvValueDateRenderer {value} className="bg-card px-4 py-3 rounded-sm font-bold" />
   <p class="text-muted-foreground">
     Pick one of the following methods to create a Date value:
   </p>

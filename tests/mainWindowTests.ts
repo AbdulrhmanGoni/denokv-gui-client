@@ -24,9 +24,7 @@ export async function mainWindowTests({
       });
 
       return new Promise((resolve) => {
-        /**
-         * The main window is created hidden, and is shown only when it is ready.
-         */
+        /** The main window is created hidden, and is shown only when it is ready. */
         if (mainWindow.isVisible()) {
           resolve(getState());
         } else {
@@ -37,10 +35,6 @@ export async function mainWindowTests({
   );
 
   expect(windowState.isCrashed, "The app has crashed").toEqual(false);
-  expect(windowState.isVisible, "The main window was not visible").toEqual(
-    true,
-  );
-  expect(windowState.isDevToolsOpened, "The DevTools panel was open").toEqual(
-    false,
-  );
+  expect(windowState.isVisible, "The main window was not visible").toEqual(true);
+  expect(windowState.isDevToolsOpened, "The DevTools panel was open").toEqual(false);
 }

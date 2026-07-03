@@ -1,19 +1,13 @@
 <script lang="ts">
   import { ModeWatcher } from "mode-watcher";
-  import {
-    closeKvStore,
-    kvStoresState,
-  } from "$lib/states/kvStoresState.svelte";
+  import { closeKvStore, kvStoresState } from "$lib/states/kvStoresState.svelte";
   import Header from "$lib/layout/Header.svelte";
   import KvEntriesBrowser from "$lib/features/kv-browser/KvEntriesBrowser.svelte";
   import KvStoresManagement from "$lib/features/kv-stores/KvStoresManagement.svelte";
   import { Toaster } from "$lib/ui/shadcn/sonner";
   import LoadingOverlay from "$lib/ui/primitives/LoadingOverlay.svelte";
   import { metadata } from "@app/preload";
-  import {
-    loadSettings,
-    settingsState,
-  } from "$lib/states/settingsState.svelte";
+  import { loadSettings, settingsState } from "$lib/states/settingsState.svelte";
   import { onMount } from "svelte";
   import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
   import { handleKeyboardShortcuts } from "$lib/helpers/keyboardShortcuts";
@@ -31,10 +25,7 @@
 </script>
 
 <main class="w-full mx-auto p-3 flex flex-col h-screen overflow-hidden">
-  <Tooltip.Provider
-    delayDuration={0}
-    disabled={metadata.environment == "testing"}
-  >
+  <Tooltip.Provider delayDuration={0} disabled={metadata.environment == "testing"}>
     <Header />
     <div class="flex-1 min-h-0">
       {#if kvStoresState.openedStore}
@@ -44,10 +35,7 @@
       {/if}
     </div>
   </Tooltip.Provider>
-  <Toaster
-    richColors
-    duration={metadata.environment == "testing" ? 1 : undefined}
-  />
+  <Toaster richColors duration={metadata.environment == "testing" ? 1 : undefined} />
   <ModeWatcher />
   <LoadingOverlay />
 </main>

@@ -1,9 +1,6 @@
 import { expect } from "playwright/test";
 import { test } from "./e2e.spec";
-import {
-  randomTestingKvEntries,
-  usersTestingKvEntries,
-} from "./testingKvEntries";
+import { randomTestingKvEntries, usersTestingKvEntries } from "./testingKvEntries";
 
 export function filteringKvEntriesTests() {
   test.beforeAll(async ({ page }) => {
@@ -28,9 +25,7 @@ export function filteringKvEntriesTests() {
   test("Apply 'prefix' filter and check only entries with prefix are fetched", async ({
     page,
   }) => {
-    await page
-      .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-      .click();
+    await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
     const prefixKeyEditor = page.locator("#prefix-key-editor");
     // Focus on the editor and enter a space just to trigger `CodeJar` to set the value to the state variable
     await prefixKeyEditor.fill('["users"]');
@@ -45,18 +40,14 @@ export function filteringKvEntriesTests() {
     const usersRows = page.locator("tr", { hasText: '"users"' });
     await expect(usersRows).toHaveCount(usersTestingKvEntries.length);
     for (let i = 1; i <= usersTestingKvEntries.length; i++) {
-      await expect(
-        page.locator("tr", { hasText: `[  "users" ,${i}  ]` }),
-      ).toHaveCount(1);
+      await expect(page.locator("tr", { hasText: `[  "users" ,${i}  ]` })).toHaveCount(1);
     }
   });
 
   test("Apply 'start' & 'end' range filter and check only entries in range are fetched", async ({
     page,
   }) => {
-    await page
-      .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-      .click();
+    await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
 
     await page
       .locator("button", {
@@ -82,9 +73,7 @@ export function filteringKvEntriesTests() {
   test("Apply a random filter and check that no entries are fetched", async ({
     page,
   }) => {
-    await page
-      .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-      .click();
+    await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
 
     await page
       .locator("button", {
@@ -107,54 +96,38 @@ export function filteringKvEntriesTests() {
   test("Check the saved filter, apply it and check that it is applied", async ({
     page,
   }) => {
-    await page
-      .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-      .click();
+    await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
     await page.locator("button", { hasText: "Saved Filters List" }).click();
 
-    await expect(page.locator("h1", { hasText: "Saved Filters" })).toHaveCount(
-      1,
-    );
+    await expect(page.locator("h1", { hasText: "Saved Filters" })).toHaveCount(1);
 
     const dialog = "div[data-slot='dialog-content'][data-state='open']";
-    await expect(
-      page.locator(dialog, { hasText: 'Prefix: ["users"]' }),
-    ).toHaveCount(1);
+    await expect(page.locator(dialog, { hasText: 'Prefix: ["users"]' })).toHaveCount(1);
     await expect(page.locator(dialog, { hasText: "Start: []" })).toHaveCount(1);
     await expect(page.locator(dialog, { hasText: "End: []" })).toHaveCount(1);
     await expect(page.locator(dialog, { hasText: "Limit: 40" })).toHaveCount(1);
-    await expect(
-      page.locator(dialog, { hasText: "Batch Size: 40" }),
-    ).toHaveCount(1);
-    await expect(
-      page.locator(dialog, { hasText: 'Consistency: "strong"' }),
-    ).toHaveCount(1);
-    await expect(
-      page.locator(dialog, { hasText: "Reverse?: false" }),
-    ).toHaveCount(1);
+    await expect(page.locator(dialog, { hasText: "Batch Size: 40" })).toHaveCount(1);
+    await expect(page.locator(dialog, { hasText: 'Consistency: "strong"' })).toHaveCount(
+      1,
+    );
+    await expect(page.locator(dialog, { hasText: "Reverse?: false" })).toHaveCount(1);
 
     await page.locator("button", { hasText: "Apply" }).click();
 
     const usersRows = page.locator("tr", { hasText: '"users"' });
     await expect(usersRows).toHaveCount(usersTestingKvEntries.length);
     for (let i = 1; i <= usersTestingKvEntries.length; i++) {
-      await expect(
-        page.locator("tr", { hasText: `[  "users" ,${i}  ]` }),
-      ).toHaveCount(1);
+      await expect(page.locator("tr", { hasText: `[  "users" ,${i}  ]` })).toHaveCount(1);
     }
   });
 
   test("Update the saved filter to return entries in reverse order, re-apply it and check that it is applied", async ({
     page,
   }) => {
-    await page
-      .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-      .click();
+    await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
     await page.locator("button", { hasText: "Saved Filters List" }).click();
 
-    await expect(page.locator("h1", { hasText: "Saved Filters" })).toHaveCount(
-      1,
-    );
+    await expect(page.locator("h1", { hasText: "Saved Filters" })).toHaveCount(1);
 
     const dialog = "div[data-slot='dialog-content'][data-state='open']";
     await page
@@ -172,21 +145,15 @@ export function filteringKvEntriesTests() {
       })
       .click();
 
-    await expect(
-      page.locator(dialog, { hasText: 'Prefix: ["users"]' }),
-    ).toHaveCount(1);
+    await expect(page.locator(dialog, { hasText: 'Prefix: ["users"]' })).toHaveCount(1);
     await expect(page.locator(dialog, { hasText: "Start: []" })).toHaveCount(1);
     await expect(page.locator(dialog, { hasText: "End: []" })).toHaveCount(1);
     await expect(page.locator(dialog, { hasText: `Limit: 40` })).toHaveCount(1);
-    await expect(
-      page.locator(dialog, { hasText: "Batch Size: 40" }),
-    ).toHaveCount(1);
-    await expect(
-      page.locator(dialog, { hasText: 'Consistency: "strong"' }),
-    ).toHaveCount(1);
-    await expect(
-      page.locator(dialog, { hasText: "Reverse?: true" }),
-    ).toHaveCount(1); // what changed
+    await expect(page.locator(dialog, { hasText: "Batch Size: 40" })).toHaveCount(1);
+    await expect(page.locator(dialog, { hasText: 'Consistency: "strong"' })).toHaveCount(
+      1,
+    );
+    await expect(page.locator(dialog, { hasText: "Reverse?: true" })).toHaveCount(1); // what changed
 
     await page.locator("button", { hasText: "Apply" }).click();
 
@@ -200,14 +167,10 @@ export function filteringKvEntriesTests() {
   });
 
   test("Delete the saved filter", async ({ page }) => {
-    await page
-      .locator("button", { has: page.locator("svg.lucide-pencil-line") })
-      .click();
+    await page.locator("button", { has: page.locator("svg.lucide-pencil-line") }).click();
     await page.locator("button", { hasText: "Saved Filters List" }).click();
 
-    await expect(page.locator("h1", { hasText: "Saved Filters" })).toHaveCount(
-      1,
-    );
+    await expect(page.locator("h1", { hasText: "Saved Filters" })).toHaveCount(1);
 
     const dialog = "div[data-slot='dialog-content'][data-state='open']";
     await page

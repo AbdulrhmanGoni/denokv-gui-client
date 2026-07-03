@@ -17,9 +17,7 @@ let releaseAssets: ReleaseAsset[] | null = null;
 try {
   releaseAssets = JSON.parse(process.env.SIGNED_ARTIFACTS);
 } catch (error) {
-  throw new Error(
-    `Failed to parse SIGNED_ARTIFACTS environment variable: ${error}`,
-  );
+  throw new Error(`Failed to parse SIGNED_ARTIFACTS environment variable: ${error}`);
 }
 
 if (!releaseAssets || releaseAssets.length === 0) {

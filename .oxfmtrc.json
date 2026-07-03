@@ -20,7 +20,7 @@
     "*.env.*",
     ".DS_Store"
   ],
-  "printWidth": 100,
+  "printWidth": 90,
   "tabWidth": 2,
   "jsdoc": true,
   "sortPackageJson": false

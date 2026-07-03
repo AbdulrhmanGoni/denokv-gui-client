@@ -15,10 +15,7 @@ export function isValidKvKey(key: unknown): boolean {
   );
 }
 
-export function isSameKvKey(
-  key1: SerializedKvKey,
-  key2: SerializedKvKey,
-): boolean {
+export function isSameKvKey(key1: SerializedKvKey, key2: SerializedKvKey): boolean {
   if (key1.length !== key2.length) {
     return false;
   }

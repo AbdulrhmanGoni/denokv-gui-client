@@ -47,16 +47,14 @@ function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
           lastFetchedUpdateService.doNotNotifyLastFetchedUpdate();
         },
       },
-      description: (internals) =>
-        newUpdateNotificationActions(internals, { dismiss }),
+      description: (internals) => newUpdateNotificationActions(internals, { dismiss }),
       id: toastId,
     });
   }
 }
 
 export async function startCheckingForUpdates() {
-  const lastFetchedUpdate =
-    await lastFetchedUpdateService.getLastFetchedUpdate();
+  const lastFetchedUpdate = await lastFetchedUpdateService.getLastFetchedUpdate();
   if (lastFetchedUpdate) {
     if (!lastFetchedUpdate.doNotNotify) {
       notifyUserForNewUpdate(

@@ -34,10 +34,10 @@ const errorCause = { cause: "SerializationError" };
 /**
  * Serialize a Deno Kv Key into a JSON-compatible array.
  *
- * Each key part is preserved if it is a primitive. Special values are wrapped:
- * - `Uint8Array` -> `{ type: "Uint8Array", value: "new Uint8Array([...])" }`
- * - `BigInt` -> `{ type: "BigInt", value: "..." }`
- * - non-finite numbers (`NaN`, `Infinity`, `-Infinity`) -> `{ type: "Number", value: "..." }`
+ * Each key part is preserved if it is a primitive. Special values are wrapped: -
+ * `Uint8Array` -> `{ type: "Uint8Array", value: "new Uint8Array([...])" }` - `BigInt` ->
+ * `{ type: "BigInt", value: "..." }` - non-finite numbers (`NaN`, `Infinity`,
+ * `-Infinity`) -> `{ type: "Number", value: "..." }`
  *
  * @param key Deno Kv Key to serialize
  * @returns A JSON-compatible representation of the Deno KV key
@@ -76,8 +76,10 @@ export function serializeKvKey(key: KvKey): SerializedKvKey {
  *
  * @param key JSON string representing a serialized Deno Kv Key
  * @param options Optional flags
- * @param options.allowEmptyKey `allowEmptyKey` to not throw an error for empty keys (Defaults to `false`).
- * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (Defaults to `false`).
+ * @param options.allowEmptyKey `allowEmptyKey` to not throw an error for empty keys
+ *   (Defaults to `false`).
+ * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict
+ *   JSON (Defaults to `false`).
  * @returns A Deno Kv Key that can be used with Deno KV APIs
  */
 export function deserializeKvKey(
@@ -145,10 +147,7 @@ export function deserializeKvKey(
       }
 
       if (part.type === "Uint8Array") {
-        const error = new Error(
-          "Invalid Uint8Array value: " + part.value,
-          errorCause,
-        );
+        const error = new Error("Invalid Uint8Array value: " + part.value, errorCause);
         try {
           const uint8Array = (0, eval)(`(${part.value})`);
           if (uint8Array instanceof Uint8Array) {
@@ -184,8 +183,9 @@ export function deserializeKvKey(
 /**
  * Serializes a Deno Kv value into a JSON-compatible object.
  *
- * @param value any valid Deno Kv value to serialize
- * @param xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
+ * @param value Any valid Deno Kv value to serialize
+ * @param xssSafe Whether to escape HTML characters and JS line terminators from strings
+ *   (defaults to true).
  * @returns A `{ type, data }` JSON object
  */
 export function serializeKvValue(
@@ -224,16 +224,13 @@ export function serializeKvValue(
     }
   }
 
-  if (value instanceof Array)
-    return { type: "Array", data: serializeJs(value, xssSafe) };
+  if (value instanceof Array) return { type: "Array", data: serializeJs(value, xssSafe) };
 
   if (value instanceof Date) return { type: "Date", data: value.toISOString() };
 
-  if (value instanceof Map)
-    return { type: "Map", data: serializeJs(value, xssSafe) };
+  if (value instanceof Map) return { type: "Map", data: serializeJs(value, xssSafe) };
 
-  if (value instanceof Set)
-    return { type: "Set", data: serializeJs(value, xssSafe) };
+  if (value instanceof Set) return { type: "Set", data: serializeJs(value, xssSafe) };
 
   if (value instanceof RegExp) {
     return {
@@ -401,7 +398,8 @@ export function deserializeKvValue(body: unknown): unknown {
  * Serializes an array of Deno KV entries to a JSON-compatible array.
  *
  * @param entries Array of Deno KV entries
- * @param xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
+ * @param xssSafe Whether to escape HTML characters and JS line terminators from strings
+ *   (defaults to true).
  * @returns Array of serialized Deno KV entries
  */
 export function serializeEntries(

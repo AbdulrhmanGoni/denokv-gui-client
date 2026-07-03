@@ -85,12 +85,7 @@
   <KvEntryExpirationDate bind:value={kvEntryExpirationDateValue} />
   <Separator class="my-2" />
   <div class="flex flex-row-reverse gap-2">
-    <Button
-      disabled={props.loading}
-      variant="secondary"
-      size="sm"
-      onclick={submitEntry}
-    >
+    <Button disabled={props.loading} variant="secondary" size="sm" onclick={submitEntry}>
       {props.submitButtonLabel ?? "Add"}
       {#if props.loading}
         <LoaderIcon class="animate-spin" />
@@ -100,12 +95,7 @@
         <PlusIcon />
       {/if}
     </Button>
-    <Button
-      disabled={props.loading}
-      variant="outline"
-      size="sm"
-      onclick={props.onClose}
-    >
+    <Button disabled={props.loading} variant="outline" size="sm" onclick={props.onClose}>
       <XIcon />
       Close
     </Button>

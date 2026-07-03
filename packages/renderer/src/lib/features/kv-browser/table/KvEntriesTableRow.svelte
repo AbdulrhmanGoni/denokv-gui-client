@@ -31,10 +31,7 @@
       {#if cell.column.id === "key" && isWatchedEntry(row.original)}
         <EyeIcon class="size-3.5 absolute -left-0.5 top-[5px]" />
       {/if}
-      <FlexRender
-        content={cell.column.columnDef.cell}
-        context={cell.getContext()}
-      />
+      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
     </Table.Cell>
   {/each}
 </Table.Row>

@@ -1,7 +1,4 @@
-import {
-  AtomicOperationInput,
-  EnqueueRequestInput,
-} from "../validation/main.ts";
+import { AtomicOperationInput, EnqueueRequestInput } from "../validation/main.ts";
 import type {
   SerializedKvEntry,
   SerializedKvKey,
@@ -28,9 +25,7 @@ type CallBridgeServerReturn<ResultT> = Promise<{
   error: string | null;
 }>;
 
-function optionsToUrlSearchParams(
-  options: CallBridgeServerOptions,
-): URLSearchParams {
+function optionsToUrlSearchParams(options: CallBridgeServerOptions): URLSearchParams {
   return new URLSearchParams(
     Object.entries(options).map(([option, value]) => [
       option,
@@ -98,9 +93,15 @@ export type BrowsingOptions = {
   start?: SerializedKvKey | string;
   /** End key for range query (exclusive) */
   end?: SerializedKvKey | string;
-  /** Whether to escape HTML characters and JS line terminators from strings (defaults to true) */
+  /**
+   * Whether to escape HTML characters and JS line terminators from strings (defaults to
+   * true)
+   */
   xssSafe?: boolean;
-  /** Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to false) */
+  /**
+   * Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to
+   * false)
+   */
   jsKey?: boolean;
 };
 
@@ -110,7 +111,10 @@ export type SetKeyOptions = {
   expires?: number;
   /** Whether to overwrite the value if the key already exists (defaults to true) */
   overwrite?: boolean;
-  /** Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false) */
+  /**
+   * Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to
+   * false)
+   */
   jsKey?: boolean;
 };
 
@@ -134,9 +138,7 @@ type BridgeServerClientOptions = {
   authToken?: string;
 };
 
-/**
- * A client to interact with a Denokv bridge server via HTTP.
- */
+/** A client to interact with a Denokv bridge server via HTTP. */
 export class BridgeServerClient {
   /**
    * @param baseUrl The base URL of the bridge server (e.g., http://localhost:47168)
@@ -153,6 +155,7 @@ export class BridgeServerClient {
 
   /**
    * Lists KV entries based on the provided options.
+   *
    * @param options Filtering and pagination options
    */
   browse(options?: BrowsingOptions): CallBridgeServerReturn<BrowseReturn> {
@@ -166,6 +169,7 @@ export class BridgeServerClient {
 
   /**
    * Creates or updates a Deno KV entry.
+   *
    * @param key The key of the Kv entry to set
    * @param value The value to set (must be in `SerializedKvValue` type)
    * @param options Optional settings like expiration time and overwrite behavior
@@ -189,10 +193,13 @@ export class BridgeServerClient {
 
   /**
    * Retrieves a single Deno KV entry by its key.
+   *
    * @param key The key of the Kv entry to retrieve
    * @param options Optional configurations like `xssSafe` and `jsKey`
-   * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true). Set to false to disable.
-   * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false).
+   * @param options.xssSafe Whether to escape HTML characters and JS line terminators from
+   *   strings (defaults to true). Set to false to disable.
+   * @param options.jsKey Whether to parse the key as a JavaScript literal instead of
+   *   strict JSON (defaults to false).
    */
   get(
     key: SerializedKvKey | string,
@@ -208,9 +215,11 @@ export class BridgeServerClient {
 
   /**
    * Deletes a Deno KV entry by its key.
+   *
    * @param key The key of the Kv entry to delete
    * @param options Optional configurations
-   * @param options.jsKey Whether to parse the key as a JavaScript literal instead of strict JSON (defaults to false).
+   * @param options.jsKey Whether to parse the key as a JavaScript literal instead of
+   *   strict JSON (defaults to false).
    */
   delete(
     key: SerializedKvKey | string,
@@ -226,6 +235,7 @@ export class BridgeServerClient {
 
   /**
    * Enqueues a message into Deno Kv Queue for later delivery.
+   *
    * @param value The value to enqueue
    * @param options Optional enqueue settings
    */
@@ -243,9 +253,11 @@ export class BridgeServerClient {
 
   /**
    * Performs an atomic operation consisting of multiple checks and mutations.
+   *
    * @param atomicOperations An array of atomic operations to perform
    * @param options Optional configuration
-   * @param options.jsKey Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to false).
+   * @param options.jsKey Whether to parse the keys as JavaScript literals instead of
+   *   strict JSON (defaults to false).
    */
   atomic(
     atomicOperations: AtomicOperationInput[],
@@ -263,14 +275,17 @@ export class BridgeServerClient {
   /**
    * Watches a set of keys for updates via Server-Sent Events (SSE).
    *
-   * Whenever a watched key changes, the provided listener is called with the updated entries.
-   * Use `cancelWatcher()` to stop watching and close the connection.
+   * Whenever a watched key changes, the provided listener is called with the updated
+   * entries. Use `cancelWatcher()` to stop watching and close the connection.
    *
    * @param keys An array of KV keys to watch
-   * @param listener A callback function to be called when one of the watched keys is updated
+   * @param listener A callback function to be called when one of the watched keys is
+   *   updated
    * @param options Optional configurations
-   * @param options.xssSafe Whether to escape HTML characters and JS line terminators from strings (defaults to true).
-   * @param options.jsKey Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to false).
+   * @param options.xssSafe Whether to escape HTML characters and JS line terminators from
+   *   strings (defaults to true).
+   * @param options.jsKey Whether to parse the keys as JavaScript literals instead of
+   *   strict JSON (defaults to false).
    * @returns A promise that resolves when the watch stream is closed or cancelled
    */
   async watch(
@@ -285,9 +300,7 @@ export class BridgeServerClient {
         method: "POST",
         headers: this.headers,
         body: JSON.stringify(
-          typeof keys[0] == "string"
-            ? keys
-            : keys.map((key) => JSON.stringify(key)),
+          typeof keys[0] == "string" ? keys : keys.map((key) => JSON.stringify(key)),
         ),
         signal: controller.signal,
       });
@@ -320,13 +333,12 @@ export class BridgeServerClient {
     }
   }
 
-  /**
-   * The reader of the stream of updates on the watched keys using `watch` method.
-   */
+  /** The reader of the stream of updates on the watched keys using `watch` method. */
   private watchReader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
   /**
-   * Cancels the reader (if exists) that listens for changes on the set of watched keys using `watch` method.
+   * Cancels the reader (if exists) that listens for changes on the set of watched keys
+   * using `watch` method.
    */
   async cancelWatcher() {
     if (this.watchReader) {

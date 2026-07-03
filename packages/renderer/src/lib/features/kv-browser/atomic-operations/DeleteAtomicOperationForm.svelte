@@ -30,9 +30,7 @@
       <TrashIcon class="size-7" />
       Delete Operation
     </h1>
-    <p class="text-muted-foreground">
-      Delete a key-value entry from the KV store.
-    </p>
+    <p class="text-muted-foreground">Delete a key-value entry from the KV store.</p>
   </div>
   <Separator />
   <KvKeyEditor editorId="delete-key-editor" bind:jar={kvKeyEditorRef} />

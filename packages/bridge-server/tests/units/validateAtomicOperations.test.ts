@@ -78,9 +78,7 @@ describe("Test 'validateAtomicOperations' function", () => {
   });
 
   it("should handle null versionstamp in 'check' operation", async () => {
-    const operations = [
-      { name: "check", key: "['users', 1]", versionstamp: null },
-    ];
+    const operations = [{ name: "check", key: "['users', 1]", versionstamp: null }];
     const result = validateAtomicOperations(operations, { jsKey: true });
     expect(result[0]).toEqual({
       name: "check",
@@ -90,18 +88,14 @@ describe("Test 'validateAtomicOperations' function", () => {
   });
 
   it("should throw error for invalid versionstamp in 'check' operation", async () => {
-    const operations = [
-      { name: "check", key: "['users', 1]", versionstamp: 123 },
-    ];
+    const operations = [{ name: "check", key: "['users', 1]", versionstamp: 123 }];
     expect(() => validateAtomicOperations(operations)).toThrow(
       "Invalid atomic operation: versionstamp of 'check' operation must be either null or a non-empty string",
     );
   });
 
   it("should throw error for empty string versionstamp in 'check' operation", async () => {
-    const operations = [
-      { name: "check", key: "['users', 1]", versionstamp: "" },
-    ];
+    const operations = [{ name: "check", key: "['users', 1]", versionstamp: "" }];
     expect(() => validateAtomicOperations(operations, { jsKey: true })).toThrow(
       "Invalid atomic operation: versionstamp of 'check' operation must be either null or a non-empty string",
     );
@@ -191,8 +185,8 @@ describe("Test 'validateAtomicOperations' function", () => {
     expect(() => validateAtomicOperations(operations)).toThrow(
       "Invalid JSON format for KvKey.",
     );
-    expect(() =>
-      validateAtomicOperations(operations, { jsKey: false }),
-    ).toThrow("Invalid JSON format for KvKey.");
+    expect(() => validateAtomicOperations(operations, { jsKey: false })).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
   });
 });

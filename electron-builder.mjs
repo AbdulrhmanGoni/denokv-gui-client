@@ -62,9 +62,7 @@ export default /** @type import('electron-builder').Configuration */
 });
 
 async function getListOfFilesFromEachWorkspace() {
-  /**
-   * @type {Map<string, string>}
-   */
+  /** @type {Map<string, string>} */
   const workspaces = await mapWorkspaces({
     cwd: process.cwd(),
     pkg,

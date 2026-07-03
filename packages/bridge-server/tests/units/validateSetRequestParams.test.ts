@@ -24,15 +24,11 @@ describe("Test 'validateSetRequestParams' function", () => {
 
   it("should throw an error for missing key", () => {
     const url = new URL(fakeUrl + "/set");
-    expect(() => validateSetRequestParams(url)).toThrow(
-      "No target key to set.",
-    );
+    expect(() => validateSetRequestParams(url)).toThrow("No target key to set.");
   });
 
   it("should throw an error for a non-numeric expiration time", () => {
-    const url = new URL(
-      fakeUrl + '/set?key=["users", "dave"]&expires=not-a-number',
-    );
+    const url = new URL(fakeUrl + '/set?key=["users", "dave"]&expires=not-a-number');
     expect(() => validateSetRequestParams(url)).toThrow(
       "Invalid expiration time option: It must be a number in milliseconds. Got: not-a-number",
     );
@@ -63,9 +59,7 @@ describe("Test 'validateSetRequestParams' function", () => {
     };
     expect(validateSetRequestParams(url3)).toEqual(expected3);
 
-    const url4 = new URL(
-      `${fakeUrl}/set?key=["users", 6]&overwrite=randomString`,
-    );
+    const url4 = new URL(`${fakeUrl}/set?key=["users", 6]&overwrite=randomString`);
     const expected4 = {
       key: ["users", 6],
       overwrite: true,

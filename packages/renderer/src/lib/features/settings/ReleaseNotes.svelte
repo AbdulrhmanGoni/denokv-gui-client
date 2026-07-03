@@ -51,17 +51,11 @@
   </Dialog.Root>
 {/if}
 
-{#snippet ReleaseNotes(
-  version: string,
-  notes: string | null,
-  isLatest: boolean,
-)}
+{#snippet ReleaseNotes(version: string, notes: string | null, isLatest: boolean)}
   <h2 class="flex gap-1.5 items-center text-2xl mb-2 font-extrabold">
     v{version}
     {#if isLatest}
-      <span class="text-base text-blue-600 dark:text-blue-500 font-bold">
-        (latest)
-      </span>
+      <span class="text-base text-blue-600 dark:text-blue-500 font-bold"> (latest) </span>
     {/if}
   </h2>
   {@html notes?.replaceAll("<a href=", '<a target="_blank" href=')}
