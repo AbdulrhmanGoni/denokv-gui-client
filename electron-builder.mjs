@@ -1,47 +1,63 @@
 import pkg from "./package.json" with { type: "json" };
-import mapWorkspaces from "@npmcli/map-workspaces";
-import { join } from "node:path";
-import { pathToFileURL } from "node:url";
+import path from "node:path";
 import os from "node:os";
+import { readdirSync } from "node:fs";
 
-/** @type import('electron-builder').Configuration */
-const platformSpecificConfig = {};
+function getPlatformConfig() {
+  /** @type import('electron-builder').Configuration */
+  const platformConfig = {};
 
-switch (os.platform()) {
-  case "linux":
-    platformSpecificConfig.linux = {
-      target: ["deb", "AppImage"],
-      icon: "buildResources",
-    };
-    break;
-
-  case "darwin":
-    const arch = os.arch();
-    if (arch == "x64") {
-      platformSpecificConfig.mac = {
-        identity: null,
-        target: [
-          { target: "dmg", arch: ["x64"] },
-          { target: "zip", arch: ["x64"] },
-        ],
-        icon: "buildResources/icon.icns",
+  switch (os.platform()) {
+    case "linux":
+      platformConfig.linux = {
+        target: ["AppImage"],
+        icon: "buildResources",
       };
-    } else if (arch == "arm64") {
-      // uses the default config for now
-    }
-    break;
+      break;
 
-  case "win32":
-    // Call the signing when the environment variables are set, otherwise skip it to avoid build failures in CI environments where the signing credentials are not available.
-    if (process.env.OSSIGN_CONFIG || process.env.OSSIGN_CONFIG_BASE64) {
-      platformSpecificConfig.win = {
-        signtoolOptions: {
-          sign: "./scripts/customSign.cjs",
-          signingHashAlgorithms: ["sha256"],
-        },
-      };
+    case "darwin":
+      const arch = os.arch();
+      if (arch == "x64") {
+        platformConfig.mac = {
+          identity: null,
+          target: [
+            { target: "dmg", arch: ["x64"] },
+            { target: "zip", arch: ["x64"] },
+          ],
+          icon: "buildResources/icon.icns",
+        };
+      } else if (arch == "arm64") {
+        // uses the default config for now
+      }
+      break;
+
+    case "win32":
+      // Call the signing when the environment variables are set, otherwise skip it to avoid build failures in CI environments where the signing credentials are not available.
+      if (process.env.OSSIGN_CONFIG || process.env.OSSIGN_CONFIG_BASE64) {
+        platformConfig.win = {
+          signtoolOptions: {
+            sign: "./scripts/customSign.cjs",
+            signingHashAlgorithms: ["sha256"],
+          },
+        };
+      }
+      break;
+  }
+
+  return platformConfig;
+}
+
+function getAppPackagesFiles() {
+  const allFilesToInclude = [];
+
+  const packagesDir = readdirSync("./packages", { withFileTypes: true });
+  for (const fileOrDir of packagesDir) {
+    if (fileOrDir.isDirectory()) {
+      allFilesToInclude.push(path.join("node_modules", "@app", fileOrDir.name, "dist"));
     }
-    break;
+  }
+
+  return allFilesToInclude;
 }
 
 export default /** @type import('electron-builder').Configuration */
@@ -51,36 +67,12 @@ export default /** @type import('electron-builder').Configuration */
     owner: "AbdulrhmanGoni",
     repo: "denokv-gui-client",
   },
-  ...platformSpecificConfig,
+  ...getPlatformConfig(),
   directories: {
     output: "dist",
     buildResources: "buildResources",
   },
   asarUnpack: ["node_modules/@app/main/dist/migrations/**"],
   artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-  files: ["LICENSE*", pkg.main, ...(await getListOfFilesFromEachWorkspace())],
+  files: ["LICENSE*", pkg.main, ...getAppPackagesFiles()],
 });
-
-async function getListOfFilesFromEachWorkspace() {
-  /** @type {Map<string, string>} */
-  const workspaces = await mapWorkspaces({
-    cwd: process.cwd(),
-    pkg,
-  });
-
-  const allFilesToInclude = [];
-
-  for (const [name, path] of workspaces) {
-    const pkgPath = join(path, "package.json");
-    const { default: workspacePkg } = await import(pathToFileURL(pkgPath), {
-      with: { type: "json" },
-    });
-
-    let patterns = workspacePkg.files || ["dist/**", "package.json"];
-
-    patterns = patterns.map((p) => join("node_modules", name, p));
-    allFilesToInclude.push(...patterns);
-  }
-
-  return allFilesToInclude;
-}
