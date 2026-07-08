@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
-import { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { AppModule } from "../AppModule.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import pkg from "../../../../package.json" with { type: "json" };
 import { versions } from "node:process";
 
@@ -16,15 +16,21 @@ export const environment =
       ? "development"
       : "production";
 
+export interface MetadataInterface {
+  getMetadata(): Promise<AppMetadata>;
+}
+
 export class MetadataModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle("get-metadata", () => ({
+    const getMetadata: MetadataInterface["getMetadata"] = async () => ({
       appVersion,
       nodeVersion,
       electronVersion,
       chromiumVersion,
       githubRepo,
       environment,
-    }));
+    });
+
+    ipcMain.handle("get-metadata", getMetadata);
   }
 }

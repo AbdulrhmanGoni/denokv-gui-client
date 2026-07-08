@@ -9,7 +9,7 @@
   import CircleAlert from "@lucide/svelte/icons/circle-alert";
   import OctagonAlert from "@lucide/svelte/icons/octagon-alert";
   import Alert from "$lib/ui/primitives/Alert.svelte";
-  import { restartApp } from "@app/preload";
+  import { appManager } from "@app/preload";
   import RotateCw from "@lucide/svelte/icons/rotate-cw";
 
   let hardwareAccelerationEnabled = $derived(!settingsState.disableHardwareAcceleration);
@@ -47,7 +47,7 @@
       />
       <button
         type="button"
-        onclick={restartApp}
+        onclick={appManager.restartApp}
         class="text-sm flex items-center gap-1 cursor-pointer"
       >
         <RotateCw class="size-4 -translate-y-px" />

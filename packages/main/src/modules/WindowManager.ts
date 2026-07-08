@@ -1,5 +1,5 @@
 import type { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import { BrowserWindow, screen } from "electron";
 import type { AppInitConfig } from "../AppInitConfig.js";
 

@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
-import { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { AppModule } from "../AppModule.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import { readdir, writeFile, rm, rename, mkdir } from "node:fs/promises";
 import { existsSync, statSync } from "node:fs";
 import { exec } from "node:child_process";
@@ -17,9 +17,18 @@ import { deadline } from "@std/async";
 import { clearSavedParamsQuery } from "../db/queries/browsingParamsQueries.js";
 import { deleteWatchedKeysQuery } from "../db/queries/watchedKvEntriesQueries.js";
 
+export interface KvStoresServiceInterface {
+  create(input: CreateKvStoreInput): Promise<boolean>;
+  update(kvStore: KvStore, changes: EditKvStoreInput): Promise<boolean>;
+  getAll(): Promise<KvStore[]>;
+  deleteOne(kvStore: KvStore): Promise<boolean>;
+  renameDefaultLocalKvStore(store: KvStore, newName: string): Promise<boolean>;
+  testKvStoreConnection(kvStore: TestKvStoreParams): Promise<boolean>;
+}
+
 export class KvStoresServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle("kvStoresService:create", async (_, input: CreateKvStoreInput) => {
+    const create: KvStoresServiceInterface["create"] = async (input) => {
       if (input.type == "local" && (input.replaceExisting || !existsSync(input.url))) {
         await writeFile(input.url, "");
       }
@@ -34,40 +43,49 @@ export class KvStoresServiceModule implements AppModule {
       );
 
       return !!result.changes;
-    });
-
+    };
     ipcMain.handle(
-      "kvStoresService:update",
-      async (_, kvStore: KvStore, changes: EditKvStoreInput) => {
-        if (kvStore.type == "local" && changes.url && !changes.type) {
-          await relocateLocalKvStore(kvStore, changes.url);
-        }
-
-        if (changes.type == "local" && changes.url) {
-          const dir = path.dirname(changes.url);
-          if (!existsSync(dir)) {
-            await mkdir(dir, { recursive: true });
-          }
-
-          if (!existsSync(changes.url)) {
-            await writeFile(changes.url, "");
-          }
-        }
-
-        const result = updateQuery.run({
-          $id: kvStore.id,
-          $name: changes.name ?? null,
-          $url: changes.url ?? null,
-          $type: changes.type ?? null,
-          $accessToken: changes.accessToken,
-          $authToken: changes.authToken,
-        });
-
-        return !!result.changes;
+      "kvStoresService:create",
+      async (_, ...args: Parameters<typeof create>) => {
+        return create(...args);
       },
     );
 
-    ipcMain.handle("kvStoresService:getAll", async () => {
+    const update: KvStoresServiceInterface["update"] = async (kvStore, changes) => {
+      if (kvStore.type == "local" && changes.url && !changes.type) {
+        await relocateLocalKvStore(kvStore, changes.url);
+      }
+
+      if (changes.type == "local" && changes.url) {
+        const dir = path.dirname(changes.url);
+        if (!existsSync(dir)) {
+          await mkdir(dir, { recursive: true });
+        }
+
+        if (!existsSync(changes.url)) {
+          await writeFile(changes.url, "");
+        }
+      }
+
+      const result = updateQuery.run({
+        $id: kvStore.id,
+        $name: changes.name ?? null,
+        $url: changes.url ?? null,
+        $type: changes.type ?? null,
+        $accessToken: changes.accessToken,
+        $authToken: changes.authToken,
+      });
+
+      return !!result.changes;
+    };
+    ipcMain.handle(
+      "kvStoresService:update",
+      async (_, ...args: Parameters<typeof update>) => {
+        return update(...args);
+      },
+    );
+
+    const getAll: KvStoresServiceInterface["getAll"] = async () => {
       const kvStores = getAllQuery.all() as KvStore[];
       const defaultKvStores = await getDefaultLocalKvStores(
         kvStores.filter((store) => store.type == "default").map((s) => s.id),
@@ -77,9 +95,10 @@ export class KvStoresServiceModule implements AppModule {
         (storeA, storeB) =>
           new Date(storeB.updatedAt).getTime() - new Date(storeA.updatedAt).getTime(),
       );
-    });
+    };
+    ipcMain.handle("kvStoresService:getAll", getAll);
 
-    ipcMain.handle("kvStoresService:deleteOne", async (_, kvStore: KvStore) => {
+    const deleteOne: KvStoresServiceInterface["deleteOne"] = async (kvStore) => {
       if (kvStore.type == "default" || kvStore.type == "local") {
         await rm(kvStore.url, { force: true });
         await rm(`${kvStore.url}-shm`, { force: true });
@@ -103,11 +122,16 @@ export class KvStoresServiceModule implements AppModule {
       }
 
       return !!result.changes;
-    });
-
+    };
     ipcMain.handle(
-      "kvStoresService:renameDefaultLocalKvStore",
-      async (_, store: KvStore, newName: string) => {
+      "kvStoresService:deleteOne",
+      async (_, ...args: Parameters<typeof deleteOne>) => {
+        return deleteOne(...args);
+      },
+    );
+
+    const renameDefaultLocalKvStore: KvStoresServiceInterface["renameDefaultLocalKvStore"] =
+      async (store, newName) => {
         if (store.type != "default") return false;
 
         const storedKvStore = getOneQuery.get(store.id) as KvStore | undefined;
@@ -123,12 +147,16 @@ export class KvStoresServiceModule implements AppModule {
         const result = insertQuery.run(store.id, newName, store.url, store.type, null);
 
         return !!result.changes;
+      };
+    ipcMain.handle(
+      "kvStoresService:renameDefaultLocalKvStore",
+      async (_, ...args: Parameters<typeof renameDefaultLocalKvStore>) => {
+        return renameDefaultLocalKvStore(...args);
       },
     );
 
-    ipcMain.handle(
-      "kvStoresService:testKvStoreConnection",
-      async (_, kvStore: TestKvStoreParams) => {
+    const testKvStoreConnection: KvStoresServiceInterface["testKvStoreConnection"] =
+      async (kvStore) => {
         if (kvStore.type == "bridge") {
           return await fetch(`${kvStore.url}/check`, {
             headers: kvStore.authToken ? { Authorization: kvStore.authToken } : undefined,
@@ -149,6 +177,11 @@ export class KvStoresServiceModule implements AppModule {
         } catch {
           return false;
         }
+      };
+    ipcMain.handle(
+      "kvStoresService:testKvStoreConnection",
+      async (_, ...args: Parameters<typeof testKvStoreConnection>) => {
+        return testKvStoreConnection(...args);
       },
     );
   }

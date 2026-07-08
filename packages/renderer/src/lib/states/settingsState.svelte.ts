@@ -1,4 +1,4 @@
-import { isHardwareAccelerationEnabled, settingsService } from "@app/preload";
+import { hardwareAccelerationService, settingsService } from "@app/preload";
 
 export const settingsState: Settings = $state({});
 
@@ -10,7 +10,7 @@ export async function setAutoCheckForUpdate(value: boolean) {
 export async function loadSettings() {
   Object.assign(settingsState, (await settingsService.getSettings()) ?? {});
   settingsPageState.isHardwareAccelerationCurrentlyDisabled =
-    !(await isHardwareAccelerationEnabled());
+    !(await hardwareAccelerationService.isEnabled());
 }
 
 type SettingsPageState = {

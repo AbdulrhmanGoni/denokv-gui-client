@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
-import { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { AppModule } from "../AppModule.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import { type Kv, openKv } from "@deno/kv";
 import { BridgeServerClient, openBridgeServerInNode } from "@app/bridge-server";
 import { randomBytes } from "node:crypto";
@@ -67,13 +67,26 @@ class BridgeServerController {
 
 export const bridgeServerController = new BridgeServerController();
 
+export interface BridgeServerInterface {
+  openServer(kvStore: KvStore): Promise<boolean>;
+  closeServer(): Promise<void>;
+}
+
 export class BridgeServerModule implements AppModule {
   enable(_context: ModuleContext): void {
+    const openServer: BridgeServerInterface["openServer"] = async (kvStore) => {
+      return await bridgeServerController.open(kvStore);
+    };
     ipcMain.handle(
       "bridgeServer:openServer",
-      async (_, kvStore: KvStore) => await bridgeServerController.open(kvStore),
+      (_, ...args: Parameters<typeof openServer>) => {
+        return openServer(...args);
+      },
     );
 
-    ipcMain.handle("bridgeServer:closeServer", () => bridgeServerController.close());
+    const closeServer: BridgeServerInterface["closeServer"] = () => {
+      return bridgeServerController.close();
+    };
+    ipcMain.handle("bridgeServer:closeServer", closeServer);
   }
 }

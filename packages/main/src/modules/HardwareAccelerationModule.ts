@@ -1,7 +1,11 @@
 import { ipcMain } from "electron";
-import { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { AppModule } from "../AppModule.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import { getSettings } from "./settingsService.js";
+
+export interface HardwareAccelerationInterface {
+  isEnabled(): Promise<boolean>;
+}
 
 export class HardwareAccelerationModule implements AppModule {
   enable({ app }: ModuleContext): Promise<void> | void {
@@ -10,8 +14,9 @@ export class HardwareAccelerationModule implements AppModule {
       app.disableHardwareAcceleration();
     }
 
-    ipcMain.handle("isHardwareAccelerationEnabled", () =>
-      app.isHardwareAccelerationEnabled(),
-    );
+    const isEnabled: HardwareAccelerationInterface["isEnabled"] = async () => {
+      return app.isHardwareAccelerationEnabled();
+    };
+    ipcMain.handle("hardwareAcceleration:isEnabled", isEnabled);
   }
 }

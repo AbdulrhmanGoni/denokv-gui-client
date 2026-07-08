@@ -10,7 +10,7 @@ function getPlatformConfig() {
   switch (os.platform()) {
     case "linux":
       platformConfig.linux = {
-        target: ["AppImage"],
+        target: ["deb", "AppImage"],
         icon: "buildResources",
       };
       break;
@@ -53,7 +53,7 @@ function getAppPackagesFiles() {
   const packagesDir = readdirSync("./packages", { withFileTypes: true });
   for (const fileOrDir of packagesDir) {
     if (fileOrDir.isDirectory()) {
-      const packagePath = path.join("node_modules", "@app", fileOrDir.name)
+      const packagePath = path.join("node_modules", "@app", fileOrDir.name);
       filesToIncludeOrExclude.push(
         "!" + path.join(packagePath, "**"),
         path.join(packagePath, "dist"),

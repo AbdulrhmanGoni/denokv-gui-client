@@ -194,4 +194,34 @@ export function preloadContextExposureToRendererTests() {
       expect(pathUtilsMethods).toContain(method),
     );
   });
+
+  test(`'hardwareAccelerationService' should be exposed as an object with its methods`, async ({
+    page,
+  }) => {
+    const hardwareAccelerationService = await page.evaluate(
+      () => globalThis["hardwareAccelerationService" as keyof typeof globalThis],
+    );
+    expect(typeof hardwareAccelerationService).toEqual("object");
+
+    const exposedMethods = Object.keys(hardwareAccelerationService);
+    const targetMethods = ["isEnabled"];
+
+    expect(exposedMethods.length).toBe(targetMethods.length);
+    targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+  });
+
+  test(`'appManager' should be exposed as an object with its methods`, async ({
+    page,
+  }) => {
+    const appManager = await page.evaluate(
+      () => globalThis["appManager" as keyof typeof globalThis],
+    );
+    expect(typeof appManager).toEqual("object");
+
+    const exposedMethods = Object.keys(appManager);
+    const targetMethods = ["restartApp"];
+
+    expect(exposedMethods.length).toBe(targetMethods.length);
+    targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+  });
 }

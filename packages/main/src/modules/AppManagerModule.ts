@@ -1,7 +1,11 @@
 import type { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import { ipcMain } from "electron";
 import os from "node:os";
+
+export interface AppManagerInterface {
+  restartApp: () => Promise<void>;
+}
 
 export class AppManagerModule implements AppModule {
   constructor() {}
@@ -15,7 +19,7 @@ export class AppManagerModule implements AppModule {
 
     context.app.on("window-all-closed", () => context.app.quit());
 
-    ipcMain.handle("restart-app", () => {
+    const restartApp: AppManagerInterface["restartApp"] = async () => {
       let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
       if (os.platform() == "linux" && process.env.APPIMAGE && context.app.isPackaged) {
         relaunchOptions = {
@@ -25,7 +29,8 @@ export class AppManagerModule implements AppModule {
       }
       context.app.relaunch(relaunchOptions);
       context.app.exit();
-    });
+    };
+    ipcMain.handle("restart-app", restartApp);
 
     await context.app.whenReady();
   }

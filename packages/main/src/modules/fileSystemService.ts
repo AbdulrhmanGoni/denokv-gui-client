@@ -3,18 +3,25 @@ import path from "node:path";
 import type { AppModule } from "../AppModule.js";
 import type { ModuleContext } from "../ModuleContext.js";
 
+export interface FileSystemServiceInterface {
+  selectDirectory(): Promise<string>;
+  selectFile(directory?: string): Promise<{ directory: string; fileName: string } | null>;
+  openPath(path: string): void;
+}
+
 export class FileSystemServiceModule implements AppModule {
   enable(context: ModuleContext): void {
-    ipcMain.handle("select-directory", async () => {
+    const selectDirectory: FileSystemServiceInterface["selectDirectory"] = async () => {
       const result = await dialog.showOpenDialog(getBrowserWindow(context), {
         properties: ["openDirectory"],
       });
 
       if (result.canceled) return "";
       return result.filePaths[0];
-    });
+    };
+    ipcMain.handle("select-directory", selectDirectory);
 
-    ipcMain.handle("select-file", async (_, directory?: string) => {
+    const selectFile: FileSystemServiceInterface["selectFile"] = async (directory) => {
       const result = await dialog.showOpenDialog(getBrowserWindow(context), {
         properties: ["openFile"],
         defaultPath: directory,
@@ -29,10 +36,16 @@ export class FileSystemServiceModule implements AppModule {
         directory: path.dirname(result.filePaths[0]),
         fileName: path.basename(result.filePaths[0]),
       };
+    };
+    ipcMain.handle("select-file", (_, ...args: Parameters<typeof selectFile>) => {
+      return selectFile(...args);
     });
 
-    ipcMain.handle("open-path", async (_, path) => {
+    const openPath: FileSystemServiceInterface["openPath"] = (path) => {
       return shell.showItemInFolder(path);
+    };
+    ipcMain.handle("open-path", (_, ...args: Parameters<typeof openPath>) => {
+      return openPath(...args);
     });
   }
 }

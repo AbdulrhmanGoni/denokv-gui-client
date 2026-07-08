@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
-import { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { AppModule } from "../AppModule.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import { syncTrycatch } from "../helpers.js";
 import {
   unsetDefaultParamsQuery,
@@ -12,18 +12,32 @@ import {
 } from "../db/queries/browsingParamsQueries.js";
 import { databaseTransaction } from "../db/db.js";
 
+export interface BrowsingParamsServiceInterface {
+  saveBrowsingParams(
+    kvStoreId: string,
+    updateData: { browsingParams: SavedBrowsingParams; setAsDefault: boolean },
+  ): Promise<TrycatchResult<true>>;
+  getSavedBrowsingParamsRecords(
+    kvStoreId: string,
+  ): Promise<TrycatchResult<SavedBrowsingParamsRecord<SavedBrowsingParams>[]>>;
+  getDefaultSavedBrowsingParams(
+    kvStoreId: string,
+  ): Promise<TrycatchResult<SavedBrowsingParamsRecord<SavedBrowsingParams> | undefined>>;
+  updateSavedBrowsingParams(
+    kvStoreId: string,
+    browsingParamsId: string,
+    updateData: {
+      newBrowsingParams?: SavedBrowsingParams;
+      setAsDefault?: boolean;
+    },
+  ): Promise<TrycatchResult<true>>;
+  deleteSavedBrowsingParams(browsingParamsId: string): Promise<TrycatchResult<true>>;
+}
+
 export class BrowsingParamsServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle(
-      "browsingParamsService:saveBrowsingParams",
-      (
-        _,
-        kvStoreId: string,
-        updateData: {
-          browsingParams: SavedBrowsingParams;
-          setAsDefault: boolean;
-        },
-      ) => {
+    const saveBrowsingParams: BrowsingParamsServiceInterface["saveBrowsingParams"] =
+      async (kvStoreId, updateData) => {
         return syncTrycatch<true>(() => {
           return databaseTransaction<true>(() => {
             if (updateData.setAsDefault) {
@@ -42,12 +56,16 @@ export class BrowsingParamsServiceModule implements AppModule {
             throw "Failed to save the browsing params";
           });
         });
+      };
+    ipcMain.handle(
+      "browsingParamsService:saveBrowsingParams",
+      (_, ...args: Parameters<typeof saveBrowsingParams>) => {
+        return saveBrowsingParams(...args);
       },
     );
 
-    ipcMain.handle(
-      "browsingParamsService:getSavedBrowsingParamsRecords",
-      (_, kvStoreId: string) => {
+    const getSavedBrowsingParamsRecords: BrowsingParamsServiceInterface["getSavedBrowsingParamsRecords"] =
+      async (kvStoreId) => {
         return syncTrycatch<SavedBrowsingParamsRecord<SavedBrowsingParams>[]>(() => {
           const result = getAllQuery.all(kvStoreId) as
             | SavedBrowsingParamsRecord<string>[]
@@ -61,12 +79,16 @@ export class BrowsingParamsServiceModule implements AppModule {
 
           throw "Couldn't fetch the saved browsing params";
         });
+      };
+    ipcMain.handle(
+      "browsingParamsService:getSavedBrowsingParamsRecords",
+      (_, ...args: Parameters<typeof getSavedBrowsingParamsRecords>) => {
+        return getSavedBrowsingParamsRecords(...args);
       },
     );
 
-    ipcMain.handle(
-      "browsingParamsService:getDefaultSavedBrowsingParams",
-      (_, kvStoreId: string) => {
+    const getDefaultSavedBrowsingParams: BrowsingParamsServiceInterface["getDefaultSavedBrowsingParams"] =
+      async (kvStoreId) => {
         return syncTrycatch<SavedBrowsingParamsRecord<SavedBrowsingParams> | undefined>(
           () => {
             const result = getDefaultSavedBrowsingQuery.get(kvStoreId) as
@@ -82,20 +104,16 @@ export class BrowsingParamsServiceModule implements AppModule {
             return;
           },
         );
+      };
+    ipcMain.handle(
+      "browsingParamsService:getDefaultSavedBrowsingParams",
+      (_, ...args: Parameters<typeof getDefaultSavedBrowsingParams>) => {
+        return getDefaultSavedBrowsingParams(...args);
       },
     );
 
-    ipcMain.handle(
-      "browsingParamsService:updateSavedBrowsingParams",
-      (
-        _,
-        kvStoreId: string,
-        browsingParamsId: string,
-        updateData: {
-          newBrowsingParams?: SavedBrowsingParams;
-          setAsDefault?: boolean;
-        },
-      ) => {
+    const updateSavedBrowsingParams: BrowsingParamsServiceInterface["updateSavedBrowsingParams"] =
+      async (kvStoreId, browsingParamsId, updateData) => {
         return syncTrycatch<true>(() => {
           if (updateData.setAsDefault) {
             unsetDefaultParamsQuery.run(kvStoreId);
@@ -114,17 +132,26 @@ export class BrowsingParamsServiceModule implements AppModule {
 
           throw "Failed to update the saved browsing params";
         });
+      };
+    ipcMain.handle(
+      "browsingParamsService:updateSavedBrowsingParams",
+      (_, ...args: Parameters<typeof updateSavedBrowsingParams>) => {
+        return updateSavedBrowsingParams(...args);
       },
     );
 
-    ipcMain.handle(
-      "browsingParamsService:deleteSavedBrowsingParams",
-      (_, browsingParamsId: string) => {
+    const deleteSavedBrowsingParams: BrowsingParamsServiceInterface["deleteSavedBrowsingParams"] =
+      async (browsingParamsId) => {
         return syncTrycatch<true>(() => {
           const result = deleteOneQuery.run(browsingParamsId);
           if (result.changes) return true;
           throw "Failed to delete the saved browsing params";
         });
+      };
+    ipcMain.handle(
+      "browsingParamsService:deleteSavedBrowsingParams",
+      (_, ...args: Parameters<typeof deleteSavedBrowsingParams>) => {
+        return deleteSavedBrowsingParams(...args);
       },
     );
   }

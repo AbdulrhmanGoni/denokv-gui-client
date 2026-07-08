@@ -1,0 +1,12 @@
+export type { AppManagerInterface } from "./AppManagerModule.ts";
+export type { AppUpdaterInterface } from "./appUpdaterModule.ts";
+export type { BridgeServerInterface } from "./bridgeServer.ts";
+export type { BrowsingParamsServiceInterface } from "./browsingParamsService.ts";
+export type { FileSystemServiceInterface } from "./fileSystemService.ts";
+export type { HardwareAccelerationInterface } from "./HardwareAccelerationModule.ts";
+export type { KvServerClientInterface } from "./kvServerClientModule.ts";
+export type { KvStoresServiceInterface } from "./kvStoresService.ts";
+export type { LastFetchedUpdateServiceInterface } from "./lastFetchedUpdateService.ts";
+export type { MetadataInterface } from "./metadataModule.ts";
+export type { SettingsServiceInterface } from "./settingsService.ts";
+export type { WatchedKeysServiceInterface } from "./watchedKeysService.ts";

@@ -1,12 +1,19 @@
 import { ipcMain } from "electron";
-import { AppModule } from "../AppModule.js";
-import { ModuleContext } from "../ModuleContext.js";
+import type { AppModule } from "../AppModule.js";
+import type { ModuleContext } from "../ModuleContext.js";
 import electronUpdater from "electron-updater";
 import { setLastFetchedUpdate } from "./lastFetchedUpdateService.js";
 import * as metadata from "./metadataModule.js";
 import { isGreaterVersion } from "../helpers.js";
 
 let cancellationToken: electronUpdater.CancellationToken | null = null;
+
+export interface AppUpdaterInterface {
+  checkForUpdate(): Promise<UpdateCheckResult | null>;
+  downloadUpdate(): Promise<any>;
+  cancelUpdate(): Promise<void>;
+  quitAndInstallUpdate(): Promise<void>;
+}
 
 export class AppUpdaterModule implements AppModule {
   enable(context: ModuleContext): void {
@@ -20,7 +27,7 @@ export class AppUpdaterModule implements AppModule {
       );
     });
 
-    ipcMain.handle("check-for-update", async () => {
+    const checkForUpdate: AppUpdaterInterface["checkForUpdate"] = async () => {
       const newUpdate = await autoUpdater.checkForUpdatesAndNotify();
       if (
         newUpdate &&
@@ -30,21 +37,26 @@ export class AppUpdaterModule implements AppModule {
         return newUpdate;
       }
       return null;
-    });
+    };
+    ipcMain.handle("check-for-update", checkForUpdate);
 
-    ipcMain.handle("download-update", () => {
+    const downloadUpdate: AppUpdaterInterface["downloadUpdate"] = () => {
       cancellationToken = new electronUpdater.CancellationToken();
       return autoUpdater.downloadUpdate(cancellationToken);
-    });
+    };
+    ipcMain.handle("download-update", downloadUpdate);
 
-    ipcMain.handle("cancel-downloading-update", () => {
+    const cancelUpdate: AppUpdaterInterface["cancelUpdate"] = async () => {
       if (cancellationToken && !cancellationToken.cancelled) {
         cancellationToken.cancel();
       }
-    });
+    };
+    ipcMain.handle("cancel-downloading-update", cancelUpdate);
 
-    ipcMain.handle("quit-and-install-update", () => {
-      autoUpdater.quitAndInstall();
-    });
+    const quitAndInstallUpdate: AppUpdaterInterface["quitAndInstallUpdate"] =
+      async () => {
+        autoUpdater.quitAndInstall();
+      };
+    ipcMain.handle("quit-and-install-update", quitAndInstallUpdate);
   }
 }
