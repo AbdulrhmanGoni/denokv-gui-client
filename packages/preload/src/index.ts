@@ -1,6 +1,11 @@
 import { ipcRenderer } from "electron";
 import path from "node:path";
-import { type BridgeServerClient, serializeKvKey } from "@app/bridge-server";
+import {
+  type BridgeServerClient,
+  deserializeKvValue,
+  serializeKvKey,
+  serializeKvValue,
+} from "@app/bridge-server";
 import type {
   AppManagerInterface,
   AppUpdaterInterface,
@@ -109,6 +114,8 @@ const kvClient: KvServerClientType = {
 type BridgeServerType = BridgeServerInterface & {
   utils: {
     serializeKvKey: typeof serializeKvKey;
+    serializeKvValue: typeof serializeKvValue;
+    deserializeKvValue: typeof deserializeKvValue;
   };
 };
 
@@ -121,6 +128,8 @@ const bridgeServer: BridgeServerType = {
   },
   utils: {
     serializeKvKey,
+    serializeKvValue,
+    deserializeKvValue,
   },
 };
 

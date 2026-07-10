@@ -13,6 +13,7 @@
   import { globalState } from "$lib/states/globalState.svelte";
   import { kvEntriesState } from "$lib/states/kvEntriesState.svelte";
   import { isSameKvKey } from "@app/bridge-server/kv-utils";
+  import { bridgeServer } from "@app/preload";
 
   const { entry }: { entry: KvEntry } = $props();
 
@@ -32,7 +33,7 @@
       if (result && result.ok) {
         const updatedEntry = {
           key: currentEntry.key,
-          value: updatedValue,
+          value: normalizeNewValue(updatedValue),
           versionstamp: result.versionstamp,
         };
 
@@ -54,6 +55,23 @@
     } else {
       toast.warning("No changes to the value");
     }
+  }
+
+  function normalizeNewValue(value: KvEntry["value"]) {
+    if (
+      value.type === "Object" ||
+      value.type === "Array" ||
+      value.type === "Set" ||
+      value.type === "Map" ||
+      value.type === "Uint8Array"
+    ) {
+      return bridgeServer.utils.serializeKvValue(
+        bridgeServer.utils.deserializeKvValue(value),
+        false,
+      );
+    }
+
+    return value;
   }
 </script>
 
