@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [11.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@10.0.0...bridge-server@11.0.0) (2026-07-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* the `POST /atomic` endpoint and `validateAtomicOperations`
+function now expect passed Kv Keys to be in the `SerializedKvKey` JSON form
+by default, and to make them deserialize/parse keys as JavaScript literals as
+previously, `jsKey` query/option must be set to `true`
+
+### Features
+
+* make `BridgeServerClient.watch` return errors as values ([eb1d24b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/eb1d24b234d8d64cd40c5fc009527ab66ec58274))
+* add `jsKey` option for Kv keys deserializer/parser ([d9b2502](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d9b25021415af3b7b8f81abbe38e9111d8c90ece))
+
+
+### Bug Fixes
+
+* make `isValidKvKey` utility function return `false` on empty arrays ([d3fd7a9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d3fd7a91d3b999b992917ee4163813f300d29429))
+* let bigint and Uint8Array key parts pass without validation `deserializeKvKey` fn ([e9e2b49](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e9e2b4961799e017f7d6f8dc31c23470e66881f6))
+
 ## [10.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@9.0.1...bridge-server@10.0.0) (2026-06-22)
 
 
