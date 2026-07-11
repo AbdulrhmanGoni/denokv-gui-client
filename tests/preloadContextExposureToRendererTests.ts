@@ -76,6 +76,14 @@ export function preloadContextExposureToRendererTests() {
 
     expect(exposedMethods.length).toBe(targetMethods.length);
     targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
+
+    // Check utils methods
+    const utils = (bridgeServer as any).utils;
+    expect(typeof utils).toEqual("object");
+    const utilsMethods = Object.keys(utils);
+    const targetUtilsMethods = ["serializeKvKey", "serializeKvValue", "deserializeKvValue"];
+    expect(utilsMethods.length).toBe(targetUtilsMethods.length);
+    targetUtilsMethods.forEach((method) => expect(utilsMethods).toContain(method));
   });
 
   test(`'appUpdater' should be exposed as an object with its methods`, async ({
