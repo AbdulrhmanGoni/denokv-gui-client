@@ -1,4 +1,6 @@
-auditConfig: {}
+allowBuilds:
+  esbuild: true
+  sharp: true
 overrides:
   mdast-util-to-hast@>=13.0.0 <13.2.1: '>=13.2.1'
   rollup@>=4.0.0 <4.59.0: '>=4.59.0'
