@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 // https://astro.build/config
 export default defineConfig({
+    compressHTML: true,
     integrations: [
         lastModificationDateAutoUpdator()
     ],
