@@ -2,10 +2,10 @@
 
 ![downloads](https://img.shields.io/github/downloads/abdulrhmangoni/denokv-gui-client/total.svg)
 
-This is an open source desktop app client to manage [**Deno KV Databases**](https://docs.deno.com/deploy/kv/manual/). <br/>
-It enables you to browse your data inside Deno KV Databases in a modern GUI, perform CRUD operations and more!.
+This is a desktop application for managing [**Deno KV Databases**](https://docs.deno.com/deploy/kv/manual/). <br/>
+It enables you to **browse** your data in a modern and user-friendly GUI, do **CRUD operations**, save and re-use browsing filters and preferences, perform **atomic operations** and transactions, **watch keys** for real-time data updates, and more!
 
-It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with **Redis**, **"pgAdmin"** with **Postgres** database, **"Beekeeper Studio"** with many different databases, etc...
+It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with **Redis**, or **"Beekeeper Studio"** with many different databases.
 
 ## Some Screenshots
 
@@ -18,7 +18,7 @@ It's like using **"MongoDB Compass"** with **MongoDB**, **"Redis Insight"** with
 ![Add Entry Form screenshot (Dark)](./screenshots/AddKvEntryForm_dark.png#gh-dark-mode-only)
 ![Add Entry Form screenshot (Light)](./screenshots/AddKvEntryForm_light.png#gh-light-mode-only)
 
-For more screenshots about how this app looks like, check out [screenshots](./screenshots/SCREENSHOTS.md).
+For more screenshots of the features this app provides, check out [screenshots document](./screenshots/SCREENSHOTS.md).
 
 ## Download
 
