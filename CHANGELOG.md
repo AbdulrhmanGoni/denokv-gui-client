@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.27.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.26.0...v1.27.0) (2026-07-11)
+
+
+### Features
+
+* enable adding arbitrary keys (whether they exist in the db or not) to the Watched Keys List ([aa99bc4](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/aa99bc40dc9bbeca690544b74a16ee47bfdd5483))
+
+
+### Bug Fixes
+
+* prevent new multiline KV entry values from breaking KV Entries table layout after update ([a5b34ef](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a5b34ef3cd224bf186572d5b3eb62453c7231274))
+* use keys instead of `versionstamp` to distinguish Watched Kv Entries from each other ([6a32576](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/6a32576fa1de501cd79ec8a5e6d91147175c8a13))
+
+
+### Enhancements
+
+* show an error notification when something goes wrong in the process of watching keys ([a91fdfd](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/a91fdfde067b36c54f58f1532e118ad6a4de08d9))
+
 ## [1.26.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.25.0...v1.26.0) (2026-06-22)
 
 
