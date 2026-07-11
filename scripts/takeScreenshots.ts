@@ -429,5 +429,11 @@ async function takeScreenshotOfWatchedKeysDialog(page: Page) {
   await page.locator("button", { hasText: /Watched Keys \(\d+\)/ }).click();
   await page.waitForTimeout(100);
   await takeScreenshotOfTheme(page, "WatchedKeysDialog");
-  await page.keyboard.press("Escape");
+
+  await page.getByRole("button", { name: "Add Key", exact: true }).click();
+  const keyEditor = page.locator("div#key-editor");
+  await keyEditor.fill('["events", "critical"]');
+  await keyEditor.press("Space");
+  await page.waitForTimeout(100);
+  await takeScreenshotOfTheme(page, "AddKeysToWatchListDialog");
 }

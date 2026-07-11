@@ -57,6 +57,11 @@ Here are some screenshots of how `Denokv GUI Client` app looks like:
 ![Watched Keys Dialog screenshot (Dark)](./WatchedKeysDialog_dark.png#gh-dark-mode-only)
 ![Watched Keys Dialog screenshot (Light)](./WatchedKeysDialog_light.png#gh-light-mode-only)
 
+### Add Keys To Watch List Dialog
+
+![Add Keys To Watch List Dialog screenshot (Dark)](./AddKeysToWatchListDialog_dark.png#gh-dark-mode-only)
+![Add Keys To Watch List Dialog screenshot (Light)](./AddKeysToWatchListDialog_light.png#gh-light-mode-only)
+
 ### Enqueue Message Backoff Schedule Option
 
 ![Enqueue Message Backoff Schedule Option screenshot (Dark)](./EnqueueMessageBackoffScheduleOption_dark.png#gh-dark-mode-only)
