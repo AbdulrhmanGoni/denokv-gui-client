@@ -15,7 +15,7 @@ export default /**
     lib: {
       entry: ["src/exposed.ts", "virtual:browser.js"],
     },
-    rollupOptions: {
+    rolldownOptions: {
       output: [
         {
           // ESM preload scripts must have the .mjs extension
@@ -23,6 +23,7 @@ export default /**
           entryFileNames: "[name].mjs",
         },
       ],
+      external: ["@app/bridge-server", "electron"],
     },
     emptyOutDir: true,
     reportCompressedSize: false,
