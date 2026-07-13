@@ -1,7 +1,6 @@
 import { shell } from "electron";
 import { URL } from "node:url";
-import type { AppModule } from "../AppModule.js";
-import type { ModuleContext } from "../ModuleContext.js";
+import type { AppModule, ModuleContext } from "./types.js";
 
 export class WebContentsUrlPolicy implements AppModule {
   readonly internalOrigin: string;

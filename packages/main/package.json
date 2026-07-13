@@ -10,9 +10,9 @@
       "types": "./src/index.ts",
       "default": "./dist/index.js"
     },
-    "./modules/types": {
-      "types": "./src/modules/types.ts",
-      "default": "./src/modules/types.ts"
+    "./modules/interfaces": {
+      "types": "./src/modules/interfaces.ts",
+      "default": "./src/modules/interfaces.ts"
     }
   },
   "dependencies": {

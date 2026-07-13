@@ -1,6 +1,5 @@
 import { ipcMain } from "electron";
-import type { AppModule } from "../AppModule.js";
-import type { ModuleContext } from "../ModuleContext.js";
+import type { AppModule, ModuleContext } from "./types.js";
 import { readdir, writeFile, rm, rename, mkdir } from "node:fs/promises";
 import { existsSync, statSync } from "node:fs";
 import { exec } from "node:child_process";

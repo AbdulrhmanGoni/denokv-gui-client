@@ -1,7 +1,5 @@
-import type { AppModule } from "../AppModule.js";
-import type { ModuleContext } from "../ModuleContext.js";
 import { BrowserWindow, screen } from "electron";
-import type { AppInitConfig } from "../AppInitConfig.js";
+import type { AppInitConfig, AppModule, ModuleContext } from "./types.js";
 
 export class WindowManager implements AppModule {
   readonly #preload: { path: string };

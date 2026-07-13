@@ -81,7 +81,11 @@ export function preloadContextExposureToRendererTests() {
     const utils = (bridgeServer as any).utils;
     expect(typeof utils).toEqual("object");
     const utilsMethods = Object.keys(utils);
-    const targetUtilsMethods = ["serializeKvKey", "serializeKvValue", "deserializeKvValue"];
+    const targetUtilsMethods = [
+      "serializeKvKey",
+      "serializeKvValue",
+      "deserializeKvValue",
+    ];
     expect(utilsMethods.length).toBe(targetUtilsMethods.length);
     targetUtilsMethods.forEach((method) => expect(utilsMethods).toContain(method));
   });

@@ -1,7 +1,5 @@
-import type { AppInitConfig } from "./AppInitConfig.js";
-import type { AppModule } from "./AppModule.js";
-import type { ModuleContext } from "./ModuleContext.js";
 import { app } from "electron";
+import type { AppInitConfig, AppModule, ModuleContext } from "./modules/types.js";
 import { WindowManager } from "./modules/WindowManager.js";
 import { HardwareAccelerationModule } from "./modules/HardwareAccelerationModule.js";
 import { WebContentsUrlPolicy } from "./modules/WebContentsUrlPolicy.js";

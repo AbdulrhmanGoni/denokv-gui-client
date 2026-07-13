@@ -1,6 +1,5 @@
 import { ipcMain } from "electron";
-import type { ModuleContext } from "../ModuleContext.js";
-import type { AppModule } from "../AppModule.js";
+import type { AppModule, ModuleContext } from "./types.js";
 import { bridgeServerController } from "./bridgeServer.js";
 import type { BridgeServerClient } from "@app/bridge-server";
 

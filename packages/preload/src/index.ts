@@ -19,7 +19,7 @@ import type {
   MetadataInterface,
   SettingsServiceInterface,
   WatchedKeysServiceInterface,
-} from "@app/main/modules/types";
+} from "@app/main/modules/interfaces";
 
 type MetadataType = Awaited<ReturnType<MetadataInterface["getMetadata"]>>;
 const metadata = (await ipcRenderer.invoke("get-metadata")) as MetadataType;

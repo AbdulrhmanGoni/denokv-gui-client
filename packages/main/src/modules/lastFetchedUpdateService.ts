@@ -1,6 +1,5 @@
 import { ipcMain } from "electron";
-import type { AppModule } from "../AppModule.js";
-import type { ModuleContext } from "../ModuleContext.js";
+import type { AppModule, ModuleContext } from "./types.js";
 import {
   deleteLastFetchedUpdateQuery,
   getLastFetchedUpdateQuery,

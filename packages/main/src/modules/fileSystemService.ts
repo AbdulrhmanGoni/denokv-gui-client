@@ -1,7 +1,6 @@
 import { type BrowserWindow, dialog, ipcMain, shell } from "electron";
 import path from "node:path";
-import type { AppModule } from "../AppModule.js";
-import type { ModuleContext } from "../ModuleContext.js";
+import type { AppModule, ModuleContext } from "./types.js";
 
 export interface FileSystemServiceInterface {
   selectDirectory(): Promise<string>;
