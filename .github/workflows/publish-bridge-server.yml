@@ -38,18 +38,20 @@ jobs:
 
       - name: Install dependencies
         if: ${{ env.isNewVersion == 'true' }}
-        run: npm ci --workspace=@app/bridge-server
+        run: |
+          npm install -g pnpm@11.15.1
+          pnpm ci --filter=@app/bridge-server
 
       - name: Audit package's dependencies
         if: ${{ env.isNewVersion == 'true' }}
-        run: npm audit --workspace=@app/bridge-server
+        run: pnpm audit --filter=@app/bridge-server
 
       # Runs only if it's a manual dispatch. "ci-cd" workflow runs bridge server tests before calling this workflow
       - name: Run tests
         if: ${{ env.isNewVersion == 'true' && github.event_name == 'workflow_dispatch' }}
-        run: npm run test --workspace=@app/bridge-server
+        run: pnpm run --filter=@app/bridge-server test
 
       - name: Publish to JSR
         if: ${{ env.isNewVersion == 'true' }}
         working-directory: packages/bridge-server
-        run: npx jsr publish --allow-dirty
+        run: pnpm dlx jsr publish --allow-dirty

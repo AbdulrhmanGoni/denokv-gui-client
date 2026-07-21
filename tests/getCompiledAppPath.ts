@@ -27,7 +27,7 @@ export default function getCompiledAppPath(): string {
 
   if (!existsSync(executablePath)) {
     throw new Error(
-      "App Executable path not found. Please compile the app first using: npm run compile",
+      "App Executable path not found. Please compile the app first using: pnpm run compile",
     );
   }
 
