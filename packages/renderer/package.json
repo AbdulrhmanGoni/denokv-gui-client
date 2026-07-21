@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@app/preload": "workspace:*",
+    "@app/bridge-server": "workspace:*",
     "codejar": "4.3.0",
     "highlight.js": "11.11.1",
     "js-beautify": "^1.15.4",
