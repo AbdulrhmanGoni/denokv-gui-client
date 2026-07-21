@@ -1,15 +1,15 @@
 import { execSync } from "node:child_process";
 
 function getElectronEnv() {
-  return JSON.parse(
-    execSync(`npx electron -p "JSON.stringify(process.versions)"`, {
-      encoding: "utf-8",
-      env: {
-        ...process.env,
-        ELECTRON_RUN_AS_NODE: 1,
-      },
-    }),
-  );
+  let output = execSync(`npx electron -p "JSON.stringify(process.versions)"`, {
+    encoding: "utf-8",
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: 1,
+    },
+  });
+
+  return JSON.parse(output.slice(output.indexOf("{")));
 }
 
 function createElectronEnvLoader() {
