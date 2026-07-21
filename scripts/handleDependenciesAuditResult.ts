@@ -5,10 +5,9 @@ async function main() {
 
   const auditData = JSON.parse(auditDataText);
 
-  const { info, low, moderate, high, critical } =
-    auditData.metadata.vulnerabilities;
+  const { info, low, moderate, high, critical } = auditData.metadata.vulnerabilities;
 
-  const total = info + low + moderate + high + critical
+  const total = info + low + moderate + high + critical;
   if (total == 0 || total == info) {
     console.log("No vulnerabilities found");
     return;
