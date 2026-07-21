@@ -17,5 +17,11 @@
   "env": {
     "builtin": true
   },
-  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/landing/**", "**/shadcn/**"]
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/landing/**",
+    "**/shadcn/**",
+    "pnpm-lock.yaml"
+  ]
 }

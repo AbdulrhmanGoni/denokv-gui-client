@@ -30,7 +30,7 @@ on:
       - "packages/**/*.svelte"
       - "packages/**/*.html"
       - "packages/**/package.json"
-      - "package-lock.json"
+      - "pnpm-lock.yaml"
       - "package.json"
       - "electron-builder.mjs"
       - "tests/**"
@@ -46,10 +46,11 @@ on:
       - "packages/**/*.svelte"
       - "packages/**/*.html"
       - "packages/**/package.json"
-      - "package-lock.json"
+      - "pnpm-lock.yaml"
       - "package.json"
       - "electron-builder.mjs"
       - "tests/**"
+      - "scripts/handleDependenciesAuditResult.ts"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
