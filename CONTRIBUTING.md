@@ -10,17 +10,12 @@ This document provides an overview of the project structure, development technol
 
 The project is structured as a monorepo containing 5 packages that compose the app, alongside a separate codebase for the landing page.
 
-This project uses `npm` as its package manager.
-
-> [!IMPORTANT]
-> We strongly recommend using `npm@11.10.0` or later, as these versions support the `min-release-age` configuration,
-> which helps mitigate supply chain attacks by delaying the installation of newly published packages.
-> `npm@10.x` also works, but it does not include this security feature.
+This project uses `pnpm` as its package manager. We recommend using `pnpm@11.1.0` or later
 
 ```sh
 .
 ├── package.json
-├── package-lock.json
+├── pnpm-lock.yaml
 ├── electron-builder.mjs # electron-builder's configuration
 ├── packages
 │   ├── /bridge-server # HTTP server that provides an API for the front-end to communicate with Deno KV databases
@@ -113,10 +108,10 @@ It is not part of the NPM workspace and is managed separately using `pnpm`.
 The compiled application is tested end-to-end (E2E) by launching and controlling it with [Playwright](https://playwright.dev/) to perform user actions and check that the application behaves as expected.
 See [./tests/e2e.spec.ts](./tests/e2e.spec.ts) for more information on how the E2E testing is written.
 
-To run the tests, make sure you have compiled the app first by running `npm run compile`, and then run:
+To run the tests, make sure you have compiled the app first by running `pnpm run compile`, and then run:
 
 ```bash
-  npm run test
+  pnpm run test
 ```
 
 > [!NOTE]
@@ -135,7 +130,7 @@ See the [bridge-server tests directory](./packages/bridge-server/tests) for deta
 To run the bridge-server tests use:
 
 ```bash
-  npm run test --workspace=@app/bridge-server
+  pnpm run --filter=@app/bridge-server test
 ```
 
 This will run all unit and e2e tests of the bridge-server package.

@@ -102,7 +102,7 @@ Download the correct version for your Mac from the [releases][releases-page] pag
 2. Install dependencies
 
 ```bash
-  npm install
+  pnpm install
 ```
 
 ### Development Mode
@@ -110,7 +110,7 @@ Download the correct version for your Mac from the [releases][releases-page] pag
 You first need to run the migration to set up the development database:
 
 ```bash
-  npm run migration up
+  pnpm run migration up
 ```
 
 > [!NOTE]
@@ -120,7 +120,7 @@ You first need to run the migration to set up the development database:
 Then run the app in development mode with:
 
 ```bash
-  npm start
+  pnpm start
 ```
 
 ### Compiling The App
@@ -128,7 +128,7 @@ Then run the app in development mode with:
 To compile or build the app for production use:
 
 ```bash
-  npm run compile
+  pnpm run compile
 ```
 
 > This command will create the build artifacts in `dist` directory,
