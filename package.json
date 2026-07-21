@@ -12,27 +12,24 @@
     "url": "https://github.com/AbdulrhmanGoni"
   },
   "main": "packages/entry-point.mjs",
-  "workspaces": [
-    "packages/*"
-  ],
   "engines": {
     "node": ">=24.15.0",
-    "npm": ">=11.10.0"
+    "pnpm": ">=11.1.0"
   },
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "compile": "npm run build && electron-builder build --config electron-builder.mjs",
-    "test": "npx playwright test -x ./tests/e2e.spec.ts",
+    "build": "pnpm run --filter=* build",
+    "compile": "pnpm run build && electron-builder build --config electron-builder.mjs",
+    "test": "playwright test -x ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "typecheck": "pnpm run --filter=* typecheck",
     "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations -s packages/main/src/db/schema.sql",
     "format:fix": "oxfmt --write",
     "format:check": "oxfmt --check",
     "lint:check": "oxlint",
     "lint:fix": "oxlint --fix",
-    "checks": "npm run build && npm run typecheck && npm run lint:check && npm run format:check",
+    "checks": "pnpm run build && pnpm run typecheck && pnpm run lint:check && pnpm run format:check",
     "screenshots": "node scripts/takeScreenshots.ts"
   },
   "devDependencies": {
@@ -48,7 +45,7 @@
     "sharp": "0.35.1"
   },
   "dependencies": {
-    "@app/main": "*",
+    "@app/main": "workspace:*",
     "dbmate": "2.33.0"
   },
   "overrides": {

@@ -16,15 +16,15 @@
     }
   },
   "dependencies": {
-    "@app/bridge-server": "*",
-    "@app/preload": "*",
-    "@app/renderer": "*",
+    "@app/bridge-server": "workspace:*",
+    "@app/preload": "workspace:*",
+    "@app/renderer": "workspace:*",
     "@deno/kv": "0.14.0",
     "@std/async": "npm:@jsr/std__async@^1.0.13",
     "electron-updater": "6.8.9"
   },
   "devDependencies": {
-    "@app/electron-versions": "*",
+    "@app/electron-versions": "workspace:*",
     "typescript": "6.0.3",
     "vite": "8.0.16"
   }
