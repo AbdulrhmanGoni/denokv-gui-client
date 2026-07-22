@@ -19,6 +19,7 @@
   "scripts": {
     "build": "pnpm run --filter=* build",
     "compile": "pnpm run build && electron-builder build --config electron-builder.mjs",
+    "compile:ci": "electron-builder build --config electron-builder.mjs --publish never",
     "test": "playwright test -x ./tests/e2e.spec.ts",
     "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",

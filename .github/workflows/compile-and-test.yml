@@ -70,7 +70,7 @@ jobs:
         run: pnpm run --filter=@app/bridge-server test
 
       - name: Build the app
-        run: pnpm dlx electron-builder build --config electron-builder.mjs --publish never
+        run: pnpm run compile:ci
 
       - name: Run UI e2e tests
         id: tests
