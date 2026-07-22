@@ -41,15 +41,21 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+      - name: Checkout the repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271
+        with:
+          version: "11.15.1"
+      - name: Setup a Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: "24.15.0"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: |
-          npm install -g pnpm@11.15.1
-          pnpm ci
+        run: pnpm ci
 
       - name: Audit dependencies
         if: inputs.skip-audit != true
