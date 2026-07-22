@@ -38,7 +38,7 @@
     "@types/node": "24.0.3",
     "commit-and-tag-version": "12.7.3",
     "electron": "42.4.1",
-    "electron-builder": "26.15.3",
+    "electron-builder": "26.15.7",
     "oxfmt": "0.57.0",
     "oxlint": "^1.71.0",
     "playwright": "^1.55.0",
