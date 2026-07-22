@@ -4,7 +4,7 @@
   "ignorePatterns": [
     "node_modules",
     "dist",
-    "package-lock.json",
+    "pnpm-lock.yaml",
     "landing",
     "packages/renderer/src/lib/ui/shadcn",
     "database.*.sqlite",

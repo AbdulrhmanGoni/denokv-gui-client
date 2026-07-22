@@ -5,8 +5,9 @@ async function main() {
 
   const auditData = JSON.parse(auditDataText);
 
-  const { info, low, moderate, high, critical, total } =
-    auditData.metadata.vulnerabilities;
+  const { info, low, moderate, high, critical } = auditData.metadata.vulnerabilities;
+
+  const total = info + low + moderate + high + critical;
   if (total == 0 || total == info) {
     console.log("No vulnerabilities found");
     return;
@@ -27,7 +28,7 @@ async function main() {
     console.error(
       `::error::Found ${total - info} vulnerabilities (${countSummary.join(", ")})`,
     );
-    console.error(JSON.stringify(auditData.vulnerabilities, null, 2));
+    console.error(JSON.stringify(auditData.advisories, null, 2));
     process.exit(1);
   }
 

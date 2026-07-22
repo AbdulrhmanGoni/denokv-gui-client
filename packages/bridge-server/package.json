@@ -41,8 +41,8 @@
   },
   "dependencies": {
     "@deno/kv": "0.14.0",
-    "@hono/node-server": "2.0.4",
-    "hono": "4.12.25",
+    "@hono/node-server": "2.0.10",
+    "hono": "4.12.31",
     "serialize-javascript": "7.0.5"
   },
   "publish": {
