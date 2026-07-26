@@ -57,5 +57,4 @@ jobs:
 
       - name: Publish to JSR
         if: ${{ env.isNewVersion == 'true' }}
-        working-directory: packages/bridge-server
-        run: pnpm dlx jsr publish --allow-dirty
+        run: pnpm run --filter=@app/bridge-server publish-to-jsr

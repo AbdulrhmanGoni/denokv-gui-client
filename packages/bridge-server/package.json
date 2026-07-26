@@ -7,6 +7,7 @@
   "scripts": {
     "build": "vite build",
     "test": "vitest run tests/e2e/index.test.ts tests/units/*",
+    "publish-to-jsr": "jsr publish --allow-dirty",
     "typecheck": "tsc --noEmit"
   },
   "exports": {
