@@ -100,7 +100,7 @@ importers:
         specifier: 0.14.0
         version: 0.14.0
       '@std/async':
-        specifier: npm:@jsr/std__async@^1.0.13
+        specifier: npm:@jsr/std__async@1.5.0
         version: '@jsr/std__async@1.5.0'
       electron-updater:
         specifier: 6.8.9
