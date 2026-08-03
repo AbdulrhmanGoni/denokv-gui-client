@@ -2,3 +2,5 @@ packages:
   - "packages/*"
 allowBuilds:
   electron-winstaller: true
+minimumReleaseAgeExclude:
+  - hono@4.12.34

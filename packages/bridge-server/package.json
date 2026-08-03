@@ -32,7 +32,7 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@types/deno": "^2.5.0",
+    "@types/deno": "^2.7.0",
     "@types/serialize-javascript": "^5.0.4",
     "jsr": "0.14.3",
     "typescript": "6.0.3",
@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "@deno/kv": "0.14.0",
-    "@hono/node-server": "2.0.10",
-    "hono": "4.12.31",
+    "@hono/node-server": "2.0.12",
+    "hono": "4.12.34",
     "serialize-javascript": "7.0.5"
   },
   "publish": {
