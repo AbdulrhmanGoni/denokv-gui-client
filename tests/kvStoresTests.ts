@@ -402,6 +402,64 @@ export function kvStoresTests() {
     await expect(bridgeStore).toBeVisible();
     await expect(localStore).toBeVisible();
   });
+
+  test("Filter Kv Stores by name", async ({ page }) => {
+    const filterByNameInput = page.locator('input[placeholder="Filter By Name"]');
+    const remoteStore = page.locator("#kv-stores-grid > div", {
+      hasText: "Remote Test Store",
+    });
+    const bridgeStore = page.locator("#kv-stores-grid > div", {
+      hasText: "Bridge Test Store",
+    });
+    const localStore = page.locator("#kv-stores-grid > div", {
+      hasText: "Trailing Slash Store",
+    });
+
+    // Filter by name "Remote"
+    await filterByNameInput.fill("Remote");
+    await expect(remoteStore).toBeVisible();
+    await expect(bridgeStore).not.toBeVisible();
+    await expect(localStore).not.toBeVisible();
+
+    // Clear filter by name using the X clear icon button
+    const clearNameFilterButton = page.locator("button", {
+      has: page.locator("svg.lucide-x"),
+    });
+    await clearNameFilterButton.click();
+
+    await expect(remoteStore).toBeVisible();
+    await expect(bridgeStore).toBeVisible();
+    await expect(localStore).toBeVisible();
+
+    // Filter by name "Store" (matches all created stores)
+    await filterByNameInput.fill("Store");
+    await expect(remoteStore).toBeVisible();
+    await expect(bridgeStore).toBeVisible();
+    await expect(localStore).toBeVisible();
+
+    // Combine with type filter: Select Remote filter while name filter is "Store"
+    const remoteTypeChip = page.locator("#filter-Remote");
+    await remoteTypeChip.click();
+    await expect(remoteStore).toBeVisible();
+    await expect(bridgeStore).not.toBeVisible();
+    await expect(localStore).not.toBeVisible();
+
+    // Filter by name that matches non-remote store ("Bridge") while Remote type chip is selected -> 0 stores match
+    await filterByNameInput.fill("Bridge");
+    await expect(remoteStore).not.toBeVisible();
+    await expect(bridgeStore).not.toBeVisible();
+    await expect(localStore).not.toBeVisible();
+
+    // Clear filters button should clear both type and name filters
+    const clearFiltersButton = page.locator("button", { hasText: "Clear filters" });
+    await expect(clearFiltersButton).toBeVisible();
+    await clearFiltersButton.click();
+
+    await expect(remoteStore).toBeVisible();
+    await expect(bridgeStore).toBeVisible();
+    await expect(localStore).toBeVisible();
+    await expect(filterByNameInput).toHaveValue("");
+  });
 }
 
 function getTypeSelectButton(page: Page) {
