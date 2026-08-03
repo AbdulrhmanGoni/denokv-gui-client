@@ -8,12 +8,15 @@
   import ServerIcon from "@lucide/svelte/icons/server";
   import HardDriveIcon from "@lucide/svelte/icons/hard-drive";
   import FileIcon from "@lucide/svelte/icons/file";
-  import SearchXIcon from "@lucide/svelte/icons/search-x";
+  import XIcon from "@lucide/svelte/icons/x";
+  import FunnelXIcon from "@lucide/svelte/icons/funnel-x";
+  import FunnelIcon from "@lucide/svelte/icons/funnel";
   import FilterKvStoresChip from "./FilterKvStoresChip.svelte";
   import KvStoreCard from "./KvStoreCard.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import { onMount } from "svelte";
+  import * as InputGroup from "$lib/ui/shadcn/input-group/index";
 
   const filterOptions = [
     {
@@ -82,12 +85,20 @@
     }
   }
 
+  let nameFilter = $state("");
+
   const filteredKvStores = $derived.by(() => {
-    if (kvStoresState.selectedTypes.length === 0) {
-      return kvStoresState.kvStores;
-    }
     return kvStoresState.kvStores.filter((store) => {
-      return kvStoresState.selectedTypes.includes(store.type);
+      const matchesType =
+        kvStoresState.selectedTypes.length === 0 ||
+        kvStoresState.selectedTypes.includes(store.type);
+
+      const trimedNameFilter = nameFilter.trim();
+      const matchesName =
+        !trimedNameFilter ||
+        store.name.toLowerCase().includes(trimedNameFilter.toLowerCase());
+
+      return matchesType && matchesName;
     });
   });
 </script>
@@ -110,15 +121,28 @@
     {/if}
   </div>
   <Separator />
-  <div class="flex flex-wrap gap-2">
-    {#each filterOptions as option}
-      <FilterKvStoresChip
-        {option}
-        count={kvStoresState.kvStoreTypeCounts[option.type]}
-        isSelected={kvStoresState.selectedTypes.includes(option.type)}
-        onclick={() => toggleFilter(option.type)}
-      />
-    {/each}
+  <div class="flex flex-wrap gap-2 justify-between">
+    <div class="flex flex-wrap gap-2">
+      {#each filterOptions as option}
+        <FilterKvStoresChip
+          {option}
+          count={kvStoresState.kvStoreTypeCounts[option.type]}
+          isSelected={kvStoresState.selectedTypes.includes(option.type)}
+          onclick={() => toggleFilter(option.type)}
+        />
+      {/each}
+    </div>
+    <InputGroup.Root class="w-fit">
+      <InputGroup.Input placeholder="Filter By Name" bind:value={nameFilter} />
+      <InputGroup.Addon>
+        <FunnelIcon />
+      </InputGroup.Addon>
+      <InputGroup.Addon align="inline-end">
+        <button class="cursor-pointer" onclick={() => (nameFilter = "")}>
+          <XIcon class="size-4" />
+        </button>
+      </InputGroup.Addon>
+    </InputGroup.Root>
   </div>
   {#if kvStoresState.error}
     <div class="text-center flex-1 flex flex-col justify-center items-center">
@@ -139,12 +163,18 @@
     </div>
   {:else if filteredKvStores.length === 0}
     <div class="text-center flex-1 gap-2 flex flex-col justify-center items-center">
-      <SearchXIcon class="text-muted-foreground size-10" />
+      <FunnelXIcon class="size-10" />
       <p class="text-foreground font-semibold text-xl">No matching Kv Stores</p>
       <p class="text-muted-foreground">
-        No kv stores found matching the selected type filters.
+        No kv stores found matching the selected filters.
       </p>
-      <Button variant="outline" onclick={() => (kvStoresState.selectedTypes = [])}>
+      <Button
+        variant="outline"
+        onclick={() => {
+          kvStoresState.selectedTypes = [];
+          nameFilter = "";
+        }}
+      >
         Clear filters
       </Button>
     </div>
