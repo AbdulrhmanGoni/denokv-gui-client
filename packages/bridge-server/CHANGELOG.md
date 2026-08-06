@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [11.0.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.0...bridge-server@11.0.1) (2026-08-06)
+
+
+### Security
+
+* apply securety patches to "hono" and "@hono/node-server" packages ([44ebe28](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/44ebe28436cc02e6ba5a6ee1b75244a399ae25e8))
+* apply security patches to "hono", and update "@types/deno" ([cd47bff](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/cd47bffc7aa3e7a40a68d2faf608408682374449))
+
+
 ## [11.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@10.0.0...bridge-server@11.0.0) (2026-07-11)
 
 

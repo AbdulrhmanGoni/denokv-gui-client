@@ -1,5 +1,5 @@
 {
-  "releaseCommitMessageFormat": "chore(bridge-server-release): {{currentTag}}",
+  "releaseCommitMessageFormat": "chore(bridge-server-release): v{{currentTag}}",
   "writerOpts": {
     "commitsSort": false
   },
