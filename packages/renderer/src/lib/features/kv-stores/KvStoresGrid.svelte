@@ -86,6 +86,7 @@
   }
 
   let nameFilter = $state("");
+  let trimmedNameFilter = $derived(nameFilter.trim());
 
   const filteredKvStores = $derived.by(() => {
     return kvStoresState.kvStores.filter((store) => {
@@ -93,10 +94,9 @@
         kvStoresState.selectedTypes.length === 0 ||
         kvStoresState.selectedTypes.includes(store.type);
 
-      const trimedNameFilter = nameFilter.trim();
       const matchesName =
-        !trimedNameFilter ||
-        store.name.toLowerCase().includes(trimedNameFilter.toLowerCase());
+        !trimmedNameFilter ||
+        store.name.toLowerCase().includes(trimmedNameFilter.toLowerCase());
 
       return matchesType && matchesName;
     });
@@ -138,8 +138,14 @@
         <FunnelIcon />
       </InputGroup.Addon>
       <InputGroup.Addon align="inline-end">
-        <button class="cursor-pointer" onclick={() => (nameFilter = "")}>
-          <XIcon class="size-4" />
+        <button
+          class={`size-4 ${trimmedNameFilter ? "cursor-pointer" : ""}`}
+          disabled={!trimmedNameFilter}
+          onclick={() => (nameFilter = "")}
+        >
+          {#if trimmedNameFilter}
+            <XIcon class="size-4" />
+          {/if}
         </button>
       </InputGroup.Addon>
     </InputGroup.Root>
