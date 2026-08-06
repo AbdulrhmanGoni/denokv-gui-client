@@ -34,7 +34,7 @@
     "screenshots": "node scripts/takeScreenshots.ts"
   },
   "devDependencies": {
-    "@ossign/ossign": "^1.0.11",
+    "@ossign/ossign": "1.0.11",
     "@playwright/test": "1.61.1",
     "@types/node": "24.0.3",
     "commit-and-tag-version": "12.7.3",
