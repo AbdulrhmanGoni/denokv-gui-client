@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.28.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.27.0...v1.28.0) (2026-08-06)
+
+
+### Features
+
+* add "Filter By Name" to KV stores grid ([791d4a9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/791d4a92d9f437db3cdfeaa3c3e9335243f18c23))
+
+
+### Maintenance
+
+* upgrade `Electron` to v43 which comes with performance improvements and bug fixes ([2dc3c0a](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2dc3c0ac4822698b486a3286134bc6dee2a267c1))
+* apply security patches to a number of vulnerable dependencies ([62740ed](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/62740ed42b62ab0a548acc211b5e4da1c3f2b70a))
+
 ## [1.27.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.26.0...v1.27.0) (2026-07-11)
 
 
