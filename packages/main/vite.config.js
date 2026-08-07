@@ -34,10 +34,14 @@ function copyMigrations() {
   return {
     name: "copy-migrations",
     closeBundle() {
-      const distPath = resolve(__dirname, "dist");
-      cpSync(resolve(__dirname, "src/db/migrations"), `${distPath}/migrations`, {
-        recursive: true,
-      });
+      const distPath = resolve(import.meta.dirname, "dist");
+      cpSync(
+        resolve(import.meta.dirname, "src/db/migrations"),
+        `${distPath}/migrations`,
+        {
+          recursive: true,
+        },
+      );
     },
   };
 }

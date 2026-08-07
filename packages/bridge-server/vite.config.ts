@@ -12,8 +12,8 @@ export default defineConfig({
     target: "node18",
     lib: {
       entry: {
-        index: resolve(__dirname, "src/index.ts"),
-        "kv-utils": resolve(__dirname, "src/kv-utils.ts"),
+        index: resolve(import.meta.dirname, "src/index.ts"),
+        "kv-utils": resolve(import.meta.dirname, "src/kv-utils.ts"),
       },
       formats: ["es"],
       fileName: (_format, entryName) => `${entryName}.mjs`,
@@ -43,7 +43,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": resolve(__dirname, "src"),
+      "@": resolve(import.meta.dirname, "src"),
     },
   },
 });
