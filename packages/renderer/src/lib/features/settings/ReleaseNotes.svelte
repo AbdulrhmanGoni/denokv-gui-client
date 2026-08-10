@@ -86,5 +86,12 @@
     a:hover {
       opacity: 0.8;
     }
+
+    code {
+      background-color: var(--muted);
+      border-radius: calc(var(--radius) - 4px);
+      padding-block: calc(var(--spacing) * 0.5);
+      padding-inline: var(--spacing);
+    }
   }
 </style>
