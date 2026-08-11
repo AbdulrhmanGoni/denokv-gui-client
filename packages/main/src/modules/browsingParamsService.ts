@@ -114,22 +114,24 @@ export class BrowsingParamsServiceModule implements AppModule {
     const updateSavedBrowsingParams: BrowsingParamsServiceInterface["updateSavedBrowsingParams"] =
       async (kvStoreId, browsingParamsId, updateData) => {
         return syncTrycatch<true>(() => {
-          if (updateData.setAsDefault) {
-            unsetDefaultParamsQuery.run(kvStoreId);
-          }
+          return databaseTransaction<true>(() => {
+            if (updateData.setAsDefault) {
+              unsetDefaultParamsQuery.run(kvStoreId);
+            }
 
-          const result = updateQuery.run({
-            id: browsingParamsId,
-            paramsAsJson: updateData.newBrowsingParams
-              ? JSON.stringify(updateData.newBrowsingParams)
-              : null,
-            isDefault:
-              "setAsDefault" in updateData ? Number(updateData.setAsDefault) : null,
+            const result = updateQuery.run({
+              id: browsingParamsId,
+              paramsAsJson: updateData.newBrowsingParams
+                ? JSON.stringify(updateData.newBrowsingParams)
+                : null,
+              isDefault:
+                "setAsDefault" in updateData ? Number(updateData.setAsDefault) : null,
+            });
+
+            if (result.changes) return true;
+
+            throw "Failed to update the saved browsing params";
           });
-
-          if (result.changes) return true;
-
-          throw "Failed to update the saved browsing params";
         });
       };
     ipcMain.handle(

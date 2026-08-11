@@ -15,6 +15,7 @@ import { openKv } from "@deno/kv";
 import { deadline } from "@std/async";
 import { clearSavedParamsQuery } from "../db/queries/browsingParamsQueries.js";
 import { deleteWatchedKeysQuery } from "../db/queries/watchedKvEntriesQueries.js";
+import { databaseTransaction } from "../db/db.js";
 
 export interface KvStoresServiceInterface {
   create(input: CreateKvStoreInput): Promise<boolean>;
@@ -106,21 +107,25 @@ export class KvStoresServiceModule implements AppModule {
         if (kvStore.type == "default") {
           const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined;
           if (!storedKvStore) {
-            clearSavedParamsQuery.run(kvStore.id);
-            deleteWatchedKeysQuery.run(kvStore.id);
+            databaseTransaction(() => {
+              clearSavedParamsQuery.run(kvStore.id);
+              deleteWatchedKeysQuery.run(kvStore.id);
+            });
             return true;
           }
         }
       }
 
-      const result = deleteOneQuery.run(kvStore.id);
+      return databaseTransaction(() => {
+        const result = deleteOneQuery.run(kvStore.id);
 
-      if (result.changes) {
-        clearSavedParamsQuery.run(kvStore.id);
-        deleteWatchedKeysQuery.run(kvStore.id);
-      }
+        if (result.changes) {
+          clearSavedParamsQuery.run(kvStore.id);
+          deleteWatchedKeysQuery.run(kvStore.id);
+        }
 
-      return !!result.changes;
+        return !!result.changes;
+      });
     };
     ipcMain.handle(
       "kvStoresService:deleteOne",

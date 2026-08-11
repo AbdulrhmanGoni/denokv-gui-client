@@ -9,6 +9,7 @@ import {
 } from "../db/queries/lastFetchedUpdateQueries.js";
 import { isGreaterVersion } from "../helpers.js";
 import { appVersion } from "./metadataModule.js";
+import { databaseTransaction } from "../db/db.js";
 
 export interface LastFetchedUpdateServiceInterface {
   getLastFetchedUpdate(): Promise<LastFetchedUpdate | null>;
@@ -67,13 +68,19 @@ function getLastFetchedUpdate(): Awaited<
 export function setLastFetchedUpdate(
   updateInfo: Parameters<LastFetchedUpdateServiceInterface["setLastFetchedUpdate"]>[0],
 ): Awaited<ReturnType<LastFetchedUpdateServiceInterface["setLastFetchedUpdate"]>> {
-  const existingUpdate = getLastFetchedUpdate();
-  if (existingUpdate?.data.updateInfo.version === updateInfo.updateInfo.version)
-    return true;
-  const result = (
-    existingUpdate ? updateLastFetchedUpdateQuery : insertLastFetchedUpdateQuery
-  ).run(JSON.stringify(updateInfo));
-  return !!result.changes;
+  return databaseTransaction(() => {
+    const existingUpdate = getLastFetchedUpdate();
+    if (existingUpdate?.data.updateInfo.version === updateInfo.updateInfo.version) {
+      return true;
+    }
+
+    const query = existingUpdate
+      ? updateLastFetchedUpdateQuery
+      : insertLastFetchedUpdateQuery;
+
+    const result = query.run(JSON.stringify(updateInfo));
+    return !!result.changes;
+  });
 }
 
 function deleteLastFetchedUpdate(): Awaited<

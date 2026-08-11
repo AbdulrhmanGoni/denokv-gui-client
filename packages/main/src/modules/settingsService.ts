@@ -5,6 +5,7 @@ import {
   insertSettingQuery,
   updateSettingQuery,
 } from "../db/queries/settingsQueries.js";
+import { databaseTransaction } from "../db/db.js";
 
 export interface SettingsServiceInterface {
   getSettings(): Promise<Settings | undefined>;
@@ -18,16 +19,18 @@ export class SettingsServiceModule implements AppModule {
     const updateSettings: SettingsServiceInterface["updateSettings"] = async (
       updatedSettings,
     ) => {
-      const settings = getSettings();
-      if (settings) {
-        const result = updateSettingQuery.run(
-          JSON.stringify({ ...settings, ...updatedSettings }),
-        );
-        return !!result.changes;
-      }
+      return databaseTransaction(() => {
+        const settings = getSettings();
+        if (settings) {
+          const result = updateSettingQuery.run(
+            JSON.stringify({ ...settings, ...updatedSettings }),
+          );
+          return !!result.changes;
+        }
 
-      const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
-      return !!result.changes;
+        const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
+        return !!result.changes;
+      });
     };
     ipcMain.handle(
       "settingsService:updateSettings",

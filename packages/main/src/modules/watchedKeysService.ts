@@ -5,6 +5,7 @@ import {
   insertWatchedKeysQuery,
   updateWatchedKeysQuery,
 } from "../db/queries/watchedKvEntriesQueries.js";
+import { databaseTransaction } from "../db/db.js";
 
 export interface WatchedKeysServiceInterface {
   getWatchedKeys(kvStoreId: string): Promise<SerializedKvKey[] | null>;
@@ -33,20 +34,22 @@ export class WatchedKeysServiceModule implements AppModule {
       kvStoreId,
       keys,
     ) => {
-      if (getWatchedKeysQuery.get(kvStoreId)) {
-        const result = updateWatchedKeysQuery.run({
+      return databaseTransaction(() => {
+        if (getWatchedKeysQuery.get(kvStoreId)) {
+          const result = updateWatchedKeysQuery.run({
+            kvStoreId,
+            keys: JSON.stringify(keys),
+          });
+          return !!result.changes;
+        }
+
+        const result = insertWatchedKeysQuery.run({
+          id: crypto.randomUUID(),
           kvStoreId,
           keys: JSON.stringify(keys),
         });
         return !!result.changes;
-      }
-
-      const result = insertWatchedKeysQuery.run({
-        id: crypto.randomUUID(),
-        kvStoreId,
-        keys: JSON.stringify(keys),
       });
-      return !!result.changes;
     };
     ipcMain.handle(
       "watchedKeysService:setWatchedKeys",
