@@ -77,7 +77,6 @@ export default /** @type import('electron-builder').Configuration */
     output: "dist",
     buildResources: "buildResources",
   },
-  asarUnpack: ["node_modules/@app/main/dist/migrations/**"],
   artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
   files: ["LICENSE*", pkg.main, ...getAppPackagesFiles()],
 });
