@@ -76,6 +76,9 @@ jobs:
       - name: Run bridge server tests
         run: pnpm run --filter=@app/bridge-server test
 
+      - name: Run database schema migration tests
+        run: pnpm run --filter=@app/db-migration test
+
       - name: Build the app
         run: pnpm run compile:ci
 
