@@ -1,0 +1,23 @@
+{
+  "name": "@app/db-migration",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "default": "./index.ts"
+    }
+  },
+  "bin": {
+    "db-migration": "cli.ts"
+  },
+  "scripts": {
+    "test": "vitest run ./tests"
+  },
+  "type": "module",
+  "devDependencies": {
+    "vitest": "4.1.7"
+  }
+}
