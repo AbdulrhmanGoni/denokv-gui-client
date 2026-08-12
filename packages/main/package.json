@@ -18,6 +18,7 @@
   "dependencies": {
     "@app/bridge-server": "workspace:*",
     "@app/preload": "workspace:*",
+    "@app/db-migration": "workspace:*",
     "@app/renderer": "workspace:*",
     "@deno/kv": "0.14.0",
     "@std/async": "npm:@jsr/std__async@1.5.0",

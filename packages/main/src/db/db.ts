@@ -1,21 +1,15 @@
 import { DatabaseSync } from "node:sqlite";
 import { getDatabasePath } from "./dbPath.js";
-import { migrateDatabaseSchema } from "./migrate.js";
+import { migrateUp } from "@app/db-migration";
+import path from "path";
 
-const isDev = process.env.NODE_ENV == "development";
-const isTest = process.env.PLAYWRIGHT_TEST == "true";
+const dbPath = getDatabasePath();
 
-const dbPath = isDev
-  ? "./database.dev.sqlite"
-  : isTest
-    ? "./tests/database.test.sqlite"
-    : getDatabasePath();
+if (process.env.NODE_ENV !== "development") {
+  await migrateUp(dbPath, path.join(import.meta.dirname, "migrations"));
+}
 
 export const database = new DatabaseSync(dbPath);
-
-if (!isDev) {
-  migrateDatabaseSchema(dbPath);
-}
 
 export function databaseTransaction<T>(fn: () => T) {
   database.exec("BEGIN");
@@ -23,8 +17,8 @@ export function databaseTransaction<T>(fn: () => T) {
     const result = fn();
     database.exec("COMMIT");
     return result;
-  } catch {
+  } catch (error) {
     database.exec("ROLLBACK");
-    throw new Error("Transaction failed");
+    throw error;
   }
 }

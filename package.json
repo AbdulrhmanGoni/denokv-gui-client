@@ -25,7 +25,7 @@
     "release": "commit-and-tag-version",
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
     "typecheck": "pnpm run --filter=* typecheck",
-    "migration": "dbmate -u sqlite:database.dev.sqlite -d packages/main/src/db/migrations -s packages/main/src/db/schema.sql",
+    "migration": "db-migration",
     "format:fix": "oxfmt --write",
     "format:check": "oxfmt --check",
     "lint:check": "oxlint",
@@ -47,8 +47,8 @@
     "vite": "8.2.1"
   },
   "dependencies": {
+    "@app/db-migration": "workspace:*",
     "@app/main": "workspace:*",
-    "@app/preload": "workspace:*",
-    "dbmate": "2.33.0"
+    "@app/preload": "workspace:*"
   }
 }
