@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import { createNewMigration, migrateDown, migrateUp } from "./index.ts";
+import { createNewMigration, dumpSchema, migrateDown, migrateUp } from "./index.ts";
 
 const dbPath = "./database.dev.sqlite";
 const migrationsDir = "./packages/main/src/db/migrations";
+const schemaFilePath = "./packages/main/src/db/schema.sql";
 
 const command = process.argv[2];
 if (!command) {
@@ -28,6 +29,11 @@ switch (command) {
     }
 
     createNewMigration(newMigrationFileName, migrationsDir);
+    break;
+  }
+
+  case "dump": {
+    dumpSchema(dbPath, schemaFilePath);
     break;
   }
 

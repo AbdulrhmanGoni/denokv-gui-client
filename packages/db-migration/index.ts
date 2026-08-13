@@ -106,3 +106,33 @@ export function createNewMigration(name: string, migrationsDir: string) {
   writeFileSync(filePath, content);
   console.log(`Created new migration file: ${filePath}`);
 }
+
+export async function dumpSchema(dbPath: string, schemaFilePath: string) {
+  const db = new DatabaseSync(dbPath);
+
+  const selectSchemaQuery = db.prepare(
+    `SELECT sql FROM sqlite_schema WHERE type = 'table' AND sql IS NOT NULL AND name NOT LIKE 'sqlite_%'`,
+  );
+  const separator = "\n\n";
+  const allTableSchemas = selectSchemaQuery
+    .all()
+    .map((schema) => schema.sql + ";")
+    .join(separator);
+
+  const recordedMigrations = db.prepare(`SELECT version FROM schema_migrations`).all();
+  const recordedVersions = recordedMigrations
+    .map((migration) => `    ('${migration.version}')`)
+    .join(",\n");
+
+  const insertRecordedMigrationsQuery = recordedMigrations.length
+    ? `INSERT INTO "schema_migrations" (version) VALUES\n${recordedVersions};`
+    : "";
+
+  writeFileSync(
+    schemaFilePath,
+    allTableSchemas + separator + insertRecordedMigrationsQuery,
+  );
+
+  console.log("Schema dumped successfully to", schemaFilePath);
+  db.close();
+}
