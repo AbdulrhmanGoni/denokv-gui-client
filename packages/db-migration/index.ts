@@ -6,7 +6,7 @@ import {
   getPendingMigrations,
   getSingleMigrationFile,
   parseMigrationFileContent,
-} from "./helpers.js";
+} from "./helpers.ts";
 
 function initDatabase(dbPath: string) {
   const database = new DatabaseSync(dbPath);

@@ -9,6 +9,8 @@
     "strict": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "types": ["node"],
     "paths": {
       "@app/preload": ["../preload"],
