@@ -2,60 +2,53 @@
   import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import NotesIcon from "@lucide/svelte/icons/notepad-text";
-  import { buttonVariants } from "$lib/ui/shadcn/button";
   import { updateAppState } from "$lib/states/appUpdate.svelte";
+  import { metadata } from "@app/preload";
 
-  const { newUpdate }: { newUpdate: UpdateCheckResult } = $props();
+  let openReleaseNotesDialog = $derived(
+    !!updateAppState.releaseNotes && updateAppState.releaseNotes.length > 0,
+  );
 </script>
 
-{#if newUpdate.updateInfo.releaseNotes}
-  <Dialog.Root bind:open={updateAppState.openReleaseNotes}>
-    <Dialog.Trigger class={buttonVariants({ size: "sm", variant: "outline" })}>
-      See Release Notes
-      <NotesIcon class="size-4" />
-    </Dialog.Trigger>
-    <Dialog.Content class="max-w-3xl! w-full py-1.5 px-3 gap-0">
-      <h1 class="flex items-center gap-2 text-2xl font-bold">
-        <NotesIcon class="size-6" />
-        Release Notes
-      </h1>
-      <p class="text-muted-foreground">
-        See that changes you are going to get with this update
-      </p>
-      <Separator class="my-2" />
-      <div id="release-notes" class="max-h-[500px] overflow-auto">
-        {#if typeof newUpdate.updateInfo.releaseNotes == "string"}
-          {@render ReleaseNotes(
-            newUpdate.updateInfo.version,
-            newUpdate.updateInfo.releaseNotes,
-            true,
-          )}
-        {:else}
+<Dialog.Root
+  open={openReleaseNotesDialog}
+  onOpenChange={(open) => {
+    if (!open) {
+      updateAppState.releaseNotes = null;
+    }
+  }}
+>
+  <Dialog.Content class="max-w-3xl! w-full py-1.5 px-3 gap-0">
+    <h1 class="flex items-center gap-2 text-2xl font-bold">
+      <NotesIcon class="size-6" />
+      Release Notes
+    </h1>
+    <p class="text-muted-foreground">See the changes you will get with this update</p>
+    <Separator class="my-2" />
+    <div id="release-notes" class="max-h-125 overflow-auto">
+      <div>
+        {#each updateAppState.releaseNotes as release, i}
           <div>
-            {#each newUpdate.updateInfo.releaseNotes as release, i}
-              <div>
-                {@render ReleaseNotes(
-                  release.version,
-                  release.note,
-                  newUpdate.updateInfo.version == release.version,
-                )}
-              </div>
-              {#if i < newUpdate.updateInfo.releaseNotes.length - 1}
-                <Separator class="my-3" />
-              {/if}
-            {/each}
+            {@render ReleaseNotes(
+              release.version,
+              release.note,
+              release.version == metadata.appVersion ? "current" : i == 0 ? "latest" : "",
+            )}
           </div>
-        {/if}
+          {#if i < updateAppState.releaseNotes!.length - 1}
+            <Separator class="my-3" />
+          {/if}
+        {/each}
       </div>
-    </Dialog.Content>
-  </Dialog.Root>
-{/if}
+    </div>
+  </Dialog.Content>
+</Dialog.Root>
 
-{#snippet ReleaseNotes(version: string, notes: string | null, isLatest: boolean)}
+{#snippet ReleaseNotes(version: string, notes: string | null, badge: string)}
   <h2 class="flex gap-1.5 items-center text-2xl mb-2 font-extrabold">
     v{version}
-    {#if isLatest}
-      <span class="text-base text-blue-600 dark:text-blue-500 font-bold"> (latest) </span>
+    {#if badge}
+      <span class="text-base text-blue-600 dark:text-blue-500 font-bold">({badge})</span>
     {/if}
   </h2>
   {@html notes?.replaceAll("<a href=", '<a target="_blank" href=')}

@@ -1,4 +1,4 @@
-import { appUpdater, lastFetchedUpdateService } from "@app/preload";
+import { appUpdater, lastFetchedUpdateService, metadata } from "@app/preload";
 import { toast } from "svelte-sonner";
 import newUpdateNotificationActions from "$lib/features/settings/newUpdateNotificationActions.svelte";
 
@@ -11,7 +11,7 @@ type UpdateAppState = {
   downloadingUpdates: boolean;
   downloadingUpdatesError: string;
   downloadingUpdatesDone: boolean;
-  openReleaseNotes: boolean;
+  releaseNotes: Exclude<UpdateCheckResult["updateInfo"]["releaseNotes"], string>;
 };
 
 export const updateAppState: UpdateAppState = $state({
@@ -24,7 +24,7 @@ export const updateAppState: UpdateAppState = $state({
   downloadingUpdates: false,
   downloadingUpdatesError: "",
   downloadingUpdatesDone: false,
-  openReleaseNotes: false,
+  releaseNotes: null,
 });
 
 function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
@@ -128,4 +128,34 @@ export async function cancelDownloadingUpdate() {
 
 export function quitAndInstallTheUpdate() {
   appUpdater.quitAndInstallUpdate();
+}
+
+export function openNewUpdateReleaseNotes() {
+  if (updateAppState.newUpdate) {
+    if (typeof updateAppState.newUpdate.updateInfo.releaseNotes === "string") {
+      updateAppState.releaseNotes = [
+        {
+          version: updateAppState.newUpdate.updateInfo.version,
+          note: updateAppState.newUpdate.updateInfo.releaseNotes,
+        },
+      ];
+    } else {
+      updateAppState.releaseNotes = updateAppState.newUpdate.updateInfo.releaseNotes;
+    }
+  }
+}
+
+export async function openCurrentVersionReleaseNotes() {
+  const releaseNotes = await metadata.getCurrentVersionReleaseNotes();
+  if (!releaseNotes) {
+    toast.error("Couldn't get the release notes of the current version");
+    return;
+  }
+
+  updateAppState.releaseNotes = [
+    {
+      version: metadata.appVersion,
+      note: releaseNotes,
+    },
+  ];
 }

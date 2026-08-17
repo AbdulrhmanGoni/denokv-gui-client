@@ -21,8 +21,15 @@ import type {
   WatchedKeysServiceInterface,
 } from "@app/main/modules/interfaces";
 
-type MetadataType = Awaited<ReturnType<MetadataInterface["getMetadata"]>>;
-const metadata = (await ipcRenderer.invoke("get-metadata")) as MetadataType;
+type MetadataType = Awaited<ReturnType<MetadataInterface["getMetadata"]>> &
+  Pick<MetadataInterface, "getCurrentVersionReleaseNotes">;
+
+const metadata: MetadataType = {
+  ...(await ipcRenderer.invoke("get-metadata")),
+  getCurrentVersionReleaseNotes() {
+    return ipcRenderer.invoke("get-current-version-release-notes");
+  },
+};
 
 type FileSystemServiceType = FileSystemServiceInterface & {
   pathUtils: {
