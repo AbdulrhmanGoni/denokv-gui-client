@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "@app/bridge-server": "workspace:*",
-    "@app/preload": "workspace:*",
     "@app/db-migration": "workspace:*",
+    "@app/preload": "workspace:*",
     "@app/renderer": "workspace:*",
     "@deno/kv": "0.14.0",
     "@std/async": "npm:@jsr/std__async@1.5.0",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@app/electron-versions": "workspace:*",
+    "marked": "18.0.9",
     "typescript": "6.0.3",
     "vite": "8.2.1"
   }
