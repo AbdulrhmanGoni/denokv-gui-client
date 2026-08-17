@@ -54,7 +54,7 @@ jobs:
           merge-multiple: true
 
       - name: Extract the changelogs of the new release
-        run: node ./scripts/extractLastReleaseChangelog.js > RELEASE_NOTES.md
+        run: node ./scripts/echoLatestReleaseNotes.ts > RELEASE_NOTES.md
 
       - name: Draft a new release
         if: ${{ steps.check.outputs.isAlreadyDrafted == 'false' }}
