@@ -19,6 +19,7 @@ export class AppUpdaterModule implements AppModule {
     const { autoUpdater } = electronUpdater;
     autoUpdater.autoDownload = false;
     autoUpdater.fullChangelog = true;
+    autoUpdater.forceDevUpdateConfig = metadata.environment === "development";
     autoUpdater.on("download-progress", (progressInfo) => {
       context.browserWindow?.webContents.send(
         "downloading-update-progress",
