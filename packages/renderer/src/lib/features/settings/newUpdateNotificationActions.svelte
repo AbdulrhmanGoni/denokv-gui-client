@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { updateAppState } from "$lib/states/appUpdate.svelte";
+  import {
+    openNewUpdateReleaseNotes,
+    updateAppState,
+  } from "$lib/states/appUpdate.svelte";
   import { openSettingsPage } from "$lib/states/settingsState.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import NotesIcon from "@lucide/svelte/icons/notepad-text";
@@ -17,7 +20,7 @@
     class={buttonClasses}
     onclick={() => {
       openSettingsPage();
-      updateAppState.openReleaseNotes = true;
+      openNewUpdateReleaseNotes();
       dismiss();
     }}
   >

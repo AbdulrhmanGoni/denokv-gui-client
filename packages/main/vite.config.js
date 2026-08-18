@@ -2,7 +2,9 @@ import { getNodeMajorVersion } from "@app/electron-versions";
 import { spawn } from "child_process";
 import electronPath from "electron";
 import { resolve } from "node:path";
-import { cpSync } from "node:fs";
+import { cpSync, writeFileSync } from "node:fs";
+import { extractLastReleaseChangelog } from "../../scripts/extractLastReleaseChangelog.ts";
+import { marked } from "marked";
 
 export default /**
  * @type {import('vite').UserConfig}
@@ -27,8 +29,25 @@ export default /**
     emptyOutDir: true,
     reportCompressedSize: false,
   },
-  plugins: [handleHotReload(), copyMigrations()],
+  plugins: [handleHotReload(), copyMigrations(), bundleReleaseNotes()],
 });
+
+function bundleReleaseNotes() {
+  return {
+    name: "bundle-release-notes",
+    async closeBundle() {
+      const changelog = await extractLastReleaseChangelog(
+        resolve(import.meta.dirname, "../../CHANGELOG.md"),
+      );
+      const changelogHtml = await marked.parse(changelog);
+
+      writeFileSync(
+        `${resolve(import.meta.dirname, "dist")}/RELEASE_NOTES.html`,
+        changelogHtml,
+      );
+    },
+  };
+}
 
 function copyMigrations() {
   return {

@@ -5,6 +5,8 @@
     startDownloadingUpdate,
     cancelDownloadingUpdate,
     quitAndInstallTheUpdate,
+    openNewUpdateReleaseNotes,
+    openCurrentVersionReleaseNotes,
   } from "$lib/states/appUpdate.svelte";
   import { setAutoCheckForUpdate, settingsState } from "$lib/states/settingsState.svelte";
   import { metadata } from "@app/preload";
@@ -17,6 +19,7 @@
   import XIcon from "@lucide/svelte/icons/x";
   import CheckFileIcon from "@lucide/svelte/icons/file-check";
   import MonitorDownIcon from "@lucide/svelte/icons/monitor-down";
+  import NotesIcon from "@lucide/svelte/icons/notepad-text";
   import { Label } from "$lib/ui/shadcn/label/index";
   import { Checkbox } from "$lib/ui/shadcn/checkbox/index";
   import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
@@ -25,23 +28,51 @@
 
   const KILO_BYTE = 1024;
   const MEGA_BYTE = KILO_BYTE * KILO_BYTE;
+
+  let errorMessage = $derived(
+    updateAppState.downloadingUpdatesError ||
+      updateAppState.checkingForUpdatesError ||
+      "",
+  );
 </script>
 
-<div class="w-full space-y-2">
-  <h3 class="font-semibold text-xl flex gap-2 items-center mb-4">
+<div class="w-full flex flex-col gap-2">
+  <h3 class="font-semibold text-xl flex gap-2 items-center mb-2">
     <HardDriveDownload />
     App Update
     {#if updateAppState.newUpdate?.isUpdateAvailable}
       <div class="size-2! bg-red-500 rounded-full -ms-1 mt-1 self-start"></div>
     {/if}
   </h3>
-
-  {#if updateAppState.newUpdate?.isUpdateAvailable}
-    <p>
-      Current Version:
+  <div class="flex items-center bg-card rounded-md border">
+    <div class="px-2 py-1 flex gap-1 items-center">
+      <p>Current Version:</p>
       <span class="font-semibold">v{metadata.appVersion}</span>
-      <br />
-      New update is available:
+    </div>
+    <Button
+      class="cursor-pointer flex ms-auto items-center gap-1 rounded-s-none"
+      onclick={openCurrentVersionReleaseNotes}
+      variant="default"
+      size="sm"
+    >
+      <NotesIcon class="size-4 inline-block" />
+      Notes
+    </Button>
+  </div>
+
+  {#if errorMessage}
+    <p class="text-destructive">
+      {#if errorMessage.includes("net::")}
+        Network connectivity Error
+      {:else if errorMessage.includes("cancelled")}
+        {""}
+      {:else}
+        {errorMessage}
+      {/if}
+    </p>
+  {:else if updateAppState.newUpdate?.isUpdateAvailable}
+    <p>
+      New version is available:
       <span class="font-semibold">
         v{updateAppState.newUpdate.updateInfo.version}
       </span>
@@ -49,29 +80,13 @@
         {formatTimeAgo(new Date(updateAppState.newUpdate.updateInfo.releaseDate))}
       </span>)
     </p>
-    {#if updateAppState.downloadingUpdatesError}
-      <p class="text-destructive">
-        {#if updateAppState.downloadingUpdatesError.includes("net::")}
-          Network connectivity Error
-        {:else if updateAppState.downloadingUpdatesError.includes("cancelled")}
-          {""}
-        {:else}
-          {updateAppState.downloadingUpdatesError}
-        {/if}
-      </p>
-    {/if}
+  {:else if updateAppState.checkingForUpdatesDone}
+    <p class="text-muted-foreground italic">No new version is available</p>
+  {/if}
+
+  {#if updateAppState.newUpdate?.isUpdateAvailable}
     {#if updateAppState.downloadingUpdates}
-      {#if updateAppState.downloadUpdateProgress}
-        {@render downloadUpdateProgress(updateAppState.downloadUpdateProgress)}
-      {:else}
-        {@render downloadUpdateProgress({
-          total: 0,
-          bytesPerSecond: 0,
-          transferred: 0,
-          percent: 0,
-          delta: 0,
-        })}
-      {/if}
+      {@render downloadUpdateProgress(updateAppState.downloadUpdateProgress)}
       {@render actionsButtons(cancelUpdateButton)}
     {:else if updateAppState.downloadingUpdatesDone}
       <p class="dark:text-green-500 text-green-600 flex items-center gap-2">
@@ -83,27 +98,10 @@
       {@render actionsButtons(downloadButton)}
     {/if}
   {:else}
-    <p>
-      Current Version:
-      <span class="font-semibold">v{metadata.appVersion}</span>
-      <br />
-      {#if updateAppState.checkingForUpdatesError}
-        {#if updateAppState.checkingForUpdatesError}
-          <span class="text-destructive">
-            {#if updateAppState.checkingForUpdatesError.includes("net::")}
-              Network connectivity Error
-            {:else}
-              {updateAppState.checkingForUpdatesError}
-            {/if}
-          </span>
-        {/if}
-      {:else if updateAppState.checkingForUpdatesDone}
-        <span class="text-muted-foreground italic"> No new update is available </span>
-      {/if}
-    </p>
     {@render actionsButtons(checkForUpdateButton)}
   {/if}
-  <div class="flex items-center gap-2 mt-1">
+
+  <div class="flex items-center gap-2">
     <Checkbox
       id="auto-check-for-updates"
       checked={!!settingsState.autoCheckForUpdate}
@@ -116,11 +114,16 @@
   </div>
 </div>
 
+<ReleaseNotes />
+
 {#snippet actionsButtons(anotherButton: () => ReturnType<Snippet>)}
   <div class="flex gap-2.5 flex-wrap">
     {@render anotherButton()}
     {#if updateAppState.newUpdate?.isUpdateAvailable}
-      <ReleaseNotes newUpdate={updateAppState.newUpdate} />
+      <Button variant="outline" size="sm" onclick={openNewUpdateReleaseNotes}>
+        See Release Notes
+        <NotesIcon class="size-4" />
+      </Button>
     {/if}
   </div>
 {/snippet}
@@ -163,7 +166,14 @@
   </Button>
 {/snippet}
 
-{#snippet downloadUpdateProgress(progressInfo: DownloadUpdateProgressInfo)}
+{#snippet downloadUpdateProgress(downloadProgress: DownloadUpdateProgressInfo | null)}
+  {@const progressInfo: DownloadUpdateProgressInfo = downloadProgress ?? {
+    total: 0,
+    bytesPerSecond: 0,
+    transferred: 0,
+    percent: 0,
+    delta: 0,
+  }}
   <div>
     <div class="flex justify-between gap-2">
       <p>
