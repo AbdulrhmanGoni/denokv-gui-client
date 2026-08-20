@@ -10,6 +10,21 @@ export function isGreaterVersion(a: string, b: string) {
   return false;
 }
 
+export async function asyncTrycatch<T>(fn: () => Promise<T>): Promise<TrycatchResult<T>> {
+  try {
+    const result = (await fn()) as T;
+    return {
+      result,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      result: null,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 export function syncTrycatch<T>(fn: () => T): TrycatchResult<T> {
   try {
     const result = fn() as T;
@@ -20,7 +35,7 @@ export function syncTrycatch<T>(fn: () => T): TrycatchResult<T> {
   } catch (error) {
     return {
       result: null,
-      error: String(error),
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }

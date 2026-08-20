@@ -19,12 +19,14 @@
     const form = new FormData(e.currentTarget);
     const newName = form.get("name");
     if (newName) {
-      const res = await kvStoresService.renameDefaultLocalKvStore(
+      const { result: renamed, error } = await kvStoresService.renameDefaultLocalKvStore(
         $state.snapshot(kvStore),
         newName.toString(),
       );
 
-      if (res) {
+      if (error) {
+        toast.error(error);
+      } else if (renamed) {
         toast.success(`The "${kvStore.name}" Kv store was renamed successfully`);
         closeEdit();
         loadKvStores();

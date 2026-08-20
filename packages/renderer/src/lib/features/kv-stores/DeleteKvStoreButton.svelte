@@ -20,8 +20,10 @@
   function deleteKvStore() {
     kvStoresService
       .deleteOne($state.snapshot(kvStore))
-      .then((deleted) => {
-        if (deleted) {
+      .then(({ result: deleted, error }) => {
+        if (error) {
+          toast.error("Failed to delete the kvStore", { description: error });
+        } else if (deleted) {
           removeKvStore(kvStore);
           openDialog = false;
           toast.success("The Kv Store was deleted successfully");
@@ -30,11 +32,6 @@
             description: "We could not delete the kvStore for unknown reason",
           });
         }
-      })
-      .catch((error) => {
-        toast.error("Failed to delete the kvStore", {
-          description: String(error),
-        });
       });
   }
 

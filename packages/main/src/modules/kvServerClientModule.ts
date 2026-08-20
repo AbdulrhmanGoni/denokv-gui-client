@@ -16,7 +16,7 @@ export interface KvServerClientInterface {
   watch: (
     keys: Parameters<BridgeServerClient["watch"]>[0],
     options?: Parameters<BridgeServerClient["watch"]>[2],
-  ) => Promise<void | { error: string }>;
+  ) => ReturnType<BridgeServerClient["watch"]>;
   cancelWatcher: BridgeServerClient["cancelWatcher"];
 }
 
@@ -96,11 +96,6 @@ export class KvServerClientModule implements AppModule {
     });
 
     const watch: KvServerClientInterface["watch"] = async (keys, options) => {
-      if (!context.browserWindow) {
-        throw new Error(
-          "Trying to call `kvClient:watch` before the browser window is created.",
-        );
-      }
       return bridgeServerController.client.watch(
         keys,
         (updatedEntries: SerializedKvEntry[]) => {

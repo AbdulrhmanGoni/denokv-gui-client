@@ -50,7 +50,7 @@
           },
         );
       } else {
-        toast.error(error);
+        toast.error(error ?? "Failed to update the saved browsing params");
       }
     }
   }

@@ -11,12 +11,18 @@
   import Alert from "$lib/ui/primitives/Alert.svelte";
   import { appManager } from "@app/preload";
   import RotateCw from "@lucide/svelte/icons/rotate-cw";
+  import { toast } from "svelte-sonner";
 
   let hardwareAccelerationEnabled = $derived(!settingsState.disableHardwareAcceleration);
   let hardwareAccelerationModeChanged = $derived(
     hardwareAccelerationEnabled ===
       settingsPageState.isHardwareAccelerationCurrentlyDisabled,
   );
+
+  async function restartApp() {
+    const { error } = await appManager.restartApp();
+    if (error) toast.error(error);
+  }
 </script>
 
 <div class="space-y-2">
@@ -47,7 +53,7 @@
       />
       <button
         type="button"
-        onclick={appManager.restartApp}
+        onclick={restartApp}
         class="text-sm flex items-center gap-1 cursor-pointer"
       >
         <RotateCw class="size-4 -translate-y-px" />

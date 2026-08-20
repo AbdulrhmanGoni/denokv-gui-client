@@ -1,9 +1,10 @@
 import { ipcMain } from "electron";
 import type { AppModule, ModuleContext } from "./types.js";
 import { getSettings } from "./settingsService.js";
+import { syncTrycatch } from "../helpers.js";
 
 export interface HardwareAccelerationInterface {
-  isEnabled(): Promise<boolean>;
+  isEnabled(): Promise<TrycatchResult<boolean>>;
 }
 
 export class HardwareAccelerationModule implements AppModule {
@@ -14,7 +15,7 @@ export class HardwareAccelerationModule implements AppModule {
     }
 
     const isEnabled: HardwareAccelerationInterface["isEnabled"] = async () => {
-      return app.isHardwareAccelerationEnabled();
+      return syncTrycatch(() => app.isHardwareAccelerationEnabled());
     };
     ipcMain.handle("hardwareAcceleration:isEnabled", isEnabled);
   }

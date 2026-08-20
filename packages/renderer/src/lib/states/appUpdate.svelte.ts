@@ -42,9 +42,10 @@ function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
       closeButton: true,
       action: {
         label: "Ignore",
-        onClick: () => {
+        onClick: async () => {
           dismiss();
-          lastFetchedUpdateService.doNotNotifyLastFetchedUpdate();
+          const { error } = await lastFetchedUpdateService.doNotNotifyLastFetchedUpdate();
+          if (error) toast.error(error);
         },
       },
       description: (internals) => newUpdateNotificationActions(internals, { dismiss }),
@@ -54,7 +55,10 @@ function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
 }
 
 export async function startCheckingForUpdates() {
-  const lastFetchedUpdate = await lastFetchedUpdateService.getLastFetchedUpdate();
+  const lastFetchedUpdateResponse = await lastFetchedUpdateService.getLastFetchedUpdate();
+  if (lastFetchedUpdateResponse.error)
+    return toast.error(lastFetchedUpdateResponse.error);
+  const lastFetchedUpdate = lastFetchedUpdateResponse.result;
   if (lastFetchedUpdate) {
     if (!lastFetchedUpdate.doNotNotify) {
       notifyUserForNewUpdate(
@@ -64,7 +68,13 @@ export async function startCheckingForUpdates() {
     }
     updateAppState.newUpdate = lastFetchedUpdate.data;
     updateAppState.checkingForUpdatesDone = true;
-    updateAppState.newUpdate = await appUpdater.checkForUpdate();
+    const checkResponse = await appUpdater.checkForUpdate();
+    if (checkResponse.error) {
+      toast.error(checkResponse.error);
+      return;
+    }
+
+    updateAppState.newUpdate = checkResponse.result;
     if (updateAppState.newUpdate) {
       const isNewerVersion =
         lastFetchedUpdate.data.updateInfo.version !==
@@ -81,7 +91,14 @@ export async function startCheckingForUpdates() {
 
   updateAppState.checkingForUpdates = true;
   try {
-    updateAppState.newUpdate = await appUpdater.checkForUpdate();
+    const updateResponse = await appUpdater.checkForUpdate();
+    if (updateResponse.error) {
+      toast.error(updateResponse.error);
+      updateAppState.checkingForUpdatesError = updateResponse.error;
+      updateAppState.checkingForUpdatesDone = false;
+      return;
+    }
+    updateAppState.newUpdate = updateResponse.result;
     updateAppState.checkingForUpdatesDone = true;
     updateAppState.checkingForUpdatesError = "";
     if (updateAppState.newUpdate) {
@@ -107,7 +124,11 @@ export async function startDownloadingUpdate() {
       updateAppState.downloadUpdateProgress = progressInfo;
     });
 
-    await downloadPromise;
+    const { error } = await downloadPromise;
+    if (error) {
+      updateAppState.downloadingUpdatesError = error;
+      return;
+    }
 
     updateAppState.downloadingUpdatesDone = true;
     updateAppState.downloadingUpdatesError = "";
@@ -120,14 +141,16 @@ export async function startDownloadingUpdate() {
 }
 
 export async function cancelDownloadingUpdate() {
-  await appUpdater.cancelUpdate();
+  const { error } = await appUpdater.cancelUpdate();
+  if (error) return toast.error(error);
   updateAppState.downloadingUpdates = false;
   updateAppState.downloadingUpdatesError = "";
   updateAppState.downloadingUpdatesDone = false;
 }
 
-export function quitAndInstallTheUpdate() {
-  appUpdater.quitAndInstallUpdate();
+export async function quitAndInstallTheUpdate() {
+  const { error } = await appUpdater.quitAndInstallUpdate();
+  if (error) toast.error(error);
 }
 
 export function openNewUpdateReleaseNotes() {
@@ -146,9 +169,9 @@ export function openNewUpdateReleaseNotes() {
 }
 
 export async function openCurrentVersionReleaseNotes() {
-  const releaseNotes = await metadata.getCurrentVersionReleaseNotes();
-  if (!releaseNotes) {
-    toast.error("Couldn't get the release notes of the current version");
+  const { result: releaseNotes, error } = await metadata.getCurrentVersionReleaseNotes();
+  if (error || !releaseNotes) {
+    toast.error(error ?? "Couldn't get the release notes of the current version");
     return;
   }
 

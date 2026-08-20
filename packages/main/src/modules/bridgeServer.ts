@@ -3,6 +3,7 @@ import type { AppModule, ModuleContext } from "./types.js";
 import { type Kv, openKv } from "@deno/kv";
 import { BridgeServerClient, openBridgeServerInNode } from "@app/bridge-server";
 import { randomBytes } from "node:crypto";
+import { asyncTrycatch } from "../helpers.js";
 
 class BridgeServerController {
   private serverRef: ReturnType<typeof openBridgeServerInNode> | null = null;
@@ -67,14 +68,14 @@ class BridgeServerController {
 export const bridgeServerController = new BridgeServerController();
 
 export interface BridgeServerInterface {
-  openServer(kvStore: KvStore): Promise<boolean>;
-  closeServer(): Promise<void>;
+  openServer(kvStore: KvStore): Promise<TrycatchResult<boolean>>;
+  closeServer(): Promise<TrycatchResult<void>>;
 }
 
 export class BridgeServerModule implements AppModule {
   enable(_context: ModuleContext): void {
     const openServer: BridgeServerInterface["openServer"] = async (kvStore) => {
-      return await bridgeServerController.open(kvStore);
+      return asyncTrycatch(() => bridgeServerController.open(kvStore));
     };
     ipcMain.handle(
       "bridgeServer:openServer",
@@ -84,7 +85,7 @@ export class BridgeServerModule implements AppModule {
     );
 
     const closeServer: BridgeServerInterface["closeServer"] = () => {
-      return bridgeServerController.close();
+      return asyncTrycatch(() => bridgeServerController.close());
     };
     ipcMain.handle("bridgeServer:closeServer", closeServer);
   }

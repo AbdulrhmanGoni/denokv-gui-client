@@ -35,7 +35,7 @@
       );
       openDialog = false;
     } else {
-      toast.error(error);
+      toast.error(error ?? "Failed to delete the saved browsing params");
     }
   }
 </script>

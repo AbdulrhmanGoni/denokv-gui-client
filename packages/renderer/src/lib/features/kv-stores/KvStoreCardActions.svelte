@@ -10,6 +10,7 @@
   import { kvStoresState, openKvStore } from "$lib/states/kvStoresState.svelte";
   import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
   import { fileSystemService } from "@app/preload";
+  import { toast } from "svelte-sonner";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 
@@ -25,6 +26,11 @@
 
   function setOpenMenu(state: boolean) {
     openMenu = state;
+  }
+
+  async function openPath() {
+    const { error } = await fileSystemService.openPath(kvStore.url);
+    if (error) toast.error(error);
   }
 
   const isLocal = kvStore.type == "local" || kvStore.type == "default";
@@ -62,7 +68,7 @@
       {/if}
     </DropdownMenu.Item>
     {#if kvStore.type == "default"}
-      <DropdownMenu.Item onclick={() => fileSystemService.openPath(kvStore.url)}>
+      <DropdownMenu.Item onclick={openPath}>
         <OpenPathIcon /> Open Path
       </DropdownMenu.Item>
     {/if}

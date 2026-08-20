@@ -6,31 +6,36 @@ import {
   updateSettingQuery,
 } from "../db/queries/settingsQueries.js";
 import { databaseTransaction } from "../db/db.js";
+import { syncTrycatch } from "../helpers.js";
 
 export interface SettingsServiceInterface {
-  getSettings(): Promise<Settings | undefined>;
-  updateSettings(updatedSettings: Settings): Promise<boolean>;
+  getSettings(): Promise<TrycatchResult<Settings | undefined>>;
+  updateSettings(updatedSettings: Settings): Promise<TrycatchResult<boolean>>;
 }
 
 export class SettingsServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle("settingsService:getSettings", getSettings);
+    const getSettingsForRenderer: SettingsServiceInterface["getSettings"] = async () =>
+      syncTrycatch(getSettings);
+    ipcMain.handle("settingsService:getSettings", getSettingsForRenderer);
 
     const updateSettings: SettingsServiceInterface["updateSettings"] = async (
       updatedSettings,
     ) => {
-      return databaseTransaction(() => {
-        const settings = getSettings();
-        if (settings) {
-          const result = updateSettingQuery.run(
-            JSON.stringify({ ...settings, ...updatedSettings }),
-          );
-          return !!result.changes;
-        }
+      return syncTrycatch(() =>
+        databaseTransaction(() => {
+          const settings = getSettings();
+          if (settings) {
+            const result = updateSettingQuery.run(
+              JSON.stringify({ ...settings, ...updatedSettings }),
+            );
+            return !!result.changes;
+          }
 
-        const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
-        return !!result.changes;
-      });
+          const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
+          return !!result.changes;
+        }),
+      );
     };
     ipcMain.handle(
       "settingsService:updateSettings",
@@ -41,9 +46,7 @@ export class SettingsServiceModule implements AppModule {
   }
 }
 
-export function getSettings(): Awaited<
-  ReturnType<SettingsServiceInterface["getSettings"]>
-> {
+export function getSettings(): Settings | undefined {
   const result = getSettingsQuery.get() as { settingsAsJsonText: string } | undefined;
   if (result) {
     return JSON.parse(result.settingsAsJsonText) as Settings;

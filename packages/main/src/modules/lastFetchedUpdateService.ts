@@ -10,34 +10,38 @@ import {
 import { isGreaterVersion } from "../helpers.js";
 import { appVersion } from "./metadataModule.js";
 import { databaseTransaction } from "../db/db.js";
+import { syncTrycatch } from "../helpers.js";
 
 export interface LastFetchedUpdateServiceInterface {
-  getLastFetchedUpdate(): Promise<LastFetchedUpdate | null>;
-  setLastFetchedUpdate(updateInfo: UpdateCheckResult): Promise<boolean>;
-  deleteLastFetchedUpdate(): Promise<boolean>;
-  doNotNotifyLastFetchedUpdate(): Promise<boolean>;
+  getLastFetchedUpdate(): Promise<TrycatchResult<LastFetchedUpdate | null>>;
+  setLastFetchedUpdate(updateInfo: UpdateCheckResult): Promise<TrycatchResult<boolean>>;
+  deleteLastFetchedUpdate(): Promise<TrycatchResult<boolean>>;
+  doNotNotifyLastFetchedUpdate(): Promise<TrycatchResult<boolean>>;
 }
 
 export class LastFetchedUpdateServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle("lastFetchedUpdateService:getLastFetchedUpdate", getLastFetchedUpdate);
+    ipcMain.handle("lastFetchedUpdateService:getLastFetchedUpdate", () =>
+      syncTrycatch(getLastFetchedUpdate),
+    );
 
     ipcMain.handle(
       "lastFetchedUpdateService:setLastFetchedUpdate",
       async (_, ...args: Parameters<typeof setLastFetchedUpdate>) => {
-        return setLastFetchedUpdate(...args);
+        return syncTrycatch(() => setLastFetchedUpdate(...args));
       },
     );
 
-    ipcMain.handle(
-      "lastFetchedUpdateService:deleteLastFetchedUpdate",
-      deleteLastFetchedUpdate,
+    ipcMain.handle("lastFetchedUpdateService:deleteLastFetchedUpdate", () =>
+      syncTrycatch(deleteLastFetchedUpdate),
     );
 
     const doNotNotifyLastFetchedUpdate: LastFetchedUpdateServiceInterface["doNotNotifyLastFetchedUpdate"] =
       async () => {
-        const result = updateDoNotNotifyQuery.run(1);
-        return !!result.changes;
+        return syncTrycatch(() => {
+          const result = updateDoNotNotifyQuery.run(1);
+          return !!result.changes;
+        });
       };
     ipcMain.handle(
       "lastFetchedUpdateService:doNotNotifyLastFetchedUpdate",
@@ -46,9 +50,7 @@ export class LastFetchedUpdateServiceModule implements AppModule {
   }
 }
 
-function getLastFetchedUpdate(): Awaited<
-  ReturnType<LastFetchedUpdateServiceInterface["getLastFetchedUpdate"]>
-> {
+function getLastFetchedUpdate(): LastFetchedUpdate | null {
   const row = getLastFetchedUpdateQuery.get() as
     | { updateInfoAsJson: string; doNotNotify: number }
     | undefined;
@@ -67,7 +69,7 @@ function getLastFetchedUpdate(): Awaited<
 
 export function setLastFetchedUpdate(
   updateInfo: Parameters<LastFetchedUpdateServiceInterface["setLastFetchedUpdate"]>[0],
-): Awaited<ReturnType<LastFetchedUpdateServiceInterface["setLastFetchedUpdate"]>> {
+): boolean {
   return databaseTransaction(() => {
     const existingUpdate = getLastFetchedUpdate();
     if (existingUpdate?.data.updateInfo.version === updateInfo.updateInfo.version) {
@@ -83,9 +85,7 @@ export function setLastFetchedUpdate(
   });
 }
 
-function deleteLastFetchedUpdate(): Awaited<
-  ReturnType<LastFetchedUpdateServiceInterface["deleteLastFetchedUpdate"]>
-> {
+function deleteLastFetchedUpdate(): boolean {
   const result = deleteLastFetchedUpdateQuery.run();
   return !!result.changes;
 }

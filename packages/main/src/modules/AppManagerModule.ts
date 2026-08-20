@@ -1,9 +1,10 @@
 import type { AppModule, ModuleContext } from "./types.js";
 import { ipcMain } from "electron";
 import os from "node:os";
+import { syncTrycatch } from "../helpers.js";
 
 export interface AppManagerInterface {
-  restartApp: () => Promise<void>;
+  restartApp: () => Promise<TrycatchResult<void>>;
 }
 
 export class AppManagerModule implements AppModule {
@@ -19,15 +20,17 @@ export class AppManagerModule implements AppModule {
     context.app.on("window-all-closed", () => context.app.quit());
 
     const restartApp: AppManagerInterface["restartApp"] = async () => {
-      let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
-      if (os.platform() == "linux" && process.env.APPIMAGE && context.app.isPackaged) {
-        relaunchOptions = {
-          execPath: process.env.APPIMAGE,
-          args: ["--appimage-extract-and-run"],
-        };
-      }
-      context.app.relaunch(relaunchOptions);
-      context.app.exit();
+      return syncTrycatch(() => {
+        let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
+        if (os.platform() == "linux" && process.env.APPIMAGE && context.app.isPackaged) {
+          relaunchOptions = {
+            execPath: process.env.APPIMAGE,
+            args: ["--appimage-extract-and-run"],
+          };
+        }
+        context.app.relaunch(relaunchOptions);
+        context.app.exit();
+      });
     };
     ipcMain.handle("restart-app", restartApp);
 

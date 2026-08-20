@@ -47,25 +47,32 @@ function calculateKvStoreTypeCounts() {
 }
 
 export async function loadKvStores() {
-  try {
-    kvStoresState.kvStores = await kvStoresService.getAll();
-    calculateKvStoreTypeCounts();
-    kvStoresState.loaded = true;
-    kvStoresState.error = "";
-  } catch (error) {
-    kvStoresState.error = String(error);
+  const { result, error } = await kvStoresService.getAll();
+  if (error) {
+    toast.error(error);
+    kvStoresState.error = error;
     kvStoresState.loaded = false;
+    return;
   }
+  kvStoresState.kvStores = result ?? [];
+  calculateKvStoreTypeCounts();
+  kvStoresState.loaded = true;
+  kvStoresState.error = "";
 }
 
 export async function openKvStore(kvStore: KvStore) {
   globalState.loadingOverlay.open = true;
   globalState.loadingOverlay.text = "Testing Kv Database Connection...";
-  const testSucceed = await kvStoresService.testKvStoreConnection(
+  const { result: testSucceed, error } = await kvStoresService.testKvStoreConnection(
     $state.snapshot(kvStore),
   );
   globalState.loadingOverlay.open = false;
   globalState.loadingOverlay.text = "";
+
+  if (error) {
+    toast.error(error);
+    return false;
+  }
 
   if (testSucceed) {
     const isStarted = await startKvStoreServer(kvStore);
@@ -83,7 +90,8 @@ export async function openKvStore(kvStore: KvStore) {
 
 export async function closeKvStore() {
   kvStoresState.openedStore = null;
-  await bridgeServer.closeServer();
+  const { error } = await bridgeServer.closeServer();
+  if (error) toast.error(error);
 }
 
 export function removeKvStore(kvStore: KvStore) {
@@ -97,16 +105,13 @@ async function startKvStoreServer(kvStore: KvStore) {
   let isOpened = false;
   let error = "";
 
-  try {
-    globalState.loadingOverlay.open = true;
-    globalState.loadingOverlay.text = "Starting the Kv bridge server...";
-    isOpened = await bridgeServer.openServer($state.snapshot(kvStore));
-  } catch (e) {
-    error = String(e);
-  } finally {
-    globalState.loadingOverlay.open = false;
-    globalState.loadingOverlay.text = "";
-  }
+  globalState.loadingOverlay.open = true;
+  globalState.loadingOverlay.text = "Starting the Kv bridge server...";
+  const response = await bridgeServer.openServer($state.snapshot(kvStore));
+  isOpened = response.result ?? false;
+  error = response.error ?? "";
+  globalState.loadingOverlay.open = false;
+  globalState.loadingOverlay.text = "";
 
   if (!isOpened) {
     toast.error("Error when trying to start the server", {

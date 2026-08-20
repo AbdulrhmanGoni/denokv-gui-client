@@ -6,10 +6,14 @@ import {
   updateWatchedKeysQuery,
 } from "../db/queries/watchedKvEntriesQueries.js";
 import { databaseTransaction } from "../db/db.js";
+import { syncTrycatch } from "../helpers.js";
 
 export interface WatchedKeysServiceInterface {
-  getWatchedKeys(kvStoreId: string): Promise<SerializedKvKey[] | null>;
-  setWatchedKeys(kvStoreId: string, keys: SerializedKvKey[]): Promise<boolean>;
+  getWatchedKeys(kvStoreId: string): Promise<TrycatchResult<SerializedKvKey[] | null>>;
+  setWatchedKeys(
+    kvStoreId: string,
+    keys: SerializedKvKey[],
+  ): Promise<TrycatchResult<boolean>>;
 }
 
 export class WatchedKeysServiceModule implements AppModule {
@@ -17,11 +21,13 @@ export class WatchedKeysServiceModule implements AppModule {
     const getWatchedKeys: WatchedKeysServiceInterface["getWatchedKeys"] = async (
       kvStoreId,
     ) => {
-      const row = getWatchedKeysQuery.get(kvStoreId) as
-        | { keysAsJson: string }
-        | undefined;
-      if (!row) return null;
-      return JSON.parse(row.keysAsJson) as SerializedKvKey[];
+      return syncTrycatch(() => {
+        const row = getWatchedKeysQuery.get(kvStoreId) as
+          | { keysAsJson: string }
+          | undefined;
+        if (!row) return null;
+        return JSON.parse(row.keysAsJson) as SerializedKvKey[];
+      });
     };
     ipcMain.handle(
       "watchedKeysService:getWatchedKeys",
@@ -34,22 +40,24 @@ export class WatchedKeysServiceModule implements AppModule {
       kvStoreId,
       keys,
     ) => {
-      return databaseTransaction(() => {
-        if (getWatchedKeysQuery.get(kvStoreId)) {
-          const result = updateWatchedKeysQuery.run({
+      return syncTrycatch(() =>
+        databaseTransaction(() => {
+          if (getWatchedKeysQuery.get(kvStoreId)) {
+            const result = updateWatchedKeysQuery.run({
+              kvStoreId,
+              keys: JSON.stringify(keys),
+            });
+            return !!result.changes;
+          }
+
+          const result = insertWatchedKeysQuery.run({
+            id: crypto.randomUUID(),
             kvStoreId,
             keys: JSON.stringify(keys),
           });
           return !!result.changes;
-        }
-
-        const result = insertWatchedKeysQuery.run({
-          id: crypto.randomUUID(),
-          kvStoreId,
-          keys: JSON.stringify(keys),
-        });
-        return !!result.changes;
-      });
+        }),
+      );
     };
     ipcMain.handle(
       "watchedKeysService:setWatchedKeys",

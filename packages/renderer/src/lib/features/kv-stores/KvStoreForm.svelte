@@ -8,6 +8,7 @@
   import type { Snippet } from "svelte";
   import { Checkbox } from "$lib/ui/shadcn/checkbox/index.js";
   import * as InputGroup from "$lib/ui/shadcn/input-group";
+  import { toast } from "svelte-sonner";
 
   type KvStoreFormProps = {
     defaultValues?: Partial<CreateKvStoreInput>;
@@ -85,11 +86,16 @@
   }
 
   async function pickDirectory() {
-    localKvDirectory = await fileSystemService.selectDirectory();
+    const { result, error } = await fileSystemService.selectDirectory();
+    if (error) return toast.error(error);
+    localKvDirectory = result ?? "";
   }
 
   async function pickFile() {
-    const selectedFile = await fileSystemService.selectFile(localKvDirectory);
+    const { result: selectedFile, error } =
+      await fileSystemService.selectFile(localKvDirectory);
+    if (error) return toast.error(error);
+
     if (selectedFile) {
       localKvDirectory = selectedFile.directory;
       localKvFileName = selectedFile.fileName;

@@ -26,9 +26,13 @@ export const watchedKvEntriesState: WatchedKvEntriesState = $state({
 
 export async function fetchWatchedKeysForOpenedKvStore() {
   if (!kvStoresState.openedStore) return;
-  const watchedEntriesKeys = await watchedKeysService.getWatchedKeys(
+
+  const { result: watchedEntriesKeys, error } = await watchedKeysService.getWatchedKeys(
     kvStoresState.openedStore.id,
   );
+
+  if (error) return toast.error(error);
+
   watchedKvEntriesState.keys = watchedEntriesKeys || [];
 }
 
@@ -97,11 +101,13 @@ export async function startWatchingKvEntries(isReopen: boolean = false) {
 
 export async function syncWatchedKeys(updatedWatchedKeys: SerializedKvKey[]) {
   if (kvStoresState.openedStore) {
-    const success = await watchedKeysService.setWatchedKeys(
+    const { result: success, error } = await watchedKeysService.setWatchedKeys(
       kvStoresState.openedStore.id,
       $state.snapshot(updatedWatchedKeys),
     );
-    if (success) {
+    if (error) {
+      toast.error(error);
+    } else if (success) {
       await fetchWatchedKeysForOpenedKvStore();
       watchedKvEntriesState.keysEntries = watchedKvEntriesState.keysEntries.filter(
         (entry) => updatedWatchedKeys.some((key) => isSameKvKey(entry.key, key)),

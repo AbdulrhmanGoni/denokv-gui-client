@@ -21,11 +21,13 @@ import type {
   WatchedKeysServiceInterface,
 } from "@app/main/modules/interfaces";
 
-type MetadataType = Awaited<ReturnType<MetadataInterface["getMetadata"]>> &
+type MetadataType = AppMetadata &
   Pick<MetadataInterface, "getCurrentVersionReleaseNotes">;
 
+const appMetadata: AppMetadata = await ipcRenderer.invoke("get-metadata");
+
 const metadata: MetadataType = {
-  ...(await ipcRenderer.invoke("get-metadata")),
+  ...appMetadata,
   getCurrentVersionReleaseNotes() {
     return ipcRenderer.invoke("get-current-version-release-notes");
   },
@@ -40,14 +42,14 @@ type FileSystemServiceType = FileSystemServiceInterface & {
 };
 
 const fileSystemService: FileSystemServiceType = {
-  selectDirectory(): Promise<string> {
+  selectDirectory() {
     return ipcRenderer.invoke("select-directory");
   },
   selectFile(directory) {
     return ipcRenderer.invoke("select-file", directory);
   },
-  openPath(path) {
-    ipcRenderer.invoke("open-path", path);
+  async openPath(path) {
+    return ipcRenderer.invoke("open-path", path);
   },
   pathUtils: {
     dirname: (p) => path.dirname(p),
@@ -106,8 +108,14 @@ const kvClient: KvServerClientType = {
   },
   async watch(keys, listener, options) {
     ipcRenderer.removeAllListeners("kvClient:watch-listener");
-    const error = await ipcRenderer.invoke("kvClient:watch", keys, options);
-    if (error) return error;
+    const errorResult = (await ipcRenderer.invoke(
+      "kvClient:watch",
+      keys,
+      options,
+    )) as Awaited<ReturnType<KvServerClientType["watch"]>>;
+
+    if (errorResult) return errorResult;
+
     ipcRenderer.on("kvClient:watch-listener", (_event, updatedEntries) =>
       listener(updatedEntries),
     );

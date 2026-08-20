@@ -118,7 +118,7 @@
         toast.success("Filter has been saved successfully");
         fetchSavedDefaultBrowsingParams();
       } else {
-        toast.error(error);
+        toast.error(error ?? "Failed to save the filters");
       }
     }
   }

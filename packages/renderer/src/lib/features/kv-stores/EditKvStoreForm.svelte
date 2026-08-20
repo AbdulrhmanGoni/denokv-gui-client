@@ -18,8 +18,10 @@
 
     kvStoresService
       .update($state.snapshot(kvStore), changes)
-      .then((result) => {
-        if (result) {
+      .then(({ result, error }) => {
+        if (error) {
+          toast.error("Update Failed", { description: error });
+        } else if (result) {
           toast.success("The kv store has been edited successfully");
           form?.reset();
           kvStoresState.openedStoreToEdit = null;
@@ -28,11 +30,6 @@
             description: "We could not update the Kv Store for unknown reason",
           });
         }
-      })
-      .catch((error) => {
-        toast.error("Update Failed", {
-          description: String(error),
-        });
       });
   }
 

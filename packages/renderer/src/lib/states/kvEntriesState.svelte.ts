@@ -4,6 +4,7 @@ import { columns } from "$lib/features/kv-browser/table/columns";
 import { createSvelteTable } from "$lib/ui/shadcn/data-table";
 import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
 import { isSameKvKey } from "@app/bridge-server/kv-utils";
+import { toast } from "svelte-sonner";
 
 type KvEntriesState = {
   entries: KvEntry[];
@@ -148,7 +149,7 @@ export async function fetchSavedBrowsingParams() {
       savedBrowsingParamsState.error = "";
       savedBrowsingParamsState.fetched = true;
     } else {
-      savedBrowsingParamsState.error = error;
+      savedBrowsingParamsState.error = error ?? "Failed to fetch saved browsing params";
       savedBrowsingParamsState.fetched = false;
     }
   }
@@ -156,9 +157,11 @@ export async function fetchSavedBrowsingParams() {
 
 export async function fetchSavedDefaultBrowsingParams() {
   if (kvStoresState.openedStore) {
-    const { result } = await browsingParamsService.getDefaultSavedBrowsingParams(
+    const { result, error } = await browsingParamsService.getDefaultSavedBrowsingParams(
       kvStoresState.openedStore.id,
     );
+
+    if (error) return toast.error(error);
 
     kvEntriesStateDefaultValues.params = {
       ...kvEntriesStateDefaultValues.params,
