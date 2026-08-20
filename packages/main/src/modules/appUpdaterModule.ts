@@ -9,7 +9,7 @@ let cancellationToken: electronUpdater.CancellationToken | null = null;
 
 export interface AppUpdaterInterface {
   checkForUpdate(): Promise<TrycatchResult<UpdateCheckResult | null>>;
-  downloadUpdate(): Promise<TrycatchResult<any>>;
+  downloadUpdate(): Promise<TrycatchResult<Array<string>>>;
   cancelUpdate(): Promise<TrycatchResult<void>>;
   quitAndInstallUpdate(): Promise<TrycatchResult<void>>;
 }

@@ -225,9 +225,11 @@ const appUpdater: AppUpdaterType = {
     return ipcRenderer.invoke("download-update");
   },
   cancelUpdate() {
+    ipcRenderer.removeAllListeners("downloading-update-progress");
     return ipcRenderer.invoke("cancel-downloading-update");
   },
   onDownloadingUpdateProgress(cb) {
+    ipcRenderer.removeAllListeners("downloading-update-progress");
     ipcRenderer.on("downloading-update-progress", (_, progressInfo) => cb(progressInfo));
   },
   quitAndInstallUpdate() {

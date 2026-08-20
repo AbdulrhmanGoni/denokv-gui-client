@@ -118,8 +118,8 @@ export async function startCheckingForUpdates() {
 export async function startDownloadingUpdate() {
   updateAppState.downloadingUpdates = true;
   try {
-    const downloadPromise = appUpdater.downloadUpdate();
     updateAppState.downloadUpdateProgress = null;
+    const downloadPromise = appUpdater.downloadUpdate();
     appUpdater.onDownloadingUpdateProgress((progressInfo) => {
       updateAppState.downloadUpdateProgress = progressInfo;
     });
