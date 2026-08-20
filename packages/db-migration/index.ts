@@ -10,84 +10,99 @@ import {
 
 function initDatabase(dbPath: string) {
   const database = new DatabaseSync(dbPath);
-  database.exec(
-    "CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(128) PRIMARY KEY)",
-  );
+  try {
+    database.exec(
+      "CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(128) PRIMARY KEY)",
+    );
+  } catch (error) {
+    database.close();
+    throw error;
+  }
   return database;
 }
 
 export async function migrateUp(dbPath: string, migrationsDir: string) {
   const database = initDatabase(dbPath);
 
-  const pendingMigrations = getPendingMigrations(database, migrationsDir);
-  if (!pendingMigrations.length) {
-    console.log("No pending migrations");
-    return;
-  }
+  try {
+    const pendingMigrations = getPendingMigrations(database, migrationsDir);
+    if (!pendingMigrations.length) {
+      console.log("No pending migrations");
+      return;
+    }
 
-  console.log(
-    `${pendingMigrations.length} pending migration${pendingMigrations.length > 1 ? "s" : ""} available:\n`,
-  );
-
-  for (let i = 0; i < pendingMigrations.length; i++) {
-    const migrationFileContent = await parseMigrationFileContent(
-      pendingMigrations[i].path,
+    console.log(
+      `${pendingMigrations.length} pending migration${pendingMigrations.length > 1 ? "s" : ""} available:\n`,
     );
 
-    const logPrefix = `[${i + 1}]`;
-    console.log(logPrefix, `Applying ${pendingMigrations[i].name}...`);
-
-    try {
-      const insertVersionSql = `INSERT INTO schema_migrations (version) VALUES ('${pendingMigrations[i].version}')`;
-      database.exec(
-        `BEGIN TRANSACTION;\n${insertVersionSql};\n${migrationFileContent.upQuery};\nCOMMIT TRANSACTION;`,
+    for (let i = 0; i < pendingMigrations.length; i++) {
+      const migrationFileContent = await parseMigrationFileContent(
+        pendingMigrations[i].path,
       );
-      console.log(" ".repeat(logPrefix.length), "applied ✅\n");
-    } catch (error) {
-      database.exec("ROLLBACK");
-      database.close();
-      console.log(" ".repeat(logPrefix.length), "Error ❌");
-      throw error;
-    }
-  }
 
-  database.close();
+      const logPrefix = `[${i + 1}]`;
+      console.log(logPrefix, `Applying ${pendingMigrations[i].name}...`);
+
+      try {
+        const insertVersionSql = `INSERT INTO schema_migrations (version) VALUES ('${pendingMigrations[i].version}')`;
+        database.exec(
+          `BEGIN TRANSACTION;\n${insertVersionSql};\n${migrationFileContent.upQuery};\nCOMMIT TRANSACTION;`,
+        );
+        console.log(" ".repeat(logPrefix.length), "applied ✅\n");
+      } catch (error) {
+        database.exec("ROLLBACK");
+        database.close();
+        console.log(" ".repeat(logPrefix.length), "Error ❌");
+        throw error;
+      }
+    }
+  } catch (error) {
+    database.close();
+    throw error;
+  } finally {
+    database.close();
+  }
 }
 
 export async function migrateDown(dbPath: string, migrationsDir: string) {
   const database = initDatabase(dbPath);
 
-  const lastAppliedMigrationVersion = getLastAppliedMigration(database);
-  if (!lastAppliedMigrationVersion) {
-    console.log("No applied migrations found in the database, Nothing to rollback!");
-    return;
-  }
-
-  const lastAppliedMigrationFile = getSingleMigrationFile(
-    migrationsDir,
-    lastAppliedMigrationVersion,
-  );
-
-  const lastAppliedMigrationFileContent = await parseMigrationFileContent(
-    lastAppliedMigrationFile.path,
-  );
-
-  console.log(`Rolling back ${lastAppliedMigrationFile.name}...`);
-
   try {
-    const removeVersionQuery = `DELETE FROM schema_migrations WHERE version = '${lastAppliedMigrationVersion}'`;
-    database.exec(
-      `BEGIN TRANSACTION;\n${lastAppliedMigrationFileContent.downQuery};\n${removeVersionQuery};\nCOMMIT TRANSACTION;`,
-    );
-    console.log("Rolled back ✅\n");
-  } catch (error) {
-    database.exec("ROLLBACK");
-    database.close();
-    console.log("Error ❌");
-    throw error;
-  }
+    const lastAppliedMigrationVersion = getLastAppliedMigration(database);
+    if (!lastAppliedMigrationVersion) {
+      console.log("No applied migrations found in the database, Nothing to rollback!");
+      return;
+    }
 
-  database.close();
+    const lastAppliedMigrationFile = getSingleMigrationFile(
+      migrationsDir,
+      lastAppliedMigrationVersion,
+    );
+
+    const lastAppliedMigrationFileContent = await parseMigrationFileContent(
+      lastAppliedMigrationFile.path,
+    );
+
+    console.log(`Rolling back ${lastAppliedMigrationFile.name}...`);
+
+    try {
+      const removeVersionQuery = `DELETE FROM schema_migrations WHERE version = '${lastAppliedMigrationVersion}'`;
+      database.exec(
+        `BEGIN TRANSACTION;\n${lastAppliedMigrationFileContent.downQuery};\n${removeVersionQuery};\nCOMMIT TRANSACTION;`,
+      );
+      console.log("Rolled back ✅\n");
+    } catch (error) {
+      database.exec("ROLLBACK");
+      database.close();
+      console.log("Error ❌");
+      throw error;
+    }
+  } catch (error) {
+    database.close();
+    throw error;
+  } finally {
+    database.close();
+  }
 }
 
 export function createNewMigration(name: string, migrationsDir: string) {
