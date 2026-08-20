@@ -5,8 +5,6 @@ import type {
   SerializedKvValue,
 } from "../serialization/main.ts";
 
-type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
-
 type CallBridgeServerOptions = Record<
   string,
   SerializedKvKey | number | string | boolean
@@ -20,10 +18,9 @@ type CallBridgeServerParams = {
   headers?: Record<string, string>;
 };
 
-type CallBridgeServerReturn<ResultT> = Promise<{
-  result: ResultT | null;
-  error: string | null;
-}>;
+type CallBridgeServerReturn<ResultT> = Promise<
+  { result: ResultT; error: null } | { result: null; error: string }
+>;
 
 function optionsToUrlSearchParams(options: CallBridgeServerOptions): URLSearchParams {
   return new URLSearchParams(
@@ -42,11 +39,6 @@ async function callBridgeServerRequest<ResultT = unknown>({
   headers,
 }: CallBridgeServerParams): CallBridgeServerReturn<ResultT> {
   let res: Response;
-  const returnValue: UnwrapPromise<CallBridgeServerReturn<ResultT>> = {
-    result: null,
-    error: null,
-  };
-
   try {
     res = await fetch(
       url + (options ? "?" + optionsToUrlSearchParams(options).toString() : ""),
@@ -56,24 +48,32 @@ async function callBridgeServerRequest<ResultT = unknown>({
         headers,
       },
     );
-  } catch {
-    returnValue.error =
-      "Something went wrong!. It might be network issue or the bridge server is down";
-    return returnValue;
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : String(error),
+      result: null,
+    };
   }
 
   try {
     const json = await res.json();
     if (res.ok) {
-      returnValue.result = json?.result;
+      return {
+        result: json?.result,
+        error: null,
+      };
     } else {
-      returnValue.error = json?.error || "Unexpected error from the server";
+      return {
+        error: json?.error || "Unexpected error from the server",
+        result: null,
+      };
     }
-  } catch {
-    returnValue.error = "Invalid JSON response received";
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : String(error),
+      result: null,
+    };
   }
-
-  return returnValue;
 }
 
 export type BrowsingOptions = {
