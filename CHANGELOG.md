@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.29.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.28.0...v1.29.0) (2026-08-22)
+
+### Bug Fixes
+
+* ensure the database is explicitly closed after the schema migration task ends for any reason ([1973f87](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/1973f87b83f04b75402bde4f868e57c0d249023e))
+* prevent duplicate listeners to the download update progress event ([fff1175](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/fff1175c1ec8822897cd5750a22173a10f6e182a))
+
+### Enhancements
+
+* strengthen data integrity and consistency when updating application state ([743dbab](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/743dbab801646460b38226336cddf5a07f333b54))
+* improve IPC error handling and UI feedback ([e78bcf1](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/e78bcf163baae224201fcf353491abb0e9be06b9))
+
+### Features
+
+* bundle release notes into the app to enable viewing the current version's release notes any time and offline from settings page ([df5f9af](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/df5f9afa15a3b153ad826211539cd9a8faef6b14), [2f640f9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2f640f960d443f45c1e1b97dd2adc7a3c597b80a))
+
 ## [1.28.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.27.0...v1.28.0) (2026-08-06)
 
 
