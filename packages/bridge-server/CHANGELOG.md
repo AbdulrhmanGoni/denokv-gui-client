@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [11.0.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.1...bridge-server@11.0.2) (2026-08-22)
+
+### Enhancements
+
+* improve error handling and response typing in `BridgeServerClient` ([b6f4f90](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b6f4f9036afd79d004a8edb64464c5f3e56fa055))
 ## [11.0.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.0...bridge-server@11.0.1) (2026-08-06)
 
 
