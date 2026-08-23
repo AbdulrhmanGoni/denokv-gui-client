@@ -134,7 +134,9 @@ export type BrowseReturn = {
   cursor: string;
 };
 
-type BridgeServerClientOptions = {
+/** Options for BridgeServerClient constructor */
+export type BridgeServerClientOptions = {
+  /** Authentication token for the bridge server */
   authToken?: string;
 };
 
