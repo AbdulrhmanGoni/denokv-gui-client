@@ -17,6 +17,7 @@ import type { Kv, KvEntry, KvEntryMaybe } from "@deno/kv";
 import { Hono } from "hono/tiny";
 import type { BlankEnv, BlankSchema } from "hono/types";
 import { isSameKvKey } from "../kv-utils.ts";
+import { cors } from "hono/cors";
 
 /**
  * Creates the bridge server which is a Hono web application that provides HTTP endpoints
@@ -55,16 +56,29 @@ export function createBridgeApp(
 ): Hono<BlankEnv, BlankSchema, "/"> {
   const app = new Hono();
 
-  app.use(async (c, next) => {
-    const auth = c.req.header("Authorization");
-    if (options?.authToken) {
-      if (auth !== options.authToken) {
+  app.use(
+    "*",
+    cors({
+      origin: "*",
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowHeaders: ["Authorization"],
+    }),
+  );
+
+  if (options?.authToken) {
+    app.use(async (c, next) => {
+      if (c.req.method === "OPTIONS") {
+        return next();
+      }
+
+      const authToken = c.req.header("Authorization");
+      if (authToken !== options.authToken) {
         return c.json({ error: "Authorization Failed" }, 401);
       }
-    }
-    c.res.headers.set("Access-Control-Allow-Origin", "*");
-    await next();
-  });
+
+      await next();
+    });
+  }
 
   app.get("/browse", async (c) => {
     const { listSelector, options, xssSafe } = validateBrowseRequestParams(
