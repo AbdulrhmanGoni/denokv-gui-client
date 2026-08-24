@@ -1,6 +1,5 @@
 <script lang="ts">
   import Button from "$lib/ui/shadcn/button/button.svelte";
-  import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
   import {
     kvEntryDialogState,
@@ -14,6 +13,7 @@
   import { kvEntriesState } from "$lib/states/kvEntriesState.svelte";
   import { isSameKvKey } from "@app/bridge-server/kv-utils";
   import { bridgeServer } from "@app/preload";
+  import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
 
   const { entry }: { entry: KvEntry } = $props();
 
@@ -24,11 +24,13 @@
       kvValueEditorValue.type != entry.value.type ||
       kvValueEditorValue.data != entry.value.data
     ) {
+      const client = await getOpenedKvStoreClient();
+
       globalState.loadingOverlay.open = true;
       globalState.loadingOverlay.text = "Updating entry...";
       const updatedValue = $state.snapshot(kvValueEditorValue);
       const currentEntry = $state.snapshot(entry);
-      const { error, result } = await kvClient.set(currentEntry.key, updatedValue);
+      const { error, result } = await client.set(currentEntry.key, updatedValue);
 
       if (result && result.ok) {
         const updatedEntry = {

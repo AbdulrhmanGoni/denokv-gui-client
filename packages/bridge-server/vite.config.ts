@@ -14,6 +14,7 @@ export default defineConfig({
       entry: {
         index: resolve(import.meta.dirname, "src/index.ts"),
         "kv-utils": resolve(import.meta.dirname, "src/kv-utils.ts"),
+        client: resolve(import.meta.dirname, "src/server/bridgeServerClient.ts"),
       },
       formats: ["es"],
       fileName: (_format, entryName) => `${entryName}.mjs`,

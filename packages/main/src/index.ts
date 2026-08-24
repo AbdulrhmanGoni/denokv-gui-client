@@ -10,7 +10,6 @@ import { LastFetchedUpdateServiceModule } from "./modules/lastFetchedUpdateServi
 import { BrowsingParamsServiceModule } from "./modules/browsingParamsService.js";
 import { AppUpdaterModule } from "./modules/appUpdaterModule.js";
 import { MetadataModule } from "./modules/metadataModule.js";
-import { KvServerClientModule } from "./modules/kvServerClientModule.js";
 import { WatchedKeysServiceModule } from "./modules/watchedKeysService.js";
 import { FileSystemServiceModule } from "./modules/fileSystemService.js";
 import { AppManagerModule } from "./modules/AppManagerModule.js";
@@ -34,7 +33,6 @@ export async function initApp(initConfig: AppInitConfig) {
     new LastFetchedUpdateServiceModule(),
     new BrowsingParamsServiceModule(),
     new AppUpdaterModule(),
-    new KvServerClientModule(),
     new WatchedKeysServiceModule(),
     new WebContentsUrlPolicy(
       initConfig.renderer instanceof URL ? initConfig.renderer.origin : "",

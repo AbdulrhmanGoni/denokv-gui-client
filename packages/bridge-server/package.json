@@ -20,6 +20,11 @@
       "types": "./dist/kv-utils.d.ts",
       "import": "./dist/kv-utils.mjs",
       "default": "./dist/kv-utils.mjs"
+    },
+    "./client": {
+      "types": "./dist/server/bridgeServerClient.d.ts",
+      "import": "./dist/client.mjs",
+      "default": "./dist/client.mjs"
     }
   },
   "module": "./dist/index.mjs",

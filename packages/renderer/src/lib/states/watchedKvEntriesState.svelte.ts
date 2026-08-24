@@ -1,8 +1,8 @@
 import { isSameKvKey } from "@app/bridge-server/kv-utils";
-import { kvClient, watchedKeysService } from "@app/preload";
+import { watchedKeysService } from "@app/preload";
 import { kvEntriesState } from "./kvEntriesState.svelte";
 import { kvEntryDialogState } from "./kvEntryDialogState.svelte";
-import { kvStoresState } from "./kvStoresState.svelte";
+import { getOpenedKvStoreClient, kvStoresState } from "./kvStoresState.svelte";
 import { toast } from "svelte-sonner";
 
 type WatchedKvEntriesState = {
@@ -45,52 +45,51 @@ export function resetWatchedKvEntriesState() {
 }
 
 export async function startWatchingKvEntries(isReopen: boolean = false) {
+  const client = await getOpenedKvStoreClient();
+
   if (!watchedKvEntriesState.keys.length) {
-    await kvClient.cancelWatcher();
+    await client.cancelWatcher();
     return;
   }
 
-  const result = await kvClient.watch(
-    $state.snapshot(watchedKvEntriesState.keys),
-    (updatedEntries) => {
-      const isInitialCall = !watchedKvEntriesState.keysEntries.length;
-      if (updatedEntries.length === watchedKvEntriesState.keys.length) {
-        watchedKvEntriesState.keysEntries = updatedEntries;
-      } else {
-        watchedKvEntriesState.keysEntries = watchedKvEntriesState.keysEntries.map(
-          (entry) => updatedEntries.find((ue) => isSameKvKey(entry.key, ue.key)) ?? entry,
-        );
-      }
-
-      kvEntriesState.entries = kvEntriesState.entries.map(
+  const result = await client.watch(watchedKvEntriesState.keys, (updatedEntries) => {
+    const isInitialCall = !watchedKvEntriesState.keysEntries.length;
+    if (updatedEntries.length === watchedKvEntriesState.keys.length) {
+      watchedKvEntriesState.keysEntries = updatedEntries;
+    } else {
+      watchedKvEntriesState.keysEntries = watchedKvEntriesState.keysEntries.map(
         (entry) => updatedEntries.find((ue) => isSameKvKey(entry.key, ue.key)) ?? entry,
       );
+    }
 
-      if (kvEntryDialogState.entry && kvEntryDialogState.open) {
-        const updatedEntry = updatedEntries.find((ue) =>
-          isSameKvKey(kvEntryDialogState.entry!.key, ue.key),
-        );
-        if (updatedEntry) kvEntryDialogState.entry = updatedEntry;
-      }
+    kvEntriesState.entries = kvEntriesState.entries.map(
+      (entry) => updatedEntries.find((ue) => isSameKvKey(entry.key, ue.key)) ?? entry,
+    );
 
-      if (!isInitialCall && !isReopen) {
-        const updateId = Date.now();
-        watchedKvEntriesState.justUpdatedEntries.push({
-          id: updateId,
-          entries: updatedEntries,
-        });
+    if (kvEntryDialogState.entry && kvEntryDialogState.open) {
+      const updatedEntry = updatedEntries.find((ue) =>
+        isSameKvKey(kvEntryDialogState.entry!.key, ue.key),
+      );
+      if (updatedEntry) kvEntryDialogState.entry = updatedEntry;
+    }
 
-        setTimeout(() => {
-          watchedKvEntriesState.justUpdatedEntries =
-            watchedKvEntriesState.justUpdatedEntries.filter(
-              (entry) => entry.id !== updateId,
-            );
-        }, 1000);
-      }
+    if (!isInitialCall && !isReopen) {
+      const updateId = Date.now();
+      watchedKvEntriesState.justUpdatedEntries.push({
+        id: updateId,
+        entries: updatedEntries,
+      });
 
-      if (isReopen) isReopen = false;
-    },
-  );
+      setTimeout(() => {
+        watchedKvEntriesState.justUpdatedEntries =
+          watchedKvEntriesState.justUpdatedEntries.filter(
+            (entry) => entry.id !== updateId,
+          );
+      }, 1000);
+    }
+
+    if (isReopen) isReopen = false;
+  });
 
   if (result) {
     toast.error(

@@ -57,7 +57,7 @@
       keysIfUndelivered: keysIfUndeliveredOption,
     };
 
-    props.onSubmit($state.snapshot(editorValue), $state.snapshot(options));
+    props.onSubmit(editorValue, options);
   }
 </script>
 

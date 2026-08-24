@@ -3,9 +3,9 @@
   import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
   import { cn } from "$lib/shadcn-utils";
   import { buttonVariants } from "$lib/ui/shadcn/button";
-  import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
   import EnqueueMessageForm from "./EnqueueMessageForm.svelte";
+  import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
 
   let isEnqueuing = $state(false);
   let isDialogOpen = $state(false);
@@ -15,8 +15,10 @@
     options?: EnqueueRequestInput["options"],
     reset?: () => void,
   ) {
+    const client = await getOpenedKvStoreClient();
+
     isEnqueuing = true;
-    const { error } = await kvClient.enqueue(message, options);
+    const { error } = await client.enqueue(message, options);
     if (error) {
       toast.error("Failed to enqueue message", { description: error });
     } else {
@@ -47,7 +49,7 @@
     Enqueue
     <MessageSquarePlusIcon class="size-4" />
   </Dialog.Trigger>
-  <Dialog.Content class="max-w-2xl w-full max-h-[600px] overflow-auto p-3 gap-2">
+  <Dialog.Content class="max-w-2xl w-full max-h-150 overflow-auto p-3 gap-2">
     <EnqueueMessageForm onSubmit={enqueue} loading={isEnqueuing} />
   </Dialog.Content>
 </Dialog.Root>

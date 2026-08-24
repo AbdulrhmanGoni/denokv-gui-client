@@ -43,9 +43,9 @@ async function selectEntryRow(page: Page, keyPart: string) {
 export function watchedKeysTests() {
   test.beforeAll(async ({ page }) => {
     await page.evaluate(async (entries) => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+      const client = await (globalThis as any).getOpenedKvStoreClient();
       for (const entry of entries) {
-        await kvClient.set(entry.key, entry.value);
+        await client.set(entry.key, entry.value);
       }
     }, watchedEntries);
   });
@@ -109,8 +109,8 @@ export function watchedKeysTests() {
     await expect(dialog).toContainText('"initial-live"');
 
     await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      await kvClient.set(["watch-tests", "live"], {
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      await client.set(["watch-tests", "live"], {
         type: "String",
         data: "updated-live",
       });
@@ -120,8 +120,8 @@ export function watchedKeysTests() {
     await expect(page.locator("tr", { hasText: '"updated-live"' })).toBeVisible();
 
     await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      await kvClient.deleteKey(["watch-tests", "live"]);
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      await client.delete(["watch-tests", "live"]);
     });
 
     await expect(dialog.getByText("null").first()).toBeVisible();
@@ -157,8 +157,8 @@ export function watchedKeysTests() {
     await expect(dialog.getByText("null", { exact: true })).toHaveCount(2);
 
     const newVersionstamp = await page.evaluate<string>(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      const res = await kvClient.set(
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      const res = await client.set(
         '["watch-tests", "new key", 100n]',
         {
           type: "String",
