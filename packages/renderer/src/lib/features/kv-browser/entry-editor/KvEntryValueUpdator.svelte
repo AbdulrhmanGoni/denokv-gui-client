@@ -28,12 +28,14 @@
 
       globalState.loadingOverlay.open = true;
       globalState.loadingOverlay.text = "Updating entry...";
-      const { error, result } = await client.set(entry.key, kvValueEditorValue);
+      const updatedValue = $state.snapshot(kvValueEditorValue);
+      const currentEntry = $state.snapshot(entry);
+      const { error, result } = await client.set(currentEntry.key, updatedValue);
 
       if (result && result.ok) {
         const updatedEntry = {
-          key: entry.key,
-          value: normalizeNewValue(kvValueEditorValue),
+          key: currentEntry.key,
+          value: normalizeNewValue(updatedValue),
           versionstamp: result.versionstamp,
         };
 
