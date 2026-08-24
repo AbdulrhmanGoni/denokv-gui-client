@@ -10,7 +10,9 @@ import { syncTrycatch } from "../helpers.js";
 
 export interface SettingsServiceInterface {
   getSettings(): Promise<TrycatchResult<Settings | undefined>>;
-  updateSettings(updatedSettings: Settings): Promise<TrycatchResult<boolean>>;
+  updateSettings(
+    updatedSettings: Settings,
+  ): Promise<TrycatchResult<Settings | undefined>>;
 }
 
 export class SettingsServiceModule implements AppModule {
@@ -26,14 +28,21 @@ export class SettingsServiceModule implements AppModule {
         databaseTransaction(() => {
           const settings = getSettings();
           if (settings) {
-            const result = updateSettingQuery.run(
-              JSON.stringify({ ...settings, ...updatedSettings }),
-            );
-            return !!result.changes;
+            const mergedSettings = { ...settings, ...updatedSettings };
+            const result = updateSettingQuery.run(JSON.stringify(mergedSettings));
+            if (result.changes) {
+              return mergedSettings;
+            }
+
+            throw new Error("Failed to update settings");
           }
 
           const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
-          return !!result.changes;
+          if (result.changes) {
+            return updatedSettings;
+          }
+
+          throw new Error("Failed to insert settings");
         }),
       );
     };

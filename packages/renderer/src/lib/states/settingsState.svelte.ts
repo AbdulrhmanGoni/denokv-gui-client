@@ -3,23 +3,16 @@ import { toast } from "svelte-sonner";
 
 export const settingsState: Settings = $state({});
 
-export async function setAutoCheckForUpdate(value: boolean) {
-  const { error } = await settingsService.updateSettings({ autoCheckForUpdate: value });
-  if (error) return toast.error(error);
-  await loadSettings();
+export function setAutoCheckForUpdate(value: boolean) {
+  applySettingsResult(
+    settingsService.updateSettings({
+      autoCheckForUpdate: value,
+    }),
+  );
 }
 
-export async function loadSettings() {
-  const settings = await settingsService.getSettings();
-  if (settings.error) return toast.error(settings.error);
-
-  Object.assign(settingsState, settings.result ?? {});
-
-  const hardwareAcceleration = await hardwareAccelerationService.isEnabled();
-  if (hardwareAcceleration.error) return toast.error(hardwareAcceleration.error);
-
-  settingsPageState.isHardwareAccelerationCurrentlyDisabled =
-    !hardwareAcceleration.result;
+export function loadSettings() {
+  return applySettingsResult(settingsService.getSettings());
 }
 
 type SettingsPageState = {
@@ -31,15 +24,30 @@ export const settingsPageState: SettingsPageState = $state({
   isHardwareAccelerationCurrentlyDisabled: false,
 });
 
+export async function loadHardwareAccelerationState() {
+  const hardwareAcceleration = await hardwareAccelerationService.isEnabled();
+  if (hardwareAcceleration.error) return toast.error(hardwareAcceleration.error);
+
+  settingsPageState.isHardwareAccelerationCurrentlyDisabled =
+    !hardwareAcceleration.result;
+}
+
 export function openSettingsPage() {
   settingsPageState.open = true;
 }
 
-export async function setHardwareAccelerationMode(value: boolean) {
-  const { error } = await settingsService.updateSettings({
-    disableHardwareAcceleration: value,
-  });
+export function setHardwareAccelerationMode(value: boolean) {
+  applySettingsResult(
+    settingsService.updateSettings({
+      disableHardwareAcceleration: value,
+    }),
+  );
+}
 
+async function applySettingsResult(
+  updatePromise: Promise<TrycatchResult<Settings | undefined>>,
+) {
+  const { error, result } = await updatePromise;
   if (error) return toast.error(error);
-  await loadSettings();
+  if (result) Object.assign(settingsState, result);
 }

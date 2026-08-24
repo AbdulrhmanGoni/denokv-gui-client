@@ -1,13 +1,11 @@
 <script lang="ts">
-  import {
-    openNewUpdateReleaseNotes,
-    updateAppState,
-  } from "$lib/states/appUpdate.svelte";
+  import { openNewUpdateReleaseNotes } from "$lib/states/appUpdate.svelte";
   import { openSettingsPage } from "$lib/states/settingsState.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import NotesIcon from "@lucide/svelte/icons/notepad-text";
   import DownloadIcon from "@lucide/svelte/icons/download";
   import { startDownloadingUpdate } from "$lib/states/appUpdate.svelte";
+
   const buttonClasses = "px-1.5 py-1 h-fit text-xs! rounded-sm items-start";
 
   const { dismiss }: { dismiss: () => void } = $props();

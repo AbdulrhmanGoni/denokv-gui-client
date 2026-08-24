@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    loadHardwareAccelerationState,
     settingsPageState,
     setHardwareAccelerationMode,
     settingsState,
@@ -12,6 +13,11 @@
   import { appManager } from "@app/preload";
   import RotateCw from "@lucide/svelte/icons/rotate-cw";
   import { toast } from "svelte-sonner";
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    loadHardwareAccelerationState();
+  });
 
   let hardwareAccelerationEnabled = $derived(!settingsState.disableHardwareAcceleration);
   let hardwareAccelerationModeChanged = $derived(
