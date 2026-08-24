@@ -1,11 +1,6 @@
 import { ipcRenderer } from "electron";
 import path from "node:path";
-import {
-  type BridgeServerClient,
-  deserializeKvValue,
-  serializeKvKey,
-  serializeKvValue,
-} from "@app/bridge-server";
+import { deserializeKvValue, serializeKvKey, serializeKvValue } from "@app/bridge-server";
 import type {
   AppManagerInterface,
   AppUpdaterInterface,
@@ -13,7 +8,6 @@ import type {
   BrowsingParamsServiceInterface,
   FileSystemServiceInterface,
   HardwareAccelerationInterface,
-  KvServerClientInterface,
   KvStoresServiceInterface,
   LastFetchedUpdateServiceInterface,
   MetadataInterface,
@@ -83,49 +77,6 @@ const kvStoresService: KvStoresServiceInterface = {
   },
 };
 
-type KvServerClientType = Omit<KvServerClientInterface, "watch"> & {
-  watch: BridgeServerClient["watch"];
-};
-
-const kvClient: KvServerClientType = {
-  browse(params, nextCursor) {
-    return ipcRenderer.invoke("kvClient:browse", params, nextCursor);
-  },
-  set(kvKey, value, options) {
-    return ipcRenderer.invoke("kvClient:set", kvKey, value, options);
-  },
-  deleteKey(key, options) {
-    return ipcRenderer.invoke("kvClient:deleteKey", key, options);
-  },
-  get(key, options) {
-    return ipcRenderer.invoke("kvClient:get", key, options);
-  },
-  enqueue(value, options) {
-    return ipcRenderer.invoke("kvClient:enqueue", value, options);
-  },
-  atomic(operations, options) {
-    return ipcRenderer.invoke("kvClient:atomic", operations, options);
-  },
-  async watch(keys, listener, options) {
-    ipcRenderer.removeAllListeners("kvClient:watch-listener");
-    const errorResult = (await ipcRenderer.invoke(
-      "kvClient:watch",
-      keys,
-      options,
-    )) as Awaited<ReturnType<KvServerClientType["watch"]>>;
-
-    if (errorResult) return errorResult;
-
-    ipcRenderer.on("kvClient:watch-listener", (_event, updatedEntries) =>
-      listener(updatedEntries),
-    );
-  },
-  cancelWatcher() {
-    ipcRenderer.removeAllListeners("kvClient:watch-listener");
-    return ipcRenderer.invoke("kvClient:cancelWatcher");
-  },
-};
-
 type BridgeServerType = BridgeServerInterface & {
   utils: {
     serializeKvKey: typeof serializeKvKey;
@@ -140,6 +91,9 @@ const bridgeServer: BridgeServerType = {
   },
   closeServer() {
     return ipcRenderer.invoke("bridgeServer:closeServer");
+  },
+  getOpenedServer() {
+    return ipcRenderer.invoke("bridgeServer:getOpenedServer");
   },
   utils: {
     serializeKvKey,
@@ -262,7 +216,6 @@ export {
   metadata,
   fileSystemService,
   kvStoresService,
-  kvClient,
   bridgeServer,
   appUpdater,
   settingsService,

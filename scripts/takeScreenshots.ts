@@ -182,11 +182,11 @@ async function takeScreenshotOfKvEntriesTable(page: Page) {
     .dblclick({ position: { x: 5, y: 5 } });
 
   await page.evaluate(async (entries) => {
-    const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+    const client = await (globalThis as any).getOpenedKvStoreClient();
 
-    if (!(await kvClient.get(entries[0].key))?.result) {
+    if (!(await client.get(entries[0].key))?.result) {
       for (const entry of entries) {
-        await kvClient.set(entry.key, entry.value);
+        await client.set(entry.key, entry.value);
       }
     }
   }, randomTestingKvEntries);
@@ -249,9 +249,8 @@ async function takeScreenshotOfBrowsingParamsDialog(page: Page) {
 async function takeScreenshotOfSavedBrowsingParamsDialog(page: Page) {
   await page.evaluate(async () => {
     const kvStoresService = globalThis["kvStoresService" as keyof typeof globalThis];
-    const store = (await kvStoresService.getAll()).find(
-      (store: any) => store.type === "local",
-    );
+    const { result: stores } = await kvStoresService.getAll();
+    const store = stores.find((store: any) => store.type === "local");
 
     const browsingParamsService =
       globalThis["browsingParamsService" as keyof typeof globalThis];
@@ -411,9 +410,10 @@ async function takeScreenshotOfWatchedKeysDialog(page: Page) {
   ];
 
   await page.evaluate(async (entries) => {
-    const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+    const client = await (globalThis as any).getOpenedKvStoreClient();
+
     for (const entry of entries) {
-      await kvClient.set(entry.key, entry.value);
+      await client.set(entry.key, entry.value);
     }
   }, watchedEntries);
 

@@ -18,10 +18,10 @@
   import XIcon from "@lucide/svelte/icons/x";
   import RotateCWIcon from "@lucide/svelte/icons/rotate-cw";
   import type { AtomicOperationInput } from "@app/bridge-server";
-  import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
   import { globalState } from "$lib/states/globalState.svelte";
   import LoaderIcon from "@lucide/svelte/icons/loader";
+  import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
 
   function getAtomicOperationsInOrder() {
     let orderedOperations: AtomicOperationInput[] = Array.from({
@@ -39,10 +39,12 @@
       return;
     }
 
+    const client = await getOpenedKvStoreClient();
+
     globalState.loadingOverlay.open = true;
     globalState.loadingOverlay.text = "Committing Atomic Operations...";
     const orderedOperations = getAtomicOperationsInOrder();
-    const response = await kvClient.atomic(orderedOperations, { jsKey: true });
+    const response = await client.atomic(orderedOperations, { jsKey: true });
     if (response.result) {
       toast.success("The Atomic operations committed successfully");
       resetOperations();
@@ -75,7 +77,7 @@
     <AtomIcon class="size-4.5" />
   </Dialog.Trigger>
   <Dialog.Content
-    class="max-h-[600px] h-full max-w-5xl w-full bg-transparent border-0 py-0 px-2 shadow-none!"
+    class="max-h-150 h-full max-w-5xl w-full bg-transparent border-0 py-0 px-2 shadow-none!"
     showCloseButton={false}
   >
     <div class="flex flex-col gap-3 p-3 bg-background rounded-lg border shadow-lg">

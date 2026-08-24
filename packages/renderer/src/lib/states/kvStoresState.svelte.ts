@@ -1,6 +1,10 @@
 import { globalState } from "$lib/states/globalState.svelte";
-import { bridgeServer, kvStoresService } from "@app/preload";
+import { bridgeServer, kvStoresService, metadata } from "@app/preload";
 import { toast } from "svelte-sonner";
+import {
+  BridgeServerClient,
+  type BridgeServerClientOptions,
+} from "@app/bridge-server/client";
 
 type StoresState = {
   kvStores: KvStore[];
@@ -8,6 +12,7 @@ type StoresState = {
   loaded: boolean;
   error: string;
   openedStore: KvStore | null;
+  openedStoreClient: BridgeServerClient | null;
   openedStoreToEdit: KvStore | null;
   openAddNewStoreForm: boolean;
   renameDefaultKvStore: KvStore | null;
@@ -25,6 +30,7 @@ export let kvStoresState: StoresState = $state({
   loaded: false,
   error: "",
   openedStore: null,
+  openedStoreClient: null,
   openedStoreToEdit: null,
   openAddNewStoreForm: false,
   renameDefaultKvStore: null,
@@ -75,14 +81,17 @@ export async function openKvStore(kvStore: KvStore) {
   }
 
   if (testSucceed) {
-    const isStarted = await startKvStoreServer(kvStore);
-    if (isStarted) {
+    const kvStoreClient = await startKvStoreServer(kvStore);
+    if (kvStoreClient) {
       kvStoresState.openedStore = kvStore;
+      kvStoresState.openedStoreClient = kvStoreClient;
+      return true;
+    } else {
+      return false;
     }
-    return isStarted;
   }
 
-  toast.error("Connection Failed", {
+  toast.error("Connection Test failed", {
     description: testKvStoreConnectionErrorMessages[kvStore.type],
   });
   return false;
@@ -101,27 +110,50 @@ export function removeKvStore(kvStore: KvStore) {
   kvStoresState.kvStoreTypeCounts[kvStore.type] -= 1;
 }
 
-async function startKvStoreServer(kvStore: KvStore) {
-  let isOpened = false;
-  let error = "";
-
+async function startKvStoreServer(kvStore: KvStore): Promise<BridgeServerClient | null> {
   globalState.loadingOverlay.open = true;
   globalState.loadingOverlay.text = "Starting the Kv bridge server...";
   const response = await bridgeServer.openServer($state.snapshot(kvStore));
-  isOpened = response.result ?? false;
-  error = response.error ?? "";
   globalState.loadingOverlay.open = false;
   globalState.loadingOverlay.text = "";
 
-  if (!isOpened) {
+  if (response.error) {
     toast.error("Error when trying to start the server", {
       description:
-        error ||
+        response.error ||
         "We could not start the server that communicates with the Deno KV database.",
     });
+    return null;
   }
 
-  return isOpened;
+  const options: BridgeServerClientOptions = {};
+  if (response.result?.authToken) {
+    options.authToken = response.result?.authToken;
+  }
+  return new BridgeServerClient(response.result!.url, options);
+}
+
+export async function getOpenedKvStoreClient(): Promise<BridgeServerClient> {
+  if (!kvStoresState.openedStore) {
+    const message = "There is no opened kv store";
+    toast.error(message);
+    throw new Error(message);
+  } else if (!kvStoresState.openedStoreClient) {
+    const openedServer = await bridgeServer.getOpenedServer();
+    if (openedServer) {
+      const options: BridgeServerClientOptions = {};
+      if (openedServer.authToken) {
+        options.authToken = openedServer.authToken;
+      }
+      kvStoresState.openedStoreClient = new BridgeServerClient(openedServer.url, options);
+    } else {
+      const message = "The kv store has been closed";
+      toast.error(message);
+      throw new Error(message);
+    }
+  }
+
+  return kvStoresState.openedStoreClient;
 }
 
 const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
@@ -130,3 +162,7 @@ const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
   default: "Either the path to this default local KV Store is wrong, moved or deleted",
   bridge: "Either authentication failed or the bridge server is down.",
 };
+
+if (metadata.environment !== "production") {
+  Object.assign(globalThis, { getOpenedKvStoreClient });
+}

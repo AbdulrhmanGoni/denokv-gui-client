@@ -1,15 +1,16 @@
-import { kvClient, browsingParamsService } from "@app/preload";
-import { kvStoresState } from "./kvStoresState.svelte";
+import { browsingParamsService } from "@app/preload";
+import { getOpenedKvStoreClient, kvStoresState } from "./kvStoresState.svelte";
 import { columns } from "$lib/features/kv-browser/table/columns";
 import { createSvelteTable } from "$lib/ui/shadcn/data-table";
 import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
 import { isSameKvKey } from "@app/bridge-server/kv-utils";
 import { toast } from "svelte-sonner";
+import type { BrowsingOptions } from "@app/bridge-server";
 
 type KvEntriesState = {
   entries: KvEntry[];
   params: BrowsingParams & {
-    cursors: NonNullable<BrowseRouteOptions["cursor"]>[];
+    cursors: NonNullable<BrowsingOptions["cursor"]>[];
   };
   loading: boolean;
   fetched: boolean;
@@ -42,36 +43,63 @@ export const kvEntriesStateDefaultValues: KvEntriesState = {
 export const kvEntriesState: KvEntriesState = $state(kvEntriesStateDefaultValues);
 
 export async function fetchEntries() {
-  if (kvStoresState.openedStore) {
-    kvEntriesState.loading = true;
-    const { error, result } = await kvClient.browse(
-      $state.snapshot(kvEntriesState.params),
-      kvEntriesState.params.cursors.at(-1),
-    );
+  const client = await getOpenedKvStoreClient();
 
-    if (error) {
-      kvEntriesState.error = error;
-      kvEntriesState.entries = [];
-      kvEntriesState.fetched = false;
-    } else {
-      kvEntriesState.error = "";
-      kvEntriesState.entries = result?.entries ? result?.entries : [];
-      kvEntriesState.fetched = true;
+  kvEntriesState.loading = true;
 
-      if (result?.cursor) {
-        if (kvEntriesState.params.cursors.at(-1) !== result.cursor) {
-          kvEntriesState.params.cursors.push(result.cursor);
-        }
-      } else {
-        kvEntriesState.noMoreEntries = true;
-      }
+  const options: BrowsingOptions = {
+    limit: kvEntriesState.params.limit,
+    batchSize: kvEntriesState.params.batchSize,
+    reverse: kvEntriesState.params.reverse,
+    consistency: kvEntriesState.params.consistency,
+    xssSafe: false,
+    jsKey: true,
+  };
 
-      if (kvEntriesState.entries.length < kvEntriesState.params.limit) {
-        kvEntriesState.noMoreEntries = true;
-      }
-    }
-    kvEntriesState.loading = false;
+  const nextCursor = kvEntriesState.params.cursors.at(-1);
+  if (nextCursor) {
+    options.cursor = nextCursor;
   }
+
+  for (const param of ["prefix", "start", "end"] as const) {
+    if (kvEntriesState.params[param] === "[]") continue;
+
+    const evaluatedKey = (0, eval)(`(${kvEntriesState.params[param]})`);
+    const isArray = Array.isArray(evaluatedKey);
+    if (isArray) {
+      if (evaluatedKey.length) options[param] = kvEntriesState.params[param];
+    } else {
+      return {
+        error: `Invalid ${param} Key, Must be an array containing valid Deno Kv Key-parts`,
+        result: null,
+      };
+    }
+  }
+
+  const { error, result } = await client.browse(options);
+
+  if (error) {
+    kvEntriesState.error = error;
+    kvEntriesState.entries = [];
+    kvEntriesState.fetched = false;
+  } else {
+    kvEntriesState.error = "";
+    kvEntriesState.entries = result?.entries ? result?.entries : [];
+    kvEntriesState.fetched = true;
+
+    if (result?.cursor) {
+      if (kvEntriesState.params.cursors.at(-1) !== result.cursor) {
+        kvEntriesState.params.cursors.push(result.cursor);
+      }
+    } else {
+      kvEntriesState.noMoreEntries = true;
+    }
+
+    if (kvEntriesState.entries.length < kvEntriesState.params.limit) {
+      kvEntriesState.noMoreEntries = true;
+    }
+  }
+  kvEntriesState.loading = false;
 }
 
 export function removeEntryFromState(entry: KvEntry) {

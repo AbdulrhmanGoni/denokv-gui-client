@@ -41,28 +41,6 @@ export function preloadContextExposureToRendererTests() {
     targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
   });
 
-  test(`'kvClient' should be exposed as an object with its methods`, async ({ page }) => {
-    const kvClient = await page.evaluate(
-      () => globalThis["kvClient" as keyof typeof globalThis],
-    );
-    expect(typeof kvClient).toEqual("object");
-
-    const exposedMethods = Object.keys(kvClient);
-    const targetMethods = [
-      "browse",
-      "set",
-      "deleteKey",
-      "get",
-      "enqueue",
-      "atomic",
-      "watch",
-      "cancelWatcher",
-    ];
-
-    expect(exposedMethods.length).toBe(targetMethods.length);
-    targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
-  });
-
   test(`'bridgeServer' should be exposed as an object with its methods`, async ({
     page,
   }) => {
@@ -72,7 +50,7 @@ export function preloadContextExposureToRendererTests() {
     expect(typeof bridgeServer).toEqual("object");
 
     const exposedMethods = Object.keys(bridgeServer);
-    const targetMethods = ["openServer", "closeServer", "utils"];
+    const targetMethods = ["openServer", "closeServer", "getOpenedServer", "utils"];
 
     expect(exposedMethods.length).toBe(targetMethods.length);
     targetMethods.forEach((method) => expect(exposedMethods).toContain(method));

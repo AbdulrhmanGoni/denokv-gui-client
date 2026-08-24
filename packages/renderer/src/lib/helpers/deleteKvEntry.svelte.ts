@@ -1,5 +1,5 @@
 import { removeEntryFromState } from "$lib/states/kvEntriesState.svelte";
-import { kvClient } from "@app/preload";
+import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
 import { toast } from "svelte-sonner";
 
 type DeleteKvEntryOptions = {
@@ -12,7 +12,9 @@ export async function deleteKvEntry(
   entry: SerializedKvEntry,
   options?: DeleteKvEntryOptions,
 ) {
-  const { error } = await kvClient.deleteKey($state.snapshot(entry.key));
+  const client = await getOpenedKvStoreClient();
+
+  const { error } = await client.delete(entry.key);
   if (error) {
     toast.error("Failed to delete the entry", { description: error });
     options?.onError?.();

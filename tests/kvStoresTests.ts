@@ -278,8 +278,8 @@ export function kvStoresTests() {
 
     const testEntryKey = "should-be-deleted-after-replacing-the-kv-store";
     await page.evaluate(async (key) => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      await kvClient.set([key], {
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      await client.set([key], {
         type: "String",
         data: "Should be deleted after replacing the current kv store with a new fresh one",
       });
@@ -319,8 +319,8 @@ export function kvStoresTests() {
     await replaceStoreCard.dblclick({ position: { x: 10, y: 10 } });
 
     const deletedEntryResponse = await page.evaluate(async (key) => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      return await kvClient.get([key]);
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      return await client.get([key]);
     }, testEntryKey);
     expect(deletedEntryResponse).toEqual({
       result: null,

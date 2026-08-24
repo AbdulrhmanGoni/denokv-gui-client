@@ -1,6 +1,5 @@
 <script lang="ts">
   import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
-  import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
   import FileIcon from "@lucide/svelte/icons/file-plus";
   import {
@@ -8,6 +7,7 @@
     openAddKvEntryFormState,
   } from "$lib/states/kvEntryDialogState.svelte";
   import KvEntryForm from "../entry-editor/KvEntryForm.svelte";
+  import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
 
   let addingEntry = $state(false);
 
@@ -25,17 +25,19 @@
     expires: number,
     overwrite: boolean,
   ) {
+    const client = await getOpenedKvStoreClient();
+
     addingEntry = true;
 
     const options: SetKeyOptions = { overwrite, jsKey: true };
     if (!isNaN(expires)) options.expires = expires;
 
-    const res = await kvClient.set(key, value, options);
+    const res = await client.set(key, value, options);
     if (res.result) {
-      toast.success("The entry was added successfully");
+      toast.success("The kv entry was added successfully");
       closeAddKvEntryDialog();
     } else {
-      toast.error("Failed to add the entry", {
+      toast.error("Failed to add the kv entry", {
         description: res.error ?? undefined,
       });
     }

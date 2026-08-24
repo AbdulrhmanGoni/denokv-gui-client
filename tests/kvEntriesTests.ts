@@ -28,8 +28,8 @@ export function kvEntriesTests() {
     const key = [`prevent-overwrite-${Date.now()}`];
 
     await page.evaluate(async (key) => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      return await kvClient.set(key, { type: "String", data: "test" });
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      return await client.set(key, { type: "String", data: "test" });
     }, key);
 
     await page.locator("button", { hasText: "New" }).click();
@@ -47,8 +47,8 @@ export function kvEntriesTests() {
     await page.keyboard.press("Escape");
 
     const response = await page.evaluate(async (key) => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      return await kvClient.get(key);
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      return await client.get(key);
     }, key);
 
     expect(response).toEqual({
@@ -64,8 +64,8 @@ export function kvEntriesTests() {
     });
 
     await page.evaluate(async (key) => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      await kvClient.deleteKey(key);
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      await client.delete(key);
     }, key);
   });
 

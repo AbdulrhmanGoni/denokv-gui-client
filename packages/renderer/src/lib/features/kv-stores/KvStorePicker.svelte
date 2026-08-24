@@ -36,9 +36,11 @@
 
 <Select.Root type="single" onValueChange={onKvStoreChange} bind:value={openedKvStoreId}>
   <Select.Trigger class="text-base">
-    {@render item(kvStoresState.openedStore!)}
+    {#if kvStoresState.openedStore}
+      {@render item(kvStoresState.openedStore)}
+    {/if}
   </Select.Trigger>
-  <Select.Content class="max-h-[400px]">
+  <Select.Content class="max-h-100">
     {#each kvStoresState.kvStores as kvStore (kvStore.id)}
       <Select.Item value={kvStore.id}>
         {@render item(kvStore)}

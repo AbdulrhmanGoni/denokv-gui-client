@@ -1,7 +1,6 @@
 <script lang="ts">
   import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
-  import { kvClient } from "@app/preload";
   import { toast } from "svelte-sonner";
   import KvKeyEditor from "$lib/features/kv-browser/entry-editor/KvKeyEditor.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
@@ -14,6 +13,7 @@
     openKvEntryDialog,
     openLookUpKeyDialogState,
   } from "$lib/states/kvEntryDialogState.svelte";
+  import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
 
   let isLoading = $state(false);
   let kvKeyCodeEditor: KvKeyCodeEditor | undefined = $state();
@@ -27,9 +27,11 @@
   }
 
   async function searchForKey() {
+    const client = await getOpenedKvStoreClient();
+
     isLoading = true;
     const key = kvKeyCodeEditor!.toString();
-    const { error, result } = await kvClient.get(key, { jsKey: true });
+    const { error, result } = await client.get(key, { jsKey: true });
 
     if (result) {
       openKvEntryDialog(result);

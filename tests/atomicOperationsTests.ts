@@ -25,8 +25,8 @@ export function atomicOperationsTests() {
     await page.locator("button", { hasText: "Commit" }).click();
 
     const response = await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      return await kvClient.get(["new-kv-that-did-not-exist"]);
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      return await client.get(["new-kv-that-did-not-exist"]);
     });
 
     expect(response).toEqual({
@@ -66,8 +66,8 @@ export function atomicOperationsTests() {
     await page.locator("button", { hasText: "Commit" }).click();
 
     const response = await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      return await kvClient.get(["new-kv-that-did-not-exist"]);
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      return await client.get(["new-kv-that-did-not-exist"]);
     });
 
     expect(response).toEqual({
@@ -85,8 +85,8 @@ export function atomicOperationsTests() {
 
   test("Add, Delete, and Update entries in one atomic transaction", async ({ page }) => {
     await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      await kvClient.set(["new-kv", "should-be-updated-in-atomic-transaction", true], {
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      await client.set(["new-kv", "should-be-updated-in-atomic-transaction", true], {
         type: "String",
         data: "should-be-updated",
       });
@@ -138,11 +138,12 @@ export function atomicOperationsTests() {
     await page.locator("button", { hasText: "Commit" }).click();
 
     const responses = await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+
       return {
-        newKvResponse: await kvClient.get(["new-kv", "added-in-atomic-transaction"]),
-        deletedKvResponse: await kvClient.get(["new-kv-that-did-not-exist"]),
-        updatedKvResponse: await kvClient.get([
+        newKvResponse: await client.get(["new-kv", "added-in-atomic-transaction"]),
+        deletedKvResponse: await client.get(["new-kv-that-did-not-exist"]),
+        updatedKvResponse: await client.get([
           "new-kv",
           "should-be-updated-in-atomic-transaction",
           true,
@@ -182,14 +183,11 @@ export function atomicOperationsTests() {
     page,
   }) => {
     await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
-      await kvClient.set(
-        ["new-kv", "should-not-be-updated-in-atomic-transaction", true],
-        {
-          type: "String",
-          data: "should-not-be-updated",
-        },
-      );
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+      await client.set(["new-kv", "should-not-be-updated-in-atomic-transaction", true], {
+        type: "String",
+        data: "should-not-be-updated",
+      });
     });
 
     // Add a new entry
@@ -233,11 +231,12 @@ export function atomicOperationsTests() {
     await page.locator("button", { hasText: "Commit" }).click();
 
     const responses = await page.evaluate(async () => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+
       return {
-        newKvResponse: await kvClient.get(["new-kv", "should-not-be-added"]),
-        deletedKvResponse: await kvClient.get(["new-kv", "added-in-atomic-transaction"]),
-        updatedKvResponse: await kvClient.get([
+        newKvResponse: await client.get(["new-kv", "should-not-be-added"]),
+        deletedKvResponse: await client.get(["new-kv", "added-in-atomic-transaction"]),
+        updatedKvResponse: await client.get([
           "new-kv",
           "should-not-be-updated-in-atomic-transaction",
           true,
@@ -287,9 +286,10 @@ export function atomicOperationsTests() {
     ];
 
     await page.evaluate(async (operations: TestOperation[]) => {
-      const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+      const client = await (globalThis as any).getOpenedKvStoreClient();
+
       for (const operation of operations) {
-        await kvClient.set(["operations", operation.name], {
+        await client.set(["operations", operation.name], {
           type: "KvU64",
           data: operation.currentValue,
         });
@@ -314,12 +314,13 @@ export function atomicOperationsTests() {
 
     const responses: { operation: TestOperation; response: any }[] = await page.evaluate(
       async (operations: TestOperation[]) => {
-        const kvClient = globalThis["kvClient" as keyof typeof globalThis];
+        const client = await (globalThis as any).getOpenedKvStoreClient();
+
         const responses: { operation: TestOperation; response: any }[] = [];
         for (const operation of operations) {
           responses.push({
             operation,
-            response: await kvClient.get(["operations", operation.name]),
+            response: await client.get(["operations", operation.name]),
           });
         }
         return responses;
