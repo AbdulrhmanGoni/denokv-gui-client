@@ -17,4 +17,7 @@ export default defineConfig({
       $lib: path.resolve(import.meta.dirname, "./src/lib"),
     },
   },
+  build: {
+    minify: process.env.DEBUG === "true" ? false : undefined,
+  },
 });
