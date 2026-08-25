@@ -1,7 +1,7 @@
 import { BrowserWindow, screen } from "electron";
 import type { AppInitConfig, AppModule, ModuleContext } from "./types.js";
 
-export class WindowManager implements AppModule {
+export class WindowManagerModule implements AppModule {
   readonly #preload: { path: string };
   readonly #renderer: { path: string } | URL;
   readonly #openDevTools;

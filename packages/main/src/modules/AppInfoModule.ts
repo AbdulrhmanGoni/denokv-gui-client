@@ -45,7 +45,7 @@ class AppInfoService {
   }
 }
 
-export type AppInfoInterface = Pick<
+export type AppInfoServiceInterface = Pick<
   AppInfoService,
   "getMetadata" | "getReleaseNotes" | "isHardwareAccelerationEnabled"
 >;

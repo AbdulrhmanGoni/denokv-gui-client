@@ -53,7 +53,7 @@ export type WatchedKeysServiceInterface = Pick<
   "getWatchedKeys" | "setWatchedKeys"
 >;
 
-export class WatchedKeysServiceModule implements AppModule {
+export class WatchedKeysModule implements AppModule {
   enable(_context: ModuleContext): void {
     const service = new WatchedKeysService();
 

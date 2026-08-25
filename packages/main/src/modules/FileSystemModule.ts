@@ -57,7 +57,7 @@ export type FileSystemServiceInterface = Pick<
   "selectDirectory" | "selectFile" | "openPath"
 >;
 
-export class FileSystemServiceModule implements AppModule {
+export class FileSystemModule implements AppModule {
   enable(context: ModuleContext): void {
     const service = new FileSystemService(context);
 

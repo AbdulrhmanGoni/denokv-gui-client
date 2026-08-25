@@ -2,10 +2,10 @@ import { ipcRenderer } from "electron";
 import path from "node:path";
 import { deserializeKvValue, serializeKvKey, serializeKvValue } from "@app/bridge-server";
 import type {
-  AppManagerInterface,
-  AppInfoInterface,
-  AppUpdaterInterface,
-  BridgeServerInterface,
+  AppManagerServiceInterface,
+  AppInfoServiceInterface,
+  AppUpdaterServiceInterface,
+  BridgeServerServiceInterface,
   BrowsingParamsServiceInterface,
   FileSystemServiceInterface,
   KvStoresServiceInterface,
@@ -15,7 +15,7 @@ import type {
 } from "@app/main/modules/interfaces";
 import type { ProgressInfo } from "@app/main";
 
-const appInfoService: AppInfoInterface = {
+const appInfoService: AppInfoServiceInterface = {
   getMetadata() {
     return ipcRenderer.invoke("appInfoService:getMetadata");
   },
@@ -79,7 +79,7 @@ const kvStoresService: KvStoresServiceInterface = {
   },
 };
 
-type BridgeServerInterfaceExtended = BridgeServerInterface & {
+type BridgeServerInterfaceExtended = BridgeServerServiceInterface & {
   utils: {
     serializeKvKey: typeof serializeKvKey;
     serializeKvValue: typeof serializeKvValue;
@@ -167,7 +167,7 @@ const browsingParamsService: BrowsingParamsServiceInterface = {
   },
 };
 
-type AppUpdaterInterfaceExtended = AppUpdaterInterface & {
+type AppUpdaterInterfaceExtended = AppUpdaterServiceInterface & {
   onDownloadingUpdateProgress(cb: (progressInfo: ProgressInfo) => void): void;
 };
 
@@ -200,7 +200,7 @@ const watchedKeysService: WatchedKeysServiceInterface = {
   },
 };
 
-const appManager: AppManagerInterface = {
+const appManager: AppManagerServiceInterface = {
   restartApp() {
     return ipcRenderer.invoke("restart-app");
   },

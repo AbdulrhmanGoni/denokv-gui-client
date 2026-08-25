@@ -1,16 +1,16 @@
 import { app } from "electron";
 import type { AppInitConfig, AppModule, ModuleContext } from "./modules/types.js";
 import { AppInfoModule } from "./modules/AppInfoModule.js";
-import { WindowManager } from "./modules/WindowManager.js";
-import { WebContentsUrlPolicy } from "./modules/WebContentsUrlPolicy.js";
-import { BridgeServerModule } from "./modules/bridgeServer.js";
-import { KvStoresServiceModule } from "./modules/kvStoresService.js";
-import { SettingsServiceModule } from "./modules/settingsService.js";
-import { LastFetchedUpdateServiceModule } from "./modules/lastFetchedUpdateService.js";
-import { BrowsingParamsServiceModule } from "./modules/browsingParamsService.js";
-import { AppUpdaterModule } from "./modules/appUpdaterModule.js";
-import { WatchedKeysServiceModule } from "./modules/watchedKeysService.js";
-import { FileSystemServiceModule } from "./modules/fileSystemService.js";
+import { WindowManagerModule } from "./modules/WindowManagerModule.js";
+import { WebContentsUrlPolicyModule } from "./modules/WebContentsUrlPolicyModule.js";
+import { BridgeServerModule } from "./modules/BridgeServerModule.js";
+import { KvStoresModule } from "./modules/KvStoresModule.js";
+import { SettingsModule } from "./modules/SettingsModule.js";
+import { LastFetchedUpdateModule } from "./modules/LastFetchedUpdateModule.js";
+import { BrowsingParamsModule } from "./modules/BrowsingParamsModule.js";
+import { AppUpdaterModule } from "./modules/AppUpdaterModule.js";
+import { WatchedKeysModule } from "./modules/WatchedKeysModule.js";
+import { FileSystemModule } from "./modules/FileSystemModule.js";
 import { AppManagerModule } from "./modules/AppManagerModule.js";
 
 async function initModules(modules: AppModule[]): Promise<void> {
@@ -24,18 +24,18 @@ export async function initApp(initConfig: AppInitConfig) {
   await initModules([
     new AppManagerModule(),
     new AppInfoModule(),
-    new FileSystemServiceModule(),
-    new KvStoresServiceModule(),
+    new FileSystemModule(),
+    new KvStoresModule(),
     new BridgeServerModule(),
-    new SettingsServiceModule(),
-    new LastFetchedUpdateServiceModule(),
-    new BrowsingParamsServiceModule(),
+    new SettingsModule(),
+    new LastFetchedUpdateModule(),
+    new BrowsingParamsModule(),
     new AppUpdaterModule(),
-    new WatchedKeysServiceModule(),
-    new WebContentsUrlPolicy(
+    new WatchedKeysModule(),
+    new WebContentsUrlPolicyModule(
       initConfig.renderer instanceof URL ? initConfig.renderer.origin : "",
     ),
-    new WindowManager({
+    new WindowManagerModule({
       initConfig,
       openDevTools: import.meta.env.DEV,
     }),

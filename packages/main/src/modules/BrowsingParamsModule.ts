@@ -112,7 +112,7 @@ class BrowsingParamsService {
 
 export type BrowsingParamsServiceInterface = BrowsingParamsService;
 
-export class BrowsingParamsServiceModule implements AppModule {
+export class BrowsingParamsModule implements AppModule {
   enable(_context: ModuleContext): void {
     const service = new BrowsingParamsService();
 

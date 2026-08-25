@@ -1,11 +1,11 @@
 import { ipcMain } from "electron";
 import type { AppModule, ModuleContext } from "./types.js";
 import electronUpdater from "electron-updater";
-import { setLastFetchedUpdate } from "./lastFetchedUpdateService.js";
+import { setLastFetchedUpdate } from "./LastFetchedUpdateModule.js";
 import * as metadata from "./AppInfoModule.js";
 import { asyncTrycatch, syncTrycatch, isGreaterVersion } from "../helpers.js";
 
-class AppManagerService {
+class AppUpdaterService {
   constructor(private readonly autoUpdater: typeof electronUpdater.autoUpdater) {}
 
   private cancellationToken: electronUpdater.CancellationToken | null = null;
@@ -44,8 +44,8 @@ class AppManagerService {
   }
 }
 
-export type AppUpdaterInterface = Pick<
-  AppManagerService,
+export type AppUpdaterServiceInterface = Pick<
+  AppUpdaterService,
   "checkForUpdate" | "downloadUpdate" | "cancelUpdate" | "quitAndInstallUpdate"
 >;
 
@@ -62,7 +62,7 @@ export class AppUpdaterModule implements AppModule {
       );
     });
 
-    const service = new AppManagerService(autoUpdater);
+    const service = new AppUpdaterService(autoUpdater);
 
     ipcMain.handle("check-for-update", (_event) => {
       return service.checkForUpdate();

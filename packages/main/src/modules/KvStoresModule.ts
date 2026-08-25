@@ -184,7 +184,7 @@ export type KvStoresServiceInterface = Pick<
   | "testKvStoreConnection"
 >;
 
-export class KvStoresServiceModule implements AppModule {
+export class KvStoresModule implements AppModule {
   enable(_context: ModuleContext): void {
     const service = new KvStoresService();
 

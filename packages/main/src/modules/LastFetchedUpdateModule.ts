@@ -45,7 +45,7 @@ export type LastFetchedUpdateServiceInterface = Pick<
   | "doNotNotifyLastFetchedUpdate"
 >;
 
-export class LastFetchedUpdateServiceModule implements AppModule {
+export class LastFetchedUpdateModule implements AppModule {
   enable(_context: ModuleContext): void {
     const service = new LastFetchedUpdateService();
 

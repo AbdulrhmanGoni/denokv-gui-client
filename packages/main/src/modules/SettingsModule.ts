@@ -46,7 +46,7 @@ export type SettingsServiceInterface = Pick<
   "getSettings" | "updateSettings"
 >;
 
-export class SettingsServiceModule implements AppModule {
+export class SettingsModule implements AppModule {
   enable(_context: ModuleContext): void {
     const service = new SettingsService();
 

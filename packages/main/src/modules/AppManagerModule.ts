@@ -2,7 +2,7 @@ import type { AppModule, ModuleContext } from "./types.js";
 import { ipcMain } from "electron";
 import os from "node:os";
 import { syncTrycatch } from "../helpers.js";
-import { getSettings } from "./settingsService.js";
+import { getSettings } from "./SettingsModule.js";
 
 class AppManagerService {
   constructor(private readonly context: ModuleContext) {}
@@ -27,7 +27,7 @@ class AppManagerService {
   }
 }
 
-export type AppManagerInterface = Pick<AppManagerService, "restartApp">;
+export type AppManagerServiceInterface = Pick<AppManagerService, "restartApp">;
 
 export class AppManagerModule implements AppModule {
   constructor() {}

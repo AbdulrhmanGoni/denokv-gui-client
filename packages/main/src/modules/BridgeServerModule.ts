@@ -82,7 +82,7 @@ export class BridgeServerService {
   }
 }
 
-export type BridgeServerInterface = Pick<
+export type BridgeServerServiceInterface = Pick<
   BridgeServerService,
   "openServer" | "closeServer" | "getOpenedServer"
 >;

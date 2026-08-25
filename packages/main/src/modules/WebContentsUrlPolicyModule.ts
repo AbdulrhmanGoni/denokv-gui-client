@@ -2,7 +2,7 @@ import { shell } from "electron";
 import { URL } from "node:url";
 import type { AppModule, ModuleContext } from "./types.js";
 
-export class WebContentsUrlPolicy implements AppModule {
+export class WebContentsUrlPolicyModule implements AppModule {
   readonly internalOrigin: string;
   readonly allowedExternalOrigins = ["https://github.com", "https://docs.deno.com"];
 
