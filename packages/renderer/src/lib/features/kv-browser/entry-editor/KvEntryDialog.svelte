@@ -21,6 +21,7 @@
     unwatchKvEntries,
     watchKvEntries,
   } from "$lib/states/watchedKvEntriesState.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   function getOpen() {
     return kvEntryDialogState.open;
@@ -63,7 +64,7 @@
   </Dialog.Content>
 </Dialog.Root>
 
-{#snippet keySection(entry: KvEntry)}
+{#snippet keySection(entry: SerializedKvEntry)}
   <div class="space-y-2 overflow-auto">
     <p class="flex gap-2 items-center font-bold text-lg">
       <KeyFileIcon /> Key
@@ -78,7 +79,7 @@
   </div>
 {/snippet}
 
-{#snippet valueSection(entry: KvEntry)}
+{#snippet valueSection(entry: SerializedKvEntry)}
   <div class="space-y-2 overflow-auto">
     <div class="flex gap-2 items-center">
       <DataFileIcon />
@@ -122,7 +123,7 @@
   </div>
 {/snippet}
 
-{#snippet versionstampSection(entry: KvEntry)}
+{#snippet versionstampSection(entry: SerializedKvEntry)}
   <div class="space-y-2">
     <p class="flex gap-2 items-center font-bold text-lg">
       <TagsIcon /> Versionstamp

@@ -8,6 +8,7 @@
     isUpdatedRecently,
     isWatchedEntry,
   } from "$lib/states/watchedKvEntriesState.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   const { row }: { row: Row<SerializedKvEntry> } = $props();
 

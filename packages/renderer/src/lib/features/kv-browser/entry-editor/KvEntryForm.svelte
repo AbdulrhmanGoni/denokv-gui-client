@@ -11,15 +11,17 @@
   import type { Component, Snippet } from "svelte";
   import Checkbox from "$lib/ui/shadcn/checkbox/checkbox.svelte";
   import Label from "$lib/ui/shadcn/label/label.svelte";
+  import type { KvKeyCodeEditor, KvValueCodeEditor } from "$lib/types";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   type KvEntryFormProps = {
-    defaultValue?: KvEntry["value"];
+    defaultValue?: SerializedKvEntry["value"];
     kvKeyCodeEditorRef?: KvKeyCodeEditor;
     kvValueEditorRef?: KvValueCodeEditor;
     header?: () => ReturnType<Snippet>;
     onSubmit: (
       key: string,
-      value: KvEntry["value"],
+      value: SerializedKvEntry["value"],
       expires: number,
       overwrite: boolean,
     ) => void;
@@ -43,7 +45,7 @@
     type: "Undefined",
     data: "undefined",
   };
-  let kvValueEditorValue: KvEntry["value"] = $state(defaultValue);
+  let kvValueEditorValue: SerializedKvEntry["value"] = $state(defaultValue);
   let kvEntryExpirationDateValue: number = $state(NaN);
   let overwrite = $state(true);
 

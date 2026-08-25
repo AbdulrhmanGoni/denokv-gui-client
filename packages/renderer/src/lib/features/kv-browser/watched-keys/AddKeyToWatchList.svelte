@@ -9,6 +9,7 @@
   import { isValidKvKey } from "@app/bridge-server/kv-utils";
   import { bridgeServer } from "@app/preload";
   import { toast } from "svelte-sonner";
+  import type { KvKeyCodeEditor } from "$lib/types";
 
   let kvKeyCodeEditor: KvKeyCodeEditor | undefined = $state();
   let openDialog = $state(false);

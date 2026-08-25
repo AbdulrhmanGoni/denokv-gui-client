@@ -6,6 +6,7 @@
   import { Checkbox } from "$lib/ui/shadcn/checkbox/index";
   import * as InputGroup from "$lib/ui/shadcn/input-group/index";
   import type { CodeJar } from "codejar";
+  import type { BrowsingParams } from "@app/main";
 
   type Props = BrowsingParams & {
     children: Snippet;

@@ -6,12 +6,13 @@
   import { toast } from "svelte-sonner";
   import EnqueueMessageForm from "./EnqueueMessageForm.svelte";
   import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
+  import type { EnqueueRequestInput, SerializedKvEntry } from "@app/bridge-server";
 
   let isEnqueuing = $state(false);
   let isDialogOpen = $state(false);
 
   async function enqueue(
-    message: KvEntry["value"],
+    message: SerializedKvEntry["value"],
     options?: EnqueueRequestInput["options"],
     reset?: () => void,
   ) {

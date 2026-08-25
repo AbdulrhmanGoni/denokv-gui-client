@@ -5,6 +5,7 @@ import { versions } from "node:process";
 import fs from "node:fs";
 import path from "node:path";
 import { syncTrycatch } from "../helpers.js";
+import type { AppMetadata, TrycatchResult } from "../types.ts";
 
 export const appVersion = pkg.version;
 export const nodeVersion = versions.node;

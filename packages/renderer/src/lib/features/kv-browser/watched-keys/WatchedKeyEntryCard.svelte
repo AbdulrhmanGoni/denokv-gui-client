@@ -16,8 +16,9 @@
   import Checkbox from "$lib/ui/shadcn/checkbox/checkbox.svelte";
   import Button from "$lib/ui/shadcn/button/button.svelte";
   import dataTypesColors from "../utils/dataTypesColors";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
-  let { entry }: { entry: KvEntry } = $props();
+  let { entry }: { entry: SerializedKvEntry } = $props();
 
   let checked = $derived.by(() => isSelectedKey(entry.key));
 

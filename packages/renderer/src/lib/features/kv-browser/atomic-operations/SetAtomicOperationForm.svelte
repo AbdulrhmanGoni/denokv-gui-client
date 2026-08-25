@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { SerializedKvEntry } from "@app/bridge-server";
   import KvEntryForm from "../entry-editor/KvEntryForm.svelte";
   import { addAtomicOperation } from "./atomicOperationsState.svelte";
   import FilePlusIcon from "@lucide/svelte/icons/file-plus";
@@ -7,7 +8,7 @@
 
   async function addSetOperation(
     key: string,
-    value: KvEntry["value"],
+    value: SerializedKvEntry["value"],
     expiresIn: number,
   ) {
     addAtomicOperation({

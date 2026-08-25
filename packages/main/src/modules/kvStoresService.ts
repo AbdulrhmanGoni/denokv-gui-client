@@ -17,6 +17,13 @@ import { clearSavedParamsQuery } from "../db/queries/browsingParamsQueries.js";
 import { deleteWatchedKeysQuery } from "../db/queries/watchedKvEntriesQueries.js";
 import { databaseTransaction } from "../db/db.js";
 import { asyncTrycatch } from "../helpers.js";
+import type {
+  CreateKvStoreInput,
+  EditKvStoreInput,
+  KvStore,
+  TestKvStoreParams,
+  TrycatchResult,
+} from "../types.ts";
 
 export interface KvStoresServiceInterface {
   create(input: CreateKvStoreInput): Promise<TrycatchResult<boolean>>;

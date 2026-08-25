@@ -9,6 +9,7 @@
   import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
   import KvStorePathOrUrl from "./KvStorePathOrUrl.svelte";
   import KvStoreCardActions from "./KvStoreCardActions.svelte";
+  import type { KvStore } from "@app/main";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 </script>

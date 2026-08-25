@@ -12,6 +12,8 @@
     resetWatchedKvEntriesState,
     startWatchingKvEntries,
   } from "$lib/states/watchedKvEntriesState.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
+  import type { KvStore } from "@app/main";
 
   const { kvEntriesTable }: { kvEntriesTable: Table<SerializedKvEntry> } = $props();
 

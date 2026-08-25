@@ -5,12 +5,14 @@
   import KvValueRegExpRenderer from "$lib/features/kv-browser/entry-renderer/KvValueRegExpRenderer.svelte";
   import KvValueDateRenderer from "$lib/features/kv-browser/entry-renderer/KvValueDateRenderer.svelte";
   import { wheelXScrollingHandler } from "./wheelXScrollingHandler";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   const {
     value,
     format,
     className,
-  }: { value: KvEntry["value"]; format?: boolean; className?: string } = $props();
+  }: { value: SerializedKvEntry["value"]; format?: boolean; className?: string } =
+    $props();
 
   const dataTypeColor = $derived(dataTypesColors[value.type.toLowerCase()]);
 </script>

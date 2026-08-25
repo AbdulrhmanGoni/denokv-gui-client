@@ -3,6 +3,7 @@
   import KvEntriesNavigation from "$lib/features/kv-browser/entry-editor/KvEntriesNavigation.svelte";
   import DeleteMultipleEntries from "$lib/features/kv-browser/actions/DeleteMultipleEntries.svelte";
   import WatchMultipleEntries from "../actions/WatchMultipleEntries.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   const { table }: { table: TableType<SerializedKvEntry> } = $props();
 

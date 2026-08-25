@@ -2,6 +2,7 @@ import { ipcMain } from "electron";
 import type { AppModule, ModuleContext } from "./types.js";
 import { getSettings } from "./settingsService.js";
 import { syncTrycatch } from "../helpers.js";
+import type { TrycatchResult } from "../types.ts";
 
 export interface HardwareAccelerationInterface {
   isEnabled(): Promise<TrycatchResult<boolean>>;

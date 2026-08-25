@@ -3,9 +3,10 @@
   import { globalState } from "$lib/states/globalState.svelte";
   import { deleteKvEntry } from "$lib/helpers/deleteKvEntry.svelte";
   import type { Snippet } from "svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   type Props = {
-    entry: KvEntry;
+    entry: SerializedKvEntry;
     children: Snippet;
     className?: string;
     onDeleteSuccess?: () => void;

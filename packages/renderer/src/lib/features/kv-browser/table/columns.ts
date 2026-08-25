@@ -5,8 +5,9 @@ import { Checkbox } from "$lib/ui/shadcn/checkbox";
 import KvKeyRenderer from "$lib/features/kv-browser/entry-renderer/KvKeyRenderer.svelte";
 import KvValueRenderer from "$lib/features/kv-browser/entry-renderer/KvValueRenderer.svelte";
 import KvEntriesTableActions from "$lib/features/kv-browser/table/KvEntriesTableActions.svelte";
+import type { SerializedKvEntry } from "@app/bridge-server";
 
-export const columns: ColumnDef<KvEntry>[] = [
+export const columns: ColumnDef<SerializedKvEntry>[] = [
   {
     id: "select",
     header: ({ table }) =>

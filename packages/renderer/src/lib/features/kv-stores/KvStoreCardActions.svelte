@@ -11,6 +11,7 @@
   import DeleteKvStoreButton from "./DeleteKvStoreButton.svelte";
   import { fileSystemService } from "@app/preload";
   import { toast } from "svelte-sonner";
+  import type { KvStore } from "@app/main";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 

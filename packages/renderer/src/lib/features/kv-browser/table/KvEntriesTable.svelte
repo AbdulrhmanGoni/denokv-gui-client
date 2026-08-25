@@ -10,6 +10,7 @@
   import { columns } from "$lib/features/kv-browser/table/columns";
   import KvEntriesTableRow from "./KvEntriesTableRow.svelte";
   import KvEntriesTableFooter from "./KvEntriesTableFooter.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   const { table }: { table: TableType<SerializedKvEntry> } = $props();
 </script>

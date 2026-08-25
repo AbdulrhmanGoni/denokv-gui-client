@@ -4,6 +4,7 @@
   import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import { toast } from "svelte-sonner";
   import KvStoreForm from "./KvStoreForm.svelte";
+  import type { CreateKvStoreInput } from "@app/main";
 
   function onSubmitForm(newStore: CreateKvStoreInput, form?: HTMLFormElement) {
     kvStoresService.create(newStore).then(({ result, error }) => {

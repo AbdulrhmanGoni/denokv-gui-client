@@ -22,8 +22,9 @@
     unwatchKvEntries,
     watchKvEntries,
   } from "$lib/states/watchedKvEntriesState.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
-  const { entry }: { entry: KvEntry } = $props();
+  const { entry }: { entry: SerializedKvEntry } = $props();
 
   let openMenu = $state(false);
 

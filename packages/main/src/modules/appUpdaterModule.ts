@@ -1,9 +1,10 @@
 import { ipcMain } from "electron";
 import type { AppModule, ModuleContext } from "./types.js";
-import electronUpdater from "electron-updater";
+import electronUpdater, { type UpdateCheckResult } from "electron-updater";
 import { setLastFetchedUpdate } from "./lastFetchedUpdateService.js";
 import * as metadata from "./metadataModule.js";
 import { asyncTrycatch, syncTrycatch, isGreaterVersion } from "../helpers.js";
+import type { TrycatchResult } from "../types.ts";
 
 let cancellationToken: electronUpdater.CancellationToken | null = null;
 

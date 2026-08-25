@@ -172,6 +172,9 @@ importers:
       '@app/bridge-server':
         specifier: workspace:*
         version: link:../bridge-server
+      '@app/main':
+        specifier: workspace:*
+        version: link:../main
       '@app/preload':
         specifier: workspace:*
         version: link:../preload

@@ -7,13 +7,14 @@
     copyEntryValue,
     copyEntryVersionStamp,
   } from "../utils/copyKvEntry";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   const {
     entry,
     target,
     className,
   }: {
-    entry: KvEntry;
+    entry: SerializedKvEntry;
     target: "key" | "Versionstamp" | "Value";
     className?: string;
   } = $props();

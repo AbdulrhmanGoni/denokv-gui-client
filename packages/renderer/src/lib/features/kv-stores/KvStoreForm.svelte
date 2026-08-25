@@ -9,6 +9,7 @@
   import { Checkbox } from "$lib/ui/shadcn/checkbox/index.js";
   import * as InputGroup from "$lib/ui/shadcn/input-group";
   import { toast } from "svelte-sonner";
+  import type { CreateKvStoreInput, KvStore } from "@app/main";
 
   type KvStoreFormProps = {
     defaultValues?: Partial<CreateKvStoreInput>;

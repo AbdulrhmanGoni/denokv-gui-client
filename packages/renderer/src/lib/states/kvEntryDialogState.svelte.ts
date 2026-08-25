@@ -1,7 +1,8 @@
+import type { SerializedKvEntry } from "@app/bridge-server";
 import { isSameKvKey } from "@app/bridge-server/kv-utils";
 
 type KvEntryDialogState = {
-  entry: KvEntry | null;
+  entry: SerializedKvEntry | null;
   open: boolean;
   openValueEditor: boolean;
 };
@@ -12,13 +13,13 @@ export const kvEntryDialogState: KvEntryDialogState = $state({
   openValueEditor: false,
 });
 
-export function openKvEntryDialog(entry: KvEntry, openEditor?: boolean) {
+export function openKvEntryDialog(entry: SerializedKvEntry, openEditor?: boolean) {
   kvEntryDialogState.entry = entry;
   kvEntryDialogState.open = true;
   kvEntryDialogState.openValueEditor = !!openEditor;
 }
 
-export function updateOpenKvEntry(updatedEntry: KvEntry) {
+export function updateOpenKvEntry(updatedEntry: SerializedKvEntry) {
   if (
     kvEntryDialogState.entry &&
     isSameKvKey(kvEntryDialogState.entry.key, updatedEntry.key)

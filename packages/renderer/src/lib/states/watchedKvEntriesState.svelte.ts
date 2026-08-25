@@ -4,6 +4,7 @@ import { kvEntriesState } from "./kvEntriesState.svelte";
 import { kvEntryDialogState } from "./kvEntryDialogState.svelte";
 import { getOpenedKvStoreClient, kvStoresState } from "./kvStoresState.svelte";
 import { toast } from "svelte-sonner";
+import type { SerializedKvEntry, SerializedKvKey } from "@app/bridge-server";
 
 type WatchedKvEntriesState = {
   keys: SerializedKvKey[];

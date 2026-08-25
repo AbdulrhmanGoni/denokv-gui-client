@@ -5,10 +5,11 @@ import { createSvelteTable } from "$lib/ui/shadcn/data-table";
 import { getCoreRowModel, type RowSelectionState } from "@tanstack/table-core";
 import { isSameKvKey } from "@app/bridge-server/kv-utils";
 import { toast } from "svelte-sonner";
-import type { BrowsingOptions } from "@app/bridge-server";
+import type { BrowsingOptions, SerializedKvEntry } from "@app/bridge-server";
+import type { BrowsingParams, SavedBrowsingParamsRecord } from "@app/main";
 
 type KvEntriesState = {
-  entries: KvEntry[];
+  entries: SerializedKvEntry[];
   params: BrowsingParams & {
     cursors: NonNullable<BrowsingOptions["cursor"]>[];
   };
@@ -102,7 +103,7 @@ export async function fetchEntries() {
   kvEntriesState.loading = false;
 }
 
-export function removeEntryFromState(entry: KvEntry) {
+export function removeEntryFromState(entry: SerializedKvEntry) {
   kvEntriesState.entries = kvEntriesState.entries.filter(
     (ent) => !isSameKvKey(entry.key, ent.key),
   );

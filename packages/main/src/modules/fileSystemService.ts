@@ -2,6 +2,7 @@ import { type BrowserWindow, dialog, ipcMain, shell } from "electron";
 import path from "node:path";
 import type { AppModule, ModuleContext } from "./types.js";
 import { asyncTrycatch, syncTrycatch } from "../helpers.js";
+import type { TrycatchResult } from "../types.ts";
 
 export interface FileSystemServiceInterface {
   selectDirectory(): Promise<TrycatchResult<string>>;

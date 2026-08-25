@@ -6,6 +6,7 @@
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import XIcon from "@lucide/svelte/icons/x";
   import Button, { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   const { selectedRows }: { selectedRows: Row<SerializedKvEntry>[] } = $props();
 

@@ -14,10 +14,13 @@
   import { isSameKvKey } from "@app/bridge-server/kv-utils";
   import { bridgeServer } from "@app/preload";
   import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
-  const { entry }: { entry: KvEntry } = $props();
+  const { entry }: { entry: SerializedKvEntry } = $props();
 
-  let kvValueEditorValue: KvEntry["value"] = $state($state.snapshot(entry.value));
+  let kvValueEditorValue: SerializedKvEntry["value"] = $state(
+    $state.snapshot(entry.value),
+  );
 
   async function saveChanges() {
     if (
@@ -59,7 +62,7 @@
     }
   }
 
-  function normalizeNewValue(value: KvEntry["value"]) {
+  function normalizeNewValue(value: SerializedKvEntry["value"]) {
     if (
       value.type === "Object" ||
       value.type === "Array" ||

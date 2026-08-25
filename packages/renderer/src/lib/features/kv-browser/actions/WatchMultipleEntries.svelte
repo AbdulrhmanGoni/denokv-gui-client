@@ -7,6 +7,7 @@
   } from "$lib/states/watchedKvEntriesState.svelte";
   import EyeIcon from "@lucide/svelte/icons/eye";
   import EyeOffIcon from "@lucide/svelte/icons/eye-off";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   const { selectedRows }: { selectedRows: Row<SerializedKvEntry>[] } = $props();
 </script>

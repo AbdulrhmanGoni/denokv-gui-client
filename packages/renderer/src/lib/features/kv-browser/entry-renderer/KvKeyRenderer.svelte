@@ -2,8 +2,10 @@
   import { cn } from "$lib/shadcn-utils";
   import dataTypesColors from "$lib/features/kv-browser/utils/dataTypesColors";
   import { wheelXScrollingHandler } from "./wheelXScrollingHandler";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
-  const { key, className }: { key: KvEntry["key"]; className?: string } = $props();
+  const { key, className }: { key: SerializedKvEntry["key"]; className?: string } =
+    $props();
 </script>
 
 <div

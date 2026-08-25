@@ -2,6 +2,7 @@
   import type { AtomicOperationUIInput } from "./atomicOperationsState.svelte";
   import CodeRenderer from "../entry-renderer/CodeRenderer.svelte";
   import AtomicOperationCardLayout from "./AtomicOperationCardLayout.svelte";
+  import type { SerializedKvValue } from "@app/bridge-server";
 
   const {
     operation,

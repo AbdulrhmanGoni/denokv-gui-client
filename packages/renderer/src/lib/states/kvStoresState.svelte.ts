@@ -5,6 +5,7 @@ import {
   BridgeServerClient,
   type BridgeServerClientOptions,
 } from "@app/bridge-server/client";
+import type { KvStore } from "@app/main";
 
 type StoresState = {
   kvStores: KvStore[];

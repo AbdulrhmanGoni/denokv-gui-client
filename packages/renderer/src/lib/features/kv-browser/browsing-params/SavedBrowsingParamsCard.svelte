@@ -16,6 +16,7 @@
   } from "$lib/states/kvEntriesState.svelte";
   import { toast } from "svelte-sonner";
   import { kvStoresState } from "$lib/states/kvStoresState.svelte";
+  import type { SavedBrowsingParams, SavedBrowsingParamsRecord } from "@app/main";
 
   type Props = {
     browsingParamsRecord: SavedBrowsingParamsRecord<SavedBrowsingParams>;

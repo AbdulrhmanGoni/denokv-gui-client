@@ -6,6 +6,7 @@
   import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import { toast } from "svelte-sonner";
   import KvStoreForm from "./KvStoreForm.svelte";
+  import type { CreateKvStoreInput, EditKvStoreInput, KvStore } from "@app/main";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 

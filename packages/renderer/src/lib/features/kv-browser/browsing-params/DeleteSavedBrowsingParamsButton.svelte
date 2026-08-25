@@ -6,6 +6,7 @@
   import { toast } from "svelte-sonner";
   import { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
   import { cn } from "$lib/shadcn-utils";
+  import type { SavedBrowsingParams, SavedBrowsingParamsRecord } from "@app/main";
 
   const {
     browsingParamsRecord,

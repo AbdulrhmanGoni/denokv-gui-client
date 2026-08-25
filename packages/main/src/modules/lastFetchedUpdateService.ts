@@ -11,6 +11,8 @@ import { isGreaterVersion } from "../helpers.js";
 import { appVersion } from "./metadataModule.js";
 import { databaseTransaction } from "../db/db.js";
 import { syncTrycatch } from "../helpers.js";
+import type { LastFetchedUpdate, TrycatchResult } from "../types.ts";
+import type { UpdateCheckResult } from "electron-updater";
 
 export interface LastFetchedUpdateServiceInterface {
   getLastFetchedUpdate(): Promise<TrycatchResult<LastFetchedUpdate | null>>;

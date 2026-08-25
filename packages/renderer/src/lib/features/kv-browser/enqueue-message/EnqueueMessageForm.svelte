@@ -13,10 +13,11 @@
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import { dataTypes } from "../utils/dataTypes";
   import PLink from "$lib/ui/primitives/PLink.svelte";
+  import type { EnqueueRequestInput, SerializedKvEntry } from "@app/bridge-server";
 
   type EnqueueMessageFormProps = {
     onSubmit: (
-      message: KvEntry["value"],
+      message: SerializedKvEntry["value"],
       options?: EnqueueRequestInput["options"],
       reset?: () => void,
     ) => Promise<void> | void;
@@ -35,7 +36,7 @@
   }: EnqueueMessageFormProps = $props();
 
   const defaultValue = { type: "Object", data: "{}" };
-  let editorValue: KvEntry["value"] = $state(defaultValue);
+  let editorValue: SerializedKvEntry["value"] = $state(defaultValue);
   let delayOption = $state(0);
   let backoffScheduleOptionValue = $state<number[]>([]);
   let keysIfUndeliveredOption = $state<string>("[]");

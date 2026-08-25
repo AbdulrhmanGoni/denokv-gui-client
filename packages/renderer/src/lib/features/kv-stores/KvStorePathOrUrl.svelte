@@ -3,6 +3,7 @@
   import FileLinkIcon from "@lucide/svelte/icons/file-symlink";
   import { fileSystemService } from "@app/preload";
   import { toast } from "svelte-sonner";
+  import type { KvStore } from "@app/main";
 
   const { kvStore }: { kvStore: KvStore } = $props();
   const isLocal = $derived(kvStore.type == "local" || kvStore.type == "default");

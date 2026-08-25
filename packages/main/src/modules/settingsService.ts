@@ -7,6 +7,7 @@ import {
 } from "../db/queries/settingsQueries.js";
 import { databaseTransaction } from "../db/db.js";
 import { syncTrycatch } from "../helpers.js";
+import type { Settings, TrycatchResult } from "../types.ts";
 
 export interface SettingsServiceInterface {
   getSettings(): Promise<TrycatchResult<Settings | undefined>>;

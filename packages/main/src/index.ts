@@ -14,7 +14,7 @@ import { WatchedKeysServiceModule } from "./modules/watchedKeysService.js";
 import { FileSystemServiceModule } from "./modules/fileSystemService.js";
 import { AppManagerModule } from "./modules/AppManagerModule.js";
 
-export async function initModules(modules: AppModule[]): Promise<void> {
+async function initModules(modules: AppModule[]): Promise<void> {
   const context: ModuleContext = { app };
   for (const module of modules) {
     await module.enable(context);
@@ -43,3 +43,5 @@ export async function initApp(initConfig: AppInitConfig) {
     }),
   ]);
 }
+
+export * from "./types.ts";

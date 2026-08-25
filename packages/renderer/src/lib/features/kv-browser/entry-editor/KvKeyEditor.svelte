@@ -1,6 +1,7 @@
 <script lang="ts">
   import KeyFileIcon from "@lucide/svelte/icons/file-key";
   import CodeEditor from "$lib/features/kv-browser/entry-editor/CodeEditor.svelte";
+  import type { KvKeyCodeEditor } from "$lib/types";
 
   type KeyEditorProps = {
     jar?: KvKeyCodeEditor;

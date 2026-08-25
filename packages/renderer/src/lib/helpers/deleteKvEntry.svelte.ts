@@ -1,5 +1,6 @@
 import { removeEntryFromState } from "$lib/states/kvEntriesState.svelte";
 import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
+import type { SerializedKvEntry } from "@app/bridge-server";
 import { toast } from "svelte-sonner";
 
 type DeleteKvEntryOptions = {

@@ -1,11 +1,12 @@
 <script lang="ts">
+  import type { EnqueueRequestInput, SerializedKvEntry } from "@app/bridge-server";
   import EnqueueMessageForm from "../enqueue-message/EnqueueMessageForm.svelte";
   import { addAtomicOperation } from "./atomicOperationsState.svelte";
 
   let { close }: { close?: () => void } = $props();
 
   async function enqueue(
-    message: KvEntry["value"],
+    message: SerializedKvEntry["value"],
     options?: EnqueueRequestInput["options"],
   ) {
     addAtomicOperation({

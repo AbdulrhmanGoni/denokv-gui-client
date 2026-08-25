@@ -1,9 +1,10 @@
 import { appUpdater, lastFetchedUpdateService, metadata } from "@app/preload";
 import { toast } from "svelte-sonner";
 import newUpdateNotificationActions from "$lib/features/settings/newUpdateNotificationActions.svelte";
+import type { ProgressInfo, UpdateCheckResult } from "@app/main";
 
 type UpdateAppState = {
-  downloadUpdateProgress: DownloadUpdateProgressInfo | null;
+  downloadUpdateProgress: ProgressInfo | null;
   newUpdate: UpdateCheckResult | null;
   checkingForUpdates: boolean;
   checkingForUpdatesError: string;

@@ -10,6 +10,11 @@ import {
   getDefaultSavedBrowsingQuery,
 } from "../db/queries/browsingParamsQueries.js";
 import { databaseTransaction } from "../db/db.js";
+import type {
+  SavedBrowsingParams,
+  SavedBrowsingParamsRecord,
+  TrycatchResult,
+} from "../types.ts";
 
 export interface BrowsingParamsServiceInterface {
   saveBrowsingParams(

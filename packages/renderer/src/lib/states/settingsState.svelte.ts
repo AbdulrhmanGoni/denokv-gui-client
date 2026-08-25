@@ -1,3 +1,4 @@
+import type { Settings, TrycatchResult } from "@app/main";
 import { hardwareAccelerationService, settingsService } from "@app/preload";
 import { toast } from "svelte-sonner";
 

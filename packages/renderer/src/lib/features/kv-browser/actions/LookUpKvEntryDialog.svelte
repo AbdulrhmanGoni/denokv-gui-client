@@ -14,6 +14,7 @@
     openLookUpKeyDialogState,
   } from "$lib/states/kvEntryDialogState.svelte";
   import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
+  import type { KvKeyCodeEditor } from "$lib/types";
 
   let isLoading = $state(false);
   let kvKeyCodeEditor: KvKeyCodeEditor | undefined = $state();

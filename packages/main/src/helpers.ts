@@ -1,3 +1,5 @@
+import type { TrycatchResult } from "./types.ts";
+
 export function isGreaterVersion(a: string, b: string) {
   const v1 = a.split(".").map(Number);
   const v2 = b.split(".").map(Number);

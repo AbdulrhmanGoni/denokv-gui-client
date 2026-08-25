@@ -14,10 +14,11 @@
   import KvValueDateInput from "$lib/features/kv-browser/entry-editor/inputs/KvValueDateInput.svelte";
   import KvValueNumberInputWithSpecials from "$lib/features/kv-browser/entry-editor/inputs/KvValueNumberInputWithSpecials.svelte";
   import KvValueRegExpInput from "$lib/features/kv-browser/entry-editor/inputs/KvValueRegExpInput.svelte";
+  import type { SerializedKvEntry } from "@app/bridge-server";
 
   type ValueEditorProps = {
-    defaultValue: KvEntry["value"];
-    editorValue: KvEntry["value"];
+    defaultValue: SerializedKvEntry["value"];
+    editorValue: SerializedKvEntry["value"];
     titleIcon: () => ReturnType<Snippet>;
     title?: string;
     jar?: CodeJar;
@@ -46,7 +47,7 @@
     }
   }
 
-  function kvValueToEditorValue(defaultValue?: KvEntry["value"]) {
+  function kvValueToEditorValue(defaultValue?: SerializedKvEntry["value"]) {
     return defaultValue?.data.toString() ?? "";
   }
 

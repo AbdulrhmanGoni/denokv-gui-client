@@ -9,6 +9,7 @@
   import { toast } from "svelte-sonner";
   import { kvStoresService } from "@app/preload";
   import { kvStoresState, loadKvStores } from "$lib/states/kvStoresState.svelte";
+  import type { KvStore } from "@app/main";
 
   const { kvStore }: { kvStore: KvStore } = $props();
 

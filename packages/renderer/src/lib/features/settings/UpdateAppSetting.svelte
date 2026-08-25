@@ -25,6 +25,7 @@
   import { formatTimeAgo } from "$lib/helpers/formatTimeAgo";
   import ReleaseNotes from "./ReleaseNotes.svelte";
   import type { Snippet } from "svelte";
+  import type { ProgressInfo } from "@app/main";
 
   const KILO_BYTE = 1024;
   const MEGA_BYTE = KILO_BYTE * KILO_BYTE;
@@ -166,8 +167,8 @@
   </Button>
 {/snippet}
 
-{#snippet downloadUpdateProgress(downloadProgress: DownloadUpdateProgressInfo | null)}
-  {@const progressInfo: DownloadUpdateProgressInfo = downloadProgress ?? {
+{#snippet downloadUpdateProgress(downloadProgress: ProgressInfo | null)}
+  {@const progressInfo: ProgressInfo = downloadProgress ?? {
     total: 0,
     bytesPerSecond: 0,
     transferred: 0,

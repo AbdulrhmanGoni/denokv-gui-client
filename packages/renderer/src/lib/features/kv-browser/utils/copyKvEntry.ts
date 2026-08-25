@@ -1,3 +1,5 @@
+import type { SerializedKvEntry } from "@app/bridge-server";
+
 export function copyEntryVersionStamp(entry: SerializedKvEntry) {
   navigator.clipboard.writeText(String(entry.versionstamp));
 }

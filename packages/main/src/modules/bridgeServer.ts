@@ -4,6 +4,7 @@ import { type Kv, openKv } from "@deno/kv";
 import { openBridgeServerInNode } from "@app/bridge-server";
 import { randomBytes } from "node:crypto";
 import { asyncTrycatch } from "../helpers.js";
+import type { KvStore, TrycatchResult } from "../types.ts";
 
 type OpenedBridgeServer = {
   url: string;

@@ -8,6 +8,7 @@
   } from "$lib/states/kvEntryDialogState.svelte";
   import KvEntryForm from "../entry-editor/KvEntryForm.svelte";
   import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
+  import type { SerializedKvEntry, SetKeyOptions } from "@app/bridge-server";
 
   let addingEntry = $state(false);
 
@@ -21,7 +22,7 @@
 
   async function addEntry(
     key: string,
-    value: KvEntry["value"],
+    value: SerializedKvEntry["value"],
     expires: number,
     overwrite: boolean,
   ) {

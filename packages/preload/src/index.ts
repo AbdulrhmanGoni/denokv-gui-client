@@ -14,6 +14,7 @@ import type {
   SettingsServiceInterface,
   WatchedKeysServiceInterface,
 } from "@app/main/modules/interfaces";
+import type { AppMetadata, ProgressInfo } from "@app/main";
 
 type MetadataType = AppMetadata &
   Pick<MetadataInterface, "getCurrentVersionReleaseNotes">;
@@ -166,9 +167,7 @@ const browsingParamsService: BrowsingParamsServiceInterface = {
 };
 
 type AppUpdaterType = AppUpdaterInterface & {
-  onDownloadingUpdateProgress(
-    cb: (progressInfo: DownloadUpdateProgressInfo) => void,
-  ): void;
+  onDownloadingUpdateProgress(cb: (progressInfo: ProgressInfo) => void): void;
 };
 
 const appUpdater: AppUpdaterType = {

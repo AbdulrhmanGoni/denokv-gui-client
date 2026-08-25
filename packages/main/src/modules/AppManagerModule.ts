@@ -2,6 +2,7 @@ import type { AppModule, ModuleContext } from "./types.js";
 import { ipcMain } from "electron";
 import os from "node:os";
 import { syncTrycatch } from "../helpers.js";
+import type { TrycatchResult } from "../types.ts";
 
 export interface AppManagerInterface {
   restartApp: () => Promise<TrycatchResult<void>>;

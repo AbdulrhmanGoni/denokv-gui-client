@@ -7,6 +7,8 @@ import {
 } from "../db/queries/watchedKvEntriesQueries.js";
 import { databaseTransaction } from "../db/db.js";
 import { syncTrycatch } from "../helpers.js";
+import type { SerializedKvKey } from "@app/bridge-server";
+import type { TrycatchResult } from "../types.ts";
 
 export interface WatchedKeysServiceInterface {
   getWatchedKeys(kvStoreId: string): Promise<TrycatchResult<SerializedKvKey[] | null>>;
