@@ -9,48 +9,55 @@ import { databaseTransaction } from "../db/db.js";
 import { syncTrycatch } from "../helpers.js";
 import type { Settings, TrycatchResult } from "../types.ts";
 
-export interface SettingsServiceInterface {
-  getSettings(): Promise<TrycatchResult<Settings | undefined>>;
-  updateSettings(
+class SettingsService {
+  async getSettings(): Promise<TrycatchResult<Settings | undefined>> {
+    return syncTrycatch(getSettings);
+  }
+
+  async updateSettings(
     updatedSettings: Settings,
-  ): Promise<TrycatchResult<Settings | undefined>>;
+  ): Promise<TrycatchResult<Settings | undefined>> {
+    return syncTrycatch(() =>
+      databaseTransaction(() => {
+        const settings = getSettings();
+        if (settings) {
+          const mergedSettings = { ...settings, ...updatedSettings };
+          const result = updateSettingQuery.run(JSON.stringify(mergedSettings));
+          if (result.changes) {
+            return mergedSettings;
+          }
+
+          throw new Error("Failed to update settings");
+        }
+
+        const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
+        if (result.changes) {
+          return updatedSettings;
+        }
+
+        throw new Error("Failed to insert settings");
+      }),
+    );
+  }
 }
+
+export type SettingsServiceInterface = Pick<
+  SettingsService,
+  "getSettings" | "updateSettings"
+>;
 
 export class SettingsServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    const getSettingsForRenderer: SettingsServiceInterface["getSettings"] = async () =>
-      syncTrycatch(getSettings);
-    ipcMain.handle("settingsService:getSettings", getSettingsForRenderer);
+    const service = new SettingsService();
 
-    const updateSettings: SettingsServiceInterface["updateSettings"] = async (
-      updatedSettings,
-    ) => {
-      return syncTrycatch(() =>
-        databaseTransaction(() => {
-          const settings = getSettings();
-          if (settings) {
-            const mergedSettings = { ...settings, ...updatedSettings };
-            const result = updateSettingQuery.run(JSON.stringify(mergedSettings));
-            if (result.changes) {
-              return mergedSettings;
-            }
+    ipcMain.handle("settingsService:getSettings", (_event) => {
+      return service.getSettings();
+    });
 
-            throw new Error("Failed to update settings");
-          }
-
-          const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
-          if (result.changes) {
-            return updatedSettings;
-          }
-
-          throw new Error("Failed to insert settings");
-        }),
-      );
-    };
     ipcMain.handle(
       "settingsService:updateSettings",
-      (_, ...args: Parameters<typeof updateSettings>) => {
-        return updateSettings(...args);
+      (_event, ...args: Parameters<typeof service.updateSettings>) => {
+        return service.updateSettings(...args);
       },
     );
   }

@@ -19,32 +19,41 @@ export const environment =
       ? "development"
       : "production";
 
-export interface MetadataInterface {
-  getMetadata(): Promise<AppMetadata>;
-  getCurrentVersionReleaseNotes(): Promise<TrycatchResult<string>>;
-}
-
-export class MetadataModule implements AppModule {
-  enable(_context: ModuleContext): void {
-    const getMetadata: MetadataInterface["getMetadata"] = async () => ({
+class MetadataService {
+  async getMetadata(): Promise<AppMetadata> {
+    return {
       appVersion,
       nodeVersion,
       electronVersion,
       chromiumVersion,
       githubRepo,
       environment,
+    };
+  }
+
+  async getCurrentVersionReleaseNotes(): Promise<TrycatchResult<string>> {
+    return syncTrycatch(() => {
+      const releaseNotesPath = path.join(import.meta.dirname, "RELEASE_NOTES.html");
+      return fs.readFileSync(releaseNotesPath, "utf-8");
+    });
+  }
+}
+
+export type MetadataInterface = Pick<
+  MetadataService,
+  "getMetadata" | "getCurrentVersionReleaseNotes"
+>;
+
+export class MetadataModule implements AppModule {
+  enable(_context: ModuleContext): void {
+    const service = new MetadataService();
+
+    ipcMain.handle("get-metadata", (_event) => {
+      return service.getMetadata();
     });
 
-    ipcMain.handle("get-metadata", getMetadata);
-
-    const getCurrentVersionReleaseNotes: MetadataInterface["getCurrentVersionReleaseNotes"] =
-      async () => {
-        return syncTrycatch(() => {
-          const releaseNotesPath = path.join(import.meta.dirname, "RELEASE_NOTES.html");
-          return fs.readFileSync(releaseNotesPath, "utf-8");
-        });
-      };
-
-    ipcMain.handle("get-current-version-release-notes", getCurrentVersionReleaseNotes);
+    ipcMain.handle("get-current-version-release-notes", (_event) => {
+      return service.getCurrentVersionReleaseNotes();
+    });
   }
 }

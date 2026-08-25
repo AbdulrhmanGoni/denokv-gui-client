@@ -28,7 +28,7 @@ const metadata: MetadataType = {
   },
 };
 
-type FileSystemServiceType = FileSystemServiceInterface & {
+type FileSystemServiceInterfaceExtended = FileSystemServiceInterface & {
   pathUtils: {
     dirname(p: string): string;
     basename(p: string): string;
@@ -36,7 +36,7 @@ type FileSystemServiceType = FileSystemServiceInterface & {
   };
 };
 
-const fileSystemService: FileSystemServiceType = {
+const fileSystemService: FileSystemServiceInterfaceExtended = {
   selectDirectory() {
     return ipcRenderer.invoke("select-directory");
   },
@@ -78,7 +78,7 @@ const kvStoresService: KvStoresServiceInterface = {
   },
 };
 
-type BridgeServerType = BridgeServerInterface & {
+type BridgeServerInterfaceExtended = BridgeServerInterface & {
   utils: {
     serializeKvKey: typeof serializeKvKey;
     serializeKvValue: typeof serializeKvValue;
@@ -86,7 +86,7 @@ type BridgeServerType = BridgeServerInterface & {
   };
 };
 
-const bridgeServer: BridgeServerType = {
+const bridgeServer: BridgeServerInterfaceExtended = {
   openServer(kvStore) {
     return ipcRenderer.invoke("bridgeServer:openServer", kvStore);
   },
@@ -166,11 +166,11 @@ const browsingParamsService: BrowsingParamsServiceInterface = {
   },
 };
 
-type AppUpdaterType = AppUpdaterInterface & {
+type AppUpdaterInterfaceExtended = AppUpdaterInterface & {
   onDownloadingUpdateProgress(cb: (progressInfo: ProgressInfo) => void): void;
 };
 
-const appUpdater: AppUpdaterType = {
+const appUpdater: AppUpdaterInterfaceExtended = {
   checkForUpdate() {
     return ipcRenderer.invoke("check-for-update");
   },

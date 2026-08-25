@@ -25,191 +25,205 @@ import type {
   TrycatchResult,
 } from "../types.ts";
 
-export interface KvStoresServiceInterface {
-  create(input: CreateKvStoreInput): Promise<TrycatchResult<boolean>>;
-  update(kvStore: KvStore, changes: EditKvStoreInput): Promise<TrycatchResult<boolean>>;
-  getAll(): Promise<TrycatchResult<KvStore[]>>;
-  deleteOne(kvStore: KvStore): Promise<TrycatchResult<boolean>>;
-  renameDefaultLocalKvStore(
+class KvStoresService {
+  async create(input: CreateKvStoreInput): Promise<TrycatchResult<boolean>> {
+    return asyncTrycatch(async () => {
+      if (input.type == "local" && (input.replaceExisting || !existsSync(input.url))) {
+        await writeFile(input.url, "");
+      }
+
+      const result = insertQuery.run(
+        crypto.randomUUID(),
+        input.name,
+        input.url,
+        input.type,
+        input.accessToken,
+        input.authToken,
+      );
+
+      return !!result.changes;
+    });
+  }
+
+  async update(
+    kvStore: KvStore,
+    changes: EditKvStoreInput,
+  ): Promise<TrycatchResult<boolean>> {
+    return asyncTrycatch(async () => {
+      if (kvStore.type == "local" && changes.url && !changes.type) {
+        await relocateLocalKvStore(kvStore, changes.url);
+      }
+
+      if (changes.type == "local" && changes.url) {
+        const dir = path.dirname(changes.url);
+        if (!existsSync(dir)) {
+          await mkdir(dir, { recursive: true });
+        }
+
+        if (!existsSync(changes.url)) {
+          await writeFile(changes.url, "");
+        }
+      }
+
+      const result = updateQuery.run({
+        $id: kvStore.id,
+        $name: changes.name ?? null,
+        $url: changes.url ?? null,
+        $type: changes.type ?? null,
+        $accessToken: changes.accessToken,
+        $authToken: changes.authToken,
+      });
+
+      return !!result.changes;
+    });
+  }
+
+  async getAll(): Promise<TrycatchResult<KvStore[]>> {
+    return asyncTrycatch(async () => {
+      const kvStores = getAllQuery.all() as KvStore[];
+      const defaultKvStores = await getDefaultLocalKvStores(
+        kvStores.filter((store) => store.type == "default").map((s) => s.id),
+      );
+      return [...kvStores, ...defaultKvStores].sort(
+        (storeA, storeB) =>
+          new Date(storeB.updatedAt).getTime() - new Date(storeA.updatedAt).getTime(),
+      );
+    });
+  }
+
+  async deleteOne(kvStore: KvStore): Promise<TrycatchResult<boolean>> {
+    return asyncTrycatch(async () => {
+      if (kvStore.type == "default" || kvStore.type == "local") {
+        await rm(kvStore.url, { force: true });
+        await rm(`${kvStore.url}-shm`, { force: true });
+        await rm(`${kvStore.url}-wal`, { force: true });
+
+        if (kvStore.type == "default") {
+          const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined;
+          if (!storedKvStore) {
+            databaseTransaction(() => {
+              clearSavedParamsQuery.run(kvStore.id);
+              deleteWatchedKeysQuery.run(kvStore.id);
+            });
+            return true;
+          }
+        }
+      }
+
+      return databaseTransaction(() => {
+        const result = deleteOneQuery.run(kvStore.id);
+
+        if (result.changes) {
+          clearSavedParamsQuery.run(kvStore.id);
+          deleteWatchedKeysQuery.run(kvStore.id);
+        }
+
+        return !!result.changes;
+      });
+    });
+  }
+
+  async renameDefaultLocalKvStore(
     store: KvStore,
     newName: string,
-  ): Promise<TrycatchResult<boolean>>;
-  testKvStoreConnection(kvStore: TestKvStoreParams): Promise<TrycatchResult<boolean>>;
+  ): Promise<TrycatchResult<boolean>> {
+    return asyncTrycatch(async () => {
+      if (store.type != "default") return false;
+
+      const storedKvStore = getOneQuery.get(store.id) as KvStore | undefined;
+      if (storedKvStore) {
+        const result = updateQuery.run({
+          $id: storedKvStore.id,
+          $name: newName,
+        });
+
+        return !!result.changes;
+      }
+
+      const result = insertQuery.run(store.id, newName, store.url, store.type, null);
+
+      return !!result.changes;
+    });
+  }
+
+  async testKvStoreConnection(
+    kvStore: TestKvStoreParams,
+  ): Promise<TrycatchResult<boolean>> {
+    return asyncTrycatch(async () => {
+      if (kvStore.type == "bridge") {
+        return await fetch(`${kvStore.url}/check`, {
+          headers: kvStore.authToken ? { Authorization: kvStore.authToken } : undefined,
+        })
+          .then((res) => res.ok)
+          .catch(() => false);
+      }
+
+      try {
+        const kv = await openKv(kvStore.url, {
+          accessToken: kvStore.accessToken,
+        });
+        // Trying to get a random entry to make sure the KV Store exists
+        return await deadline(kv.get([crypto.randomUUID()]), 6000) // Reject after 6s because remote KVs might hang forever
+          .then(() => true)
+          .catch(() => false)
+          .finally(() => kv.close());
+      } catch {
+        return false;
+      }
+    });
+  }
 }
+
+export type KvStoresServiceInterface = Pick<
+  KvStoresService,
+  | "create"
+  | "update"
+  | "getAll"
+  | "deleteOne"
+  | "renameDefaultLocalKvStore"
+  | "testKvStoreConnection"
+>;
 
 export class KvStoresServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    const create: KvStoresServiceInterface["create"] = async (input) => {
-      return asyncTrycatch(async () => {
-        if (input.type == "local" && (input.replaceExisting || !existsSync(input.url))) {
-          await writeFile(input.url, "");
-        }
+    const service = new KvStoresService();
 
-        const result = insertQuery.run(
-          crypto.randomUUID(),
-          input.name,
-          input.url,
-          input.type,
-          input.accessToken,
-          input.authToken,
-        );
-
-        return !!result.changes;
-      });
-    };
     ipcMain.handle(
       "kvStoresService:create",
-      async (_, ...args: Parameters<typeof create>) => {
-        return create(...args);
+      async (_event, ...args: Parameters<typeof service.create>) => {
+        return service.create(...args);
       },
     );
 
-    const update: KvStoresServiceInterface["update"] = async (kvStore, changes) => {
-      return asyncTrycatch(async () => {
-        if (kvStore.type == "local" && changes.url && !changes.type) {
-          await relocateLocalKvStore(kvStore, changes.url);
-        }
-
-        if (changes.type == "local" && changes.url) {
-          const dir = path.dirname(changes.url);
-          if (!existsSync(dir)) {
-            await mkdir(dir, { recursive: true });
-          }
-
-          if (!existsSync(changes.url)) {
-            await writeFile(changes.url, "");
-          }
-        }
-
-        const result = updateQuery.run({
-          $id: kvStore.id,
-          $name: changes.name ?? null,
-          $url: changes.url ?? null,
-          $type: changes.type ?? null,
-          $accessToken: changes.accessToken,
-          $authToken: changes.authToken,
-        });
-
-        return !!result.changes;
-      });
-    };
     ipcMain.handle(
       "kvStoresService:update",
-      async (_, ...args: Parameters<typeof update>) => {
-        return update(...args);
+      async (_event, ...args: Parameters<typeof service.update>) => {
+        return service.update(...args);
       },
     );
 
-    const getAll: KvStoresServiceInterface["getAll"] = async () => {
-      return asyncTrycatch(async () => {
-        const kvStores = getAllQuery.all() as KvStore[];
-        const defaultKvStores = await getDefaultLocalKvStores(
-          kvStores.filter((store) => store.type == "default").map((s) => s.id),
-        );
-        return [...kvStores, ...defaultKvStores].sort(
-          (storeA, storeB) =>
-            new Date(storeB.updatedAt).getTime() - new Date(storeA.updatedAt).getTime(),
-        );
-      });
-    };
-    ipcMain.handle("kvStoresService:getAll", getAll);
+    ipcMain.handle("kvStoresService:getAll", async (_event) => {
+      return service.getAll();
+    });
 
-    const deleteOne: KvStoresServiceInterface["deleteOne"] = async (kvStore) => {
-      return asyncTrycatch(async () => {
-        if (kvStore.type == "default" || kvStore.type == "local") {
-          await rm(kvStore.url, { force: true });
-          await rm(`${kvStore.url}-shm`, { force: true });
-          await rm(`${kvStore.url}-wal`, { force: true });
-
-          if (kvStore.type == "default") {
-            const storedKvStore = getOneQuery.get(kvStore.id) as KvStore | undefined;
-            if (!storedKvStore) {
-              databaseTransaction(() => {
-                clearSavedParamsQuery.run(kvStore.id);
-                deleteWatchedKeysQuery.run(kvStore.id);
-              });
-              return true;
-            }
-          }
-        }
-
-        return databaseTransaction(() => {
-          const result = deleteOneQuery.run(kvStore.id);
-
-          if (result.changes) {
-            clearSavedParamsQuery.run(kvStore.id);
-            deleteWatchedKeysQuery.run(kvStore.id);
-          }
-
-          return !!result.changes;
-        });
-      });
-    };
     ipcMain.handle(
       "kvStoresService:deleteOne",
-      async (_, ...args: Parameters<typeof deleteOne>) => {
-        return deleteOne(...args);
+      async (_event, ...args: Parameters<typeof service.deleteOne>) => {
+        return service.deleteOne(...args);
       },
     );
 
-    const renameDefaultLocalKvStore: KvStoresServiceInterface["renameDefaultLocalKvStore"] =
-      async (store, newName) => {
-        return asyncTrycatch(async () => {
-          if (store.type != "default") return false;
-
-          const storedKvStore = getOneQuery.get(store.id) as KvStore | undefined;
-          if (storedKvStore) {
-            const result = updateQuery.run({
-              $id: storedKvStore.id,
-              $name: newName,
-            });
-
-            return !!result.changes;
-          }
-
-          const result = insertQuery.run(store.id, newName, store.url, store.type, null);
-
-          return !!result.changes;
-        });
-      };
     ipcMain.handle(
       "kvStoresService:renameDefaultLocalKvStore",
-      async (_, ...args: Parameters<typeof renameDefaultLocalKvStore>) => {
-        return renameDefaultLocalKvStore(...args);
+      async (_event, ...args: Parameters<typeof service.renameDefaultLocalKvStore>) => {
+        return service.renameDefaultLocalKvStore(...args);
       },
     );
 
-    const testKvStoreConnection: KvStoresServiceInterface["testKvStoreConnection"] =
-      async (kvStore) => {
-        return asyncTrycatch(async () => {
-          if (kvStore.type == "bridge") {
-            return await fetch(`${kvStore.url}/check`, {
-              headers: kvStore.authToken
-                ? { Authorization: kvStore.authToken }
-                : undefined,
-            })
-              .then((res) => res.ok)
-              .catch(() => false);
-          }
-
-          try {
-            const kv = await openKv(kvStore.url, {
-              accessToken: kvStore.accessToken,
-            });
-            // Trying to get a random entry to make sure the KV Store exists
-            return await deadline(kv.get([crypto.randomUUID()]), 6000) // Reject after 6s because remote KVs might hang forever
-              .then(() => true)
-              .catch(() => false)
-              .finally(() => kv.close());
-          } catch {
-            return false;
-          }
-        });
-      };
     ipcMain.handle(
       "kvStoresService:testKvStoreConnection",
-      async (_, ...args: Parameters<typeof testKvStoreConnection>) => {
-        return testKvStoreConnection(...args);
+      async (_event, ...args: Parameters<typeof service.testKvStoreConnection>) => {
+        return service.testKvStoreConnection(...args);
       },
     );
   }

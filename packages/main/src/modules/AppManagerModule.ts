@@ -2,11 +2,30 @@ import type { AppModule, ModuleContext } from "./types.js";
 import { ipcMain } from "electron";
 import os from "node:os";
 import { syncTrycatch } from "../helpers.js";
-import type { TrycatchResult } from "../types.ts";
+class AppManagerService {
+  constructor(private readonly context: ModuleContext) {}
 
-export interface AppManagerInterface {
-  restartApp: () => Promise<TrycatchResult<void>>;
+  async restartApp() {
+    return syncTrycatch(() => {
+      let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
+      if (
+        os.platform() == "linux" &&
+        process.env.APPIMAGE &&
+        this.context.app.isPackaged
+      ) {
+        relaunchOptions = {
+          execPath: process.env.APPIMAGE,
+          args: ["--appimage-extract-and-run"],
+        };
+      }
+
+      this.context.app.relaunch(relaunchOptions);
+      this.context.app.exit();
+    });
+  }
 }
+
+export type AppManagerInterface = Pick<AppManagerService, "restartApp">;
 
 export class AppManagerModule implements AppModule {
   constructor() {}
@@ -20,20 +39,9 @@ export class AppManagerModule implements AppModule {
 
     context.app.on("window-all-closed", () => context.app.quit());
 
-    const restartApp: AppManagerInterface["restartApp"] = async () => {
-      return syncTrycatch(() => {
-        let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
-        if (os.platform() == "linux" && process.env.APPIMAGE && context.app.isPackaged) {
-          relaunchOptions = {
-            execPath: process.env.APPIMAGE,
-            args: ["--appimage-extract-and-run"],
-          };
-        }
-        context.app.relaunch(relaunchOptions);
-        context.app.exit();
-      });
-    };
-    ipcMain.handle("restart-app", restartApp);
+    const service = new AppManagerService(context);
+
+    ipcMain.handle("restart-app", (_event) => service.restartApp());
 
     await context.app.whenReady();
   }

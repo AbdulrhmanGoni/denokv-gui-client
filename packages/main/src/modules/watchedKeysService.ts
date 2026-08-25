@@ -10,61 +10,64 @@ import { syncTrycatch } from "../helpers.js";
 import type { SerializedKvKey } from "@app/bridge-server";
 import type { TrycatchResult } from "../types.ts";
 
-export interface WatchedKeysServiceInterface {
-  getWatchedKeys(kvStoreId: string): Promise<TrycatchResult<SerializedKvKey[] | null>>;
-  setWatchedKeys(
+class WatchedKeysService {
+  async getWatchedKeys(
+    kvStoreId: string,
+  ): Promise<TrycatchResult<SerializedKvKey[] | null>> {
+    return syncTrycatch(() => {
+      const row = getWatchedKeysQuery.get(kvStoreId) as
+        | { keysAsJson: string }
+        | undefined;
+      if (!row) return null;
+      return JSON.parse(row.keysAsJson) as SerializedKvKey[];
+    });
+  }
+
+  async setWatchedKeys(
     kvStoreId: string,
     keys: SerializedKvKey[],
-  ): Promise<TrycatchResult<boolean>>;
-}
-
-export class WatchedKeysServiceModule implements AppModule {
-  enable(_context: ModuleContext): void {
-    const getWatchedKeys: WatchedKeysServiceInterface["getWatchedKeys"] = async (
-      kvStoreId,
-    ) => {
-      return syncTrycatch(() => {
-        const row = getWatchedKeysQuery.get(kvStoreId) as
-          | { keysAsJson: string }
-          | undefined;
-        if (!row) return null;
-        return JSON.parse(row.keysAsJson) as SerializedKvKey[];
-      });
-    };
-    ipcMain.handle(
-      "watchedKeysService:getWatchedKeys",
-      (_, ...args: Parameters<typeof getWatchedKeys>) => {
-        return getWatchedKeys(...args);
-      },
-    );
-
-    const setWatchedKeys: WatchedKeysServiceInterface["setWatchedKeys"] = async (
-      kvStoreId,
-      keys,
-    ) => {
-      return syncTrycatch(() =>
-        databaseTransaction(() => {
-          if (getWatchedKeysQuery.get(kvStoreId)) {
-            const result = updateWatchedKeysQuery.run({
-              kvStoreId,
-              keys: JSON.stringify(keys),
-            });
-            return !!result.changes;
-          }
-
-          const result = insertWatchedKeysQuery.run({
-            id: crypto.randomUUID(),
+  ): Promise<TrycatchResult<boolean>> {
+    return syncTrycatch(() =>
+      databaseTransaction(() => {
+        if (getWatchedKeysQuery.get(kvStoreId)) {
+          const result = updateWatchedKeysQuery.run({
             kvStoreId,
             keys: JSON.stringify(keys),
           });
           return !!result.changes;
-        }),
-      );
-    };
+        }
+
+        const result = insertWatchedKeysQuery.run({
+          id: crypto.randomUUID(),
+          kvStoreId,
+          keys: JSON.stringify(keys),
+        });
+        return !!result.changes;
+      }),
+    );
+  }
+}
+
+export type WatchedKeysServiceInterface = Pick<
+  WatchedKeysService,
+  "getWatchedKeys" | "setWatchedKeys"
+>;
+
+export class WatchedKeysServiceModule implements AppModule {
+  enable(_context: ModuleContext): void {
+    const service = new WatchedKeysService();
+
+    ipcMain.handle(
+      "watchedKeysService:getWatchedKeys",
+      (_event, ...args: Parameters<typeof service.getWatchedKeys>) => {
+        return service.getWatchedKeys(...args);
+      },
+    );
+
     ipcMain.handle(
       "watchedKeysService:setWatchedKeys",
-      (_, ...args: Parameters<typeof setWatchedKeys>) => {
-        return setWatchedKeys(...args);
+      (_event, ...args: Parameters<typeof service.setWatchedKeys>) => {
+        return service.setWatchedKeys(...args);
       },
     );
   }

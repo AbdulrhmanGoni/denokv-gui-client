@@ -14,41 +14,59 @@ import { syncTrycatch } from "../helpers.js";
 import type { LastFetchedUpdate, TrycatchResult } from "../types.ts";
 import type { UpdateCheckResult } from "electron-updater";
 
-export interface LastFetchedUpdateServiceInterface {
-  getLastFetchedUpdate(): Promise<TrycatchResult<LastFetchedUpdate | null>>;
-  setLastFetchedUpdate(updateInfo: UpdateCheckResult): Promise<TrycatchResult<boolean>>;
-  deleteLastFetchedUpdate(): Promise<TrycatchResult<boolean>>;
-  doNotNotifyLastFetchedUpdate(): Promise<TrycatchResult<boolean>>;
+class LastFetchedUpdateService {
+  async getLastFetchedUpdate(): Promise<TrycatchResult<LastFetchedUpdate | null>> {
+    return syncTrycatch(getLastFetchedUpdate);
+  }
+
+  async setLastFetchedUpdate(
+    updateInfo: UpdateCheckResult,
+  ): Promise<TrycatchResult<boolean>> {
+    return syncTrycatch(() => setLastFetchedUpdate(updateInfo));
+  }
+
+  async deleteLastFetchedUpdate(): Promise<TrycatchResult<boolean>> {
+    return syncTrycatch(deleteLastFetchedUpdate);
+  }
+
+  async doNotNotifyLastFetchedUpdate(): Promise<TrycatchResult<boolean>> {
+    return syncTrycatch(() => {
+      const result = updateDoNotNotifyQuery.run(1);
+      return !!result.changes;
+    });
+  }
 }
+
+export type LastFetchedUpdateServiceInterface = Pick<
+  LastFetchedUpdateService,
+  | "getLastFetchedUpdate"
+  | "setLastFetchedUpdate"
+  | "deleteLastFetchedUpdate"
+  | "doNotNotifyLastFetchedUpdate"
+>;
 
 export class LastFetchedUpdateServiceModule implements AppModule {
   enable(_context: ModuleContext): void {
-    ipcMain.handle("lastFetchedUpdateService:getLastFetchedUpdate", () =>
-      syncTrycatch(getLastFetchedUpdate),
-    );
+    const service = new LastFetchedUpdateService();
+
+    ipcMain.handle("lastFetchedUpdateService:getLastFetchedUpdate", (_event) => {
+      return service.getLastFetchedUpdate();
+    });
 
     ipcMain.handle(
       "lastFetchedUpdateService:setLastFetchedUpdate",
-      async (_, ...args: Parameters<typeof setLastFetchedUpdate>) => {
-        return syncTrycatch(() => setLastFetchedUpdate(...args));
+      async (_event, ...args: Parameters<typeof service.setLastFetchedUpdate>) => {
+        return service.setLastFetchedUpdate(...args);
       },
     );
 
-    ipcMain.handle("lastFetchedUpdateService:deleteLastFetchedUpdate", () =>
-      syncTrycatch(deleteLastFetchedUpdate),
-    );
+    ipcMain.handle("lastFetchedUpdateService:deleteLastFetchedUpdate", (_event) => {
+      return service.deleteLastFetchedUpdate();
+    });
 
-    const doNotNotifyLastFetchedUpdate: LastFetchedUpdateServiceInterface["doNotNotifyLastFetchedUpdate"] =
-      async () => {
-        return syncTrycatch(() => {
-          const result = updateDoNotNotifyQuery.run(1);
-          return !!result.changes;
-        });
-      };
-    ipcMain.handle(
-      "lastFetchedUpdateService:doNotNotifyLastFetchedUpdate",
-      doNotNotifyLastFetchedUpdate,
-    );
+    ipcMain.handle("lastFetchedUpdateService:doNotNotifyLastFetchedUpdate", (_event) => {
+      return service.doNotNotifyLastFetchedUpdate();
+    });
   }
 }
 

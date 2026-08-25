@@ -11,15 +11,15 @@ type OpenedBridgeServer = {
   authToken: string | null;
 };
 
-class BridgeServerController {
+export class BridgeServerService {
   private serverRef: ReturnType<typeof openBridgeServerInNode> | null = null;
   private kv: Kv | null = null;
   private bridgeServerAuthToken: string | null = null;
   private bridgeServerUrl: string | null = null;
 
-  async open(kvStore: KvStore): Promise<TrycatchResult<OpenedBridgeServer>> {
+  async openServer(kvStore: KvStore): Promise<TrycatchResult<OpenedBridgeServer>> {
     return asyncTrycatch(async () => {
-      await this.close();
+      await this.closeServer();
 
       if (kvStore.type == "bridge") {
         this.bridgeServerUrl = kvStore.url;
@@ -60,7 +60,7 @@ class BridgeServerController {
     });
   }
 
-  async close(): Promise<TrycatchResult<void>> {
+  async closeServer(): Promise<TrycatchResult<void>> {
     return asyncTrycatch(async () => {
       this.kv?.close();
       this.kv = null;
@@ -70,7 +70,7 @@ class BridgeServerController {
     });
   }
 
-  getOpenedServer(): OpenedBridgeServer | null {
+  async getOpenedServer(): Promise<OpenedBridgeServer | null> {
     if (!this.bridgeServerUrl) {
       return null;
     }
@@ -82,34 +82,28 @@ class BridgeServerController {
   }
 }
 
-const bridgeServerController = new BridgeServerController();
-
-export interface BridgeServerInterface {
-  openServer(kvStore: KvStore): Promise<TrycatchResult<OpenedBridgeServer>>;
-  getOpenedServer(): Promise<OpenedBridgeServer | null>;
-  closeServer(): Promise<TrycatchResult<void>>;
-}
+export type BridgeServerInterface = Pick<
+  BridgeServerService,
+  "openServer" | "closeServer" | "getOpenedServer"
+>;
 
 export class BridgeServerModule implements AppModule {
   enable(_context: ModuleContext): void {
-    const openServer: BridgeServerInterface["openServer"] = async (kvStore) => {
-      return bridgeServerController.open(kvStore);
-    };
+    const service = new BridgeServerService();
+
     ipcMain.handle(
       "bridgeServer:openServer",
-      (_, ...args: Parameters<typeof openServer>) => {
-        return openServer(...args);
+      (_event, ...args: Parameters<typeof service.openServer>) => {
+        return service.openServer(...args);
       },
     );
 
-    const getOpenedServer: BridgeServerInterface["getOpenedServer"] = async () => {
-      return bridgeServerController.getOpenedServer();
-    };
-    ipcMain.handle("bridgeServer:getOpenedServer", getOpenedServer);
+    ipcMain.handle("bridgeServer:getOpenedServer", (_event) => {
+      return service.getOpenedServer();
+    });
 
-    const closeServer: BridgeServerInterface["closeServer"] = () => {
-      return bridgeServerController.close();
-    };
-    ipcMain.handle("bridgeServer:closeServer", closeServer);
+    ipcMain.handle("bridgeServer:closeServer", (_event) => {
+      return service.closeServer();
+    });
   }
 }
