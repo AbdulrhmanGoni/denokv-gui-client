@@ -2,6 +2,8 @@ import type { AppModule, ModuleContext } from "./types.js";
 import { ipcMain } from "electron";
 import os from "node:os";
 import { syncTrycatch } from "../helpers.js";
+import { getSettings } from "./settingsService.js";
+
 class AppManagerService {
   constructor(private readonly context: ModuleContext) {}
 
@@ -38,6 +40,11 @@ export class AppManagerModule implements AppModule {
     }
 
     context.app.on("window-all-closed", () => context.app.quit());
+
+    const settings = getSettings();
+    if (settings?.disableHardwareAcceleration === true) {
+      context.app.disableHardwareAcceleration();
+    }
 
     const service = new AppManagerService(context);
 

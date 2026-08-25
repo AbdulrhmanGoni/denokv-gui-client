@@ -8,7 +8,7 @@ import {
   updateLastFetchedUpdateQuery,
 } from "../db/queries/lastFetchedUpdateQueries.js";
 import { isGreaterVersion } from "../helpers.js";
-import { appVersion } from "./metadataModule.js";
+import { appVersion } from "./AppInfoModule.js";
 import { databaseTransaction } from "../db/db.js";
 import { syncTrycatch } from "../helpers.js";
 import type { LastFetchedUpdate, TrycatchResult } from "../types.ts";

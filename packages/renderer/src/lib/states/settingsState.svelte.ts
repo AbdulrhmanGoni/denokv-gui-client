@@ -1,5 +1,5 @@
 import type { Settings, TrycatchResult } from "@app/main";
-import { hardwareAccelerationService, settingsService } from "@app/preload";
+import { appInfoService, settingsService } from "@app/preload";
 import { toast } from "svelte-sonner";
 
 export const settingsState: Settings = $state({});
@@ -26,7 +26,7 @@ export const settingsPageState: SettingsPageState = $state({
 });
 
 export async function loadHardwareAccelerationState() {
-  const hardwareAcceleration = await hardwareAccelerationService.isEnabled();
+  const hardwareAcceleration = await appInfoService.isHardwareAccelerationEnabled();
   if (hardwareAcceleration.error) return toast.error(hardwareAcceleration.error);
 
   settingsPageState.isHardwareAccelerationCurrentlyDisabled =

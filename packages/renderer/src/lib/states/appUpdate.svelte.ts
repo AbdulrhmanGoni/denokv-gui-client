@@ -1,4 +1,9 @@
-import { appUpdater, lastFetchedUpdateService, metadata } from "@app/preload";
+import {
+  appUpdater,
+  lastFetchedUpdateService,
+  metadata,
+  appInfoService,
+} from "@app/preload";
 import { toast } from "svelte-sonner";
 import newUpdateNotificationActions from "$lib/features/settings/newUpdateNotificationActions.svelte";
 import type { ProgressInfo, UpdateCheckResult } from "@app/main";
@@ -170,7 +175,7 @@ export function openNewUpdateReleaseNotes() {
 }
 
 export async function openCurrentVersionReleaseNotes() {
-  const { result: releaseNotes, error } = await metadata.getCurrentVersionReleaseNotes();
+  const { result: releaseNotes, error } = await appInfoService.getReleaseNotes();
   if (error || !releaseNotes) {
     toast.error(error ?? "Couldn't get the release notes of the current version");
     return;

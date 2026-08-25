@@ -1,7 +1,7 @@
 import { app } from "electron";
 import type { AppInitConfig, AppModule, ModuleContext } from "./modules/types.js";
+import { AppInfoModule } from "./modules/AppInfoModule.js";
 import { WindowManager } from "./modules/WindowManager.js";
-import { HardwareAccelerationModule } from "./modules/HardwareAccelerationModule.js";
 import { WebContentsUrlPolicy } from "./modules/WebContentsUrlPolicy.js";
 import { BridgeServerModule } from "./modules/bridgeServer.js";
 import { KvStoresServiceModule } from "./modules/kvStoresService.js";
@@ -9,7 +9,6 @@ import { SettingsServiceModule } from "./modules/settingsService.js";
 import { LastFetchedUpdateServiceModule } from "./modules/lastFetchedUpdateService.js";
 import { BrowsingParamsServiceModule } from "./modules/browsingParamsService.js";
 import { AppUpdaterModule } from "./modules/appUpdaterModule.js";
-import { MetadataModule } from "./modules/metadataModule.js";
 import { WatchedKeysServiceModule } from "./modules/watchedKeysService.js";
 import { FileSystemServiceModule } from "./modules/fileSystemService.js";
 import { AppManagerModule } from "./modules/AppManagerModule.js";
@@ -24,8 +23,7 @@ async function initModules(modules: AppModule[]): Promise<void> {
 export async function initApp(initConfig: AppInitConfig) {
   await initModules([
     new AppManagerModule(),
-    new MetadataModule(),
-    new HardwareAccelerationModule(),
+    new AppInfoModule(),
     new FileSystemServiceModule(),
     new KvStoresServiceModule(),
     new BridgeServerModule(),

@@ -3,30 +3,31 @@ import path from "node:path";
 import { deserializeKvValue, serializeKvKey, serializeKvValue } from "@app/bridge-server";
 import type {
   AppManagerInterface,
+  AppInfoInterface,
   AppUpdaterInterface,
   BridgeServerInterface,
   BrowsingParamsServiceInterface,
   FileSystemServiceInterface,
-  HardwareAccelerationInterface,
   KvStoresServiceInterface,
   LastFetchedUpdateServiceInterface,
-  MetadataInterface,
   SettingsServiceInterface,
   WatchedKeysServiceInterface,
 } from "@app/main/modules/interfaces";
-import type { AppMetadata, ProgressInfo } from "@app/main";
+import type { ProgressInfo } from "@app/main";
 
-type MetadataType = AppMetadata &
-  Pick<MetadataInterface, "getCurrentVersionReleaseNotes">;
-
-const appMetadata: AppMetadata = await ipcRenderer.invoke("get-metadata");
-
-const metadata: MetadataType = {
-  ...appMetadata,
-  getCurrentVersionReleaseNotes() {
-    return ipcRenderer.invoke("get-current-version-release-notes");
+const appInfoService: AppInfoInterface = {
+  getMetadata() {
+    return ipcRenderer.invoke("appInfoService:getMetadata");
+  },
+  getReleaseNotes() {
+    return ipcRenderer.invoke("appInfoService:getReleaseNotes");
+  },
+  isHardwareAccelerationEnabled() {
+    return ipcRenderer.invoke("appInfoService:isHardwareAccelerationEnabled");
   },
 };
+
+const metadata = await appInfoService.getMetadata();
 
 type FileSystemServiceInterfaceExtended = FileSystemServiceInterface & {
   pathUtils: {
@@ -199,12 +200,6 @@ const watchedKeysService: WatchedKeysServiceInterface = {
   },
 };
 
-const hardwareAccelerationService: HardwareAccelerationInterface = {
-  isEnabled() {
-    return ipcRenderer.invoke("hardwareAcceleration:isEnabled");
-  },
-};
-
 const appManager: AppManagerInterface = {
   restartApp() {
     return ipcRenderer.invoke("restart-app");
@@ -213,6 +208,7 @@ const appManager: AppManagerInterface = {
 
 export {
   metadata,
+  appInfoService,
   fileSystemService,
   kvStoresService,
   bridgeServer,
@@ -221,6 +217,5 @@ export {
   lastFetchedUpdateService,
   browsingParamsService,
   watchedKeysService,
-  hardwareAccelerationService,
   appManager,
 };

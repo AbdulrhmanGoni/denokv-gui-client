@@ -185,16 +185,20 @@ export function preloadContextExposureToRendererTests() {
     );
   });
 
-  test(`'hardwareAccelerationService' should be exposed as an object with its methods`, async ({
+  test(`'appInfoService' should be exposed as an object with its methods`, async ({
     page,
   }) => {
-    const hardwareAccelerationService = await page.evaluate(
-      () => globalThis["hardwareAccelerationService" as keyof typeof globalThis],
+    const appInfoService = await page.evaluate(
+      () => globalThis["appInfoService" as keyof typeof globalThis],
     );
-    expect(typeof hardwareAccelerationService).toEqual("object");
+    expect(typeof appInfoService).toEqual("object");
 
-    const exposedMethods = Object.keys(hardwareAccelerationService);
-    const targetMethods = ["isEnabled"];
+    const exposedMethods = Object.keys(appInfoService);
+    const targetMethods = [
+      "getMetadata",
+      "getReleaseNotes",
+      "isHardwareAccelerationEnabled",
+    ];
 
     expect(exposedMethods.length).toBe(targetMethods.length);
     targetMethods.forEach((method) => expect(exposedMethods).toContain(method));
