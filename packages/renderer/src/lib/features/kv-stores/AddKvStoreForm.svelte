@@ -1,6 +1,8 @@
 <script lang="ts">
   import { kvStoresService } from "@app/preload";
   import DatabaseIcon from "@lucide/svelte/icons/database";
+  import DatabasePlusIcon from "@lucide/svelte/icons/database-plus";
+  import ArrowLeft from "@lucide/svelte/icons/arrow-left";
   import { kvStoresState } from "$lib/states/kvStoresState.svelte";
   import { toast } from "svelte-sonner";
   import KvStoreForm from "./KvStoreForm.svelte";
@@ -25,14 +27,24 @@
 
 <KvStoreForm
   title="Add KV Store"
-  titleIcon={icon}
+  titleIcon={databaseIcon}
   {onSubmitForm}
   submitButtonText="Add"
+  submitButtonIcon={databasePlusIcon}
+  backButtonIcon={backIcon}
   onBack={() => {
     kvStoresState.openAddNewStoreForm = false;
   }}
 />
 
-{#snippet icon()}
+{#snippet databaseIcon()}
   <DatabaseIcon />
+{/snippet}
+
+{#snippet databasePlusIcon()}
+  <DatabasePlusIcon />
+{/snippet}
+
+{#snippet backIcon()}
+  <ArrowLeft />
 {/snippet}

@@ -2,8 +2,9 @@
   import { Input } from "$lib/ui/shadcn/input/index.js";
   import { Label } from "$lib/ui/shadcn/label/index.js";
   import { Button } from "$lib/ui/shadcn/button/index.js";
-  import { fileSystemService } from "@app/preload";
+  import { fileSystemService, kvStoresService } from "@app/preload";
   import Loader from "@lucide/svelte/icons/loader";
+  import PlugZap from "@lucide/svelte/icons/plug-zap";
   import * as Select from "$lib/ui/shadcn/select";
   import type { Snippet } from "svelte";
   import { Checkbox } from "$lib/ui/shadcn/checkbox/index.js";
@@ -59,6 +60,26 @@
   let isRemoteStore = $derived(selectedStoreType == "remote");
   let isLocalStore = $derived(selectedStoreType == "local");
   let isBridgedStore = $derived(selectedStoreType == "bridge");
+  let isTestingConnection = $state(false);
+  let formElement: HTMLFormElement | undefined = $state();
+
+  function getFormData(form: HTMLFormElement): CreateKvStoreInput {
+    const formData = new FormData(form);
+    const kvStoreName = formData.get("name")?.toString() as string;
+    const kvStoreUrl = formData.get("url")?.toString() as string;
+    const type = formData.get("type")?.toString() as string;
+    const accessToken = formData.get("accessToken")?.toString() ?? null;
+    const authToken = formData.get("authToken")?.toString() ?? null;
+
+    return {
+      name: kvStoreName,
+      url: kvStoreUrl,
+      type: type as CreateKvStoreInput["type"],
+      accessToken: isRemoteStore ? accessToken : null,
+      authToken: isBridgedStore ? authToken : null,
+      replaceExisting: isLocalStore ? replaceExisting : undefined,
+    };
+  }
 
   async function handleSubmit(
     event: SubmitEvent & {
@@ -67,22 +88,7 @@
   ) {
     event.preventDefault();
     const form = event.currentTarget;
-    const formData = new FormData(form);
-    const kvStoreName = formData.get("name")?.toString() as string;
-    const kvStoreUrl = formData.get("url")?.toString() as string;
-    const type = formData.get("type")?.toString() as string;
-    const accessToken = formData.get("accessToken")?.toString() ?? null;
-    const authToken = formData.get("authToken")?.toString() ?? null;
-
-    const store: CreateKvStoreInput = {
-      name: kvStoreName,
-      url: kvStoreUrl,
-      type: type as CreateKvStoreInput["type"],
-      accessToken: isRemoteStore ? accessToken : null,
-      authToken: isBridgedStore ? authToken : null,
-      replaceExisting: isLocalStore ? replaceExisting : undefined,
-    };
-
+    const store = getFormData(form);
     onSubmitForm(store, form);
   }
 
@@ -102,9 +108,31 @@
       localKvFileName = selectedFile.fileName;
     }
   }
+
+  async function testConnection() {
+    if (!formElement) return;
+    const store = getFormData(formElement);
+
+    if (!store.url) {
+      if (store.type === "bridge" || store.type === "remote") {
+        toast.warning("Please enter the url of the kv store first");
+      } else {
+        toast.warning("Please enter the path of the kv store first");
+      }
+      return;
+    }
+
+    isTestingConnection = true;
+    const response = await kvStoresService.testKvStoreConnection(store);
+    if (response.result) toast.success("Connection test successful");
+    else if (response.error) toast.error(response.error);
+    else toast.error("Connection test failed");
+    isTestingConnection = false;
+  }
 </script>
 
 <form
+  bind:this={formElement}
   onsubmit={handleSubmit}
   class="flex w-full flex-col gap-4 bg-card text-card-foreground rounded-md border p-3 h-full shadow-sm"
 >
@@ -286,6 +314,20 @@
         {@render backButtonIcon()}
       {/if}
       {backButtonText ? backButtonText : "Back"}
+    </Button>
+    <Button
+      onclick={testConnection}
+      type="button"
+      variant="secondary2"
+      class={isTestingConnection || isLoading ? "cursor-progress" : ""}
+      disabled={isTestingConnection || isLoading}
+    >
+      Test Connection
+      {#if isTestingConnection}
+        <Loader class="animate-spin" />
+      {:else}
+        <PlugZap class="size-5" />
+      {/if}
     </Button>
     <Button type="submit" class={isLoading ? "cursor-progress" : ""} disabled={isLoading}>
       {submitButtonText ? submitButtonText : "Submit"}
