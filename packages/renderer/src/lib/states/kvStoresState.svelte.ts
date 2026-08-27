@@ -157,11 +157,11 @@ export async function getOpenedKvStoreClient(): Promise<BridgeServerClient> {
   return kvStoresState.openedStoreClient;
 }
 
-const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
-  local: "Either the path to this local KV Store is wrong, moved or deleted",
-  remote: "Either authentication failed or the remote server is unreachable.",
-  default: "Either the path to this default local KV Store is wrong, moved or deleted",
-  bridge: "Either authentication failed or the bridge server is down.",
+export const testKvStoreConnectionErrorMessages: Record<KvStore["type"], string> = {
+  local: "Maybe the path to this local KV Store is wrong, moved or deleted",
+  remote: "Maybe the authentication failed or the remote server is unreachable",
+  default: "Maybe the path to this default local KV Store is wrong, moved or deleted",
+  bridge: "Maybe the authentication failed or the bridge server is down",
 };
 
 if (metadata.environment !== "production") {

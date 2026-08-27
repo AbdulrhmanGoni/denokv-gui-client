@@ -11,6 +11,7 @@
   import * as InputGroup from "$lib/ui/shadcn/input-group";
   import { toast } from "svelte-sonner";
   import type { CreateKvStoreInput, KvStore } from "@app/main";
+  import { testKvStoreConnectionErrorMessages } from "$lib/states/kvStoresState.svelte";
 
   type KvStoreFormProps = {
     defaultValues?: Partial<CreateKvStoreInput>;
@@ -60,7 +61,9 @@
   let isRemoteStore = $derived(selectedStoreType == "remote");
   let isLocalStore = $derived(selectedStoreType == "local");
   let isBridgedStore = $derived(selectedStoreType == "bridge");
+
   let isTestingConnection = $state(false);
+
   let formElement: HTMLFormElement | undefined = $state();
 
   function getFormData(form: HTMLFormElement): CreateKvStoreInput {
@@ -109,24 +112,51 @@
     }
   }
 
+  function isValidUrl(value: string): boolean {
+    try {
+      const url = new URL(value);
+
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  }
+
   async function testConnection() {
     if (!formElement) return;
     const store = getFormData(formElement);
 
+    const isHttpConnection = store.type === "bridge" || store.type === "remote";
+
     if (!store.url) {
-      if (store.type === "bridge" || store.type === "remote") {
-        toast.warning("Please enter the url of the kv store first");
-      } else {
-        toast.warning("Please enter the path of the kv store first");
-      }
+      const fieldName = isHttpConnection ? "url" : "path";
+      toast.warning(`Please enter the ${fieldName} of the kv store first`, {
+        position: "bottom-left",
+      });
+      return;
+    }
+
+    if (isHttpConnection && !isValidUrl(store.url)) {
+      toast.warning(
+        `Please enter a valid HTTP URL to your ${store.type} kv store server`,
+        { position: "bottom-left" },
+      );
       return;
     }
 
     isTestingConnection = true;
     const response = await kvStoresService.testKvStoreConnection(store);
-    if (response.result) toast.success("Connection test successful");
-    else if (response.error) toast.error(response.error);
-    else toast.error("Connection test failed");
+    if (response.result) {
+      toast.success("Connection test successful", {
+        description: "The KV Store is reachable",
+        position: "bottom-left",
+      });
+    } else {
+      toast.error(response.error || "Connection test failed", {
+        description: testKvStoreConnectionErrorMessages[store.type],
+        position: "bottom-left",
+      });
+    }
     isTestingConnection = false;
   }
 </script>

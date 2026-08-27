@@ -10,25 +10,25 @@
 
   const { kvStore }: { kvStore: KvStore } = $props();
 
-  async function onSubmitForm(store: CreateKvStoreInput, form?: HTMLFormElement) {
+  function onSubmitForm(store: CreateKvStoreInput, form?: HTMLFormElement) {
     const changes = getChanges(store);
     if (!changes) {
-      toast.warning("No changes to save");
+      toast.warning("No changes to save", { position: "bottom-left" });
       return;
     }
 
     kvStoresService
       .update($state.snapshot(kvStore), changes)
       .then(({ result, error }) => {
-        if (error) {
-          toast.error("Update Failed", { description: error });
-        } else if (result) {
+        if (result) {
           toast.success("The kv store has been edited successfully");
           form?.reset();
           kvStoresState.openedStoreToEdit = null;
         } else {
           toast.error("Update Failed", {
-            description: "We could not update the Kv Store for unknown reason",
+            description:
+              error || "We could not update the Kv Store for an unknown reason",
+            position: "bottom-left",
           });
         }
       });

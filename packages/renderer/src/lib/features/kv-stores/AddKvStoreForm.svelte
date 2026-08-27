@@ -10,15 +10,14 @@
 
   function onSubmitForm(newStore: CreateKvStoreInput, form?: HTMLFormElement) {
     kvStoresService.create(newStore).then(({ result, error }) => {
-      if (error) {
-        toast.error("Creation Failed", { description: error });
-      } else if (result) {
+      if (result) {
         toast.success("The Kv Store was created successfully");
         form?.reset();
         kvStoresState.openAddNewStoreForm = false;
       } else {
         toast.error("Creation Failed", {
-          description: "We could not create the Kv Store for unknown reason",
+          description: error || "We could not create the Kv Store for unknown reason",
+          position: "bottom-left",
         });
       }
     });
