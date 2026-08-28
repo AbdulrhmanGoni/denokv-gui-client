@@ -9,6 +9,7 @@ export default /**
   build: {
     ssr: true,
     sourcemap: "inline",
+    minify: process.env.DEBUG === "true" ? false : "oxc",
     outDir: "dist",
     target: `chrome${getChromeMajorVersion()}`,
     assetsDir: ".",

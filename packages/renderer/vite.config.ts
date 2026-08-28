@@ -18,6 +18,6 @@ export default defineConfig({
     },
   },
   build: {
-    minify: process.env.DEBUG === "true" ? false : undefined,
+    minify: process.env.DEBUG === "true" ? false : "oxc",
   },
 });

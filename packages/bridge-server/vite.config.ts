@@ -28,6 +28,7 @@ export default defineConfig({
     },
     emptyOutDir: true,
     reportCompressedSize: false,
+    minify: process.env.DEBUG === "true" ? false : "oxc",
   },
   plugins: [
     dts({

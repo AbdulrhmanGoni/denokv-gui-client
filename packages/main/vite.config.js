@@ -32,6 +32,7 @@ export default /**
     },
     emptyOutDir: true,
     reportCompressedSize: false,
+    minify: process.env.DEBUG === "true" ? false : "oxc",
   },
   plugins: [handleHotReload(), copyMigrations(), bundleReleaseNotes()],
 });
