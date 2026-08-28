@@ -17,7 +17,6 @@ export default /**
   },
   build: {
     ssr: true,
-    sourcemap: "inline",
     outDir: "dist",
     assetsDir: ".",
     target: `node${getNodeMajorVersion()}`,

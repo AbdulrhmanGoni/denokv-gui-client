@@ -19,5 +19,12 @@ export default defineConfig({
   },
   build: {
     minify: process.env.DEBUG === "true" ? false : "oxc",
+    sourcemap: "inline",
+    reportCompressedSize: false,
+    rolldownOptions: {
+      output: {
+        sourcemapExcludeSources: true,
+      },
+    },
   },
 });

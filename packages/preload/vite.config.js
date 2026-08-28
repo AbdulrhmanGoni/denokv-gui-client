@@ -17,13 +17,12 @@ export default /**
       entry: ["src/exposed.ts", "virtual:browser.js"],
     },
     rolldownOptions: {
-      output: [
-        {
-          // ESM preload scripts must have the .mjs extension
-          // https://www.electronjs.org/docs/latest/tutorial/esm#esm-preload-scripts-must-have-the-mjs-extension
-          entryFileNames: "[name].mjs",
-        },
-      ],
+      output: {
+        // ESM preload scripts must have the .mjs extension
+        // https://www.electronjs.org/docs/latest/tutorial/esm#esm-preload-scripts-must-have-the-mjs-extension
+        entryFileNames: "[name].mjs",
+        sourcemapExcludeSources: true,
+      },
       external: ["@app/bridge-server", "electron"],
     },
     emptyOutDir: true,
