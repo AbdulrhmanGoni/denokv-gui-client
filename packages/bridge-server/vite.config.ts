@@ -20,14 +20,7 @@ export default defineConfig({
       fileName: (_format, entryName) => `${entryName}.mjs`,
     },
     rollupOptions: {
-      external: [
-        "@deno/kv",
-        "@hono/node-server",
-        "hono",
-        "hono/tiny",
-        "serialize-javascript",
-        /^node:.*/,
-      ],
+      external: ["@deno/kv", /^node:.*/],
       output: {
         preserveModules: false,
         exports: "named",

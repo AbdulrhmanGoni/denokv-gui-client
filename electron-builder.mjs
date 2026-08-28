@@ -51,11 +51,10 @@ function getAppPackagesFiles() {
   const filesToIncludeOrExclude = [];
 
   const packagesDir = readdirSync("./packages", { withFileTypes: true });
-  for (const fileOrDir of packagesDir) {
-    if (fileOrDir.isDirectory()) {
-      const packagePath = path.join("node_modules", "@app", fileOrDir.name);
+  for (const entry of packagesDir) {
+    if (entry.isDirectory()) {
+      const packagePath = path.join("node_modules", "@app", entry.name);
       filesToIncludeOrExclude.push(
-        "!" + path.join(packagePath, "**"),
         path.join(packagePath, "dist"),
         path.join(packagePath, "package.json"),
       );
@@ -78,5 +77,11 @@ export default /** @type import('electron-builder').Configuration */
     buildResources: "buildResources",
   },
   artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-  files: ["LICENSE*", pkg.main, ...getAppPackagesFiles()],
+  files: [
+    "LICENSE*",
+    pkg.main,
+    "!node_modules/**",
+    ...getAppPackagesFiles(),
+    "node_modules/@deno/**",
+  ],
 });

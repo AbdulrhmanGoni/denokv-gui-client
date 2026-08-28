@@ -11,6 +11,10 @@ export default /**
  * @see https://vitejs.dev/config/
  */
 ({
+  ssr: {
+    noExternal: ["@std/async", "electron-updater"],
+    external: true,
+  },
   build: {
     ssr: true,
     sourcemap: "inline",
