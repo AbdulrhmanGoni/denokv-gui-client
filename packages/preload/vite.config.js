@@ -15,6 +15,7 @@ export default /**
     assetsDir: ".",
     lib: {
       entry: ["src/exposed.ts", "virtual:browser.js"],
+      formats: ["es"],
     },
     rolldownOptions: {
       output: {
