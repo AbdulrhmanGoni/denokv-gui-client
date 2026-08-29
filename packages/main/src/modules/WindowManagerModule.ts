@@ -19,15 +19,15 @@ export class WindowManagerModule implements AppModule {
   }
 
   async enable(context: ModuleContext): Promise<void> {
-    context.browserWindow = await this.restoreOrCreateWindow(true);
-    context.app.on("second-instance", () => this.restoreOrCreateWindow(true));
-    context.app.on("activate", () => this.restoreOrCreateWindow(true));
+    context.browserWindow = await this.restoreOrCreateWindow();
+    context.app.on("second-instance", () => this.restoreOrCreateWindow());
+    context.app.on("activate", () => this.restoreOrCreateWindow());
   }
 
   async createWindow(): Promise<BrowserWindow> {
     const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
     const browserWindow = new BrowserWindow({
-      show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
+      show: false,
       height: Math.min(800, workAreaSize.height),
       width: Math.min(1400, workAreaSize.width),
       webPreferences: {
@@ -49,15 +49,11 @@ export class WindowManagerModule implements AppModule {
     return browserWindow;
   }
 
-  async restoreOrCreateWindow(show = false) {
+  async restoreOrCreateWindow() {
     let window = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed());
 
-    if (window === undefined) {
+    if (!window) {
       window = await this.createWindow();
-    }
-
-    if (!show) {
-      return window;
     }
 
     if (window.isMinimized()) {
