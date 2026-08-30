@@ -1,6 +1,6 @@
 {
   "name": "@app/bridge-server",
-  "version": "11.0.2",
+  "version": "11.0.3",
   "description": "A tiny HTTP server to expose Deno KV database over HTTP",
   "type": "module",
   "sideEffects": false,

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [11.0.3](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.2...bridge-server@11.0.3) (2026-08-30)
+
+### Bug Fixes
+
+* allow OPTIONS preflight requests and correct CORS headers configuration for browsers ([2ce6c8b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2ce6c8bb2897af6c4ba50d0ca4ccd2ed75010ef3))
+
+### Enhancements
+
+* export `BridgeServerClientOptions` type ([81c1991](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/81c1991f23e5cb8e191c4fe6c928e120387ae380))
 ## [11.0.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.1...bridge-server@11.0.2) (2026-08-22)
 
 ### Enhancements
