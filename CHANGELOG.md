@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.30.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.29.0...v1.30.0) (2026-08-30)
+
+### Features
+
+* add the ability to test the connection when adding a new kv store ([6dcae05](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/6dcae05655d12806088adfd78a9c41c621a4d880))
+
+### Enhancements
+
+* relocate errors and warnings in Kv Store form page to prevent obscuring action buttons ([f6773eb](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f6773eb124c0cc798df79f77b0dd344451bfffc2))
+* enhance the performence of settings loading and updating ([36bc5e8](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/36bc5e81e21f40add86b235ed581a03871b878fb))
+* eliminate some unnecessary IPC and serialization overhead by connecting the renderer to the bridge server directly ([c4645ca](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c4645cad51f66d3cfdc5e1740ddae88f5f01c2ed))
+* reduce application binary size by removing redundant packages and some unnecessary source maps ([19bea5e](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/19bea5ed0140453d79ad16bfdcffb3ec045c5be0))
 ## [1.29.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.28.0...v1.29.0) (2026-08-22)
 
 ### Bug Fixes
