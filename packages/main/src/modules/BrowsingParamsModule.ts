@@ -1,5 +1,4 @@
 import { ipcMain } from "electron";
-import type { AppModule, ModuleContext } from "./types.js";
 import { syncTrycatch } from "../helpers.js";
 import {
   unsetDefaultParamsQuery,
@@ -112,8 +111,8 @@ class BrowsingParamsService {
 
 export type BrowsingParamsServiceInterface = BrowsingParamsService;
 
-export class BrowsingParamsModule implements AppModule {
-  enable(_context: ModuleContext): void {
+export class BrowsingParamsModule {
+  constructor() {
     const service = new BrowsingParamsService();
 
     ipcMain.handle(

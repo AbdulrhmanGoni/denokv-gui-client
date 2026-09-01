@@ -1,32 +1,29 @@
 import { BrowserWindow, screen } from "electron";
-import type { AppInitConfig, AppModule, ModuleContext } from "./types.js";
+import type { AppInitConfig } from "./types.js";
 
-export class WindowManagerModule implements AppModule {
-  readonly #preload: { path: string };
-  readonly #renderer: { path: string } | URL;
-  readonly #openDevTools;
+export class WindowManagerModule {
+  #browserWindow: BrowserWindow | null = null;
 
-  constructor({
-    initConfig,
-    openDevTools = false,
-  }: {
-    initConfig: AppInitConfig;
-    openDevTools?: boolean;
-  }) {
-    this.#preload = initConfig.preload;
-    this.#renderer = initConfig.renderer;
-    this.#openDevTools = openDevTools;
+  constructor(
+    private readonly app: Electron.App,
+    private readonly initConfig: AppInitConfig,
+  ) {
+    this.#restoreOrCreateWindow(false);
+    this.app.on("second-instance", () => this.#restoreOrCreateWindow(true));
+    this.app.on("activate", () => this.#restoreOrCreateWindow(true));
   }
 
-  async enable(context: ModuleContext): Promise<void> {
-    context.browserWindow = await this.restoreOrCreateWindow();
-    context.app.on("second-instance", () => this.restoreOrCreateWindow());
-    context.app.on("activate", () => this.restoreOrCreateWindow());
+  get browserWindow(): BrowserWindow {
+    if (!this.#browserWindow) {
+      throw new Error("Trying to get the browser window while it's not created yet!");
+    }
+
+    return this.#browserWindow;
   }
 
-  async createWindow(): Promise<BrowserWindow> {
+  #createWindow() {
     const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
-    const browserWindow = new BrowserWindow({
+    return new BrowserWindow({
       show: false,
       height: Math.min(800, workAreaSize.height),
       width: Math.min(1400, workAreaSize.width),
@@ -35,39 +32,42 @@ export class WindowManagerModule implements AppModule {
         contextIsolation: true,
         sandbox: false,
         webviewTag: false,
-        preload: this.#preload.path,
+        preload: this.initConfig.preload.path,
         webSecurity: true,
       },
     });
-
-    if (this.#renderer instanceof URL) {
-      await browserWindow.loadURL(this.#renderer.href);
-    } else {
-      await browserWindow.loadFile(this.#renderer.path);
-    }
-
-    return browserWindow;
   }
 
-  async restoreOrCreateWindow() {
+  #restoreOrCreateWindow(loadFrontEndImmediately: boolean) {
     let window = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed());
 
-    if (!window) {
-      window = await this.createWindow();
+    this.#browserWindow = window ?? this.#createWindow();
+
+    if (this.#browserWindow.isMinimized()) {
+      this.#browserWindow.restore();
     }
 
-    if (window.isMinimized()) {
-      window.restore();
+    if (import.meta.env.DEV) {
+      this.#browserWindow.webContents.openDevTools();
     }
 
-    window?.show();
+    if (loadFrontEndImmediately) {
+      if (window) {
+        this.#browserWindow.show();
+        this.#browserWindow.focus();
+      } else {
+        this.loadFrontEnd();
+      }
+    }
+  }
 
-    if (this.#openDevTools) {
-      window?.webContents.openDevTools();
+  async loadFrontEnd() {
+    if (this.initConfig.renderer instanceof URL) {
+      await this.browserWindow.loadURL(this.initConfig.renderer.href);
+    } else {
+      await this.browserWindow.loadFile(this.initConfig.renderer.path);
     }
 
-    window.focus();
-
-    return window;
+    this.browserWindow.show();
   }
 }

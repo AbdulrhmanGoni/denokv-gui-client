@@ -1,20 +1,14 @@
 import { shell } from "electron";
 import { URL } from "node:url";
-import type { AppModule, ModuleContext } from "./types.js";
 
-export class WebContentsUrlPolicyModule implements AppModule {
-  readonly internalOrigin: string;
-  readonly allowedExternalOrigins = ["https://github.com", "https://docs.deno.com"];
+export class WebContentsUrlPolicyModule {
+  #allowedExternalOrigins = ["https://github.com", "https://docs.deno.com"];
 
-  constructor(internalOrigin: string) {
-    this.internalOrigin = internalOrigin;
-  }
-
-  enable({ app }: ModuleContext): Promise<void> | void {
+  constructor(app: Electron.App, internalOrigin: string) {
     app.on("web-contents-created", (_, contents) => {
       contents.on("will-navigate", (event, url) => {
         const { origin } = new URL(url);
-        if (this.internalOrigin && origin === this.internalOrigin) return;
+        if (internalOrigin && origin === internalOrigin) return;
 
         event.preventDefault();
 
@@ -26,7 +20,7 @@ export class WebContentsUrlPolicyModule implements AppModule {
       contents.setWindowOpenHandler(({ url }) => {
         const { origin } = new URL(url);
 
-        if (this.allowedExternalOrigins.includes(origin)) {
+        if (this.#allowedExternalOrigins.includes(origin)) {
           shell.openExternal(url).catch(console.error);
         } else if (import.meta.env.DEV) {
           console.warn(

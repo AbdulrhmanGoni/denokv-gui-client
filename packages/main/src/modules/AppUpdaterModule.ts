@@ -1,12 +1,16 @@
 import { ipcMain } from "electron";
-import type { AppModule, ModuleContext } from "./types.js";
 import electronUpdater from "electron-updater";
-import { setLastFetchedUpdate } from "./LastFetchedUpdateModule.js";
-import * as metadata from "./AppInfoModule.js";
+import type { LastFetchedUpdateModule } from "./LastFetchedUpdateModule.js";
+import type { AppInfoModule } from "./AppInfoModule.js";
 import { asyncTrycatch, syncTrycatch, isGreaterVersion } from "../helpers.js";
+import { WindowManagerModule } from "./WindowManagerModule.js";
 
 class AppUpdaterService {
-  constructor(private readonly autoUpdater: typeof electronUpdater.autoUpdater) {}
+  constructor(
+    private readonly autoUpdater: typeof electronUpdater.autoUpdater,
+    private readonly appInfoModule: AppInfoModule,
+    private readonly lastFetchedUpdateModule: LastFetchedUpdateModule,
+  ) {}
 
   private cancellationToken: electronUpdater.CancellationToken | null = null;
 
@@ -15,9 +19,12 @@ class AppUpdaterService {
       const newUpdate = await this.autoUpdater.checkForUpdatesAndNotify();
       if (
         newUpdate &&
-        isGreaterVersion(newUpdate.updateInfo.version, metadata.appVersion)
+        isGreaterVersion(
+          newUpdate.updateInfo.version,
+          this.appInfoModule.metadata.appVersion,
+        )
       ) {
-        setLastFetchedUpdate(newUpdate);
+        this.lastFetchedUpdateModule.service.updatedLastFetchedUpdate(newUpdate);
         return newUpdate;
       }
       return null;
@@ -49,20 +56,29 @@ export type AppUpdaterServiceInterface = Pick<
   "checkForUpdate" | "downloadUpdate" | "cancelUpdate" | "quitAndInstallUpdate"
 >;
 
-export class AppUpdaterModule implements AppModule {
-  enable(context: ModuleContext): void {
+export class AppUpdaterModule {
+  constructor(
+    appInfoModule: AppInfoModule,
+    windowManagerModule: WindowManagerModule,
+    lastFetchedUpdateModule: LastFetchedUpdateModule,
+  ) {
     const { autoUpdater } = electronUpdater;
     autoUpdater.autoDownload = false;
     autoUpdater.fullChangelog = true;
-    autoUpdater.forceDevUpdateConfig = metadata.environment === "development";
+    autoUpdater.forceDevUpdateConfig =
+      appInfoModule.metadata.environment === "development";
     autoUpdater.on("download-progress", (progressInfo) => {
-      context.browserWindow?.webContents.send(
+      windowManagerModule.browserWindow?.webContents.send(
         "downloading-update-progress",
         progressInfo,
       );
     });
 
-    const service = new AppUpdaterService(autoUpdater);
+    const service = new AppUpdaterService(
+      autoUpdater,
+      appInfoModule,
+      lastFetchedUpdateModule,
+    );
 
     ipcMain.handle("check-for-update", (_event) => {
       return service.checkForUpdate();

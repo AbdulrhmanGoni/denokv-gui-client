@@ -1,5 +1,4 @@
 import { ipcMain } from "electron";
-import type { AppModule, ModuleContext } from "./types.js";
 import {
   getWatchedKeysQuery,
   insertWatchedKeysQuery,
@@ -23,10 +22,7 @@ class WatchedKeysService {
     });
   }
 
-  async setWatchedKeys(
-    kvStoreId: string,
-    keys: SerializedKvKey[],
-  ): Promise<TrycatchResult<boolean>> {
+  async setWatchedKeys(kvStoreId: string, keys: SerializedKvKey[]) {
     return syncTrycatch(() =>
       databaseTransaction(() => {
         if (getWatchedKeysQuery.get(kvStoreId)) {
@@ -53,8 +49,8 @@ export type WatchedKeysServiceInterface = Pick<
   "getWatchedKeys" | "setWatchedKeys"
 >;
 
-export class WatchedKeysModule implements AppModule {
-  enable(_context: ModuleContext): void {
+export class WatchedKeysModule {
+  constructor() {
     const service = new WatchedKeysService();
 
     ipcMain.handle(

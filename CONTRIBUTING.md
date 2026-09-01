@@ -39,20 +39,19 @@ This project uses `pnpm` as its package manager. We recommend using `pnpm@11.1.0
 ### main package
 
 This package contains the **main process** of the Electron application and the application's core back-end logic.
-It consists of back-end services (modules) that handle app startup, window lifecycle management, configurations, auto-updates, launching/managing the `bridge-server`, managing the local database where user data (like Kv Stores data and per-Kv-Store preferences and configurations) is stored, executing schema migrations, etc...
+It consists of distinct modules (back-end services) that handle app startup, window lifecycle management, configurations, auto-updates, launching/managing the `bridge-server`, managing the local database where user data (like Kv Stores data and per-Kv-Store preferences and configurations) is stored, executing schema migrations, etc...
 
-The package is organized using a **modular architecture** (`src/modules/`), where each back-end service implements the `AppModule` interface and sets up what it needs inside `AppModule.enable()` method (like for example registering event listeners or IPC handlers) to do its job.
+The package is organized using a **modular architecture**, where each module is a class that sets up what it needs inside its constructor method (like for example registering event listeners or IPC handlers) to do its job when it's created.
 
 **Tech Stack**:
 
 - Node.js + Electron + TypeScript
 - Native `node:sqlite` (SQLite Database)
-- [dbmate](https://github.com/amacneil/dbmate) (database migration tool)
 
 ### renderer package
 
 This package contains the source code for the application's front-end.
-The only way for this package to communicate with the main process is through the `preload` package that uses Electron's **IPC** (Inter-Process Communication) mechanism.
+It typically communicates with the main process through the `preload` package using Electron's **IPC** (Inter-Process Communication) mechanism or via HTTP requests when communicating with the bridge-server to access Deno KV Databases.
 
 Example:
 
@@ -77,7 +76,7 @@ kvStoresService.getAll();
 This package creates an HTTP server that provides an API for the front-end (renderer) to access Deno KV databases.
 See [packages/bridge-server/README.md](packages/bridge-server/README.md) for more information.
 
-This package is published to [JSR](https://jsr.io/) as [@denokv-gui-client/bridge-server](https://jsr.io/@denokv-gui-client/bridge-server) so it can be used outside this app as a library. You can see [the deployment workflow here](./.github/workflows/publish-bridge-server.yml)
+This package is also published to [JSR](https://jsr.io/) as [@denokv-gui-client/bridge-server](https://jsr.io/@denokv-gui-client/bridge-server) so it can be used outside this app as a library. You can see [here the deployment workflow](./.github/workflows/publish-bridge-server.yml) of this package
 
 **Tech Stack**:
 
@@ -90,6 +89,16 @@ This package is published to [JSR](https://jsr.io/) as [@denokv-gui-client/bridg
 
 This package contains the preload script for the Electron application.
 It securely exposes the back-end services via **IPC** from the main process to the renderer process using Electron's [contextBridge](https://www.electronjs.org/docs/latest/api/context-bridge) API.
+
+### db-migration package
+
+This package provides a simple database schema migration functionality to the main process package for handling building and syncing the schema of the SQL database this application uses.
+
+### electron-versions package
+
+This package provides a set of helper functions for the other packages to get the versions of the internal components bundled within **Electron** like **Node** and **Chromium**
+
+This package is used in development only by the **Vite** configuration files of the other packages to target specific **Node** and **Chromium** version when bundling.
 
 ### Landing Page
 
@@ -119,8 +128,7 @@ To run the tests, make sure you have compiled the app first by running `pnpm run
 
 ### bridge-server tests
 
-The bridge-server is the only package in the workspace that has its own test suite.
-It uses [Vitest](https://vitest.dev/) to write two types of tests:
+The bridge-server package uses [Vitest](https://vitest.dev/) to write two types of tests:
 
 - **Unit tests**: For testing individual functions and modules.
 - **E2E tests**: For testing API endpoints by sending HTTP requests to a running instance of the bridge-server.
@@ -134,6 +142,23 @@ To run the bridge-server tests use:
 ```
 
 This will run all unit and e2e tests of the bridge-server package.
+
+### db-migration package tests
+
+The db-migration package uses [Vitest](https://vitest.dev/) to write tests for:
+
+- **Migration files parsing**
+- **"migrate up"** command/function
+- **"migrate down"** command/function
+- Helper functions
+
+See the [tests directory](./packages/db-migration/tests) of this package for details on how these tests are written.
+
+To run the db-migration tests use:
+
+```bash
+  pnpm run --filter=@app/db-migration test
+```
 
 ## Issues
 

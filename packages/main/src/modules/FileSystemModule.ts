@@ -1,23 +1,15 @@
-import { type BrowserWindow, dialog, ipcMain, shell } from "electron";
+import { dialog, ipcMain, shell } from "electron";
 import path from "node:path";
-import type { AppModule, ModuleContext } from "./types.js";
 import { asyncTrycatch, syncTrycatch } from "../helpers.js";
 import type { TrycatchResult } from "../types.ts";
+import { WindowManagerModule } from "./WindowManagerModule.js";
 
 class FileSystemService {
-  constructor(private readonly context: ModuleContext) {}
-
-  private getBrowserWindow(): BrowserWindow {
-    if (this.context.browserWindow && !this.context.browserWindow.isDestroyed()) {
-      return this.context.browserWindow;
-    }
-
-    throw new Error("Browser window is not created");
-  }
+  constructor(private readonly windowManagerModule: WindowManagerModule) {}
 
   async selectDirectory(): Promise<TrycatchResult<string>> {
     return asyncTrycatch(async () => {
-      const result = await dialog.showOpenDialog(this.getBrowserWindow(), {
+      const result = await dialog.showOpenDialog(this.windowManagerModule.browserWindow, {
         properties: ["openDirectory"],
       });
 
@@ -30,7 +22,7 @@ class FileSystemService {
     directory?: string,
   ): Promise<TrycatchResult<{ directory: string; fileName: string } | null>> {
     return asyncTrycatch(async () => {
-      const result = await dialog.showOpenDialog(this.getBrowserWindow(), {
+      const result = await dialog.showOpenDialog(this.windowManagerModule.browserWindow, {
         properties: ["openFile"],
         defaultPath: directory,
         filters: [
@@ -57,9 +49,9 @@ export type FileSystemServiceInterface = Pick<
   "selectDirectory" | "selectFile" | "openPath"
 >;
 
-export class FileSystemModule implements AppModule {
-  enable(context: ModuleContext): void {
-    const service = new FileSystemService(context);
+export class FileSystemModule {
+  constructor(windowManagerModule: WindowManagerModule) {
+    const service = new FileSystemService(windowManagerModule);
 
     ipcMain.handle("select-directory", (_event) => {
       return service.selectDirectory();

@@ -1,5 +1,4 @@
 import { ipcMain } from "electron";
-import type { AppModule, ModuleContext } from "./types.js";
 import { readdir, writeFile, rm, rename, mkdir } from "node:fs/promises";
 import { existsSync, statSync } from "node:fs";
 import { exec } from "node:child_process";
@@ -51,7 +50,7 @@ class KvStoresService {
   ): Promise<TrycatchResult<boolean>> {
     return asyncTrycatch(async () => {
       if (kvStore.type == "local" && changes.url && !changes.type) {
-        await relocateLocalKvStore(kvStore, changes.url);
+        await this.#relocateLocalKvStore(kvStore, changes.url);
       }
 
       if (changes.type == "local" && changes.url) {
@@ -81,7 +80,7 @@ class KvStoresService {
   async getAll(): Promise<TrycatchResult<KvStore[]>> {
     return asyncTrycatch(async () => {
       const kvStores = getAllQuery.all() as KvStore[];
-      const defaultKvStores = await getDefaultLocalKvStores(
+      const defaultKvStores = await this.#getDefaultLocalKvStores(
         kvStores.filter((store) => store.type == "default").map((s) => s.id),
       );
       return [...kvStores, ...defaultKvStores].sort(
@@ -172,6 +171,62 @@ class KvStoresService {
       }
     });
   }
+
+  #getDefaultLocalKvStores(exclude: KvStore["id"][]) {
+    return new Promise<KvStore[]>((resolve) => {
+      exec("deno info --json", async (err, infoResult) => {
+        if (err) return resolve([]);
+        const localDenoKvsLocaltion = JSON.parse(infoResult).originStorage;
+        if (localDenoKvsLocaltion && existsSync(localDenoKvsLocaltion)) {
+          const dataDirs: KvStore[] = [];
+          const dir = await readdir(localDenoKvsLocaltion, {
+            withFileTypes: true,
+          });
+          for (const entry of dir) {
+            if (entry.isDirectory() && !exclude.includes(entry.name)) {
+              const kvFile = path.join(entry.parentPath, entry.name, "kv.sqlite3");
+              if (existsSync(kvFile)) {
+                const fileStat = statSync(kvFile);
+                dataDirs.push({
+                  id: entry.name,
+                  name: entry.name.slice(0, 15),
+                  url: kvFile,
+                  type: "default",
+                  createdAt: fileStat.birthtime.toISOString(),
+                  updatedAt: fileStat.mtime.toISOString(),
+                  accessToken: null,
+                  authToken: null,
+                });
+              }
+            }
+          }
+          resolve(dataDirs);
+        } else {
+          resolve([]);
+        }
+      });
+    });
+  }
+
+  async #relocateLocalKvStore(kvStore: KvStore, newFilePath: string) {
+    const newDir = path.dirname(newFilePath);
+    await mkdir(newDir, { recursive: true });
+
+    await rename(kvStore.url, newFilePath);
+
+    const oldDir = path.dirname(kvStore.url);
+    const oldFileName = path.basename(kvStore.url);
+    await Promise.all([
+      rename(
+        path.join(oldDir, `${oldFileName}-wal`),
+        path.join(newDir, `${path.basename(newFilePath)}-wal`),
+      ),
+      rename(
+        path.join(oldDir, `${oldFileName}-shm`),
+        path.join(newDir, `${path.basename(newFilePath)}-shm`),
+      ),
+    ]).catch(() => null);
+  }
 }
 
 export type KvStoresServiceInterface = Pick<
@@ -184,8 +239,8 @@ export type KvStoresServiceInterface = Pick<
   | "testKvStoreConnection"
 >;
 
-export class KvStoresModule implements AppModule {
-  enable(_context: ModuleContext): void {
+export class KvStoresModule {
+  constructor() {
     const service = new KvStoresService();
 
     ipcMain.handle(
@@ -227,60 +282,4 @@ export class KvStoresModule implements AppModule {
       },
     );
   }
-}
-
-async function getDefaultLocalKvStores(exclude: KvStore["id"][]) {
-  return new Promise<KvStore[]>((resolve) => {
-    exec("deno info --json", async (err, infoResult) => {
-      if (err) return resolve([]);
-      const localDenoKvsLocaltion = JSON.parse(infoResult).originStorage;
-      if (localDenoKvsLocaltion && existsSync(localDenoKvsLocaltion)) {
-        const dataDirs: KvStore[] = [];
-        const dir = await readdir(localDenoKvsLocaltion, {
-          withFileTypes: true,
-        });
-        for (const entry of dir) {
-          if (entry.isDirectory() && !exclude.includes(entry.name)) {
-            const kvFile = path.join(entry.parentPath, entry.name, "kv.sqlite3");
-            if (existsSync(kvFile)) {
-              const fileStat = statSync(kvFile);
-              dataDirs.push({
-                id: entry.name,
-                name: entry.name.slice(0, 15),
-                url: kvFile,
-                type: "default",
-                createdAt: fileStat.birthtime.toISOString(),
-                updatedAt: fileStat.mtime.toISOString(),
-                accessToken: null,
-                authToken: null,
-              });
-            }
-          }
-        }
-        resolve(dataDirs);
-      } else {
-        resolve([]);
-      }
-    });
-  });
-}
-
-async function relocateLocalKvStore(kvStore: KvStore, newFilePath: string) {
-  const newDir = path.dirname(newFilePath);
-  await mkdir(newDir, { recursive: true });
-
-  await rename(kvStore.url, newFilePath);
-
-  const oldDir = path.dirname(kvStore.url);
-  const oldFileName = path.basename(kvStore.url);
-  await Promise.all([
-    rename(
-      path.join(oldDir, `${oldFileName}-wal`),
-      path.join(newDir, `${path.basename(newFilePath)}-wal`),
-    ),
-    rename(
-      path.join(oldDir, `${oldFileName}-shm`),
-      path.join(newDir, `${path.basename(newFilePath)}-shm`),
-    ),
-  ]).catch(() => null);
 }

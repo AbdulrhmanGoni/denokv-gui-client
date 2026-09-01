@@ -1,55 +1,54 @@
-import type { AppModule, ModuleContext } from "./types.js";
 import { ipcMain } from "electron";
 import os from "node:os";
 import { syncTrycatch } from "../helpers.js";
-import { getSettings } from "./SettingsModule.js";
+import type { SettingsModule } from "./SettingsModule.js";
 
 class AppManagerService {
-  constructor(private readonly context: ModuleContext) {}
+  constructor(private readonly app: Electron.App) {}
 
   async restartApp() {
     return syncTrycatch(() => {
       let relaunchOptions: Electron.RelaunchOptions | undefined = undefined;
-      if (
-        os.platform() == "linux" &&
-        process.env.APPIMAGE &&
-        this.context.app.isPackaged
-      ) {
+      if (os.platform() == "linux" && process.env.APPIMAGE && this.app.isPackaged) {
         relaunchOptions = {
           execPath: process.env.APPIMAGE,
           args: ["--appimage-extract-and-run"],
         };
       }
 
-      this.context.app.relaunch(relaunchOptions);
-      this.context.app.exit();
+      this.app.relaunch(relaunchOptions);
+      this.app.exit();
     });
   }
 }
 
 export type AppManagerServiceInterface = Pick<AppManagerService, "restartApp">;
 
-export class AppManagerModule implements AppModule {
-  constructor() {}
+export class AppManagerModule {
+  #appReadinessPromise: Promise<void>;
 
-  async enable(context: ModuleContext): Promise<void> {
-    const isSingleInstance = context.app.requestSingleInstanceLock();
+  constructor(app: Electron.App, settingsModule: SettingsModule) {
+    const isSingleInstance = app.requestSingleInstanceLock();
     if (!isSingleInstance) {
-      context.app.quit();
+      app.quit();
       process.exit(0);
     }
 
-    context.app.on("window-all-closed", () => context.app.quit());
+    app.on("window-all-closed", () => app.quit());
 
-    const settings = getSettings();
+    const settings = settingsModule.service.fetchSettings();
     if (settings?.disableHardwareAcceleration === true) {
-      context.app.disableHardwareAcceleration();
+      app.disableHardwareAcceleration();
     }
 
-    const service = new AppManagerService(context);
+    const service = new AppManagerService(app);
 
     ipcMain.handle("restart-app", (_event) => service.restartApp());
 
-    await context.app.whenReady();
+    this.#appReadinessPromise = app.whenReady();
+  }
+
+  async waitAppToBeReady(): Promise<void> {
+    await this.#appReadinessPromise;
   }
 }

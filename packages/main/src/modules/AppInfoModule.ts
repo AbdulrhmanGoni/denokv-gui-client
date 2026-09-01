@@ -3,34 +3,17 @@ import path from "node:path";
 import fs from "node:fs";
 import { ipcMain } from "electron";
 import pkg from "../../../../package.json" with { type: "json" };
-import type { AppModule, ModuleContext } from "./types.js";
 import { syncTrycatch } from "../helpers.js";
 import type { AppMetadata, TrycatchResult } from "../types.ts";
 
-export const appVersion = pkg.version;
-export const nodeVersion = versions.node;
-export const electronVersion = versions.electron;
-export const chromiumVersion = versions.chrome;
-export const githubRepo = pkg.homepage;
-export const environment =
-  process.env.PLAYWRIGHT_TEST === "true"
-    ? "testing"
-    : process.env.NODE_ENV === "development"
-      ? "development"
-      : "production";
-
 class AppInfoService {
-  constructor(private readonly context: ModuleContext) {}
+  constructor(
+    private readonly app: Electron.App,
+    private readonly appMetaData: AppMetadata,
+  ) {}
 
-  async getMetadata(): Promise<AppMetadata> {
-    return {
-      appVersion,
-      nodeVersion,
-      electronVersion,
-      chromiumVersion,
-      githubRepo,
-      environment,
-    };
+  async getMetadata() {
+    return this.appMetaData;
   }
 
   async getReleaseNotes(): Promise<TrycatchResult<string>> {
@@ -41,7 +24,7 @@ class AppInfoService {
   }
 
   async isHardwareAccelerationEnabled(): Promise<TrycatchResult<boolean>> {
-    return syncTrycatch(() => this.context.app.isHardwareAccelerationEnabled());
+    return syncTrycatch(() => this.app.isHardwareAccelerationEnabled());
   }
 }
 
@@ -50,11 +33,25 @@ export type AppInfoServiceInterface = Pick<
   "getMetadata" | "getReleaseNotes" | "isHardwareAccelerationEnabled"
 >;
 
-export class AppInfoModule implements AppModule {
-  constructor() {}
+export class AppInfoModule {
+  readonly metadata: AppMetadata;
 
-  async enable(context: ModuleContext): Promise<void> {
-    const service = new AppInfoService(context);
+  constructor(app: Electron.App) {
+    this.metadata = {
+      appVersion: pkg.version,
+      nodeVersion: versions.node,
+      electronVersion: versions.electron,
+      chromiumVersion: versions.chrome,
+      githubRepo: pkg.homepage,
+      environment:
+        process.env.PLAYWRIGHT_TEST === "true"
+          ? "testing"
+          : process.env.NODE_ENV === "development"
+            ? "development"
+            : "production",
+    };
+
+    const service = new AppInfoService(app, this.metadata);
 
     ipcMain.handle("appInfoService:getMetadata", (_event) => {
       return service.getMetadata();
