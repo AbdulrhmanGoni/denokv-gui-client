@@ -8,9 +8,9 @@ This document provides an overview of the project structure, development technol
 
 ## Project Architecture
 
-The project is structured as a monorepo containing 5 packages that compose the app, alongside a separate codebase for the landing page.
+The project is structured as a monorepo containing 6 packages that compose the app, alongside a separate codebase for the landing page.
 
-This project uses `pnpm` as its package manager. We recommend using `pnpm@11.1.0` or later
+This project uses `pnpm` as its package manager. Using `pnpm@11.1.0` or later is **required**, as well as **Node.js `>= 24.15.0`**.
 
 ```sh
 .
@@ -22,6 +22,7 @@ This project uses `pnpm` as its package manager. We recommend using `pnpm@11.1.0
 │   ├── /main # Electron main process (modular back-end services)
 │   ├── /renderer # The front-end part of the app
 │   ├── /preload # The script that exposes APIs from the main process to the renderer process
+│   ├── /db-migration # Database schema migration functionality used by the main process
 │   ├── /electron-versions # Shares helper functions to get the versions of internal components bundled within Electron
 │   ├── dev-mode.js
 │   └── entry-point.mjs
@@ -124,7 +125,7 @@ To run the tests, make sure you have compiled the app first by running `pnpm run
 ```
 
 > [!NOTE]
-> Every time you make changes on one of the 5 packages in the workspace, you will have to re-compile application again to see the impact of the changes on the tests.
+> Every time you make changes on one of the 6 packages in the workspace, you will have to re-compile application again to see the impact of the changes on the tests.
 
 ### bridge-server tests
 
@@ -160,6 +161,31 @@ To run the db-migration tests use:
   pnpm run --filter=@app/db-migration test
 ```
 
+## Code Style, Linting & Formatting
+
+The project uses [oxlint](https://oxc.rs/docs/guide/usage/linter) for linting and [oxfmt](https://oxc.rs/docs/guide/usage/formatter) for formatting. Their configurations live in [.oxlintrc.json](.oxlintrc.json) and [.oxfmtrc.json](.oxfmtrc.json) respectively.
+
+To check and fix your code before committing, use:
+
+```bash
+  # Lint the codebase (add --fix to auto-fix issues)
+  pnpm run lint:check
+
+  # Check formatting (add --write to auto-format)
+  pnpm run format:check
+
+  # Type-check all workspace packages
+  pnpm run typecheck
+```
+
+Alternatively, you can run all of the above checks plus a full build with a single command:
+
+```bash
+  pnpm run checks
+```
+
+**Please make sure `pnpm run checks` passes before opening a pull request.**
+
 ## Issues
 
 - Bug reports, feature requests, and suggestions are always welcome.
@@ -177,6 +203,8 @@ Follow these steps to submit a pull request: 👇
 
 3. Create a new branch and make your changes in it.
 
-4. Run the tests to ensure all of them pass and no regressions are introduced.
+4. Run `pnpm run checks` (build, type-check, lint, and format) and make sure it passes.
 
-5. Create your pull request once you are ready 👍
+5. Run the tests to ensure all of them pass and no regressions are introduced.
+
+6. Create your pull request once you are ready 👍
