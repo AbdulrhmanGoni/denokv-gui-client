@@ -10,8 +10,6 @@ import {
   updateQuery,
 } from "../db/queries/kvStoresQueries.js";
 import path from "node:path";
-import { openKv } from "@deno/kv";
-import { deadline } from "@std/async";
 import { clearSavedParamsQuery } from "../db/queries/browsingParamsQueries.js";
 import { deleteWatchedKeysQuery } from "../db/queries/watchedKvEntriesQueries.js";
 import { databaseTransaction } from "../db/db.js";
@@ -158,6 +156,8 @@ class KvStoresService {
       }
 
       try {
+        const { openKv } = await import("@deno/kv");
+        const { deadline } = await import("@std/async");
         const kv = await openKv(kvStore.url, {
           accessToken: kvStore.accessToken,
         });

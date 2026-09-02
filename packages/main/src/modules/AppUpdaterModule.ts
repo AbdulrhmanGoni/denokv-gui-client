@@ -1,22 +1,49 @@
 import { ipcMain } from "electron";
-import electronUpdater from "electron-updater";
+import type { CancellationToken } from "electron-updater";
 import type { LastFetchedUpdateModule } from "./LastFetchedUpdateModule.js";
 import type { AppInfoModule } from "./AppInfoModule.js";
 import { asyncTrycatch, syncTrycatch, isGreaterVersion } from "../helpers.js";
 import { WindowManagerModule } from "./WindowManagerModule.js";
 
+type ElectronUpdaterModule = typeof import("electron-updater");
+
 class AppUpdaterService {
   constructor(
-    private readonly autoUpdater: typeof electronUpdater.autoUpdater,
     private readonly appInfoModule: AppInfoModule,
+    private readonly windowManagerModule: WindowManagerModule,
     private readonly lastFetchedUpdateModule: LastFetchedUpdateModule,
   ) {}
 
-  private cancellationToken: electronUpdater.CancellationToken | null = null;
+  #updaterPromise: Promise<ElectronUpdaterModule> | null = null;
+
+  #cancellationToken: CancellationToken | null = null;
+
+  #getUpdater(): Promise<ElectronUpdaterModule> {
+    if (!this.#updaterPromise) {
+      this.#updaterPromise = import("electron-updater").then((electronUpdater) => {
+        const { autoUpdater } = electronUpdater;
+        autoUpdater.autoDownload = false;
+        autoUpdater.fullChangelog = true;
+        autoUpdater.forceDevUpdateConfig =
+          this.appInfoModule.metadata.environment === "development";
+        autoUpdater.on("download-progress", (progressInfo) => {
+          this.windowManagerModule.browserWindow?.webContents.send(
+            "downloading-update-progress",
+            progressInfo,
+          );
+        });
+
+        return electronUpdater;
+      });
+    }
+
+    return this.#updaterPromise;
+  }
 
   async checkForUpdate() {
     return asyncTrycatch(async () => {
-      const newUpdate = await this.autoUpdater.checkForUpdatesAndNotify();
+      const { autoUpdater } = await this.#getUpdater();
+      const newUpdate = await autoUpdater.checkForUpdatesAndNotify();
       if (
         newUpdate &&
         isGreaterVersion(
@@ -33,21 +60,25 @@ class AppUpdaterService {
 
   async downloadUpdate() {
     return asyncTrycatch(async () => {
-      this.cancellationToken = new electronUpdater.CancellationToken();
-      return this.autoUpdater.downloadUpdate(this.cancellationToken);
+      const { CancellationToken, autoUpdater } = await this.#getUpdater();
+      this.#cancellationToken = new CancellationToken();
+      return autoUpdater.downloadUpdate(this.#cancellationToken);
     });
   }
 
   async cancelUpdate() {
     return syncTrycatch(() => {
-      if (this.cancellationToken && !this.cancellationToken.cancelled) {
-        this.cancellationToken.cancel();
+      if (this.#cancellationToken && !this.#cancellationToken.cancelled) {
+        this.#cancellationToken.cancel();
       }
     });
   }
 
   async quitAndInstallUpdate() {
-    return syncTrycatch(() => this.autoUpdater.quitAndInstall());
+    return asyncTrycatch(async () => {
+      const { autoUpdater } = await this.#getUpdater();
+      return autoUpdater.quitAndInstall();
+    });
   }
 }
 
@@ -62,21 +93,9 @@ export class AppUpdaterModule {
     windowManagerModule: WindowManagerModule,
     lastFetchedUpdateModule: LastFetchedUpdateModule,
   ) {
-    const { autoUpdater } = electronUpdater;
-    autoUpdater.autoDownload = false;
-    autoUpdater.fullChangelog = true;
-    autoUpdater.forceDevUpdateConfig =
-      appInfoModule.metadata.environment === "development";
-    autoUpdater.on("download-progress", (progressInfo) => {
-      windowManagerModule.browserWindow?.webContents.send(
-        "downloading-update-progress",
-        progressInfo,
-      );
-    });
-
     const service = new AppUpdaterService(
-      autoUpdater,
       appInfoModule,
+      windowManagerModule,
       lastFetchedUpdateModule,
     );
 

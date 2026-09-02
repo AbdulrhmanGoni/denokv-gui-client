@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
-import { type Kv, openKv } from "@deno/kv";
-import { openBridgeServerInNode } from "@app/bridge-server";
+import type { Kv } from "@deno/kv";
+import type { openBridgeServerInNode } from "@app/bridge-server";
 import { randomBytes } from "node:crypto";
 import { asyncTrycatch } from "../helpers.js";
 import type { KvStore, TrycatchResult } from "../types.ts";
@@ -31,6 +31,8 @@ export class BridgeServerService {
       }
 
       const bridgeServerAuthToken = randomBytes(30).toString("base64");
+      const { openKv } = await import("@deno/kv");
+      const { openBridgeServerInNode } = await import("@app/bridge-server");
       this.#kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken });
       this.#serverRef = openBridgeServerInNode(this.#kv, {
         port: 0,
