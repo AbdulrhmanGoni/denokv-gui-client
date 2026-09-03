@@ -6,7 +6,11 @@
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import XIcon from "@lucide/svelte/icons/x";
   import Button, { buttonVariants } from "$lib/ui/shadcn/button/button.svelte";
-  import type { SerializedKvEntry } from "@app/bridge-server";
+  import type { SerializedKvEntry, AtomicOperationInput } from "@app/bridge-server";
+  import Checkbox from "$lib/ui/shadcn/checkbox/checkbox.svelte";
+  import Label from "$lib/ui/shadcn/label/label.svelte";
+  import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
+  import { removeEntriesFromState } from "$lib/states/kvEntriesState.svelte";
 
   const { selectedRows }: { selectedRows: Row<SerializedKvEntry>[] } = $props();
 
@@ -14,6 +18,33 @@
   let entriesToDeletedCount = $state(0);
   let isDeleting = $state(false);
   let isCanceled = $state(false);
+
+  let atomicDeletion = $state(false);
+
+  async function deleteEntriesAtomically() {
+    isDeleting = true;
+    setOpen(false);
+    try {
+      const client = await getOpenedKvStoreClient();
+
+      const entries = selectedRows.map((row) => row.original);
+
+      const operations: AtomicOperationInput[] = entries.map((entry) => ({
+        key: entry.key,
+        name: "delete",
+      }));
+
+      const { error } = await client.atomic(operations, { jsKey: false });
+      if (error) {
+        toast.error("Failed to delete entries atomically", { description: error });
+      } else {
+        toast.success("The entries were successfully deleted atomically");
+        removeEntriesFromState(entries);
+      }
+    } finally {
+      isDeleting = false;
+    }
+  }
 
   async function deleteEntries() {
     isDeleting = true;
@@ -86,7 +117,9 @@
       <p class="flex gap-1.5 items-center">
         {isCanceled
           ? "Canceling..."
-          : `Deleting... (${successfullyDeletedEntries}/${entriesToDeletedCount})`}
+          : atomicDeletion
+            ? "Deleting..."
+            : `Deleting... (${successfullyDeletedEntries}/${entriesToDeletedCount})`}
       </p>
     {:else}
       Delete {selectedRows.length} key{selectedRows.length > 1 ? "s" : ""}
@@ -99,20 +132,27 @@
         This will permanently delete all selected Kv Entries and you won't be able to undo
         this action.
       </AlertDialog.Description>
+      <div class="flex items-center gap-3 *:cursor-pointer my-1">
+        <Checkbox id="atomic-deletion-checkbox" bind:checked={atomicDeletion} />
+        <Label for="atomic-deletion-checkbox">
+          Want to delete the entries atomically? (all entries will get deleted together or
+          nothing will get deleted)
+        </Label>
+      </div>
     </AlertDialog.Header>
     <AlertDialog.Footer>
       <Button variant="outline" onclick={onCancel}>Cancel</Button>
       <AlertDialog.Action
         class={buttonVariants({ variant: "destructive" })}
         disabled={isDeleting}
-        onclick={deleteEntries}
+        onclick={atomicDeletion ? deleteEntriesAtomically : deleteEntries}
       >
         Delete
       </AlertDialog.Action>
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>
-{#if isDeleting && !isCanceled}
+{#if isDeleting && !isCanceled && !atomicDeletion}
   <button class="cursor-pointer" onclick={onCancel}>
     <XIcon class="size-5" />
   </button>

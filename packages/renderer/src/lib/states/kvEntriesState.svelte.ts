@@ -109,6 +109,16 @@ export function removeEntryFromState(entry: SerializedKvEntry) {
   );
 }
 
+export function removeEntriesFromState(entries: SerializedKvEntry[]) {
+  kvEntriesState.entries = kvEntriesState.entries.filter((ent) => {
+    for (const entry of entries) {
+      if (isSameKvKey(entry.key, ent.key)) return false;
+    }
+
+    return true;
+  });
+}
+
 export async function resetEntriesState() {
   await fetchSavedDefaultBrowsingParams();
   Object.assign(kvEntriesState, kvEntriesStateDefaultValues);
