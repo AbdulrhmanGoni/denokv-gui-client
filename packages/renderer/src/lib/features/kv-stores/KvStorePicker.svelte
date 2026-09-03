@@ -34,6 +34,19 @@
       openedKvStoreId = kvStoresState.openedStore!.id;
     }
   }
+
+  const groups = $derived.by(() => {
+    const groupsMap = new Map<string, KvStore[]>();
+    for (const kvStore of kvStoresState.kvStores) {
+      const group = groupsMap.get(kvStore.type);
+      if (group) {
+        group.push(kvStore);
+      } else {
+        groupsMap.set(kvStore.type, [kvStore]);
+      }
+    }
+    return groupsMap;
+  });
 </script>
 
 <Select.Root type="single" onValueChange={onKvStoreChange} bind:value={openedKvStoreId}>
@@ -43,10 +56,18 @@
     {/if}
   </Select.Trigger>
   <Select.Content class="max-h-100">
-    {#each kvStoresState.kvStores as kvStore (kvStore.id)}
-      <Select.Item value={kvStore.id}>
-        {@render item(kvStore)}
-      </Select.Item>
+    {#each groups.entries() as [type, stores] (type)}
+      <Select.Group class="space-y-0.5">
+        <Select.Label>{type[0].toUpperCase() + type.slice(1)} Kv Stores</Select.Label>
+        {#each stores as kvStore (kvStore.id)}
+          <Select.Item
+            value={kvStore.id}
+            class={kvStore.id === kvStoresState.openedStore?.id ? "bg-muted!" : ""}
+          >
+            {@render item(kvStore)}
+          </Select.Item>
+        {/each}
+      </Select.Group>
     {/each}
   </Select.Content>
 </Select.Root>
