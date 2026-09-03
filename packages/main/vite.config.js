@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 import { cpSync, writeFileSync } from "node:fs";
 import { extractLastReleaseChangelog } from "../../scripts/extractLastReleaseChangelog.ts";
 import { marked } from "marked";
+import packageJson from "../../package.json" with { type: "json" };
 
 export default /**
  * @type {import('vite').UserConfig}
@@ -14,6 +15,10 @@ export default /**
   ssr: {
     noExternal: ["@std/async", "electron-updater"],
     external: true,
+  },
+  define: {
+    APP_VERSION: `"${packageJson.version}"`,
+    APP_GITHUB_REPO: `"${packageJson.repository.url}"`,
   },
   build: {
     ssr: true,

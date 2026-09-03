@@ -4,7 +4,11 @@
   "version": "1.30.0",
   "private": true,
   "type": "module",
-  "homepage": "https://github.com/AbdulrhmanGoni/denokv-gui-client",
+  "homepage": "https://abdulrhmangoni.github.io/denokv-gui-client/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbdulrhmanGoni/denokv-gui-client"
+  },
   "license": "MIT",
   "author": {
     "email": "abdulrhmangoni@gmail.com",

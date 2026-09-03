@@ -2,7 +2,6 @@ import { versions } from "node:process";
 import path from "node:path";
 import fs from "node:fs";
 import { ipcMain } from "electron";
-import pkg from "../../../../package.json" with { type: "json" };
 import { syncTrycatch } from "../helpers.js";
 import type { AppMetadata, TrycatchResult } from "../types.ts";
 
@@ -38,11 +37,11 @@ export class AppInfoModule {
 
   constructor(app: Electron.App) {
     this.metadata = {
-      appVersion: pkg.version,
+      appVersion: APP_VERSION,
       nodeVersion: versions.node,
       electronVersion: versions.electron,
       chromiumVersion: versions.chrome,
-      githubRepo: pkg.homepage,
+      githubRepo: APP_GITHUB_REPO,
       environment:
         process.env.PLAYWRIGHT_TEST === "true"
           ? "testing"
