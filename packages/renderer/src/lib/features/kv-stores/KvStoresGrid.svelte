@@ -158,41 +158,53 @@
         <span class="">{kvStoresState.error}</span>
       </p>
     </div>
-  {:else if kvStoresState.kvStores.length == 0}
-    <div class="text-center flex-1 flex gap-2 flex-col justify-center items-center">
-      <CircleOff class="size-10" />
-      <div class="text-muted-foreground text-center">
-        <p class="text-foreground font-semibold text-xl">No kv stores are available</p>
-        <p>Start by adding a new kv store, and then open and explore it!</p>
-      </div>
-      {@render addKvStoreButton()}
-    </div>
-  {:else if filteredKvStores.length === 0}
-    <div class="text-center flex-1 gap-2 flex flex-col justify-center items-center">
-      <FunnelXIcon class="size-10" />
-      <p class="text-foreground font-semibold text-xl">No matching Kv Stores</p>
-      <p class="text-muted-foreground">
-        No kv stores found matching the selected filters.
-      </p>
-      <Button
-        variant="outline"
-        onclick={() => {
-          kvStoresState.selectedTypes = [];
-          nameFilter = "";
-        }}
-      >
-        Clear filters
-      </Button>
-    </div>
-  {:else}
+  {:else if kvStoresState.loading}
     <div
-      id="kv-stores-grid"
       class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto flex-1 pe-1.5 content-start"
     >
-      {#each filteredKvStores as kvStore (kvStore.id)}
-        <KvStoreCard {kvStore} />
+      {#each new Array(6) as _}
+        <div
+          class="bg-card animate-pulse rounded-md shadow-md transition w-full h-[150px]"
+        ></div>
       {/each}
     </div>
+  {:else if kvStoresState.loaded}
+    {#if kvStoresState.kvStores.length == 0}
+      <div class="text-center flex-1 flex gap-2 flex-col justify-center items-center">
+        <CircleOff class="size-10" />
+        <div class="text-muted-foreground text-center">
+          <p class="text-foreground font-semibold text-xl">No kv stores are available</p>
+          <p>Start by adding a new kv store, and then open and explore it!</p>
+        </div>
+        {@render addKvStoreButton()}
+      </div>
+    {:else if filteredKvStores.length === 0}
+      <div class="text-center flex-1 gap-2 flex flex-col justify-center items-center">
+        <FunnelXIcon class="size-10" />
+        <p class="text-foreground font-semibold text-xl">No matching Kv Stores</p>
+        <p class="text-muted-foreground">
+          No kv stores found matching the selected filters.
+        </p>
+        <Button
+          variant="outline"
+          onclick={() => {
+            kvStoresState.selectedTypes = [];
+            nameFilter = "";
+          }}
+        >
+          Clear filters
+        </Button>
+      </div>
+    {:else}
+      <div
+        id="kv-stores-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 gap-2 overflow-y-auto flex-1 pe-1.5 content-start"
+      >
+        {#each filteredKvStores as kvStore (kvStore.id)}
+          <KvStoreCard {kvStore} />
+        {/each}
+      </div>
+    {/if}
   {/if}
 </div>
 

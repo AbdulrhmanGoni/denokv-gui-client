@@ -11,6 +11,7 @@ type StoresState = {
   kvStores: KvStore[];
   kvStoreTypeCounts: Record<KvStore["type"], number>;
   loaded: boolean;
+  loading: boolean;
   error: string;
   openedStore: KvStore | null;
   openedStoreClient: BridgeServerClient | null;
@@ -29,6 +30,7 @@ export let kvStoresState: StoresState = $state({
     bridge: 0,
   },
   loaded: false,
+  loading: false,
   error: "",
   openedStore: null,
   openedStoreClient: null,
@@ -54,17 +56,21 @@ function calculateKvStoreTypeCounts() {
 }
 
 export async function loadKvStores() {
+  kvStoresState.loading = true;
   const { result, error } = await kvStoresService.getAll();
   if (error) {
     toast.error(error);
     kvStoresState.error = error;
     kvStoresState.loaded = false;
+    kvStoresState.loading = false;
     return;
   }
+
   kvStoresState.kvStores = result ?? [];
   calculateKvStoreTypeCounts();
   kvStoresState.loaded = true;
   kvStoresState.error = "";
+  kvStoresState.loading = false;
 }
 
 export async function openKvStore(kvStore: KvStore) {
