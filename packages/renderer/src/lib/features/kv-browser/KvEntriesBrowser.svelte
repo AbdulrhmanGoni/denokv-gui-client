@@ -27,16 +27,68 @@
   import AtomicOperationsConstructor from "./atomic-operations/AtomicOperationsConstructor.svelte";
   import {
     fetchWatchedKeysForOpenedKvStore,
+    openWatchedKvEntriesDialog,
     resetWatchedKvEntriesState,
     startWatchingKvEntries,
   } from "$lib/states/watchedKvEntriesState.svelte";
   import WatchedKeysDialog from "./watched-keys/WatchedKeysDialog.svelte";
+  import { registerShortcuts } from "$lib/states/shortcutsState.svelte";
+  import { openAtomicOperationsDialog } from "./atomic-operations/atomicOperationsDialogState.svelte";
+  import { openEnqueueMessageDialog } from "./enqueue-message/enqueueMessageDialogState.svelte";
+  import { openBrowsingParamsDialog } from "./browsing-params/browsingParamsDialogState.svelte";
 
   const table = createKvEntriesTable();
 
   function close() {
     closeKvStore();
   }
+
+  function reloadEntries() {
+    kvEntriesState.params.cursors.pop();
+    fetchEntries();
+  }
+
+  registerShortcuts({
+    id: "kv-browser",
+    label: "Kv Browser",
+    shortcuts: [
+      {
+        combo: "Ctrl+N",
+        description: "Add a new Kv entry",
+        handler: openAddKvEntryDialog,
+      },
+      {
+        combo: "Alt+F",
+        description: "Filter Kv entries",
+        handler: openBrowsingParamsDialog,
+      },
+      {
+        combo: "Alt+L",
+        description: "Look up a Kv entry by its key",
+        handler: openLookUpKeyDialog,
+      },
+      {
+        combo: "Alt+A",
+        description: "Perform atomic operations",
+        handler: openAtomicOperationsDialog,
+      },
+      {
+        combo: "Alt+Q",
+        description: "Enqueue a message into Deno Kv Queue",
+        handler: openEnqueueMessageDialog,
+      },
+      {
+        combo: "Alt+W",
+        description: "Open the watched keys dialog",
+        handler: openWatchedKvEntriesDialog,
+      },
+      {
+        combo: "Alt+R",
+        description: "Reload the entries table",
+        handler: reloadEntries,
+      },
+    ],
+  });
 
   onDestroy(() => {
     close();
@@ -64,15 +116,7 @@
   </div>
   <div class="flex gap-2 items-center justify-end">
     <BrowseParams />
-    <Button
-      size="sm"
-      class="me-auto"
-      variant="outline"
-      onclick={() => {
-        kvEntriesState.params.cursors.pop();
-        fetchEntries();
-      }}
-    >
+    <Button size="sm" class="me-auto" variant="outline" onclick={reloadEntries}>
       Reload
       <RotateCwIcon />
     </Button>

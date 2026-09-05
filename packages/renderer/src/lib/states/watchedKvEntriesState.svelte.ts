@@ -25,6 +25,18 @@ export const watchedKvEntriesState: WatchedKvEntriesState = $state({
   selectedKeys: [],
 });
 
+export function setWatchedKvEntriesDialog(state: boolean) {
+  watchedKvEntriesState.openDialog = state;
+}
+
+export function getWatchedKvEntriesDialog() {
+  return watchedKvEntriesState.openDialog;
+}
+
+export function openWatchedKvEntriesDialog() {
+  watchedKvEntriesState.openDialog = true;
+}
+
 export async function fetchWatchedKeysForOpenedKvStore() {
   if (!kvStoresState.openedStore) return;
 

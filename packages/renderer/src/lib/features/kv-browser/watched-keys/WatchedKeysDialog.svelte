@@ -1,5 +1,7 @@
 <script lang="ts">
   import {
+    getWatchedKvEntriesDialog,
+    setWatchedKvEntriesDialog,
     unwatchKvEntries,
     watchedKvEntriesState,
   } from "$lib/states/watchedKvEntriesState.svelte";
@@ -15,7 +17,7 @@
   import AddKeyToWatchList from "./AddKeyToWatchList.svelte";
 </script>
 
-<Dialog.Root bind:open={watchedKvEntriesState.openDialog}>
+<Dialog.Root bind:open={getWatchedKvEntriesDialog, setWatchedKvEntriesDialog}>
   <Dialog.Trigger class={buttonVariants({ variant: "outline", size: "sm" })}>
     <EyeIcon class="size-4" />
     Watched Keys ({watchedKvEntriesState.keys.length})

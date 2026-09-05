@@ -8,10 +8,35 @@
   import LoadingOverlay from "$lib/ui/primitives/LoadingOverlay.svelte";
   import { metadata } from "@app/preload";
   import { loadSettings, settingsState } from "$lib/states/settingsState.svelte";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
-  import { handleKeyboardShortcuts } from "$lib/helpers/keyboardShortcuts";
+  import {
+    handleShortcutKeydown,
+    registerShortcuts,
+  } from "$lib/states/shortcutsState.svelte";
+  import { toggleMode } from "mode-watcher";
+  import ShortcutsHelpDialog from "$lib/features/shortcuts/ShortcutsHelpDialog.svelte";
   import * as Tooltip from "$lib/ui/shadcn/tooltip/index.js";
+  import { openShortcutsHelpDialog } from "$lib/states/shortcutsHelpState.svelte";
+
+  registerShortcuts({
+    id: "global",
+    label: "Global",
+    shortcuts: [
+      {
+        combo: "Alt+S",
+        description: "Toggle dark/light theme",
+        handler: () => toggleMode(),
+        options: { allowInInputs: true },
+      },
+      {
+        combo: "Ctrl+/",
+        description: "Open keyboard shortcuts help",
+        handler: openShortcutsHelpDialog,
+        options: { allowInInputs: true },
+      },
+    ],
+  });
 
   onMount(async () => {
     await closeKvStore();
@@ -20,7 +45,11 @@
       startCheckingForUpdates();
     }
 
-    document.addEventListener("keydown", handleKeyboardShortcuts);
+    document.addEventListener("keydown", handleShortcutKeydown);
+  });
+
+  onDestroy(() => {
+    document.removeEventListener("keydown", handleShortcutKeydown);
   });
 </script>
 
@@ -36,6 +65,7 @@
     </div>
   </Tooltip.Provider>
   <Toaster richColors duration={metadata.environment == "testing" ? 1 : undefined} />
+  <ShortcutsHelpDialog />
   <ModeWatcher />
   <LoadingOverlay />
 </main>

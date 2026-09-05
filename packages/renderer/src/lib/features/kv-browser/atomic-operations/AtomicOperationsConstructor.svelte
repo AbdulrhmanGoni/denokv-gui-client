@@ -22,6 +22,10 @@
   import { globalState } from "$lib/states/globalState.svelte";
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
+  import {
+    getAtomicOperationsDialogState,
+    setAtomicOperationsDialogState,
+  } from "./atomicOperationsDialogState.svelte";
 
   function getAtomicOperationsInOrder() {
     let orderedOperations: AtomicOperationInput[] = Array.from({
@@ -58,20 +62,9 @@
     globalState.loadingOverlay.open = false;
     globalState.loadingOverlay.text = "";
   }
-
-  let openAtomicOperationsFormState = $state(false);
-  const getOpenAtomicOperationsFormState = () => openAtomicOperationsFormState;
-  const setOpenAtomicOperationsFormState = (state: boolean) => {
-    openAtomicOperationsFormState = state;
-  };
-  function closeAtomicOperationsForm() {
-    setOpenAtomicOperationsFormState(false);
-  }
 </script>
 
-<Dialog.Root
-  bind:open={getOpenAtomicOperationsFormState, setOpenAtomicOperationsFormState}
->
+<Dialog.Root bind:open={getAtomicOperationsDialogState, setAtomicOperationsDialogState}>
   <Dialog.Trigger class={cn(buttonVariants({ size: "sm", variant: "secondary2" }))}>
     Atomic
     <AtomIcon class="size-4.5" />
@@ -152,7 +145,7 @@
           size="sm"
           variant="outline"
           class="gap-1"
-          onclick={closeAtomicOperationsForm}
+          onclick={() => setAtomicOperationsDialogState(false)}
         >
           Close
           <XIcon class="size-4.5" />

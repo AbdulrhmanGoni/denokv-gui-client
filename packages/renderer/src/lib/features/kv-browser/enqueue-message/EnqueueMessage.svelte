@@ -7,9 +7,12 @@
   import EnqueueMessageForm from "./EnqueueMessageForm.svelte";
   import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
   import type { EnqueueRequestInput, SerializedKvEntry } from "@app/bridge-server";
+  import {
+    getEnqueueMessageDialogState,
+    setEnqueueMessageDialogState,
+  } from "./enqueueMessageDialogState.svelte";
 
   let isEnqueuing = $state(false);
-  let isDialogOpen = $state(false);
 
   async function enqueue(
     message: SerializedKvEntry["value"],
@@ -28,17 +31,9 @@
     }
     isEnqueuing = false;
   }
-
-  function getOpen() {
-    return isDialogOpen;
-  }
-
-  function setOpen(newState: boolean) {
-    isDialogOpen = newState;
-  }
 </script>
 
-<Dialog.Root bind:open={getOpen, setOpen}>
+<Dialog.Root bind:open={getEnqueueMessageDialogState, setEnqueueMessageDialogState}>
   <Dialog.Trigger
     class={cn(
       buttonVariants({

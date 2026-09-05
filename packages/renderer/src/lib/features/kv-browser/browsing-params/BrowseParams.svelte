@@ -27,6 +27,12 @@
   import type { CodeJar } from "codejar";
   import ButtonWithTooltip from "$lib/ui/primitives/ButtonWithTooltip.svelte";
   import PLink from "$lib/ui/primitives/PLink.svelte";
+  import {
+    browsingParamsDialogState,
+    getBrowsingParamsDialogState,
+    openBrowsingParamsDialog,
+    setBrowsingParamsDialogState,
+  } from "./browsingParamsDialogState.svelte";
 
   let prefixKeyEditorValue = $derived(kvEntriesState.params.prefix);
   let startKeyEditorValue = $derived(kvEntriesState.params.start);
@@ -39,8 +45,6 @@
   let batchSizeValue = $derived(kvEntriesState.params.batchSize);
   let consistencyValue = $derived(kvEntriesState.params.consistency);
   let reverseValue = $derived(!!kvEntriesState.params.reverse);
-
-  let openBrowseParamsForm = $state(false);
 
   let saveParams = $state(false);
   let setParamsAsDefault = $state(false);
@@ -65,18 +69,10 @@
       consistency: consistencyValue,
       reverse: reverseValue,
     });
-    setOpen(false);
+    setBrowsingParamsDialogState(false);
     if (saveParams) {
       saveBrowsingParams();
     }
-  }
-
-  function getOpen() {
-    return openBrowseParamsForm;
-  }
-
-  function setOpen(newOpen: boolean) {
-    openBrowseParamsForm = newOpen;
   }
 
   $effect(() => {
@@ -88,7 +84,7 @@
   });
 
   $effect(() => {
-    if (!openBrowseParamsForm) {
+    if (!browsingParamsDialogState.isOpen) {
       untrack(() => {
         saveParams = false;
         setParamsAsDefault = false;
@@ -127,7 +123,7 @@
   function closeSavedBrowsingParamsList(closeDialog?: boolean) {
     openSavedBrowsingParamsList = false;
     if (closeDialog) {
-      setOpen(false);
+      setBrowsingParamsDialogState(false);
     }
   }
 </script>
@@ -168,15 +164,13 @@
   <ButtonWithTooltip
     size="sm"
     tooltipContent="Edit Filters"
-    onclick={() => {
-      setOpen(true);
-    }}
+    onclick={openBrowsingParamsDialog}
   >
     <EditIcon />
   </ButtonWithTooltip>
 </div>
 
-<Dialog.Root bind:open={getOpen, setOpen}>
+<Dialog.Root bind:open={getBrowsingParamsDialogState, setBrowsingParamsDialogState}>
   <Dialog.Content class="max-w-xl w-full max-h-150 overflow-auto p-3 gap-2">
     {#if openSavedBrowsingParamsList}
       <SavedBrowsingParamsList closeList={closeSavedBrowsingParamsList} />

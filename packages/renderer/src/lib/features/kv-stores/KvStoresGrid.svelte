@@ -17,6 +17,28 @@
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import { onMount } from "svelte";
   import * as InputGroup from "$lib/ui/shadcn/input-group/index";
+  import { registerShortcuts } from "$lib/states/shortcutsState.svelte";
+
+  registerShortcuts({
+    id: "kv-stores",
+    label: "Kv Stores",
+    shortcuts: [
+      {
+        combo: "Ctrl+N",
+        description: "Add a new Kv Store",
+        handler: () => {
+          if (!kvStoresState.renameDefaultKvStore) {
+            kvStoresState.openAddNewStoreForm = true;
+          }
+        },
+      },
+      {
+        combo: "Ctrl+F",
+        description: "Search for Kv Stores by name",
+        handler: () => searchInputRef?.focus(),
+      },
+    ],
+  });
 
   const filterOptions = [
     {
@@ -101,6 +123,8 @@
       return matchesType && matchesName;
     });
   });
+
+  let searchInputRef: HTMLInputElement | null = $state(null);
 </script>
 
 <div
@@ -133,7 +157,11 @@
       {/each}
     </div>
     <InputGroup.Root class="w-fit">
-      <InputGroup.Input placeholder="Filter By Name" bind:value={nameFilter} />
+      <InputGroup.Input
+        bind:ref={searchInputRef}
+        placeholder="Filter By Name"
+        bind:value={nameFilter}
+      />
       <InputGroup.Addon>
         <FunnelIcon />
       </InputGroup.Addon>
