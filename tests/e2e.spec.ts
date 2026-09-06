@@ -1,4 +1,4 @@
-import type { ElectronApplication } from "playwright";
+import type { ConsoleMessage, ElectronApplication } from "playwright";
 import { _electron as electron } from "playwright";
 import { test as base } from "@playwright/test";
 import getCompiledAppPath from "./getCompiledAppPath";
@@ -40,18 +40,23 @@ export const test = base.extend<TestFixtures>({
 
   page: async ({ electronApp }, use) => {
     const page = await electronApp.firstWindow();
-    // capture errors
-    page.on("pageerror", (error) => {
-      console.error(error);
-    });
-    // capture console messages
-    page.on("console", (msg) => {
-      console.log(msg.text());
-    });
+
+    const consoleListener = (msg: ConsoleMessage) => {
+      console.log(`[console][${msg.type()}]: ${msg.text()}`);
+    };
+    const pageErrorListener = (error: Error) => {
+      console.error(`[page-error]: ${error}`);
+    };
+
+    page.on("pageerror", pageErrorListener);
+    page.on("console", consoleListener);
 
     await page.waitForLoadState("load");
     page.setDefaultTimeout(process.env.CI ? 9000 : 3000);
     await use(page);
+
+    page.off("pageerror", pageErrorListener);
+    page.off("console", consoleListener);
   },
 });
 
