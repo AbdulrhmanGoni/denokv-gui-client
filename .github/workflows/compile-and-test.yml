@@ -95,15 +95,8 @@ jobs:
             pnpm run test || pnpm run test
           fi
 
-          if [ $? -eq 0 ]; then
-            echo "failed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "failed=true" >> "$GITHUB_OUTPUT"
-          fi
-
-          exit 0
-
       - name: Upload test results
+        if: ${{ failure() && steps.tests.outcome == 'failure' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: "test-results-${{ matrix.os }}"
@@ -114,11 +107,3 @@ jobs:
         with:
           name: "app-${{ matrix.os }}"
           path: dist
-
-      - name: Decide Whether the job failed or not
-        run: |
-          if [ "${{ steps.tests.outputs.failed }}" == "true" ]; then
-            exit 1
-          else
-            exit 0
-          fi
