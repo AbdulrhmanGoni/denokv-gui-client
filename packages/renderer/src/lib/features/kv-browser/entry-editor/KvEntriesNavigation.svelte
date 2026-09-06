@@ -33,7 +33,7 @@
     class={thereIsPreviousCursor ? "" : "opacity-25"}
     size="sm"
     onclick={prev}
-    disabled={!thereIsPreviousCursor}
+    disabled={!thereIsPreviousCursor || kvEntriesState.loading}
   >
     <ArrowLeft /> Prev
   </Button>
@@ -41,7 +41,7 @@
     class={thereIsNextCursor ? "" : "opacity-25"}
     size="sm"
     onclick={next}
-    disabled={!thereIsNextCursor}
+    disabled={!thereIsNextCursor || kvEntriesState.loading}
   >
     Next <ArrowRight />
   </Button>
