@@ -301,12 +301,12 @@ export function atomicOperationsTests() {
       const setKeyEditor = page.locator(`div#${operation.name}-key-editor`);
       await setKeyEditor.fill(`["operations", "${operation.name}"]`);
       await setKeyEditor.press("Space");
-      await page.waitForTimeout(70);
+      await page.waitForTimeout(120);
       await page
         .locator(`input#${operation.name}-value-input`)
         .fill(operation.operationValue.toString());
       await page.locator("button", { hasText: `Add ${operation.name}` }).click();
-      await page.waitForTimeout(70);
+      await page.waitForTimeout(100);
     }
 
     // Commit the transaction

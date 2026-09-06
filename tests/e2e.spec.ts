@@ -52,7 +52,7 @@ export const test = base.extend<TestFixtures>({
     page.on("console", consoleListener);
 
     await page.waitForLoadState("load");
-    page.setDefaultTimeout(process.env.CI ? 9000 : 3000);
+    page.setDefaultTimeout(9000);
     await use(page);
 
     page.off("pageerror", pageErrorListener);

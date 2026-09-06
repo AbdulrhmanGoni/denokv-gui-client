@@ -137,12 +137,11 @@ export function watchedKeysTests() {
     await page.locator("button", { hasText: "Watched Keys (0)" }).click();
 
     await page.locator("button", { hasText: "Add Key" }).click();
-
-    await expect(
-      page.locator("div[data-slot='dialog-content'][data-state='open']", {
-        hasText: "Add a Key to the Watch List",
-      }),
-    ).toBeVisible();
+    const addKeyDialog = page.locator(
+      "div[data-slot='dialog-content'][data-state='open']",
+      { hasText: "Add a Key to the Watch List" },
+    );
+    await expect(addKeyDialog).toBeVisible();
 
     const prefixKeyEditor = page.locator("#key-editor");
     await prefixKeyEditor.fill('["watch-tests", "new key", 100n]');
@@ -150,8 +149,11 @@ export function watchedKeysTests() {
     await page.waitForTimeout(70);
 
     await page.locator("button", { hasText: "Add to Watch List" }).click();
+    await expect(addKeyDialog).toBeHidden();
 
-    const dialog = page.locator("div[data-slot='dialog-content'][data-state='open']");
+    const dialog = page.locator("div[data-slot='dialog-content'][data-state='open']", {
+      hasText: "Watched Keys (",
+    });
     await expect(dialog).toContainText('"new key"');
     await expect(dialog).toContainText("100 n");
     await expect(dialog.getByText("null", { exact: true })).toHaveCount(2);

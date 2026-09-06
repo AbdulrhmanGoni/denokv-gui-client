@@ -206,43 +206,50 @@ export function filteringKvEntriesTests() {
       })
       .click();
 
-    const newLimit = 3;
+    const newPageSize = 3;
     const limitInputGroup = page.locator("div[data-slot='input-group']", {
       hasText: "Limit",
     });
-    await limitInputGroup.locator("input").fill(newLimit.toString());
+    await limitInputGroup.locator("input").fill(newPageSize.toString());
     await page.locator("button", { hasText: "Apply" }).click();
 
-    const rows = page.locator("tr");
-    const expectedMaxRowsCount = newLimit + 1;
+    const rows = page.locator("tbody tr");
 
     const nextButton = page.locator("button", {
       hasText: "Next",
       has: page.locator("svg.lucide-arrow-right"),
     });
-    const entriesLength = Math.ceil(
-      (randomTestingKvEntries.length + usersTestingKvEntries.length) / newLimit,
+
+    // (10 + 11) / 3 = 7 pages
+    const pagesCount = Math.ceil(
+      (randomTestingKvEntries.length + usersTestingKvEntries.length) / newPageSize,
     );
-    for (let i = 0; i < entriesLength; i++) {
-      expect((await rows.count()) <= expectedMaxRowsCount).toBeTruthy();
-      const isLastPage = await nextButton.isDisabled();
-      if (isLastPage) {
-        break;
+
+    for (let i = 0; i < pagesCount; i++) {
+      if (i === pagesCount - 1) {
+        await expect(nextButton).toBeDisabled();
+        expect(await rows.count()).toBeLessThanOrEqual(newPageSize);
+      } else {
+        await expect(nextButton).toBeEnabled();
+        await expect(rows).toHaveCount(newPageSize);
+        await nextButton.click();
       }
-      await nextButton.click();
     }
 
     const prevButton = page.locator("button", {
       hasText: "Prev",
       has: page.locator("svg.lucide-arrow-left"),
     });
-    for (let i = 0; i < entriesLength; i++) {
-      await prevButton.click();
-      expect((await rows.count()) <= expectedMaxRowsCount).toBeTruthy();
 
-      const isFirstPage = await prevButton.isDisabled();
-      if (isFirstPage) {
-        break;
+    for (let i = 0; i < pagesCount; i++) {
+      if (i === pagesCount - 1) {
+        await expect(nextButton).toBeEnabled();
+        await expect(prevButton).toBeDisabled();
+        await expect(rows).toHaveCount(newPageSize);
+      } else {
+        await expect(prevButton).toBeEnabled();
+        if (i !== 0) await expect(rows).toHaveCount(newPageSize);
+        await prevButton.click();
       }
     }
   });
