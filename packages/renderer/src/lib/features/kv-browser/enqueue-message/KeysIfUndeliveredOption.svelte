@@ -73,7 +73,7 @@
   <Dialog.Content class="max-w-xl w-full max-h-[600px] overflow-auto p-4 gap-2">
     <div class="space-y-2">
       <Dialog.Title class="text-xl font-semibold">Keys If Undelivered</Dialog.Title>
-      <Dialog.Description class="ms-1">
+      <Dialog.Description class="ms-1 text-base">
         Set keys to save the message value with when failing to deliver the message to the
         queue.
         <PLink

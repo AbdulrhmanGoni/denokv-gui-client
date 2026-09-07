@@ -71,7 +71,7 @@
   <Dialog.Content class="max-w-xl w-full max-h-[600px] overflow-auto p-4 gap-2">
     <div class="space-y-2 overflow-auto">
       <Dialog.Title class="text-xl font-semibold">Backoff Schedule</Dialog.Title>
-      <Dialog.Description>
+      <Dialog.Description class="text-base">
         An array of numbers (in milliseconds) that specify the retry policy for failed
         message delivery.
         <PLink

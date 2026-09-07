@@ -178,7 +178,7 @@
       <Dialog.Title class="flex gap-2 items-center text-2xl font-bold">
         <FunnelIcon /> Filter
       </Dialog.Title>
-      <Dialog.Description class="gap-1.5 text-foreground">
+      <Dialog.Description class="gap-1.5 text-base text-muted-foreground">
         See the
         <PLink href="https://docs.deno.com/deploy/kv/manual/operations/#list">
           official manual

@@ -56,7 +56,7 @@
       <EyeIcon class="size-7" />
       Add a Key to the Watch List
     </Dialog.Title>
-    <Dialog.Description class="py-1.5">
+    <Dialog.Description class="py-1.5 text-base">
       Enter a specific Deno KV Key to add it to the watch list and receive updates when it
       changes.
     </Dialog.Description>

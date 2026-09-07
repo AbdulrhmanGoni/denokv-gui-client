@@ -27,7 +27,7 @@
       <EyeIcon class="size-7" />
       Watched Keys ({watchedKvEntriesState.keys.length})
     </Dialog.Title>
-    <Dialog.Description>
+    <Dialog.Description class="text-base">
       All your watched keys in
       <strong class="font-bold">
         "{kvStoresState.openedStore?.name}"

@@ -52,7 +52,9 @@
       <DatabaseSearchIcon class="size-7" />
       Look Up a KV Entry
     </Dialog.Title>
-    <Dialog.Description class="py-1.5">Look up a Kv Entry by it's key</Dialog.Description>
+    <Dialog.Description class="py-1.5 text-base">
+      Look up a Kv Entry by it's key
+    </Dialog.Description>
     <Separator class="my-3" />
     <KvKeyEditor bind:jar={kvKeyCodeEditor} />
     <Separator class="my-3" />

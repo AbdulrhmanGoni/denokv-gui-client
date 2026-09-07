@@ -79,7 +79,7 @@
           <AtomIcon class="size-7" />
           Atomic Operations
         </Dialog.Title>
-        <Dialog.Description>
+        <Dialog.Description class="text-base">
           See the
           <PLink href="https://docs.deno.com/deploy/kv/#atomic-transactions">
             offecial documentation

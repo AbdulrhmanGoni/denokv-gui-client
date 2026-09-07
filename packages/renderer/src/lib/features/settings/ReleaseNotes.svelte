@@ -23,7 +23,9 @@
       <NotesIcon class="size-6" />
       Release Notes
     </Dialog.Title>
-    <Dialog.Description>See the changes you will get with this update</Dialog.Description>
+    <Dialog.Description class="text-base">
+      See the changes you will get with this update
+    </Dialog.Description>
     <Separator class="my-2" />
     <div id="release-notes" class="max-h-125 overflow-auto">
       <div>
