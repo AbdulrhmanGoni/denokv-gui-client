@@ -27,7 +27,7 @@
       <EyeIcon class="size-7" />
       Watched Keys ({watchedKvEntriesState.keys.length})
     </Dialog.Title>
-    <p class="text-muted-foreground">
+    <Dialog.Description>
       All your watched keys in
       <strong class="font-bold">
         "{kvStoresState.openedStore?.name}"
@@ -37,7 +37,7 @@
         >offecial documentation</PLink
       >
       of the <strong>watch</strong> operation for more information.
-    </p>
+    </Dialog.Description>
     <Separator class="my-2" />
     {#if watchedKvEntriesState.keysEntries.length}
       <div class="flex flex-col gap-2 max-h-[360px] overflow-auto pr-1">

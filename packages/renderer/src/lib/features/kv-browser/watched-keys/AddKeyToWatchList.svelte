@@ -52,14 +52,14 @@
     <PlusIcon class="size-4 shrink-0" />
   </Dialog.Trigger>
   <Dialog.Content class="max-w-3xl w-full p-3 gap-0">
-    <h1 class="flex items-center gap-2 text-2xl font-bold">
+    <Dialog.Title class="flex items-center gap-2 text-2xl font-bold">
       <EyeIcon class="size-7" />
       Add a Key to the Watch List
-    </h1>
-    <p class="py-1.5 text-muted-foreground">
+    </Dialog.Title>
+    <Dialog.Description class="py-1.5">
       Enter a specific Deno KV Key to add it to the watch list and receive updates when it
       changes.
-    </p>
+    </Dialog.Description>
     <Separator class="my-3" />
     <KvKeyEditor bind:jar={kvKeyCodeEditor} />
     <Separator class="my-3" />

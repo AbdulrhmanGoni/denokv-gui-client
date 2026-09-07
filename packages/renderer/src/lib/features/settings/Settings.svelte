@@ -29,10 +29,10 @@
   </Dialog.Trigger>
   <Dialog.Content class="max-h-150 h-full max-w-6xl w-full p-3">
     <div class="flex flex-col gap-3">
-      <h1 class="text-3xl font-bold flex gap-2 items-center my-1">
+      <Dialog.Title class="text-3xl font-bold flex gap-2 items-center my-1">
         <SettingsIcon class="size-7.5" />
         Settings
-      </h1>
+      </Dialog.Title>
       <Separator />
       <div class="flex-1">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">

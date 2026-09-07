@@ -75,17 +75,17 @@
   >
     <div class="flex flex-col gap-3 p-3 bg-background rounded-lg border shadow-lg">
       <div class="space-y-1">
-        <h1 class="text-2xl font-bold flex gap-2 items-center">
+        <Dialog.Title class="text-2xl font-bold flex gap-2 items-center">
           <AtomIcon class="size-7" />
           Atomic Operations
-        </h1>
-        <p class="text-muted-foreground">
+        </Dialog.Title>
+        <Dialog.Description>
           See the
           <PLink href="https://docs.deno.com/deploy/kv/#atomic-transactions">
             offecial documentation
           </PLink>
           of <strong>Deno Kv Atomic Operations</strong> for more information
-        </p>
+        </Dialog.Description>
       </div>
       <Separator />
       <AddAtomicOperationActions />

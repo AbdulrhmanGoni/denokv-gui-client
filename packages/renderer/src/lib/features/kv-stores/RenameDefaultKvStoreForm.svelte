@@ -50,10 +50,10 @@
 >
   <Dialog.Content class="max-w-2xl w-full p-3 gap-0">
     <form class="flex flex-col gap-4 overflow-hidden" onsubmit={submitHandler}>
-      <h2 class="text-xl font-bold flex gap-2 items-center">
+      <Dialog.Title class="text-xl font-bold flex gap-2 items-center">
         <RenameIcon />
         Rename Default KV Store
-      </h2>
+      </Dialog.Title>
       <div class="space-y-1.5">
         <Label for="name">Name</Label>
         <Input

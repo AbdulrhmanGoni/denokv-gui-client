@@ -175,16 +175,16 @@
     {#if openSavedBrowsingParamsList}
       <SavedBrowsingParamsList closeList={closeSavedBrowsingParamsList} />
     {:else}
-      <h1 class="flex gap-2 items-center text-2xl font-bold">
+      <Dialog.Title class="flex gap-2 items-center text-2xl font-bold">
         <FunnelIcon /> Filter
-      </h1>
-      <p class="gap-1.5 text-foreground">
+      </Dialog.Title>
+      <Dialog.Description class="gap-1.5 text-foreground">
         See the
         <PLink href="https://docs.deno.com/deploy/kv/manual/operations/#list">
           official manual
         </PLink> of <strong>Deno Kv database</strong> for more information about how filtering
         entries works.
-      </p>
+      </Dialog.Description>
       <Separator />
       <BrowsingParamsForm
         bind:prefix={prefixKeyEditorValue}

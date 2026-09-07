@@ -48,10 +48,10 @@
 </script>
 
 {#snippet header()}
-  <h1 class="flex items-center gap-2 text-2xl font-bold">
+  <Dialog.Title class="flex items-center gap-2 text-2xl font-bold">
     <FileIcon class="size-7" />
     Add a new KV Entry
-  </h1>
+  </Dialog.Title>
 {/snippet}
 
 <Dialog.Root bind:open={getOpen, setOpen}>

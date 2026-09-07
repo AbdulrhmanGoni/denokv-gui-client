@@ -3,6 +3,7 @@
   import KvEntryForm from "../entry-editor/KvEntryForm.svelte";
   import { addAtomicOperation } from "./atomicOperationsState.svelte";
   import FilePlusIcon from "@lucide/svelte/icons/file-plus";
+  import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
 
   let { close }: { close?: () => void } = $props();
 
@@ -23,14 +24,14 @@
 
 {#snippet header()}
   <div class="space-y-1">
-    <h1 class="text-2xl font-bold flex gap-2 items-center">
+    <Dialog.Title class="text-2xl font-bold flex gap-2 items-center">
       <FilePlusIcon class="size-7" />
       Set Operation
-    </h1>
-    <p class="text-muted-foreground">
+    </Dialog.Title>
+    <Dialog.Description class="text-base">
       <strong>Add</strong> or <strong>Update</strong> a key-value entry in the KV store to the
       given value.
-    </p>
+    </Dialog.Description>
   </div>
 {/snippet}
 

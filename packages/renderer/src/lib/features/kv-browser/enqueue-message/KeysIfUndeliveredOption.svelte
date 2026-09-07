@@ -72,8 +72,8 @@
 <Dialog.Root bind:open={getOpen, setOpen}>
   <Dialog.Content class="max-w-xl w-full max-h-[600px] overflow-auto p-4 gap-2">
     <div class="space-y-2">
-      <p class="text-xl font-semibold">Keys If Undelivered</p>
-      <p class="text-sm text-muted-foreground ms-1">
+      <Dialog.Title class="text-xl font-semibold">Keys If Undelivered</Dialog.Title>
+      <Dialog.Description class="ms-1">
         Set keys to save the message value with when failing to deliver the message to the
         queue.
         <PLink
@@ -81,7 +81,7 @@
         >
           See the API reference
         </PLink> for further details.
-      </p>
+      </Dialog.Description>
       <CodeEditor
         editorId="keys-if-undelivered-editor"
         bind:editorValue

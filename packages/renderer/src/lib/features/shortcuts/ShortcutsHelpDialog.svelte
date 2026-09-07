@@ -12,7 +12,7 @@
       <KeyboardIcon class="size-7" />
       Keyboard Shortcuts
     </Dialog.Title>
-    <p class="text-muted-foreground text-sm">Shortcuts available on the current page.</p>
+    <Dialog.Description>Shortcuts available on the current page.</Dialog.Description>
     <Separator class="my-2" />
     <div class="flex flex-col gap-3 max-h-105 overflow-auto pr-1">
       {#each shortcutsRegistry.scopes as [id, scope] (id)}

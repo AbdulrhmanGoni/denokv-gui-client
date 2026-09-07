@@ -9,6 +9,7 @@
   import KeyFileIcon from "@lucide/svelte/icons/file-key";
   import FileDigitIcon from "@lucide/svelte/icons/file-digit";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
+  import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
 
   let {
     close,
@@ -49,10 +50,10 @@
 </script>
 
 <div class="sm:w-xl w-md bg-background p-3 space-y-3 rounded-lg">
-  <h1 class="text-2xl font-bold flex gap-2 items-center">
+  <Dialog.Title class="text-2xl font-bold flex gap-2 items-center">
     <Icon class="size-7" />
     {title} Operation
-  </h1>
+  </Dialog.Title>
   {@render description()}
   <Separator />
   <div class="space-y-3">

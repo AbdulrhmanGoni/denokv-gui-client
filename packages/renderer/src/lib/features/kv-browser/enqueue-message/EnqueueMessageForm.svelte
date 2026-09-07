@@ -13,6 +13,7 @@
   import LoaderIcon from "@lucide/svelte/icons/loader";
   import { dataTypes } from "../utils/dataTypes";
   import PLink from "$lib/ui/primitives/PLink.svelte";
+  import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
   import type { EnqueueRequestInput, SerializedKvEntry } from "@app/bridge-server";
 
   type EnqueueMessageFormProps = {
@@ -64,17 +65,17 @@
 
 <div class="flex flex-col gap-3">
   <div class="space-y-1.5">
-    <h1 class="text-2xl font-bold flex gap-2 items-center">
+    <Dialog.Title class="text-2xl font-bold flex gap-2 items-center">
       <MessageSquarePlusIcon class="size-6" />
       Enqueue Message
-    </h1>
-    <p class="text-muted-foreground">
+    </Dialog.Title>
+    <Dialog.Description class="text-base">
       Enqueue a message into your Deno KV Database's
       <strong>Queue</strong>. <br /> See the official
       <PLink href="https://docs.deno.com/deploy/classic/queues/">
         Deno KV Queues Documentation
       </PLink> for more information.
-    </p>
+    </Dialog.Description>
   </div>
   <Separator />
   <KvValueEditor

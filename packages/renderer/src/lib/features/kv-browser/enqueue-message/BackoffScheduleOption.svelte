@@ -70,8 +70,8 @@
 <Dialog.Root bind:open={getOpen, setOpen}>
   <Dialog.Content class="max-w-xl w-full max-h-[600px] overflow-auto p-4 gap-2">
     <div class="space-y-2 overflow-auto">
-      <p class="text-xl font-semibold">Backoff Schedule</p>
-      <p class="text-sm text-muted-foreground">
+      <Dialog.Title class="text-xl font-semibold">Backoff Schedule</Dialog.Title>
+      <Dialog.Description>
         An array of numbers (in milliseconds) that specify the retry policy for failed
         message delivery.
         <PLink
@@ -79,7 +79,7 @@
         >
           See the API reference
         </PLink> for further details and an example.
-      </p>
+      </Dialog.Description>
       <CodeEditor
         editorId="backoff-schedule-editor"
         bind:editorValue

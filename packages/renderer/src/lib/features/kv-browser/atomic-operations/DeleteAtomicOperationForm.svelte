@@ -8,6 +8,7 @@
   import { toast } from "svelte-sonner";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
   import PlusIcon from "@lucide/svelte/icons/plus";
+  import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
 
   let { close }: { close?: () => void } = $props();
 
@@ -26,11 +27,13 @@
 
 <div class="sm:w-xl w-md bg-background p-3 space-y-3 rounded-lg">
   <div class="space-y-1">
-    <h1 class="text-2xl font-bold flex gap-2 items-center">
+    <Dialog.Title class="text-2xl font-bold flex gap-2 items-center">
       <TrashIcon class="size-7" />
       Delete Operation
-    </h1>
-    <p class="text-muted-foreground">Delete a key-value entry from the KV store.</p>
+    </Dialog.Title>
+    <Dialog.Description class="text-base"
+      >Delete a key-value entry from the KV store.</Dialog.Description
+    >
   </div>
   <Separator />
   <KvKeyEditor editorId="delete-key-editor" bind:jar={kvKeyEditorRef} />

@@ -19,11 +19,11 @@
   }}
 >
   <Dialog.Content class="max-w-3xl! w-full py-1.5 px-3 gap-0">
-    <h1 class="flex items-center gap-2 text-2xl font-bold">
+    <Dialog.Title class="flex items-center gap-2 text-2xl font-bold">
       <NotesIcon class="size-6" />
       Release Notes
-    </h1>
-    <p class="text-muted-foreground">See the changes you will get with this update</p>
+    </Dialog.Title>
+    <Dialog.Description>See the changes you will get with this update</Dialog.Description>
     <Separator class="my-2" />
     <div id="release-notes" class="max-h-125 overflow-auto">
       <div>

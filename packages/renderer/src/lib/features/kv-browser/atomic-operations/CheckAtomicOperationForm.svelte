@@ -9,6 +9,7 @@
   import { addAtomicOperation } from "./atomicOperationsState.svelte";
   import { toast } from "svelte-sonner";
   import Separator from "$lib/ui/shadcn/separator/separator.svelte";
+  import * as Dialog from "$lib/ui/shadcn/dialog/index.js";
 
   let { close }: { close?: () => void } = $props();
 
@@ -32,15 +33,15 @@
 </script>
 
 <div class="sm:w-xl w-md bg-background p-3 space-y-3 rounded-lg">
-  <h1 class="text-2xl font-bold flex gap-2 items-center">
+  <Dialog.Title class="text-2xl font-bold flex gap-2 items-center">
     <LockIcon class="size-7" />
     Check Operation
-  </h1>
-  <p class="text-muted-foreground">
+  </Dialog.Title>
+  <Dialog.Description class="text-base">
     Add to the operation a check that ensures that the versionstamp of the key-value entry
     in the KV store matches the given versionstamp. If the check fails, the entire
     operation will fail and no mutations will be performed.
-  </p>
+  </Dialog.Description>
   <Separator />
   <KvKeyEditor editorId="check-key-editor" bind:jar={kvKeyEditorRef} />
   <div class="space-y-1.5">
