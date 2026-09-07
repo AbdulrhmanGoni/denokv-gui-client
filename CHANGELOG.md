@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.31.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.30.0...v1.31.0) (2026-09-07)
+
+### Features
+
+* add keyboard shortcuts for navigation and dialogs, with a help dialog ([ac9d35b](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/ac9d35b471e1be01204297a9db2cae61b251315b))
+* enable atomic batch deletion of multiple selected entries in kv entries browser table ([619059d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/619059d68f7d28704f768c9bcc4a05141ee00d93))
+
+### Bug Fixes
+
+* disable kv entries navigation during loading to avoid an out of order pages race condition ([564f605](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/564f605ba8b04a53bcd2ae6fe87b43301a964c03))
+
+### Enhancements
+
+* reduce resource consumption in startup time by lazy-loading some relatively heavy packages ([d9408bb](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/d9408bb334aaa9ab21c80de34e30b0f2e0490fe3))
+* improve dialog windows accessibility for assistive technologies like screen readers ([12b0ca6](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/12b0ca6026c564d7f1bfe0d0025912cd1fab3343))
+* display pulse skeleton cards while loading kv stores ([7a85015](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7a850157399a9054dffbbb91784a10f8d26bbcab))
+
+### Maintenance
+
+* update `electron` to version "43.5.1" which comes with many bug fixes ([8a5b4d9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8a5b4d99f08276b68503b8645f209c36e0b41270))
+
+### User Interface Changes
+
+* group stores by type in the kv stores picker dropdown in kv entries browser page ([54f40d4](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/54f40d4f644ea864055d0db90c0ac66c32841412))
+
 ## [1.30.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.29.0...v1.30.0) (2026-08-30)
 
 ### Features
@@ -14,6 +39,7 @@ All notable changes to this project will be documented in this file. See [commit
 * enhance the performence of settings loading and updating ([36bc5e8](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/36bc5e81e21f40add86b235ed581a03871b878fb))
 * eliminate some unnecessary IPC and serialization overhead by connecting the renderer to the bridge server directly ([c4645ca](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c4645cad51f66d3cfdc5e1740ddae88f5f01c2ed))
 * reduce application binary size by removing redundant packages and some unnecessary source maps ([19bea5e](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/19bea5ed0140453d79ad16bfdcffb3ec045c5be0))
+
 ## [1.29.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.28.0...v1.29.0) (2026-08-22)
 
 ### Bug Fixes
