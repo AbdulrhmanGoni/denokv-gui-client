@@ -225,8 +225,8 @@ export function filteringKvEntriesTests() {
       (randomTestingKvEntries.length + usersTestingKvEntries.length) / newPageSize,
     );
 
-    for (let i = 0; i < pagesCount; i++) {
-      if (i === pagesCount - 1) {
+    for (let i = 0; i <= pagesCount; i++) {
+      if (i === pagesCount) {
         await expect(nextButton).toBeDisabled();
         expect(await rows.count()).toBeLessThanOrEqual(newPageSize);
       } else {
@@ -241,8 +241,8 @@ export function filteringKvEntriesTests() {
       has: page.locator("svg.lucide-arrow-left"),
     });
 
-    for (let i = 0; i < pagesCount; i++) {
-      if (i === pagesCount - 1) {
+    for (let i = 0; i <= pagesCount; i++) {
+      if (i === pagesCount) {
         await expect(nextButton).toBeEnabled();
         await expect(prevButton).toBeDisabled();
         await expect(rows).toHaveCount(newPageSize);
