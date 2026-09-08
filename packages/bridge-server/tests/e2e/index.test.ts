@@ -27,7 +27,7 @@ for (const element of fakeData) {
 
 const authToken = randomBytes(30).toString("base64");
 
-const server = openBridgeServerInNode(kv, { port: 7963, authToken });
+const server = await openBridgeServerInNode(kv, { port: 7963, authToken });
 
 const addressInfo = server.address() as AddressInfo;
 const bridgeServerUrl = `http://localhost:${addressInfo.port}`;

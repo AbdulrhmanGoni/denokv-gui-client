@@ -11,7 +11,7 @@ type OpenedBridgeServer = {
 };
 
 export class BridgeServerService {
-  #serverRef: ReturnType<typeof openBridgeServerInNode> | null = null;
+  #serverRef: Awaited<ReturnType<typeof openBridgeServerInNode>> | null = null;
   #kv: Kv | null = null;
   #bridgeServerAuthToken: string | null = null;
   #bridgeServerUrl: string | null = null;
@@ -34,7 +34,7 @@ export class BridgeServerService {
       const { openKv } = await import("@deno/kv");
       const { openBridgeServerInNode } = await import("@app/bridge-server");
       this.#kv = await openKv(kvStore.url, { accessToken: kvStore.accessToken });
-      this.#serverRef = openBridgeServerInNode(this.#kv, {
+      this.#serverRef = await openBridgeServerInNode(this.#kv, {
         port: 0,
         authToken: bridgeServerAuthToken,
       });

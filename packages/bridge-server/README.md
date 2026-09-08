@@ -48,13 +48,18 @@ server.shutdown(); // Later at some point if you want
 
 Import `openBridgeServerInNode` function and call it with an instance of Node's `@deno/kv` client
 
+> [!NOTE]
+> The `openBridgeServerInNode` function is `async` and returns a `Promise` that resolves with an instance of `ServerType` from
+> `@hono/node-server` once the server is listening. You must `await` the function call.
+> It will throw an error if the server fails to start for whatever reason.
+
 ```ts
 import { openKv, type Kv } from "@deno/kv";
 import { openBridgeServerInNode } from "@denokv-gui-client/bridge-server";
 import { type ServerType } from "@hono/node-server";
 
 const kv: Kv = await openKv();
-const server: ServerType = openBridgeServerInNode(kv);
+const server: ServerType = await openBridgeServerInNode(kv);
 // ...
 server.close(); // Later at some point if you want
 ```
@@ -63,10 +68,11 @@ server.close(); // Later at some point if you want
 
 Both `openBridgeServerInDeno` and `openBridgeServerInNode` functions accept the same 'options' object as the 2nd parameter.
 
-| Option      | Type     | Default | Description                                                                    |
-| ----------- | -------- | ------- | ------------------------------------------------------------------------------ |
-| `port`      | `number` | 47168   | The port that the bridge server should be listening to                         |
-| `authToken` | `string` | ""      | Authentication token that configures the server to be accessible only using it |
+| Option      | Type     | Default       | Description                                                                    |
+| ----------- | -------- | ------------- | ------------------------------------------------------------------------------ |
+| `port`      | `number` | `47168`       | The port that the bridge server should be listening to                         |
+| `authToken` | `string` | `""`          | Authentication token that configures the server to be accessible only using it |
+| `hostname`  | `string` | `"127.0.0.1"` | Hostname to bind the server to                                                 |
 
 ### Server's endpoints
 
