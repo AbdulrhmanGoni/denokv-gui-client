@@ -150,10 +150,10 @@ export class BridgeServerClient {
     private baseUrl: string,
     options?: BridgeServerClientOptions,
   ) {
-    if (options?.authToken) this.headers = { Authorization: options.authToken };
+    if (options?.authToken) this.#headers = { Authorization: options.authToken };
   }
 
-  private headers?: Record<string, string>;
+  #headers?: Record<string, string>;
 
   /**
    * Lists KV entries based on the provided options.
@@ -164,7 +164,7 @@ export class BridgeServerClient {
     return callBridgeServerRequest<BrowseReturn>({
       url: `${this.baseUrl}/browse`,
       options,
-      headers: this.headers,
+      headers: this.#headers,
       method: "GET",
     });
   }
@@ -189,7 +189,7 @@ export class BridgeServerClient {
       },
       method: "PUT",
       body: value,
-      headers: this.headers,
+      headers: this.#headers,
     });
   }
 
@@ -210,7 +210,7 @@ export class BridgeServerClient {
     return callBridgeServerRequest<SerializedKvEntry>({
       url: `${this.baseUrl}/get/${encodeURIComponent(typeof key == "string" ? key : JSON.stringify(key))}`,
       options,
-      headers: this.headers,
+      headers: this.#headers,
       method: "GET",
     });
   }
@@ -230,7 +230,7 @@ export class BridgeServerClient {
     return callBridgeServerRequest<true>({
       url: `${this.baseUrl}/delete`,
       options: { key, ...options },
-      headers: this.headers,
+      headers: this.#headers,
       method: "DELETE",
     });
   }
@@ -249,7 +249,7 @@ export class BridgeServerClient {
       url: `${this.baseUrl}/enqueue`,
       body: { value, options },
       method: "POST",
-      headers: this.headers,
+      headers: this.#headers,
     });
   }
 
@@ -269,7 +269,7 @@ export class BridgeServerClient {
       url: `${this.baseUrl}/atomic`,
       body: atomicOperations,
       method: "POST",
-      headers: this.headers,
+      headers: this.#headers,
       options,
     });
   }
@@ -300,7 +300,7 @@ export class BridgeServerClient {
       const queryParams = options ? optionsToUrlSearchParams(options) : "";
       const response = await fetch(`${this.baseUrl}/watch?${queryParams}`, {
         method: "POST",
-        headers: this.headers,
+        headers: this.#headers,
         body: JSON.stringify(
           typeof keys[0] == "string" ? keys : keys.map((key) => JSON.stringify(key)),
         ),
@@ -320,7 +320,7 @@ export class BridgeServerClient {
 
       if (!response.body) throw new Error("No response body (stream) found.");
 
-      this.watchReader = response.body.getReader();
+      this.#watchReader = response.body.getReader();
       const decoder = new TextDecoder();
       (async (reader: ReadableStreamDefaultReader) => {
         while (true) {
@@ -329,23 +329,23 @@ export class BridgeServerClient {
           const data = decoder.decode(value);
           if (data !== ": ping") listener(JSON.parse(data));
         }
-      })(this.watchReader);
+      })(this.#watchReader);
     } catch (err) {
       return { error: err instanceof Error ? err.message : String(err) };
     }
   }
 
   /** The reader of the stream of updates on the watched keys using `watch` method. */
-  private watchReader: ReadableStreamDefaultReader<Uint8Array> | null = null;
+  #watchReader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
   /**
    * Cancels the reader (if exists) that listens for changes on the set of watched keys
    * using `watch` method.
    */
   async cancelWatcher() {
-    if (this.watchReader) {
-      await this.watchReader.cancel().catch(() => {});
-      this.watchReader = null;
+    if (this.#watchReader) {
+      await this.#watchReader.cancel().catch(() => {});
+      this.#watchReader = null;
     }
   }
 }
