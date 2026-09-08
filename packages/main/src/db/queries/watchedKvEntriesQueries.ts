@@ -1,12 +1,9 @@
 import { database } from "../db.js";
 
-export const insertWatchedKeysQuery = database.prepare(`
-    INSERT INTO watchedKeys(id, kvStoreId, keysAsJson) 
-    VALUES($id, $kvStoreId, $keys)
-`);
-
-export const updateWatchedKeysQuery = database.prepare(`
-    UPDATE watchedKeys SET keysAsJson = $keys WHERE kvStoreId = $kvStoreId
+export const upsertWatchedKeysQuery = database.prepare(`
+  INSERT INTO watchedKeys(id, kvStoreId, keysAsJson)
+  VALUES($id, $kvStoreId, $keys)
+  ON CONFLICT(kvStoreId) DO UPDATE SET keysAsJson = excluded.keysAsJson
 `);
 
 export const getWatchedKeysQuery = database.prepare(

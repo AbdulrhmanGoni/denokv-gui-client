@@ -1,10 +1,8 @@
 import { ipcMain } from "electron";
 import {
   getWatchedKeysQuery,
-  insertWatchedKeysQuery,
-  updateWatchedKeysQuery,
+  upsertWatchedKeysQuery,
 } from "../db/queries/watchedKvEntriesQueries.js";
-import { databaseTransaction } from "../db/db.js";
 import { syncTrycatch } from "../helpers.js";
 import type { SerializedKvKey } from "@app/bridge-server";
 import type { TrycatchResult } from "../types.ts";
@@ -23,24 +21,14 @@ class WatchedKeysService {
   }
 
   async setWatchedKeys(kvStoreId: string, keys: SerializedKvKey[]) {
-    return syncTrycatch(() =>
-      databaseTransaction(() => {
-        if (getWatchedKeysQuery.get(kvStoreId)) {
-          const result = updateWatchedKeysQuery.run({
-            kvStoreId,
-            keys: JSON.stringify(keys),
-          });
-          return !!result.changes;
-        }
-
-        const result = insertWatchedKeysQuery.run({
-          id: crypto.randomUUID(),
-          kvStoreId,
-          keys: JSON.stringify(keys),
-        });
-        return !!result.changes;
-      }),
-    );
+    return syncTrycatch(() => {
+      const result = upsertWatchedKeysQuery.run({
+        id: crypto.randomUUID(),
+        kvStoreId,
+        keys: JSON.stringify(keys),
+      });
+      return !!result.changes;
+    });
   }
 }
 
