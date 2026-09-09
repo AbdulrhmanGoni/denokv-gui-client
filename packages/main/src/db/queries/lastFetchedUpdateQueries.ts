@@ -1,13 +1,13 @@
 import { database } from "../db.js";
 
 export const insertLastFetchedUpdateQuery = database.prepare(`
-    INSERT INTO lastFetchedUpdate(lastUpdateId, updateInfoAsJson)
-    VALUES('last-update', ?)
+  INSERT INTO lastFetchedUpdate(lastUpdateId, updateInfoAsJson)
+  VALUES('last-update', ?)
 `);
 
 export const updateLastFetchedUpdateQuery = database.prepare(`
-    UPDATE lastFetchedUpdate SET updateInfoAsJson = ?, doNotNotify = 0
-    WHERE lastUpdateId = 'last-update'
+  UPDATE lastFetchedUpdate SET updateInfoAsJson = ?, doNotNotify = 0
+  WHERE lastUpdateId = 'last-update'
 `);
 
 export const getLastFetchedUpdateQuery = database.prepare(

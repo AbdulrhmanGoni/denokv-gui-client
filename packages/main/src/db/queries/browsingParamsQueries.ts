@@ -1,17 +1,17 @@
 import { database } from "../db.js";
 
 export const insertQuery = database.prepare(`
-    INSERT INTO browsingParams(id, kvStoreId, paramsAsJson, isDefault, createdAt, updatedAt) 
-    VALUES($id, $kvStoreId, $paramsAsJson, $isDefault, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+  INSERT INTO browsingParams(id, kvStoreId, paramsAsJson, isDefault, createdAt, updatedAt) 
+  VALUES($id, $kvStoreId, $paramsAsJson, $isDefault, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 `);
 
 export const updateQuery = database.prepare(`
-    UPDATE browsingParams 
-    SET 
-        paramsAsJson = COALESCE($paramsAsJson, paramsAsJson),
-        isDefault = COALESCE($isDefault, isDefault),
-        updatedAt = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
-    WHERE id = $id;
+  UPDATE browsingParams 
+  SET 
+      paramsAsJson = COALESCE($paramsAsJson, paramsAsJson),
+      isDefault = COALESCE($isDefault, isDefault),
+      updatedAt = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+  WHERE id = $id;
 `);
 
 export const deleteOneQuery = database.prepare("DELETE FROM browsingParams WHERE id = ?");
