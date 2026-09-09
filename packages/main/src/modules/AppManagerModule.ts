@@ -37,7 +37,7 @@ export class AppManagerModule {
     app.on("window-all-closed", () => app.quit());
 
     const settings = settingsModule.service.fetchSettings();
-    if (settings?.disableHardwareAcceleration === true) {
+    if (settings.disableHardwareAcceleration === true) {
       app.disableHardwareAcceleration();
     }
 

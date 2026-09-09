@@ -2,7 +2,11 @@ import type { Settings, TrycatchResult } from "@app/main";
 import { appInfoService, settingsService } from "@app/preload";
 import { toast } from "svelte-sonner";
 
-export const settingsState: Settings = $state({});
+const result = await settingsService.getSettings();
+
+if (result.error) throw new Error(result.error);
+
+export const settingsState: Settings = $state(result.result!);
 
 export function setAutoCheckForUpdate(value: boolean) {
   applySettingsResult(
@@ -45,9 +49,7 @@ export function setHardwareAccelerationMode(value: boolean) {
   );
 }
 
-async function applySettingsResult(
-  updatePromise: Promise<TrycatchResult<Settings | undefined>>,
-) {
+async function applySettingsResult(updatePromise: Promise<TrycatchResult<Settings>>) {
   const { error, result } = await updatePromise;
   if (error) return toast.error(error);
   if (result) Object.assign(settingsState, result);

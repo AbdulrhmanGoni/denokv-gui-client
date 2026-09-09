@@ -1,50 +1,64 @@
 import { ipcMain } from "electron";
 import {
   getSettingsQuery,
-  insertSettingQuery,
-  updateSettingQuery,
+  updateSettingsQuery,
+  type SettingsRow,
 } from "../db/queries/settingsQueries.js";
-import { databaseTransaction } from "../db/db.js";
 import { syncTrycatch } from "../helpers.js";
-import type { Settings, TrycatchResult } from "../types.ts";
+import type { Settings, UpdateSettingsInput, TrycatchResult } from "../types.ts";
+import type { SQLInputValue } from "node:sqlite";
 
 class SettingsService {
   async getSettings() {
     return syncTrycatch(() => this.fetchSettings());
   }
 
-  fetchSettings() {
-    const result = getSettingsQuery.get() as { settingsAsJsonText: string } | undefined;
-    if (result) {
-      return JSON.parse(result.settingsAsJsonText) as Settings;
+  #settingsRowToObject(settingsRow: SettingsRow): Settings {
+    return {
+      autoCheckForUpdate: !!settingsRow.autoCheckForUpdate,
+      disableHardwareAcceleration: !!settingsRow.disableHardwareAcceleration,
+    };
+  }
+
+  fetchSettings(): Settings {
+    const settingsRow = getSettingsQuery.get() as SettingsRow;
+    if (!settingsRow) {
+      throw new Error("Failed to load settings");
     }
-    return result;
+
+    return this.#settingsRowToObject(settingsRow);
   }
 
   async updateSettings(
-    updatedSettings: Settings,
-  ): Promise<TrycatchResult<Settings | undefined>> {
-    return syncTrycatch(() =>
-      databaseTransaction(() => {
-        const settings = this.fetchSettings();
-        if (settings) {
-          const mergedSettings = { ...settings, ...updatedSettings };
-          const result = updateSettingQuery.run(JSON.stringify(mergedSettings));
-          if (result.changes) {
-            return mergedSettings;
-          }
+    updatedSettings: UpdateSettingsInput,
+  ): Promise<TrycatchResult<Settings>> {
+    return syncTrycatch(() => {
+      if (
+        updatedSettings.autoCheckForUpdate === undefined &&
+        updatedSettings.disableHardwareAcceleration === undefined
+      ) {
+        throw new Error("No settings provided to update");
+      }
 
-          throw new Error("Failed to update settings");
-        }
+      const updatedSettingsRow = updateSettingsQuery.get({
+        $autoCheckForUpdate: this.#booleanToSQLiteInteger(
+          updatedSettings.autoCheckForUpdate,
+        ),
+        $disableHardwareAcceleration: this.#booleanToSQLiteInteger(
+          updatedSettings.disableHardwareAcceleration,
+        ),
+      }) as SettingsRow;
 
-        const result = insertSettingQuery.run(JSON.stringify(updatedSettings));
-        if (result.changes) {
-          return updatedSettings;
-        }
+      if (updatedSettingsRow) {
+        return this.#settingsRowToObject(updatedSettingsRow);
+      }
 
-        throw new Error("Failed to insert settings");
-      }),
-    );
+      throw new Error("Failed to update settings");
+    });
+  }
+
+  #booleanToSQLiteInteger(value: boolean | undefined): SQLInputValue {
+    return value !== undefined ? (value ? 1 : 0) : null;
   }
 }
 

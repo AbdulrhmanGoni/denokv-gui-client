@@ -1,14 +1,20 @@
 import { database } from "../db.js";
 
-export const insertSettingQuery = database.prepare(`
-    INSERT INTO userSettings(settingsId, settingsAsJsonText) 
-    VALUES('settings', ?)
+export type SettingsRow = {
+  autoCheckForUpdate: 0 | 1;
+  disableHardwareAcceleration: 0 | 1;
+};
+
+export const getSettingsQuery = database.prepare(`
+  SELECT autoCheckForUpdate, disableHardwareAcceleration
+  FROM userSettings
+  WHERE settingsId = 'settings'
 `);
 
-export const updateSettingQuery = database.prepare(`
-    UPDATE userSettings SET settingsAsJsonText = ?
+export const updateSettingsQuery = database.prepare(`
+  UPDATE userSettings SET 
+    autoCheckForUpdate = COALESCE($autoCheckForUpdate, autoCheckForUpdate), 
+    disableHardwareAcceleration = COALESCE($disableHardwareAcceleration, disableHardwareAcceleration)
+  WHERE settingsId = 'settings'
+  RETURNING autoCheckForUpdate, disableHardwareAcceleration;
 `);
-
-export const getSettingsQuery = database.prepare(
-  "SELECT settingsAsJsonText FROM userSettings WHERE settingsId = 'settings'",
-);

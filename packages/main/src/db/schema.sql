@@ -12,8 +12,7 @@ CREATE TABLE kvStores (
 
 CREATE TABLE userSettings (
     settingsId TEXT PRIMARY KEY,
-    settingsAsJsonText TEXT NOT NULL
-);
+    autoCheckForUpdate INTEGER NOT NULL DEFAULT 0, disableHardwareAcceleration INTEGER NOT NULL DEFAULT 0);
 
 CREATE TABLE lastFetchedUpdate (
     lastUpdateId TEXT PRIMARY KEY,
@@ -44,4 +43,5 @@ INSERT INTO "schema_migrations" (version) VALUES
     ('20251209204559'),
     ('20260328190439'),
     ('20260402143135'),
-    ('20260429230505');
+    ('20260429230505'),
+    ('20260909101256');

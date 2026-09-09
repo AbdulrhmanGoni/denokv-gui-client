@@ -7,7 +7,7 @@
   import { Toaster } from "$lib/ui/shadcn/sonner";
   import LoadingOverlay from "$lib/ui/primitives/LoadingOverlay.svelte";
   import { metadata } from "@app/preload";
-  import { loadSettings, settingsState } from "$lib/states/settingsState.svelte";
+  import { settingsState } from "$lib/states/settingsState.svelte";
   import { onDestroy, onMount } from "svelte";
   import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
   import {
@@ -40,7 +40,6 @@
 
   onMount(async () => {
     await closeKvStore();
-    await loadSettings();
     if (settingsState.autoCheckForUpdate) {
       startCheckingForUpdates();
     }

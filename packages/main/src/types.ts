@@ -65,10 +65,12 @@ export type SavedBrowsingParamsRecord<T> = {
   updatedAt: number;
 };
 
-export type Settings = Partial<{
+export type Settings = {
   autoCheckForUpdate: boolean;
   disableHardwareAcceleration: boolean;
-}>;
+};
+
+export type UpdateSettingsInput = Partial<Settings>;
 
 export type LastFetchedUpdate = {
   data: UpdateCheckResult;
