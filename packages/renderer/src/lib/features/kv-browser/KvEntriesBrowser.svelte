@@ -39,8 +39,8 @@
 
   const table = createKvEntriesTable();
 
-  function close() {
-    closeKvStore();
+  async function close() {
+    await closeKvStore();
   }
 
   function reloadEntries() {
@@ -90,9 +90,9 @@
     ],
   });
 
-  onDestroy(() => {
-    close();
-    resetEntriesState();
+  onDestroy(async () => {
+    await close();
+    await resetEntriesState();
   });
 
   onMount(async () => {
