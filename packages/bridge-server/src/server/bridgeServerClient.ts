@@ -296,6 +296,7 @@ export class BridgeServerClient {
     options?: { xssSafe?: boolean; jsKey?: boolean },
   ): Promise<void | { error: string }> {
     try {
+      await this.cancelWatcher();
       const controller = new AbortController();
       const queryParams = options ? optionsToUrlSearchParams(options) : "";
       const response = await fetch(`${this.baseUrl}/watch?${queryParams}`, {
