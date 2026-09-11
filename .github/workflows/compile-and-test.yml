@@ -82,11 +82,12 @@ jobs:
       - name: Run database schema migration tests
         run: pnpm run --filter=@app/db-migration test
 
-      - name: Build the app
+      - name: Compile the app
+        id: compile
         run: pnpm run compile:ci
 
       - name: Run UI e2e tests
-        id: tests
+        id: e2e-tests
         run: |
           if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
             xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- pnpm run test || \
@@ -96,13 +97,14 @@ jobs:
           fi
 
       - name: Upload test results
-        if: ${{ failure() && steps.tests.outcome == 'failure' }}
+        if: ${{ failure() && steps.e2e-tests.outcome == 'failure' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: "test-results-${{ matrix.os }}"
           path: test-results
 
       - name: Upload compiled app
+        if: ${{ always() && steps.compile.outcome == 'success' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: "app-${{ matrix.os }}"
