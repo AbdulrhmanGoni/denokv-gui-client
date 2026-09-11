@@ -25,6 +25,7 @@ export const test = base.extend<TestFixtures>({
       const electronApp = await electron.launch({
         executablePath: getCompiledAppPath(),
         args: ["--no-sandbox"],
+        recordVideo: { dir: "test-results/videos" },
       });
 
       electronApp.on("console", (msg) => {
@@ -38,8 +39,16 @@ export const test = base.extend<TestFixtures>({
     { scope: "worker", auto: true } as any,
   ],
 
-  page: async ({ electronApp }, use) => {
+  page: async ({ electronApp }, use, testInfo) => {
     const page = await electronApp.firstWindow();
+
+    try {
+      await page.context().tracing.start({
+        screenshots: true,
+        snapshots: true,
+        sources: true,
+      });
+    } catch {}
 
     const consoleListener = (msg: ConsoleMessage) => {
       console.log(`[console][${msg.type()}]: ${msg.text()}`);
@@ -57,6 +66,20 @@ export const test = base.extend<TestFixtures>({
 
     page.off("pageerror", pageErrorListener);
     page.off("console", consoleListener);
+
+    try {
+      if (testInfo.status !== "passed") {
+        const tracePath = testInfo.outputPath("trace.zip");
+        await page.context().tracing.stop({ path: tracePath });
+        testInfo.attachments.push({
+          name: "trace",
+          path: tracePath,
+          contentType: "application/zip",
+        });
+      } else {
+        await page.context().tracing.stop();
+      }
+    } catch {}
   },
 });
 
