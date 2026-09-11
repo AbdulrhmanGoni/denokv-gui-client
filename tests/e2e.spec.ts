@@ -25,7 +25,6 @@ export const test = base.extend<TestFixtures>({
       const electronApp = await electron.launch({
         executablePath: getCompiledAppPath(),
         args: ["--no-sandbox"],
-        recordVideo: { dir: "test-results/videos" },
       });
 
       electronApp.on("console", (msg) => {
