@@ -105,6 +105,8 @@ export async function openKvStore(kvStore: KvStore) {
 }
 
 export async function closeKvStore() {
+  await kvStoresState.openedStoreClient?.cancelWatcher().catch(() => {});
+  kvStoresState.openedStoreClient = null;
   kvStoresState.openedStore = null;
   const { error } = await bridgeServer.closeServer();
   if (error) toast.error(error);
