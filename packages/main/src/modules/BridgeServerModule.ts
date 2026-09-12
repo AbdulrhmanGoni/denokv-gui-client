@@ -51,7 +51,7 @@ export class BridgeServerService {
         );
       }
 
-      this.#bridgeServerUrl = `http://localhost:${address.port}`;
+      this.#bridgeServerUrl = `http://127.0.0.1:${address.port}`;
       this.#bridgeServerAuthToken = bridgeServerAuthToken;
 
       return {
