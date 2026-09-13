@@ -11,6 +11,7 @@
   import Label from "$lib/ui/shadcn/label/label.svelte";
   import { getOpenedKvStoreClient } from "$lib/states/kvStoresState.svelte";
   import { removeEntriesFromState } from "$lib/states/kvEntriesState.svelte";
+  import Separator from "$lib/ui/shadcn/separator/separator.svelte";
 
   const { selectedRows }: { selectedRows: Row<SerializedKvEntry>[] } = $props();
 
@@ -132,13 +133,19 @@
         This will permanently delete all selected Kv Entries and you won't be able to undo
         this action.
       </AlertDialog.Description>
-      <div class="flex items-center gap-3 *:cursor-pointer my-1">
-        <Checkbox id="atomic-deletion-checkbox" bind:checked={atomicDeletion} />
-        <Label for="atomic-deletion-checkbox">
-          Want to delete the entries atomically? (all entries will get deleted together or
-          nothing will get deleted)
-        </Label>
-      </div>
+      {#if selectedRows.length > 1}
+        <Separator />
+        <div class="space-y-2 my-1">
+          <div class="flex items-center gap-2 *:cursor-pointer">
+            <Checkbox id="atomic-deletion-checkbox" bind:checked={atomicDeletion} />
+            <Label for="atomic-deletion-checkbox">Atomic Delete?</Label>
+          </div>
+          <p class="text-sm text-muted-foreground">
+            The {selectedRows.length} kv entries will either be deleted together or none of
+            them will be deleted in case of any failure.
+          </p>
+        </div>
+      {/if}
     </AlertDialog.Header>
     <AlertDialog.Footer>
       <Button variant="outline" onclick={onCancel}>Cancel</Button>
