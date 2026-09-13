@@ -13,7 +13,9 @@
   "categories": {
     "correctness": "error"
   },
-  "rules": {},
+  "rules": {
+    "no-eval": "allow"
+  },
   "env": {
     "builtin": true
   },
