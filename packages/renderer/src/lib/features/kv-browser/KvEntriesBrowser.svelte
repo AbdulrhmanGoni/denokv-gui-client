@@ -58,6 +58,13 @@
         handler: openAddKvEntryDialog,
       },
       {
+        combo: "Ctrl+A",
+        description: "Select all Kv entries (deselect if all are selected)",
+        handler: () => {
+          table.toggleAllPageRowsSelected();
+        },
+      },
+      {
         combo: "Alt+F",
         description: "Filter Kv entries",
         handler: openBrowsingParamsDialog,
