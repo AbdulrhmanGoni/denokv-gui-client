@@ -19,7 +19,7 @@ export default defineConfig({
       formats: ["es"],
       fileName: (_format, entryName) => `${entryName}.mjs`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ["@deno/kv", /^node:.*/],
       output: {
         preserveModules: false,

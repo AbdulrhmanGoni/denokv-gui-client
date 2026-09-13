@@ -29,10 +29,11 @@ export default /**
       entry: "src/index.ts",
       formats: ["es"],
     },
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         entryFileNames: "[name].js",
       },
+      external: ["@app/bridge-server"],
     },
     emptyOutDir: true,
     reportCompressedSize: false,
