@@ -68,14 +68,11 @@ export type SavedBrowsingParamsRecord<T> = {
 export type Settings = {
   autoCheckForUpdate: boolean;
   disableHardwareAcceleration: boolean;
+  ignoreLastFetchedUpdate: boolean;
+  lastFetchedUpdate: UpdateCheckResult | null;
 };
 
 export type UpdateSettingsInput = Partial<Settings>;
-
-export type LastFetchedUpdate = {
-  data: UpdateCheckResult;
-  doNotNotify: boolean;
-};
 
 export type UpdateCheckResult = import("electron-updater").UpdateCheckResult;
 

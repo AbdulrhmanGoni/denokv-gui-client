@@ -54,3 +54,11 @@ async function applySettingsResult(updatePromise: Promise<TrycatchResult<Setting
   if (error) return toast.error(error);
   if (result) Object.assign(settingsState, result);
 }
+
+export function ignoreLastFetchedUpdate() {
+  applySettingsResult(
+    settingsService.updateSettings({
+      ignoreLastFetchedUpdate: true,
+    }),
+  );
+}

@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
 import type { CancellationToken } from "electron-updater";
-import type { LastFetchedUpdateModule } from "./LastFetchedUpdateModule.js";
+import type { SettingsModule } from "./SettingsModule.js";
 import type { AppInfoModule } from "./AppInfoModule.js";
-import { asyncTrycatch, syncTrycatch, isGreaterVersion } from "../helpers.js";
+import { asyncTrycatch, syncTrycatch } from "../helpers.js";
 import { WindowManagerModule } from "./WindowManagerModule.js";
 
 type ElectronUpdaterModule = typeof import("electron-updater");
@@ -11,7 +11,7 @@ class AppUpdaterService {
   constructor(
     private readonly appInfoModule: AppInfoModule,
     private readonly windowManagerModule: WindowManagerModule,
-    private readonly lastFetchedUpdateModule: LastFetchedUpdateModule,
+    private readonly settingsModule: SettingsModule,
   ) {}
 
   #updaterPromise: Promise<ElectronUpdaterModule> | null = null;
@@ -44,14 +44,18 @@ class AppUpdaterService {
     return asyncTrycatch(async () => {
       const { autoUpdater } = await this.#getUpdater();
       const newUpdate = await autoUpdater.checkForUpdatesAndNotify();
-      if (
-        newUpdate &&
-        isGreaterVersion(
-          newUpdate.updateInfo.version,
-          this.appInfoModule.metadata.appVersion,
-        )
-      ) {
-        this.lastFetchedUpdateModule.service.updatedLastFetchedUpdate(newUpdate);
+      if (newUpdate?.isUpdateAvailable) {
+        void this.settingsModule.service
+          .setLastFetchedUpdate(newUpdate)
+          .then(({ result, error }) => {
+            if (!result) {
+              console.error("[AppUpdater] Failed to save last fetched update:", error);
+            }
+          })
+          .catch((error) => {
+            console.error("[AppUpdater] Failed to save last fetched update:", error);
+          });
+
         return newUpdate;
       }
       return null;
@@ -91,12 +95,12 @@ export class AppUpdaterModule {
   constructor(
     appInfoModule: AppInfoModule,
     windowManagerModule: WindowManagerModule,
-    lastFetchedUpdateModule: LastFetchedUpdateModule,
+    settingsModule: SettingsModule,
   ) {
     const service = new AppUpdaterService(
       appInfoModule,
       windowManagerModule,
-      lastFetchedUpdateModule,
+      settingsModule,
     );
 
     ipcMain.handle("check-for-update", (_event) => {

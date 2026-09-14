@@ -6,7 +6,6 @@ import { WebContentsUrlPolicyModule } from "./modules/WebContentsUrlPolicyModule
 import { BridgeServerModule } from "./modules/BridgeServerModule.js";
 import { KvStoresModule } from "./modules/KvStoresModule.js";
 import { SettingsModule } from "./modules/SettingsModule.js";
-import { LastFetchedUpdateModule } from "./modules/LastFetchedUpdateModule.js";
 import { BrowsingParamsModule } from "./modules/BrowsingParamsModule.js";
 import { AppUpdaterModule } from "./modules/AppUpdaterModule.js";
 import { WatchedKeysModule } from "./modules/WatchedKeysModule.js";
@@ -14,7 +13,9 @@ import { FileSystemModule } from "./modules/FileSystemModule.js";
 import { AppManagerModule } from "./modules/AppManagerModule.js";
 
 export async function initApp(initConfig: AppInitConfig) {
-  const settingsModule = new SettingsModule();
+  const appInfoModule = new AppInfoModule(app);
+
+  const settingsModule = new SettingsModule(appInfoModule);
 
   const appManagerModule = new AppManagerModule(app, settingsModule);
   await appManagerModule.waitAppToBeReady();
@@ -26,15 +27,11 @@ export async function initApp(initConfig: AppInitConfig) {
 
   const windowManagerModule = new WindowManagerModule(app, initConfig);
 
-  const appInfoModule = new AppInfoModule(app);
-
   new FileSystemModule(windowManagerModule);
 
   new KvStoresModule();
 
-  const lastFetchedUpdateModule = new LastFetchedUpdateModule(appInfoModule);
-
-  new AppUpdaterModule(appInfoModule, windowManagerModule, lastFetchedUpdateModule);
+  new AppUpdaterModule(appInfoModule, windowManagerModule, settingsModule);
 
   new BridgeServerModule();
 

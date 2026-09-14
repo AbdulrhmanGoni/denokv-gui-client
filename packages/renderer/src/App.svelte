@@ -9,7 +9,10 @@
   import { metadata } from "@app/preload";
   import { settingsState } from "$lib/states/settingsState.svelte";
   import { onDestroy, onMount } from "svelte";
-  import { startCheckingForUpdates } from "$lib/states/appUpdate.svelte";
+  import {
+    notifyLastFetchedUpdateIfExists,
+    startCheckingForUpdates,
+  } from "$lib/states/appUpdate.svelte";
   import {
     handleShortcutKeydown,
     registerShortcuts,
@@ -40,6 +43,9 @@
 
   onMount(async () => {
     await closeKvStore();
+
+    notifyLastFetchedUpdateIfExists();
+
     if (settingsState.autoCheckForUpdate) {
       startCheckingForUpdates();
     }

@@ -12,12 +12,7 @@ CREATE TABLE kvStores (
 
 CREATE TABLE userSettings (
     settingsId TEXT PRIMARY KEY,
-    autoCheckForUpdate INTEGER NOT NULL DEFAULT 0, disableHardwareAcceleration INTEGER NOT NULL DEFAULT 0);
-
-CREATE TABLE lastFetchedUpdate (
-    lastUpdateId TEXT PRIMARY KEY,
-    updateInfoAsJson TEXT NOT NULL
-, doNotNotify BOOLEAN DEFAULT 0);
+    autoCheckForUpdate INTEGER NOT NULL DEFAULT 0, disableHardwareAcceleration INTEGER NOT NULL DEFAULT 0, lastFetchedUpdate TEXT DEFAULT NULL, ignoreLastFetchedUpdate INTEGER NOT NULL DEFAULT 0);
 
 CREATE TABLE browsingParams (
     id TEXT PRIMARY KEY,
@@ -44,4 +39,5 @@ INSERT INTO "schema_migrations" (version) VALUES
     ('20260328190439'),
     ('20260402143135'),
     ('20260429230505'),
-    ('20260909101256');
+    ('20260909101256'),
+    ('20260913140506');

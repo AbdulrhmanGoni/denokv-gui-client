@@ -1,12 +1,8 @@
-import {
-  appUpdater,
-  lastFetchedUpdateService,
-  metadata,
-  appInfoService,
-} from "@app/preload";
+import { appUpdater, metadata, appInfoService } from "@app/preload";
 import { toast } from "svelte-sonner";
 import newUpdateNotificationActions from "$lib/features/settings/newUpdateNotificationActions.svelte";
 import type { ProgressInfo, UpdateCheckResult } from "@app/main";
+import { ignoreLastFetchedUpdate, settingsState } from "./settingsState.svelte";
 
 type UpdateAppState = {
   downloadUpdateProgress: ProgressInfo | null;
@@ -33,7 +29,7 @@ export const updateAppState: UpdateAppState = $state({
   releaseNotes: null,
 });
 
-function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
+export function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
   if (update.isUpdateAvailable) {
     const toastId = "new-update-notification:" + update.updateInfo.version;
     const dismiss = () => toast.dismiss(toastId);
@@ -48,10 +44,9 @@ function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
       closeButton: true,
       action: {
         label: "Ignore",
-        onClick: async () => {
+        onClick() {
           dismiss();
-          const { error } = await lastFetchedUpdateService.doNotNotifyLastFetchedUpdate();
-          if (error) toast.error(error);
+          ignoreLastFetchedUpdate();
         },
       },
       description: (internals) => newUpdateNotificationActions(internals, { dismiss }),
@@ -60,43 +55,22 @@ function notifyUserForNewUpdate(update: UpdateCheckResult, message: string) {
   }
 }
 
-export async function startCheckingForUpdates() {
-  const lastFetchedUpdateResponse = await lastFetchedUpdateService.getLastFetchedUpdate();
-  if (lastFetchedUpdateResponse.error)
-    return toast.error(lastFetchedUpdateResponse.error);
-  const lastFetchedUpdate = lastFetchedUpdateResponse.result;
-  if (lastFetchedUpdate) {
-    if (!lastFetchedUpdate.doNotNotify) {
+export function notifyLastFetchedUpdateIfExists() {
+  if (settingsState.lastFetchedUpdate) {
+    if (!settingsState.ignoreLastFetchedUpdate) {
       notifyUserForNewUpdate(
-        lastFetchedUpdate.data,
-        `A new update is available (v${lastFetchedUpdate.data.updateInfo.version})`,
+        settingsState.lastFetchedUpdate,
+        `A new update is available (v${settingsState.lastFetchedUpdate.updateInfo.version})`,
       );
     }
-    updateAppState.newUpdate = lastFetchedUpdate.data;
+    updateAppState.newUpdate = settingsState.lastFetchedUpdate;
     updateAppState.checkingForUpdatesDone = true;
-    const checkResponse = await appUpdater.checkForUpdate();
-    if (checkResponse.error) {
-      toast.error(checkResponse.error);
-      return;
-    }
-
-    updateAppState.newUpdate = checkResponse.result;
-    if (updateAppState.newUpdate) {
-      const isNewerVersion =
-        lastFetchedUpdate.data.updateInfo.version !==
-        updateAppState.newUpdate.updateInfo.version;
-      if (isNewerVersion && !lastFetchedUpdate.doNotNotify) {
-        notifyUserForNewUpdate(
-          updateAppState.newUpdate,
-          `A newer update is available (v${updateAppState.newUpdate.updateInfo.version})`,
-        );
-      }
-    }
-    return;
   }
+}
 
-  updateAppState.checkingForUpdates = true;
+export async function startCheckingForUpdates() {
   try {
+    updateAppState.checkingForUpdates = true;
     const updateResponse = await appUpdater.checkForUpdate();
     if (updateResponse.error) {
       toast.error(updateResponse.error);
@@ -108,11 +82,25 @@ export async function startCheckingForUpdates() {
     updateAppState.checkingForUpdatesDone = true;
     updateAppState.checkingForUpdatesError = "";
     if (updateAppState.newUpdate) {
-      notifyUserForNewUpdate(
-        updateAppState.newUpdate,
-        `A new update is available (v${updateAppState.newUpdate.updateInfo.version})`,
-      );
+      const isNewerVersion =
+        settingsState.lastFetchedUpdate &&
+        settingsState.lastFetchedUpdate.updateInfo.version !==
+          updateAppState.newUpdate.updateInfo.version;
+
+      if (
+        !settingsState.lastFetchedUpdate ||
+        (!settingsState.ignoreLastFetchedUpdate && isNewerVersion)
+      ) {
+        notifyUserForNewUpdate(
+          updateAppState.newUpdate,
+          isNewerVersion
+            ? `A newer update is available (v${updateAppState.newUpdate.updateInfo.version})`
+            : `A new update is available (v${updateAppState.newUpdate.updateInfo.version})`,
+        );
+      }
     }
+
+    settingsState.lastFetchedUpdate = updateResponse.result;
   } catch (error) {
     updateAppState.checkingForUpdatesError = String(error);
     updateAppState.checkingForUpdatesDone = false;

@@ -5,6 +5,5 @@ export type { BridgeServerServiceInterface } from "./BridgeServerModule.js";
 export type { BrowsingParamsServiceInterface } from "./BrowsingParamsModule.js";
 export type { FileSystemServiceInterface } from "./FileSystemModule.js";
 export type { KvStoresServiceInterface } from "./KvStoresModule.js";
-export type { LastFetchedUpdateServiceInterface } from "./LastFetchedUpdateModule.js";
 export type { SettingsServiceInterface } from "./SettingsModule.js";
 export type { WatchedKeysServiceInterface } from "./WatchedKeysModule.js";

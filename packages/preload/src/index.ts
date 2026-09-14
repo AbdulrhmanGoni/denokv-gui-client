@@ -9,7 +9,6 @@ import type {
   BrowsingParamsServiceInterface,
   FileSystemServiceInterface,
   KvStoresServiceInterface,
-  LastFetchedUpdateServiceInterface,
   SettingsServiceInterface,
   WatchedKeysServiceInterface,
 } from "@app/main/modules/interfaces";
@@ -113,24 +112,6 @@ const settingsService: SettingsServiceInterface = {
   },
 };
 
-const lastFetchedUpdateService: LastFetchedUpdateServiceInterface = {
-  getLastFetchedUpdate() {
-    return ipcRenderer.invoke("lastFetchedUpdateService:getLastFetchedUpdate");
-  },
-  setLastFetchedUpdate(updateInfo) {
-    return ipcRenderer.invoke(
-      "lastFetchedUpdateService:setLastFetchedUpdate",
-      updateInfo,
-    );
-  },
-  deleteLastFetchedUpdate() {
-    return ipcRenderer.invoke("lastFetchedUpdateService:deleteLastFetchedUpdate");
-  },
-  doNotNotifyLastFetchedUpdate() {
-    return ipcRenderer.invoke("lastFetchedUpdateService:doNotNotifyLastFetchedUpdate");
-  },
-};
-
 const browsingParamsService: BrowsingParamsServiceInterface = {
   saveBrowsingParams(kvStoreId, updateData) {
     return ipcRenderer.invoke(
@@ -214,7 +195,6 @@ export {
   bridgeServer,
   appUpdater,
   settingsService,
-  lastFetchedUpdateService,
   browsingParamsService,
   watchedKeysService,
   appManager,
