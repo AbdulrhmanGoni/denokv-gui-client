@@ -21,12 +21,12 @@
     "pnpm": ">=11.1.0"
   },
   "scripts": {
+    "start": "start-dev",
     "build": "pnpm run -r build",
     "compile": "pnpm run build && electron-builder build --config electron-builder.mjs",
     "compile:ci": "electron-builder build --config electron-builder.mjs --publish never",
     "test": "playwright test",
     "test:all": "pnpm run -r test",
-    "start": "node packages/dev-mode.js",
     "release": "commit-and-tag-version",
     "release-bridge-server": "cd ./packages/bridge-server && commit-and-tag-version --path ./",
     "typecheck": "pnpm run -r typecheck",
@@ -52,6 +52,7 @@
     "vite": "8.3.0"
   },
   "dependencies": {
+    "@app/dev": "workspace:*",
     "@app/db-migration": "workspace:*",
     "@app/main": "workspace:*",
     "@app/preload": "workspace:*"

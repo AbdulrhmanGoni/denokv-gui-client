@@ -1,0 +1,12 @@
+{
+  "name": "@app/dev",
+  "main": "start.ts",
+  "bin": {
+    "start-dev": "start.ts"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "vite": "8.3.0"
+  }
+}
