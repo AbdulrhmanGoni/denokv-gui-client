@@ -4,14 +4,12 @@ import electronPath from "electron";
 import { resolve } from "node:path";
 import { cpSync, writeFileSync } from "node:fs";
 import { extractLastReleaseChangelog } from "../../scripts/extractLastReleaseChangelog.ts";
+import { defineConfig, type PluginOption, type ViteDevServer } from "vite";
 import { marked } from "marked";
 import packageJson from "../../package.json" with { type: "json" };
+import type { ChildProcess } from "node:child_process";
 
-export default /**
- * @type {import('vite').UserConfig}
- * @see https://vitejs.dev/config/
- */
-({
+export default defineConfig({
   ssr: {
     noExternal: ["@std/async", "electron-updater"],
     external: true,
@@ -42,7 +40,7 @@ export default /**
   plugins: [handleHotReload(), copyMigrations(), bundleReleaseNotes()],
 });
 
-function bundleReleaseNotes() {
+function bundleReleaseNotes(): PluginOption {
   return {
     name: "bundle-release-notes",
     async closeBundle() {
@@ -59,7 +57,7 @@ function bundleReleaseNotes() {
   };
 }
 
-function copyMigrations() {
+function copyMigrations(): PluginOption {
   return {
     name: "copy-migrations",
     closeBundle() {
@@ -75,28 +73,32 @@ function copyMigrations() {
   };
 }
 
-/**
- * Implement Electron app reload when some file was changed
- *
- * @returns {import("vite").Plugin}
- */
-function handleHotReload() {
-  /** @type {ChildProcess} */
-  let electronApp = null;
+type RendererWatchServerProvider = PluginOption & {
+  api: { provideRendererWatchServer(): ViteDevServer };
+};
 
-  /** @type {import("vite").ViteDevServer | null} */
-  let rendererWatchServer = null;
+/** Implement Electron app reload when some file was changed */
+function handleHotReload(): PluginOption {
+  let electronApp: ChildProcess | null = null;
+
+  let rendererWatchServer: ViteDevServer | null = null;
 
   return {
     name: "@app/main-process-hot-reload",
-
     config(config, env) {
       if (env.mode !== "development") {
         return;
       }
 
-      const rendererWatchServerProvider = config.plugins.find(
-        (p) => p.name === "@app/renderer-watch-server-provider",
+      const rendererWatchServerProvider = config.plugins?.find(
+        (p): p is RendererWatchServerProvider => {
+          return Boolean(
+            p &&
+            !Array.isArray(p) &&
+            "name" in p &&
+            p.name === "@app/renderer-watch-server-provider",
+          );
+        },
       );
       if (!rendererWatchServerProvider) {
         throw new Error("Renderer watch server provider not found");
@@ -104,7 +106,7 @@ function handleHotReload() {
 
       rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer();
 
-      process.env.VITE_DEV_SERVER_URL = rendererWatchServer.resolvedUrls.local[0];
+      process.env.VITE_DEV_SERVER_URL = rendererWatchServer?.resolvedUrls?.local[0];
 
       return {
         build: {
@@ -112,7 +114,6 @@ function handleHotReload() {
         },
       };
     },
-
     writeBundle() {
       if (process.env.NODE_ENV !== "development") {
         return;

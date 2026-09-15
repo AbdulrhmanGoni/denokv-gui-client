@@ -1,11 +1,8 @@
 import { resolveModuleExportNames } from "mlly";
 import { getChromeMajorVersion } from "@app/electron-versions";
+import { defineConfig, type PluginOption, type ViteDevServer } from "vite";
 
-export default /**
- * @type {import('vite').UserConfig}
- * @see https://vitejs.dev/config/
- */
-({
+export default defineConfig({
   build: {
     ssr: true,
     sourcemap: "inline",
@@ -20,7 +17,6 @@ export default /**
     rolldownOptions: {
       output: {
         // ESM preload scripts must have the .mjs extension
-        // https://www.electronjs.org/docs/latest/tutorial/esm#esm-preload-scripts-must-have-the-mjs-extension
         entryFileNames: "[name].mjs",
         sourcemapExcludeSources: true,
       },
@@ -37,7 +33,7 @@ export default /**
  * just reads all exported nominals from `preload` package and defines them as globalThis
  * properties.
  */
-function mockExposed() {
+function mockExposed(): PluginOption {
   const virtualModuleId = "virtual:browser.js";
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
 
@@ -66,26 +62,32 @@ function mockExposed() {
   };
 }
 
-/**
- * Implement Electron webview reload when some file was changed
- *
- * @returns {import("vite").Plugin}
- */
-function handleHotReload() {
-  /** @type {import("vite").ViteDevServer | null} */
-  let rendererWatchServer = null;
+type RendererWatchServerProvider = PluginOption & {
+  api: { provideRendererWatchServer(): ViteDevServer };
+};
+
+/** Implement Electron webview reload when some file was changed */
+function handleHotReload(): PluginOption {
+  let rendererWatchServer: ViteDevServer | null = null;
 
   return {
     name: "@app/preload-process-hot-reload",
-
     config(config, env) {
       if (env.mode !== "development") {
         return;
       }
 
-      const rendererWatchServerProvider = config.plugins.find(
-        (p) => p.name === "@app/renderer-watch-server-provider",
+      const rendererWatchServerProvider = config.plugins?.find(
+        (p): p is RendererWatchServerProvider => {
+          return Boolean(
+            p &&
+            !Array.isArray(p) &&
+            "name" in p &&
+            p.name === "@app/renderer-watch-server-provider",
+          );
+        },
       );
+
       if (!rendererWatchServerProvider) {
         throw new Error("Renderer watch server provider not found");
       }
@@ -98,7 +100,6 @@ function handleHotReload() {
         },
       };
     },
-
     writeBundle() {
       if (!rendererWatchServer) {
         return;
