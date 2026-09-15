@@ -21,6 +21,7 @@
     "src/**/*.js",
     "src/**/*.svelte",
     "vite.config.ts",
-    "../../types/**/*.d.ts"
+    "../../types/**/*.d.ts",
+    "../main/global.d.ts"
   ]
 }
