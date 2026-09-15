@@ -18,6 +18,9 @@ importers:
       '@app/db-migration':
         specifier: workspace:*
         version: link:packages/db-migration
+      '@app/dev':
+        specifier: workspace:*
+        version: link:packages/dev
       '@app/main':
         specifier: workspace:*
         version: link:packages/main
@@ -102,6 +105,12 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@types/node@24.0.3)(vite@8.3.0(@types/node@24.0.3)(jiti@2.7.0)(yaml@2.9.0))
 
+  packages/dev:
+    dependencies:
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.0.3)(jiti@2.7.0)(yaml@2.9.0)
+
   packages/electron-versions: {}
 
   packages/main:
@@ -147,6 +156,9 @@ importers:
         specifier: workspace:*
         version: link:../bridge-server
     devDependencies:
+      '@app/dev':
+        specifier: workspace:*
+        version: link:../dev
       '@app/electron-versions':
         specifier: workspace:*
         version: link:../electron-versions

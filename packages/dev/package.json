@@ -8,5 +8,8 @@
   "type": "module",
   "dependencies": {
     "vite": "8.3.0"
+  },
+  "exports": {
+    "./vite": "./vite.ts"
   }
 }

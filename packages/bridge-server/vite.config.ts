@@ -1,10 +1,7 @@
-import { defineConfig, type ViteDevServer, type PluginOption } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import { resolve } from "path";
 import dts from "unplugin-dts/vite";
-
-type RendererWatchServerProvider = PluginOption & {
-  api: { provideRendererWatchServer(): ViteDevServer };
-};
+import { findRendererWatchServer } from "@app/dev/vite";
 
 export default defineConfig({
   build: {
@@ -44,7 +41,7 @@ export default defineConfig({
 });
 
 /** Implement Electron webview reload when some file change in the bridge-server package */
-function handleHotReload() {
+function handleHotReload(): PluginOption {
   let rendererWatchServer: import("vite").ViteDevServer | null = null;
 
   return {
@@ -52,21 +49,7 @@ function handleHotReload() {
     config(config, env) {
       if (env.mode !== "development") return;
 
-      const rendererWatchServerProvider = config.plugins?.find(
-        (p): p is RendererWatchServerProvider => {
-          return Boolean(
-            p &&
-            !Array.isArray(p) &&
-            "name" in p &&
-            p.name === "@app/renderer-watch-server-provider",
-          );
-        },
-      );
-      if (!rendererWatchServerProvider) {
-        throw new Error("Renderer watch server provider not found");
-      }
-
-      rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer();
+      rendererWatchServer = findRendererWatchServer(config);
 
       return { build: { watch: {} } };
     },
@@ -75,5 +58,5 @@ function handleHotReload() {
 
       rendererWatchServer.ws.send({ type: "full-reload" });
     },
-  } satisfies PluginOption;
+  };
 }

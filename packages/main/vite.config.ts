@@ -8,6 +8,7 @@ import { defineConfig, type PluginOption, type ViteDevServer } from "vite";
 import { marked } from "marked";
 import packageJson from "../../package.json" with { type: "json" };
 import type { ChildProcess } from "node:child_process";
+import { findRendererWatchServer } from "@app/dev/vite";
 
 export default defineConfig({
   ssr: {
@@ -73,10 +74,6 @@ function copyMigrations(): PluginOption {
   };
 }
 
-type RendererWatchServerProvider = PluginOption & {
-  api: { provideRendererWatchServer(): ViteDevServer };
-};
-
 /** Implement Electron app reload when some file was changed */
 function handleHotReload(): PluginOption {
   let electronApp: ChildProcess | null = null;
@@ -90,23 +87,9 @@ function handleHotReload(): PluginOption {
         return;
       }
 
-      const rendererWatchServerProvider = config.plugins?.find(
-        (p): p is RendererWatchServerProvider => {
-          return Boolean(
-            p &&
-            !Array.isArray(p) &&
-            "name" in p &&
-            p.name === "@app/renderer-watch-server-provider",
-          );
-        },
-      );
-      if (!rendererWatchServerProvider) {
-        throw new Error("Renderer watch server provider not found");
-      }
+      rendererWatchServer = findRendererWatchServer(config);
 
-      rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer();
-
-      process.env.VITE_DEV_SERVER_URL = rendererWatchServer?.resolvedUrls?.local[0];
+      process.env.VITE_DEV_SERVER_URL = rendererWatchServer.resolvedUrls?.local[0];
 
       return {
         build: {

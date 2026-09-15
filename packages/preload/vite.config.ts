@@ -1,6 +1,7 @@
 import { resolveModuleExportNames } from "mlly";
 import { getChromeMajorVersion } from "@app/electron-versions";
 import { defineConfig, type PluginOption, type ViteDevServer } from "vite";
+import { findRendererWatchServer } from "@app/dev/vite";
 
 export default defineConfig({
   build: {
@@ -62,10 +63,6 @@ function mockExposed(): PluginOption {
   };
 }
 
-type RendererWatchServerProvider = PluginOption & {
-  api: { provideRendererWatchServer(): ViteDevServer };
-};
-
 /** Implement Electron webview reload when some file was changed */
 function handleHotReload(): PluginOption {
   let rendererWatchServer: ViteDevServer | null = null;
@@ -77,37 +74,14 @@ function handleHotReload(): PluginOption {
         return;
       }
 
-      const rendererWatchServerProvider = config.plugins?.find(
-        (p): p is RendererWatchServerProvider => {
-          return Boolean(
-            p &&
-            !Array.isArray(p) &&
-            "name" in p &&
-            p.name === "@app/renderer-watch-server-provider",
-          );
-        },
-      );
+      rendererWatchServer = findRendererWatchServer(config);
 
-      if (!rendererWatchServerProvider) {
-        throw new Error("Renderer watch server provider not found");
-      }
-
-      rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer();
-
-      return {
-        build: {
-          watch: {},
-        },
-      };
+      return { build: { watch: {} } };
     },
     writeBundle() {
-      if (!rendererWatchServer) {
-        return;
-      }
+      if (!rendererWatchServer) return;
 
-      rendererWatchServer.ws.send({
-        type: "full-reload",
-      });
+      rendererWatchServer.ws.send({ type: "full-reload" });
     },
   };
 }
