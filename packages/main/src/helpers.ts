@@ -12,9 +12,13 @@ export function isGreaterVersion(a: string, b: string) {
   return false;
 }
 
-export async function asyncTrycatch<T>(fn: () => Promise<T>): Promise<TrycatchResult<T>> {
+export async function asyncTrycatch<T>(
+  fnOrPromise: Promise<T> | (() => Promise<T>),
+): Promise<TrycatchResult<T>> {
   try {
-    const result = (await fn()) as T;
+    const result = (await (fnOrPromise instanceof Promise
+      ? fnOrPromise
+      : fnOrPromise())) as T;
     return {
       result,
       error: null,

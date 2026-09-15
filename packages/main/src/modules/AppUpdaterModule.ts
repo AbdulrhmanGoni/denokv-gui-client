@@ -65,8 +65,18 @@ class AppUpdaterService {
   async downloadUpdate() {
     return asyncTrycatch(async () => {
       const { CancellationToken, autoUpdater } = await this.#getUpdater();
-      this.#cancellationToken = new CancellationToken();
-      return autoUpdater.downloadUpdate(this.#cancellationToken);
+      const { error, result: newUpdate } = await asyncTrycatch(
+        autoUpdater.checkForUpdates(),
+      );
+
+      if (error) throw new Error(error);
+
+      if (newUpdate?.isUpdateAvailable) {
+        this.#cancellationToken = new CancellationToken();
+        return autoUpdater.downloadUpdate(this.#cancellationToken);
+      }
+
+      throw new Error("No new updates are available to download");
     });
   }
 
