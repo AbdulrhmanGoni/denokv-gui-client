@@ -6,7 +6,7 @@ import { findRendererWatchServer } from "@app/dev/vite";
 export default defineConfig({
   build: {
     ssr: true,
-    sourcemap: "inline",
+    sourcemap: true,
     minify: process.env.DEBUG === "true" ? false : "oxc",
     outDir: "dist",
     target: `chrome${getChromeMajorVersion()}`,

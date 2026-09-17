@@ -34,7 +34,7 @@ export default defineConfig({
   },
   build: {
     minify: process.env.DEBUG === "true" ? false : "oxc",
-    sourcemap: "inline",
+    sourcemap: true,
     reportCompressedSize: false,
     rolldownOptions: {
       output: {
