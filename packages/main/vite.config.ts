@@ -18,6 +18,7 @@ export default defineConfig({
   define: {
     APP_VERSION: `"${packageJson.version}"`,
     APP_GITHUB_REPO: `"${packageJson.repository.url}"`,
+    APP_VARIANT: `"${process.env.APP_VARIANT || "stable"}"`,
   },
   build: {
     ssr: true,

@@ -29,8 +29,8 @@ export function getDatabasePath() {
     return "./tests/database.test.sqlite";
   }
 
-  const dbDir =
-    process.env.DENOKV_GUI_CLIENT_DB_DIR || getAppDataPath("denokv-gui-client");
+  const appDirName = `denokv-gui-client${APP_VARIANT === "stable" ? "" : `-${APP_VARIANT}`}`;
+  const dbDir = process.env.DENOKV_GUI_CLIENT_DB_DIR || getAppDataPath(appDirName);
 
   if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true });

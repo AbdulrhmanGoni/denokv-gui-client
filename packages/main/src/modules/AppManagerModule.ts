@@ -28,6 +28,8 @@ export class AppManagerModule {
   #appReadinessPromise: Promise<void>;
 
   constructor(app: Electron.App, settingsModule: SettingsModule) {
+    this.#configureUserDataDir(app);
+
     const isSingleInstance = app.requestSingleInstanceLock();
     if (!isSingleInstance) {
       app.quit();
@@ -50,5 +52,26 @@ export class AppManagerModule {
 
   async waitAppToBeReady(): Promise<void> {
     await this.#appReadinessPromise;
+  }
+
+  #configureUserDataDir(app: Electron.App) {
+    const noExplicitUserDataDir = !process.argv.some(
+      (arg) => arg === "--user-data-dir" || arg.startsWith("--user-data-dir="),
+    );
+
+    if (APP_VARIANT !== "stable" && noExplicitUserDataDir) {
+      try {
+        const currentUserDataDir = app.getPath("userData");
+        const suffix = APP_VARIANT === "stable" ? "" : `-${APP_VARIANT}`;
+        if (!currentUserDataDir.endsWith(suffix)) {
+          app.setPath("userData", `${currentUserDataDir}${suffix}`);
+        }
+      } catch (error) {
+        console.warn(
+          `Failed to configure userData directory for "${APP_VARIANT}" variant, continuing with the default userData directory\n`,
+          error,
+        );
+      }
+    }
   }
 }

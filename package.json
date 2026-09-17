@@ -23,7 +23,9 @@
   "scripts": {
     "start": "start-dev",
     "build": "pnpm run -r build",
+    "build:preview": "APP_VARIANT=preview pnpm run build",
     "compile": "pnpm run build && electron-builder build --config electron-builder.mjs",
+    "compile:preview": "APP_VARIANT=preview pnpm run compile",
     "compile:ci": "electron-builder build --config electron-builder.mjs --publish never",
     "test": "playwright test",
     "test:all": "pnpm run -r test",

@@ -64,6 +64,24 @@ function getAppPackagesFiles() {
   return filesToIncludeOrExclude;
 }
 
+function getBuildVariantConfig() {
+  if (!process.env.APP_VARIANT || process.env.APP_VARIANT === "stable") {
+    return {};
+  }
+
+  const appName = `denokv-gui-client-${process.env.APP_VARIANT}`;
+
+  return {
+    appId: `com.${appName}`,
+    productName: appName,
+    executableName: appName,
+    directories: {
+      output: `dist-${process.env.APP_VARIANT}`,
+      buildResources: "buildResources",
+    },
+  };
+}
+
 export default /** @type import('electron-builder').Configuration */
 ({
   publish: {
@@ -76,6 +94,7 @@ export default /** @type import('electron-builder').Configuration */
     output: "dist",
     buildResources: "buildResources",
   },
+  ...getBuildVariantConfig(),
   artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
   files: [
     "LICENSE*",
