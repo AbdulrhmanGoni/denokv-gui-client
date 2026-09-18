@@ -11,6 +11,10 @@ describe("Test 'validateSetRequestParams' function", () => {
     const url = new URL(fakeUrl + "/set?key=" + key);
     const expected = {
       key: ["users", 6, 12345678901234567890n, Infinity],
+      expires: undefined,
+      overwrite: undefined,
+      jsKey: false,
+      echoValue: undefined,
     };
     expect(validateSetRequestParams(url)).toEqual(expected);
   });
@@ -18,7 +22,13 @@ describe("Test 'validateSetRequestParams' function", () => {
   it("should parse a URL with a key and a valid expiration time", () => {
     const expireIn = 10000;
     const url = new URL(`${fakeUrl}/set?key=["users", 6]&expires=${expireIn}`);
-    const expected = { key: ["users", 6], expires: expireIn };
+    const expected = {
+      key: ["users", 6],
+      expires: expireIn,
+      overwrite: undefined,
+      jsKey: false,
+      echoValue: undefined,
+    };
     expect(validateSetRequestParams(url)).toEqual(expected);
   });
 
@@ -40,6 +50,8 @@ describe("Test 'validateSetRequestParams' function", () => {
       key: ["users", 6],
       overwrite: false,
       expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
     };
     expect(validateSetRequestParams(url1)).toEqual(expected1);
 
@@ -48,6 +60,8 @@ describe("Test 'validateSetRequestParams' function", () => {
       key: ["users", 6],
       overwrite: true,
       expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
     };
     expect(validateSetRequestParams(url2)).toEqual(expected2);
 
@@ -56,6 +70,8 @@ describe("Test 'validateSetRequestParams' function", () => {
       key: ["users", 6],
       overwrite: undefined,
       expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
     };
     expect(validateSetRequestParams(url3)).toEqual(expected3);
 
@@ -64,6 +80,8 @@ describe("Test 'validateSetRequestParams' function", () => {
       key: ["users", 6],
       overwrite: true,
       expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
     };
     expect(validateSetRequestParams(url4)).toEqual(expected4);
   });
@@ -76,19 +94,131 @@ describe("Test 'validateSetRequestParams' function", () => {
       key: ["data", new Uint8Array([1, 2, 3])],
       overwrite: undefined,
       expires: undefined,
+      jsKey: true,
+      echoValue: undefined,
     };
     expect(validateSetRequestParams(url)).toEqual(expected);
   });
 
+  it("should parse a URL with different jsKey option values", () => {
+    const url1 = new URL(`${fakeUrl}/set?key=["users", 6]&jsKey=true`);
+    const expected1 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: true,
+      echoValue: undefined,
+    };
+    expect(validateSetRequestParams(url1)).toEqual(expected1);
+
+    const url2 = new URL(`${fakeUrl}/set?key=["users", 6]&jsKey=false`);
+    const expected2 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
+    };
+    expect(validateSetRequestParams(url2)).toEqual(expected2);
+
+    const url3 = new URL(`${fakeUrl}/set?key=["users", 6]`);
+    const expected3 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
+    };
+    expect(validateSetRequestParams(url3)).toEqual(expected3);
+
+    const url4 = new URL(`${fakeUrl}/set?key=["users", 6]&jsKey=randomString`);
+    const expected4 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
+    };
+    expect(validateSetRequestParams(url4)).toEqual(expected4);
+  });
+
   it("should throw error for JS literal key when jsKey=false or not provided", () => {
     const url1 = new URL(`${fakeUrl}/set?key=['users', 6n]`);
-    expect(() => validateSetRequestParams(url1)).toThrow(
-      "Invalid JSON format for KvKey.",
-    );
+    expect(() => validateSetRequestParams(url1)).toThrow("Invalid JSON format for KvKey.");
 
     const url2 = new URL(`${fakeUrl}/set?key=['users', 6n]&jsKey=false`);
     expect(() => validateSetRequestParams(url2)).toThrow(
       "Invalid JSON format for KvKey.",
     );
+  });
+
+  it("should parse a URL with different echoValue option values", () => {
+    const url1 = new URL(`${fakeUrl}/set?key=["users", 6]&echoValue=true`);
+    const expected1 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: false,
+      echoValue: true,
+    };
+    expect(validateSetRequestParams(url1)).toEqual(expected1);
+
+    const url2 = new URL(`${fakeUrl}/set?key=["users", 6]&echoValue=false`);
+    const expected2 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: false,
+      echoValue: false,
+    };
+    expect(validateSetRequestParams(url2)).toEqual(expected2);
+
+    const url3 = new URL(`${fakeUrl}/set?key=["users", 6]`);
+    const expected3 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: false,
+      echoValue: undefined,
+    };
+    expect(validateSetRequestParams(url3)).toEqual(expected3);
+
+    const url4 = new URL(`${fakeUrl}/set?key=["users", 6]&echoValue=randomString`);
+    const expected4 = {
+      key: ["users", 6],
+      overwrite: undefined,
+      expires: undefined,
+      jsKey: false,
+      echoValue: false,
+    };
+    expect(validateSetRequestParams(url4)).toEqual(expected4);
+  });
+
+  it("should parse echoValue alongside other options", () => {
+    const url = new URL(
+      `${fakeUrl}/set?key=["users", 6]&expires=10000&overwrite=false&echoValue=true`,
+    );
+    const expected = {
+      key: ["users", 6],
+      expires: 10000,
+      overwrite: false,
+      jsKey: false,
+      echoValue: true,
+    };
+    expect(validateSetRequestParams(url)).toEqual(expected);
+  });
+
+  it("should parse jsKey alongside other options", () => {
+    const url = new URL(
+      `${fakeUrl}/set?key=["users", 6]&expires=10000&overwrite=false&jsKey=true&echoValue=true`,
+    );
+    const expected = {
+      key: ["users", 6],
+      expires: 10000,
+      overwrite: false,
+      jsKey: true,
+      echoValue: true,
+    };
+    expect(validateSetRequestParams(url)).toEqual(expected);
   });
 });

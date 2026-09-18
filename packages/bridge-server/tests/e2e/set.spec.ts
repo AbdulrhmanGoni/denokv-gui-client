@@ -87,5 +87,82 @@ export function setEndpointSpec({ bridgeServerClient, kv }: TestDependencies) {
       const dbVal = await kv.get([new Uint8Array([4, 8, 9]), "set", 999999n]);
       expect(dbVal.value).toBeNull();
     });
+
+    it("should return the updated value when 'echoValue' is true", async () => {
+      const key = ["e2e", "set", "return-value", `${Date.now()}-${Math.random()}`];
+      const value: SerializedKvValue = { type: "String", data: "hello-return" };
+
+      const res = await bridgeServerClient.set(key, value, {
+        echoValue: true,
+      });
+      expect(res.error).toBeNull();
+      expect(res.result).toMatchObject({
+        ok: true,
+        versionstamp: expect.any(String),
+        value,
+      });
+
+      const getRes = await kv.get(key);
+      expect(getRes.value).toBe("hello-return");
+    });
+
+    it("should not return the updated value by default or when 'echoValue' is false", async () => {
+      const key1 = ["e2e", "set", "no-return-default", `${Date.now()}-${Math.random()}`];
+      const res1 = await bridgeServerClient.set(key1, {
+        type: "String",
+        data: "no-return",
+      });
+      expect(res1.error).toBeNull();
+      expect(res1.result?.ok).toBe(true);
+      expect(res1.result?.value).toBeUndefined();
+
+      const key2 = ["e2e", "set", "no-return-false", `${Date.now()}-${Math.random()}`];
+      const res2 = await bridgeServerClient.set(
+        key2,
+        { type: "String", data: "no-return-2" },
+        { echoValue: false },
+      );
+      expect(res2.error).toBeNull();
+      expect(res2.result?.ok).toBe(true);
+      expect(res2.result?.value).toBeUndefined();
+    });
+
+    it("should return the updated value with 'overwrite: false' on a new key when 'echoValue' is true", async () => {
+      const key = ["e2e", "set", "return-overwrite", `${Date.now()}-${Math.random()}`];
+      const value: SerializedKvValue = { type: "String", data: "atomic-return" };
+
+      const res = await bridgeServerClient.set(key, value, {
+        overwrite: false,
+        echoValue: true,
+      });
+      expect(res.error).toBeNull();
+      expect(res.result).toMatchObject({
+        ok: true,
+        versionstamp: expect.any(String),
+        value,
+      });
+
+      const getRes = await kv.get(key);
+      expect(getRes.value).toBe("atomic-return");
+    });
+
+    it("should return the updated object value when 'echoValue' is true", async () => {
+      const key = ["e2e", "set", "return-object", `${Date.now()}-${Math.random()}`];
+      const data = { foo: "bar", n: 42 };
+      const value: SerializedKvValue = {
+        type: "Object",
+        data: JSON.stringify(data),
+      };
+
+      const res = await bridgeServerClient.set(key, value, {
+        echoValue: true,
+      });
+      expect(res.error).toBeNull();
+      expect(res.result?.ok).toBe(true);
+      expect(res.result?.value?.type).toBe("Object");
+
+      const getRes = await kv.get<typeof data>(key);
+      expect(getRes.value).toEqual(data);
+    });
   });
 }

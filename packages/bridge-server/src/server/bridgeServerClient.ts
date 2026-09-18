@@ -18,7 +18,7 @@ type CallBridgeServerParams = {
   headers?: Record<string, string>;
 };
 
-type CallBridgeServerReturn<ResultT> = Promise<
+type CallBridgeServerResponse<ResultT> = Promise<
   { result: ResultT; error: null } | { result: null; error: string }
 >;
 
@@ -37,7 +37,7 @@ async function callBridgeServerRequest<ResultT = unknown>({
   body,
   options,
   headers,
-}: CallBridgeServerParams): CallBridgeServerReturn<ResultT> {
+}: CallBridgeServerParams): CallBridgeServerResponse<ResultT> {
   let res: Response;
   try {
     res = await fetch(
@@ -76,6 +76,7 @@ async function callBridgeServerRequest<ResultT = unknown>({
   }
 }
 
+/** Options for browsing KV entries request */
 export type BrowsingOptions = {
   /** Maximum number of entries to return */
   limit?: number;
@@ -116,6 +117,11 @@ export type SetKeyOptions = {
    * false)
    */
   jsKey?: boolean;
+  /**
+   * Whether to return the just set value in the `SerializedKvValue` form. (defaults to
+   * false)
+   */
+  echoValue?: boolean;
 };
 
 /** The result of a set operation */
@@ -124,6 +130,11 @@ export type SetKeyReturn = {
   ok: boolean;
   /** The new versionstamp of the created or updated entry */
   versionstamp: string;
+  /**
+   * The just set value in the `SerializedKvValue` form. This is only included if the
+   * `echoValue` option is true.
+   */
+  value?: SerializedKvValue;
 };
 
 /** The result of a browse operation */
@@ -160,7 +171,7 @@ export class BridgeServerClient {
    *
    * @param options Filtering and pagination options
    */
-  browse(options?: BrowsingOptions): CallBridgeServerReturn<BrowseReturn> {
+  browse(options?: BrowsingOptions): CallBridgeServerResponse<BrowseReturn> {
     return callBridgeServerRequest<BrowseReturn>({
       url: `${this.baseUrl}/browse`,
       options,
@@ -174,13 +185,21 @@ export class BridgeServerClient {
    *
    * @param key The key of the Kv entry to set
    * @param value The value to set (must be in `SerializedKvValue` type)
-   * @param options Optional settings like expiration time and overwrite behavior
+   * @param options Optional settings like expiration time, overwrite behavior, `jsKey`,
+   *   and `echoValue`
+   * @param options.expires The expiration time of the key in milliseconds
+   * @param options.overwrite Whether to overwrite the key if it already exists (defaults
+   *   to true)
+   * @param options.jsKey Whether to parse the key as a JavaScript literal instead of
+   *   strict JSON (defaults to false).
+   * @param options.echoValue Whether to return the just set value in the
+   *   `SerializedKvValue` form (defaults to false).
    */
   set(
     key: SerializedKvKey | string,
     value: SerializedKvValue,
     options?: SetKeyOptions,
-  ): CallBridgeServerReturn<SetKeyReturn> {
+  ): CallBridgeServerResponse<SetKeyReturn> {
     return callBridgeServerRequest<SetKeyReturn>({
       url: `${this.baseUrl}/set`,
       options: {
@@ -206,7 +225,7 @@ export class BridgeServerClient {
   get(
     key: SerializedKvKey | string,
     options?: { xssSafe?: boolean; jsKey?: boolean },
-  ): CallBridgeServerReturn<SerializedKvEntry> {
+  ): CallBridgeServerResponse<SerializedKvEntry> {
     return callBridgeServerRequest<SerializedKvEntry>({
       url: `${this.baseUrl}/get/${encodeURIComponent(typeof key == "string" ? key : JSON.stringify(key))}`,
       options,
@@ -226,7 +245,7 @@ export class BridgeServerClient {
   delete(
     key: SerializedKvKey | string,
     options?: { jsKey?: boolean },
-  ): CallBridgeServerReturn<true> {
+  ): CallBridgeServerResponse<true> {
     return callBridgeServerRequest<true>({
       url: `${this.baseUrl}/delete`,
       options: { key, ...options },
@@ -244,7 +263,7 @@ export class BridgeServerClient {
   enqueue(
     value: EnqueueRequestInput["value"],
     options?: EnqueueRequestInput["options"],
-  ): CallBridgeServerReturn<boolean> {
+  ): CallBridgeServerResponse<boolean> {
     return callBridgeServerRequest<boolean>({
       url: `${this.baseUrl}/enqueue`,
       body: { value, options },
@@ -264,7 +283,7 @@ export class BridgeServerClient {
   atomic(
     atomicOperations: AtomicOperationInput[],
     options?: { jsKey?: boolean },
-  ): CallBridgeServerReturn<boolean> {
+  ): CallBridgeServerResponse<boolean> {
     return callBridgeServerRequest<boolean>({
       url: `${this.baseUrl}/atomic`,
       body: atomicOperations,

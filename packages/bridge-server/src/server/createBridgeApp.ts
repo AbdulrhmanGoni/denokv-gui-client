@@ -125,7 +125,10 @@ export function createBridgeApp(
   });
 
   app.put("/set", async (c) => {
-    const { key, expires, overwrite } = validateSetRequestParams(new URL(c.req.url));
+    const { key, expires, overwrite, echoValue } = validateSetRequestParams(
+      new URL(c.req.url),
+    );
+
     const validValue = deserializeKvValue(await c.req.json());
 
     if (overwrite === false) {
@@ -140,6 +143,7 @@ export function createBridgeApp(
           result: {
             ok: result.ok,
             versionstamp: result.versionstamp,
+            value: echoValue ? serializeKvValue(validValue, false) : undefined,
           },
         });
       } else {
@@ -151,6 +155,7 @@ export function createBridgeApp(
         result: {
           ok: result.ok,
           versionstamp: result.versionstamp,
+          value: echoValue ? serializeKvValue(validValue, false) : undefined,
         },
       });
     }

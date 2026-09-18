@@ -108,6 +108,8 @@ type ValidSetRequestParams = {
   key: KvKey;
   expires?: number;
   overwrite?: boolean;
+  jsKey?: boolean;
+  echoValue?: boolean;
 };
 /**
  * Parse and validate query parameters of `/set` endpoint which are:
@@ -117,11 +119,14 @@ type ValidSetRequestParams = {
  * - `overwrite`: optional parameter which must be a boolean when provided.
  * - `jsKey`: optional parameter indicating if the key should be parsed as a JavaScript
  *   literal instead of strict JSON (defaults to false).
+ * - `echoValue`: optional parameter indicating if the set value should be echoed back in
+ *   the response (defaults to false).
  *
  * Throws an Error with cause "ValidationError" on invalid inputs.
  *
  * @param url URL containing the query parameters to validate
- * @returns An object containing the validated key and optional expiration
+ * @returns An object containing the validated key, optional expiration, overwrite, jsKey,
+ *   and echoValue options
  */
 export function validateSetRequestParams(url: URL): ValidSetRequestParams {
   const targetKey = url.searchParams.get("key");
@@ -145,7 +150,10 @@ export function validateSetRequestParams(url: URL): ValidSetRequestParams {
   const overwriteOption = url.searchParams.get("overwrite");
   const overwrite = overwriteOption ? overwriteOption !== "false" : undefined;
 
-  return { key, expires, overwrite };
+  const echoValueOption = url.searchParams.get("echoValue");
+  const echoValue = echoValueOption ? echoValueOption === "true" : undefined;
+
+  return { key, expires, overwrite, jsKey, echoValue };
 }
 
 export type EnqueueRequestInput = {
@@ -281,6 +289,10 @@ export type ValidAtomicOperation =
   | ({ name: "enqueue" } & ValidEnqueueRequestBody);
 
 export type AtomicOperationsKeyOptions = {
+  /**
+   * Whether to parse the keys as JavaScript literals instead of strict JSON (defaults to
+   * false)
+   */
   jsKey?: boolean;
 };
 
@@ -391,6 +403,7 @@ function validateAtomicOperation(
  * operation objects.
  *
  * @param operations An array of atomic operations to validate
+ * @param options Optional options for atomic operations
  * @param options.jsKey Optional parameter indicating if the keys should be parsed as a
  *   JavaScript literal instead of strict JSON (defaults to false).
  * @returns Array of parsed and validated deno kv atomic operations in
