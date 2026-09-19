@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [12.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.3...bridge-server@12.0.0) (2026-09-19)
+
+### ⚠ BREAKING CHANGES
+
+* `openBridgeServerInNode` function became async while
+  `openBridgeServerInDeno` remains sync. Both of these functions now listen to
+  the localhost-only Loopback Interface ("127.0.0.1") by default if `hostname` option is not set
+
+### Features
+
+* add `echoValue` flag to `/set` route to return the just set value in the response ([7289b66](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/7289b6621b1eef6232ca9b5a57e696540fb8f0c9))
+
+### Bug Fixes
+
+* make `BridgeServerClient.watch` cancel previous watcher (if exists) before starting watching ([2716aac](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2716aac87b0a5b88f2849a5f2256aa71be29a95c))
+
+### Security
+
+* update `hono` and `@hono/node-server` to patch some vulnerabilities ([ec6e181](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/ec6e1812b2b31683cb6dd63c5277a5f1f357d037))
+* bind the server to localhost-only interface instead of all interfaces by default ([98e9a46](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/98e9a464b607ca9f61bc3266ee406710ba4b1131))
+
+### Maintenance
+
+* update `serialize-javascript` to v7.1.1 ([dec8484](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/dec848466d2c1a4de499bd8dce2af1d26c3a8aff))
+
 ## [11.0.3](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.2...bridge-server@11.0.3) (2026-08-30)
 
 ### Bug Fixes
@@ -11,11 +36,13 @@ All notable changes to this project will be documented in this file. See [commit
 ### Enhancements
 
 * export `BridgeServerClientOptions` type ([81c1991](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/81c1991f23e5cb8e191c4fe6c928e120387ae380))
+
 ## [11.0.2](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.1...bridge-server@11.0.2) (2026-08-22)
 
 ### Enhancements
 
 * improve error handling and response typing in `BridgeServerClient` ([b6f4f90](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/b6f4f9036afd79d004a8edb64464c5f3e56fa055))
+
 ## [11.0.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.0...bridge-server@11.0.1) (2026-08-06)
 
 
