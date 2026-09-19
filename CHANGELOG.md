@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.32.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.31.0...v1.32.0) (2026-09-19)
+
+### Security
+
+* bind the in-app bridge-server to the localhost-only Loopback Interface instead of all interfaces ([98e9a46](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/98e9a464b607ca9f61bc3266ee406710ba4b1131))
+
+### Features
+
+* add a keyboard shortcut to select/deselect all entries in the kv entries browser table ([c2adc2d](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/c2adc2d3460ec82aeb8477e420da48df3387ed9f))
+
+### Bug Fixes
+
+* check if cached updates are still available before starting the download process ([8448c90](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/8448c908084364f6f2cd9517f001ce4df7dcf32d))
+
+### Enhancements
+
+* improve watched keys save performance by eliminating an unnecessary SELECT statement that runs on every save ([f1dbbac](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/f1dbbac6550e55f36ce666ad349d54422d152bf0))
+
+### Maintenance
+
+* upgrade `Electron` from v43 to v44, therefore `Node` v24.20.0 and `Chromium` to v152.0.7977.76 ([87b7a71](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/87b7a71204d399db894fda0bdf83124c0278ff9b))
+
+### User Interface Changes
+
+* re-design the "atomic delete" option in "Delete Selected Kv Entries" alert dialog ([5cd7ae6](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5cd7ae6256243585ef327ae1173cd5f835db32e8))
+
 ## [1.31.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.30.0...v1.31.0) (2026-09-07)
 
 ### Features
