@@ -5,7 +5,7 @@ import {
   SerializedKvKey,
   type SerializedKvValue,
 } from "../serialization/main.ts";
-import { toNumber } from "../helpers";
+import { evalWithTimeout, toNumber } from "../helpers";
 import { isValidKvKey } from "../kv-utils.ts";
 
 const errorCause = { cause: "ValidationError" };
@@ -206,7 +206,7 @@ function validateEnqueueOptions(
   if ("keysIfUndelivered" in options) {
     let parsedKeysIfUndeliveredOption = null;
     try {
-      parsedKeysIfUndeliveredOption = (0, eval)(String(options.keysIfUndelivered));
+      parsedKeysIfUndeliveredOption = evalWithTimeout(String(options.keysIfUndelivered));
     } catch {}
 
     if (!(parsedKeysIfUndeliveredOption instanceof Array)) {

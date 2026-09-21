@@ -1,6 +1,6 @@
 import { KvU64, type KvEntry, type KvKey } from "@deno/kv";
 import sJs, { type SerializeJSOptions } from "serialize-javascript";
-import { toNumber } from "../helpers";
+import { evalWithTimeout, toNumber } from "../helpers";
 
 function serializeJs(jsValue: any, xssSafe: boolean = true) {
   const options: SerializeJSOptions = { ignoreFunction: true };
@@ -96,7 +96,7 @@ export function deserializeKvKey(
       }
     } else {
       try {
-        parsed = (0, eval)(`(${key})`);
+        parsed = evalWithTimeout(`(${key})`);
       } catch {
         throw new Error("Invalid Deno Kv Key.", errorCause);
       }
@@ -361,37 +361,24 @@ export function deserializeKvValue(body: unknown): unknown {
     }
   }
 
-  const evaluatedData = (0, eval)(`(${body.data})`);
-
-  switch (body.type) {
-    case "Object": {
-      if (evaluatedData instanceof Object) return evaluatedData;
-      throw new Error("Invalid Object received", errorCause);
-    }
-
-    case "Array": {
-      if (evaluatedData instanceof Array) return evaluatedData;
-      throw new Error("Invalid Array received", errorCause);
-    }
-
-    case "Set": {
-      if (evaluatedData instanceof Set) return evaluatedData;
-      throw new Error("Invalid Set received", errorCause);
-    }
-
-    case "Map": {
-      if (evaluatedData instanceof Map) return evaluatedData;
-      throw new Error("Invalid Map received", errorCause);
-    }
-
-    case "Uint8Array": {
-      if (evaluatedData instanceof Uint8Array) return evaluatedData;
-      throw new Error("Invalid Uint8Array received", errorCause);
-    }
-
-    default:
-      throw new Error("Unsupported Data Type: " + body.type, errorCause);
+  if (
+    body.type !== "Object" &&
+    body.type !== "Array" &&
+    body.type !== "Set" &&
+    body.type !== "Map" &&
+    body.type !== "Uint8Array"
+  ) {
+    throw new Error("Unsupported Data Type: " + body.type, errorCause);
   }
+
+  try {
+    const evaluatedData = evalWithTimeout(`(${body.data})`);
+    if (Object.prototype.toString.call(evaluatedData) === `[object ${body.type}]`) {
+      return evaluatedData;
+    }
+  } catch {}
+
+  throw new Error(`Invalid ${body.type} received`, errorCause);
 }
 
 /**
