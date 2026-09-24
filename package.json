@@ -44,7 +44,7 @@
     "@ossign/ossign": "1.0.11",
     "@playwright/test": "1.61.1",
     "@types/node": "24.0.3",
-    "commit-and-tag-version": "13.1.2",
+    "commit-and-tag-version": "13.2.1",
     "electron": "44.3.0",
     "electron-builder": "26.15.7",
     "oxfmt": "0.67.0",
