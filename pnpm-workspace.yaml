@@ -13,3 +13,5 @@ ignoreWorkspaceCycles: true
 minimumReleaseAgeStrict: true
 minimumReleaseAgeExclude:
   - "@hono/node-server@2.1.6"
+  - bits-ui@2.20.3
+  - svelte-check@4.7.8
