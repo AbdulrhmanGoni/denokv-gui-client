@@ -22,7 +22,7 @@
     "@app/renderer": "workspace:*",
     "@deno/kv": "0.14.0",
     "@std/async": "npm:@jsr/std__async@1.5.0",
-    "electron-updater": "6.8.9"
+    "electron-updater": "6.8.12"
   },
   "devDependencies": {
     "@app/electron-versions": "workspace:*",
