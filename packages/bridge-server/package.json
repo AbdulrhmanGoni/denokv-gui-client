@@ -41,7 +41,7 @@
     "@types/serialize-javascript": "5.0.4",
     "jsr": "0.14.3",
     "typescript": "6.0.3",
-    "unplugin-dts": "1.0.3",
+    "unplugin-dts": "1.1.2",
     "vite": "8.3.5",
     "vitest": "5.0.5"
   },
