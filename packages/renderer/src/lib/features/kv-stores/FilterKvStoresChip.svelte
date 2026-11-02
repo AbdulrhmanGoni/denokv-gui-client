@@ -1,12 +1,17 @@
 <script lang="ts">
   import type { Component } from "svelte";
 
-  const { option, count, isSelected, onclick } = $props<{
+  const {
+    option,
+    count,
+    isSelected,
+    onclick,
+  }: {
     option: { label: string; icon: Component<any>; color: string };
     count: number;
     isSelected: boolean;
     onclick: () => void;
-  }>();
+  } = $props();
 
   const colorMap: Record<string, { border: string; icon: string }> = {
     secondary: {
