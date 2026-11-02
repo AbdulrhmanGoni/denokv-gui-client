@@ -144,7 +144,9 @@ describe("Test 'validateSetRequestParams' function", () => {
 
   it("should throw error for JS literal key when jsKey=false or not provided", () => {
     const url1 = new URL(`${fakeUrl}/set?key=['users', 6n]`);
-    expect(() => validateSetRequestParams(url1)).toThrow("Invalid JSON format for KvKey.");
+    expect(() => validateSetRequestParams(url1)).toThrow(
+      "Invalid JSON format for KvKey.",
+    );
 
     const url2 = new URL(`${fakeUrl}/set?key=['users', 6n]&jsKey=false`);
     expect(() => validateSetRequestParams(url2)).toThrow(
