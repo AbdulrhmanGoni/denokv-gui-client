@@ -20,7 +20,7 @@
     "@app/dev": "workspace:*",
     "mlly": "1.8.2",
     "typescript": "6.0.3",
-    "vite": "8.3.0"
+    "vite": "8.3.5"
   },
   "dependencies": {
     "@app/bridge-server": "workspace:*"

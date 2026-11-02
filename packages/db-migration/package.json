@@ -18,6 +18,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "vitest": "4.1.11"
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
   }
 }
