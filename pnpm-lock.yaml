@@ -68,8 +68,8 @@ importers:
         version: link:packages/preload
     devDependencies:
       '@ossign/ossign':
-        specifier: 1.0.11
-        version: 1.0.11
+        specifier: 1.3.1
+        version: 1.3.1
       '@playwright/test':
         specifier: 1.61.1
         version: 1.61.1
@@ -654,8 +654,8 @@ packages:
   '@one-ini/wasm@0.2.1':
     resolution: {integrity: sha512-TUqERXGNTifZ9y2g3wPxQrw3HpHv/02DsW3D90T9x0hhonrL1ZqpSmNrU2XkoIq0fP1N6gZfVQzy2Fw1ZvGBNg==}
 
-  '@ossign/ossign@1.0.11':
-    resolution: {integrity: sha512-1iEOP/3SRwzD9w1kC0Onq9TS9i8C0gLwTOwzkVKjnnXFVF0XeljxKDw/XAiJsuz1bsSyGZBZVgMubIElmcDb6A==}
+  '@ossign/ossign@1.3.1':
+    resolution: {integrity: sha512-lwYwnWI5adFttj7eSn/WQQgzN0JjpYNVZb/iWwUA/9E3O5t3j+7iwmmHSpeDx0k3zol/yS/7/7BuyFFXOe8kWg==}
 
   '@oxc-project/types@0.156.0':
     resolution: {integrity: sha512-1Duyg48TdJNdyhEB8Xn1L36bT9Pv6GUtlKjHxOys8xkaF/rQq3XJE+bAurSK/AgIz5mGFsb77cn9Pb20+WCScw==}
@@ -3382,7 +3382,7 @@ snapshots:
 
   '@one-ini/wasm@0.2.1': {}
 
-  '@ossign/ossign@1.0.11':
+  '@ossign/ossign@1.3.1':
     dependencies:
       '@actions/core': 2.0.3
       '@actions/tool-cache': 3.0.1
