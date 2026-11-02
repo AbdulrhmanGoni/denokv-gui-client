@@ -45,7 +45,7 @@
     "@playwright/test": "1.61.1",
     "@types/node": "24.0.3",
     "commit-and-tag-version": "13.2.1",
-    "electron": "44.3.0",
+    "electron": "45.2.1",
     "electron-builder": "26.15.7",
     "oxfmt": "0.67.0",
     "oxlint": "1.82.0",
@@ -54,8 +54,8 @@
     "vite": "8.3.0"
   },
   "dependencies": {
-    "@app/dev": "workspace:*",
     "@app/db-migration": "workspace:*",
+    "@app/dev": "workspace:*",
     "@app/main": "workspace:*",
     "@app/preload": "workspace:*"
   }
