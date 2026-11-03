@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [12.0.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@12.0.0...bridge-server@12.0.1) (2026-11-03)
+
+### Bug Fixes
+
+* prevent infinite loops in data serialization by evaluating with timeout ([5df5d30](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5df5d3068cac9c91e2b8602bd0080009a9c94f89))
+
+### Maintenance
+
+* update `hono`, `@hono/node-server`, and `serialize-javascript` ([2d97fd9](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/2d97fd90494c38dbf2425fbfa637f26c39b7667c))
+
 ## [12.0.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/bridge-server@11.0.3...bridge-server@12.0.0) (2026-09-19)
 
 ### ⚠ BREAKING CHANGES
