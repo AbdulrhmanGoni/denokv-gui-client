@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.32.1](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.32.0...v1.32.1) (2026-11-03)
+
+### Bug Fixes
+
+* prevent infinite loops when serializing data by evaluating with a timeout ([5df5d30](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/5df5d3068cac9c91e2b8602bd0080009a9c94f89))
+
+### Maintenance
+
+* upgrade `Electron` to v45 which comes with lots of bug fixes and performance improvements ([119e3a0](https://github.com/AbdulrhmanGoni/denokv-gui-client/commit/119e3a0e7568e20f3a453e19efdb1ba561e767da))
+
 ## [1.32.0](https://github.com/AbdulrhmanGoni/denokv-gui-client/compare/v1.31.0...v1.32.0) (2026-09-19)
 
 ### Security
