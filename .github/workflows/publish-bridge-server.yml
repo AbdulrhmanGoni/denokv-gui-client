@@ -44,11 +44,17 @@ jobs:
 
       - name: Install dependencies
         if: ${{ env.isNewVersion == 'true' }}
-        run: pnpm ci --filter=@app/bridge-server
+        run: pnpm ci
 
       - name: Audit package's dependencies
         if: ${{ env.isNewVersion == 'true' }}
-        run: pnpm audit --filter=@app/bridge-server
+        run: |
+          mkdir -p /tmp/bridge-server-audit
+          jq '{name: "audit-bridge-server", private: true, dependencies: .dependencies}' \
+            packages/bridge-server/package.json > /tmp/bridge-server-audit/package.json
+          cd /tmp/bridge-server-audit
+          pnpm install --lockfile-only --ignore-scripts
+          pnpm audit --prod
 
       # Runs only if it's a manual dispatch. "ci-cd" workflow runs bridge server tests before calling this workflow
       - name: Run tests
